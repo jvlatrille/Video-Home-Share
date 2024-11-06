@@ -1,0 +1,6 @@
+{
+    "require": {
+        "twig/twig": "^3.14",
+        "twig/intl-extra": "^3.13"
+    }
+}
