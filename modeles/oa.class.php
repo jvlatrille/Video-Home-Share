@@ -1,7 +1,7 @@
 <?php
 
 class OA{
-    //Attributs d'une oeuvre originale
+    //Attributs d'une oeuvre audiovisuelle
     private ?int $id;
     private ?string $nom;
     private ?int $note;
