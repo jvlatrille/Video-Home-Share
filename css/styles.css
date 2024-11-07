@@ -11655,4 +11655,36 @@ textarea.form-control-lg {
   color: #73422B !important;
 }
 
+.footer-bg {
+  background-color: #73422B; /* Couleur de fond pour la section inférieure */
+}
+
+.footer-nav {
+  color: #D5D0AF; /* Couleur du texte pour les liens de navigation */
+  font-size: 1rem;
+}
+
+.footer-link {
+  color: #D5D0AF;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #FFFFFF; /* Couleur au survol */
+}
+
+.footer-social i {
+  color: #D5D0AF;
+  font-size: 1.5rem;
+}
+
+.footer-social i:hover {
+  color: #FFFFFF; /* Couleur des icônes au survol */
+}
+
+.footer-copyright {
+  color: #D5D0AF;
+  font-size: 0.875rem;
+}
+
 /*# sourceMappingURL=styles.css.map */

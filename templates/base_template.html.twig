@@ -6,11 +6,12 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
     {% block css %} {% endblock %}
-    <title>{% block title %} {{ constant('WEBSITE_TITLE')}}{% endblock %}</title>
+    <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header class="header-bg text-light header-sm container-fluid">
         <nav class="navbar container-fluid d-flex justify-content-between align-items-center">
             <!-- Logo et bouton Menu -->
@@ -46,3 +47,39 @@
             </div>
         </div>
     </header>
+
+    <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer-bg text-center text-light py-3 mt-auto">
+        <div class="container">
+            <!-- Liens de Navigation -->
+            <div class="footer-nav mb-3">
+                <a href="#" class="footer-link mx-2">Home</a>
+                <a href="#" class="footer-link mx-2">Experience</a>
+                <a href="#" class="footer-link mx-2">News</a>
+                <a href="#" class="footer-link mx-2">About us</a>
+                <a href="#" class="footer-link mx-2">Jobs</a>
+                <a href="#" class="footer-link mx-2">Contact</a>
+            </div>
+
+            <!-- Icônes des réseaux sociaux -->
+            <div class="footer-social mb-2">
+                <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
+                <a href="#"><i class="fab fa-twitter mx-2"></i></a>
+                <a href="#"><i class="fab fa-youtube mx-2"></i></a>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-copyright">
+                © Copyright 2019 - Lift Media
+            </div>
+        </div>
+    </footer>
+
+    {% block script %} {% endblock %}
+</body>
+</html>
