@@ -6,8 +6,10 @@
 
 // Required
 @import "../node_modules/bootstrap/scss/functions";
-$primary: #e027c2;
-
+$primary: #A2140A;
+$secondary: #4B99BD;
+$light: #D5D0AF;
+$dark: #73422B;
 
 
 // Required
@@ -15,8 +17,10 @@ $primary: #e027c2;
 @import "../node_modules/bootstrap/scss/variables-dark";
 
 $theme-colors: (
-        "primary": $primary,
-
+    "primary": $primary,
+    "secondary": $secondary,
+    "light": $light,
+    "dark": $dark,
 );
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";

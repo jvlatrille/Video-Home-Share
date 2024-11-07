@@ -4,6 +4,7 @@
 require_once 'include.php';
 
 
+
 try  {
     if (isset($_GET['controleur'])){
         $controllerName=$_GET['controleur'];
@@ -19,8 +20,8 @@ try  {
 
     //Gestion de la page d'accueil par défaut
     if ($controllerName == '' && $methode ==''){
-        $controllerName='oa';
-        $methode='afficherFilms';
+        $controllerName='index';
+        $methode='render';
     }
 
     if ($controllerName == '' ){

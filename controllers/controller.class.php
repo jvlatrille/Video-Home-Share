@@ -73,7 +73,7 @@ class Controller{
     /**
      * Get the value of twig
      */ 
-    public function getTwig(): \wig\Environment
+    public function getTwig(): \Twig\Environment
     {
         return $this->twig;
     }
