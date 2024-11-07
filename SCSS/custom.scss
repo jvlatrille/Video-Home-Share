@@ -30,3 +30,17 @@ $theme-colors: (
 .mycolor {
   color: $primary;
 }
+
+.header-bg {
+  background-color: #73422B; // Couleur de fond du header
+}
+
+.btn-custom {
+  background-color: #A2140A !important;
+  color: white !important;
+}
+
+.btn-light-custom {
+  background-color: #D5D0AF !important;
+  color: #73422B !important;
+}
