@@ -46,24 +46,36 @@ class CurrencyDataGenerator extends AbstractDataGenerator
      *
      * @var string[]
      */
-    private array $currencyCodes = [];
+    private $currencyCodes = [];
 
+    /**
+     * {@inheritdoc}
+     */
     protected function scanLocales(LocaleScanner $scanner, string $sourceDir): array
     {
         return $scanner->scanLocales($sourceDir.'/curr');
     }
 
-    protected function compileTemporaryBundles(BundleCompilerInterface $compiler, string $sourceDir, string $tempDir): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function compileTemporaryBundles(BundleCompilerInterface $compiler, string $sourceDir, string $tempDir)
     {
         $compiler->compile($sourceDir.'/curr', $tempDir);
         $compiler->compile($sourceDir.'/misc/currencyNumericCodes.txt', $tempDir);
     }
 
-    protected function preGenerate(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function preGenerate()
     {
         $this->currencyCodes = [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForLocale(BundleEntryReaderInterface $reader, string $tempDir, string $displayLocale): ?array
     {
         $localeBundle = $reader->read($tempDir, $displayLocale);
@@ -81,6 +93,9 @@ class CurrencyDataGenerator extends AbstractDataGenerator
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForRoot(BundleEntryReaderInterface $reader, string $tempDir): ?array
     {
         $rootBundle = $reader->read($tempDir, 'root');
@@ -90,6 +105,9 @@ class CurrencyDataGenerator extends AbstractDataGenerator
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForMeta(BundleEntryReaderInterface $reader, string $tempDir): ?array
     {
         $supplementalDataBundle = $reader->read($tempDir, 'supplementalData');
@@ -112,7 +130,9 @@ class CurrencyDataGenerator extends AbstractDataGenerator
 
     private function generateSymbolNamePairs(ArrayAccessibleResourceBundle $rootBundle): array
     {
-        $symbolNamePairs = array_map(fn ($pair) => \array_slice(iterator_to_array($pair), 0, 2), iterator_to_array($rootBundle['Currencies']));
+        $symbolNamePairs = array_map(function ($pair) {
+            return \array_slice(iterator_to_array($pair), 0, 2);
+        }, iterator_to_array($rootBundle['Currencies']));
 
         // Remove unwanted currencies
         $symbolNamePairs = array_diff_key($symbolNamePairs, self::DENYLIST);

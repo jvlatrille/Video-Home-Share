@@ -26,7 +26,10 @@ namespace Symfony\Component\Intl\Data\Bundle\Writer;
  */
 class TextBundleWriter implements BundleWriterInterface
 {
-    public function write(string $path, string $locale, mixed $data, bool $fallback = true): void
+    /**
+     * {@inheritdoc}
+     */
+    public function write(string $path, string $locale, $data, bool $fallback = true)
     {
         $file = fopen($path.'/'.$locale.'.txt', 'w');
 
@@ -43,7 +46,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeResourceBundle($file, string $bundleName, mixed $value, bool $fallback): void
+    private function writeResourceBundle($file, string $bundleName, $value, bool $fallback)
     {
         fwrite($file, $bundleName);
 
@@ -60,7 +63,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeResource($file, mixed $value, int $indentation, bool $requireBraces = true): void
+    private function writeResource($file, $value, int $indentation, bool $requireBraces = true)
     {
         if (\is_int($value)) {
             $this->writeInteger($file, $value);
@@ -75,8 +78,10 @@ class TextBundleWriter implements BundleWriterInterface
         if (\is_array($value)) {
             $intValues = \count($value) === \count(array_filter($value, 'is_int'));
 
+            $keys = array_keys($value);
+
             // check that the keys are 0-indexed and ascending
-            $intKeys = array_is_list($value);
+            $intKeys = $keys === range(0, \count($keys) - 1);
 
             if ($intValues && $intKeys) {
                 $this->writeIntVector($file, $value, $indentation);
@@ -109,7 +114,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeInteger($file, int $value): void
+    private function writeInteger($file, int $value)
     {
         fprintf($file, ':int{%d}', $value);
     }
@@ -121,7 +126,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeIntVector($file, array $value, int $indentation): void
+    private function writeIntVector($file, array $value, int $indentation)
     {
         fwrite($file, ":intvector{\n");
 
@@ -139,7 +144,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeString($file, string $value, bool $requireBraces = true): void
+    private function writeString($file, string $value, bool $requireBraces = true)
     {
         if ($requireBraces) {
             fprintf($file, '{"%s"}', $value);
@@ -157,7 +162,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @see http://source.icu-project.org/repos/icu/icuhtml/trunk/design/bnf_rb.txt
      */
-    private function writeArray($file, array $value, int $indentation): void
+    private function writeArray($file, array $value, int $indentation)
     {
         fwrite($file, "{\n");
 
@@ -177,7 +182,7 @@ class TextBundleWriter implements BundleWriterInterface
      *
      * @param resource $file The file handle to write to
      */
-    private function writeTable($file, iterable $value, int $indentation, bool $fallback = true): void
+    private function writeTable($file, iterable $value, int $indentation, bool $fallback = true)
     {
         if (!$fallback) {
             fwrite($file, ':table(nofallback)');

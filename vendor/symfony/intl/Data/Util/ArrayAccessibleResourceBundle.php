@@ -25,36 +25,42 @@ use Symfony\Component\Intl\Exception\BadMethodCallException;
  */
 class ArrayAccessibleResourceBundle implements \ArrayAccess, \IteratorAggregate, \Countable
 {
-    private \ResourceBundle $bundleImpl;
+    private $bundleImpl;
 
     public function __construct(\ResourceBundle $bundleImpl)
     {
         $this->bundleImpl = $bundleImpl;
     }
 
-    public function get(int|string $offset): mixed
+    public function get($offset)
     {
         $value = $this->bundleImpl->get($offset);
 
         return $value instanceof \ResourceBundle ? new static($value) : $value;
     }
 
-    public function offsetExists(mixed $offset): bool
+    public function offsetExists($offset): bool
     {
         return null !== $this->bundleImpl->get($offset);
     }
 
-    public function offsetGet(mixed $offset): mixed
+    /**
+     * @param mixed $offset
+     *
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function offsetSet($offset, $value): void
     {
         throw new BadMethodCallException('Resource bundles cannot be modified.');
     }
 
-    public function offsetUnset(mixed $offset): void
+    public function offsetUnset($offset): void
     {
         throw new BadMethodCallException('Resource bundles cannot be modified.');
     }
@@ -69,12 +75,12 @@ class ArrayAccessibleResourceBundle implements \ArrayAccess, \IteratorAggregate,
         return $this->bundleImpl->count();
     }
 
-    public function getErrorCode(): int
+    public function getErrorCode()
     {
         return $this->bundleImpl->getErrorCode();
     }
 
-    public function getErrorMessage(): string
+    public function getErrorMessage()
     {
         return $this->bundleImpl->getErrorMessage();
     }

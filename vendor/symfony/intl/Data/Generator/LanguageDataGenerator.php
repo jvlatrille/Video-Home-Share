@@ -96,24 +96,36 @@ class LanguageDataGenerator extends AbstractDataGenerator
      *
      * @var string[]
      */
-    private array $languageCodes = [];
+    private $languageCodes = [];
 
+    /**
+     * {@inheritdoc}
+     */
     protected function scanLocales(LocaleScanner $scanner, string $sourceDir): array
     {
         return $scanner->scanLocales($sourceDir.'/lang');
     }
 
-    protected function compileTemporaryBundles(BundleCompilerInterface $compiler, string $sourceDir, string $tempDir): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function compileTemporaryBundles(BundleCompilerInterface $compiler, string $sourceDir, string $tempDir)
     {
         $compiler->compile($sourceDir.'/lang', $tempDir);
         $compiler->compile($sourceDir.'/misc/metadata.txt', $tempDir);
     }
 
-    protected function preGenerate(): void
+    /**
+     * {@inheritdoc}
+     */
+    protected function preGenerate()
     {
         $this->languageCodes = [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForLocale(BundleEntryReaderInterface $reader, string $tempDir, string $displayLocale): ?array
     {
         $localeBundle = $reader->read($tempDir, $displayLocale);
@@ -130,21 +142,28 @@ class LanguageDataGenerator extends AbstractDataGenerator
                     $localizedNames[$language] = $name;
                 }
             }
-
-            return [
+            $data = [
                 'Names' => $names,
                 'LocalizedNames' => $localizedNames,
             ];
+
+            return $data;
         }
 
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForRoot(BundleEntryReaderInterface $reader, string $tempDir): ?array
     {
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function generateDataForMeta(BundleEntryReaderInterface $reader, string $tempDir): ?array
     {
         $metadataBundle = $reader->read($tempDir, 'metadata');
@@ -168,7 +187,9 @@ class LanguageDataGenerator extends AbstractDataGenerator
 
     private function generateAlpha3Codes(array $languageCodes, ArrayAccessibleResourceBundle $metadataBundle): array
     {
-        $alpha3Codes = array_flip(array_filter($languageCodes, static fn (string $language): bool => 3 === \strlen($language)));
+        $alpha3Codes = array_flip(array_filter($languageCodes, static function (string $language): bool {
+            return 3 === \strlen($language);
+        }));
 
         foreach ($metadataBundle['alias']['language'] as $alias => $data) {
             if (3 === \strlen($alias) && 'overlong' === $data['reason']) {

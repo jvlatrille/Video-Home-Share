@@ -44,7 +44,7 @@ final class Languages extends ResourceBundle
             self::readEntry(['Names', $language]);
 
             return true;
-        } catch (MissingResourceException) {
+        } catch (MissingResourceException $e) {
             return false;
         }
     }
@@ -60,7 +60,7 @@ final class Languages extends ResourceBundle
     {
         try {
             return self::readEntry(['Names', $language], $displayLocale);
-        } catch (MissingResourceException) {
+        } catch (MissingResourceException $e) {
             try {
                 return self::readEntry(['LocalizedNames', $language], $displayLocale);
             } catch (MissingResourceException $e) {
@@ -124,9 +124,11 @@ final class Languages extends ResourceBundle
             self::getAlpha2Code($language);
 
             return true;
-        } catch (MissingResourceException) {
+        } catch (MissingResourceException $e) {
             static $cache;
-            $cache ??= array_flip(self::getAlpha3Codes());
+            if (null === $cache) {
+                $cache = array_flip(self::getAlpha3Codes());
+            }
 
             return isset($cache[$language]);
         }
@@ -168,7 +170,7 @@ final class Languages extends ResourceBundle
             }
             try {
                 $alpha3Names[self::getAlpha3Code($alpha2Code)] = $name;
-            } catch (MissingResourceException) {
+            } catch (MissingResourceException $e) {
             }
         }
 

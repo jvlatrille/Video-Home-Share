@@ -50,5 +50,5 @@ interface BundleEntryReaderInterface extends BundleReaderInterface
      *
      * @throws MissingResourceException If the indices cannot be accessed
      */
-    public function readEntry(string $path, string $locale, array $indices, bool $fallback = true): mixed;
+    public function readEntry(string $path, string $locale, array $indices, bool $fallback = true);
 }

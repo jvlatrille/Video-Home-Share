@@ -35,7 +35,7 @@ final class Scripts extends ResourceBundle
             self::readEntry(['Names', $script]);
 
             return true;
-        } catch (MissingResourceException) {
+        } catch (MissingResourceException $e) {
             return false;
         }
     }

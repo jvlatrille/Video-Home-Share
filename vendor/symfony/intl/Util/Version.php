@@ -36,9 +36,11 @@ class Version
      * @param int|null $precision The number of components to compare. Pass
      *                            NULL to compare the versions unchanged.
      *
+     * @return bool
+     *
      * @see normalize()
      */
-    public static function compare(string $version1, string $version2, string $operator, ?int $precision = null): bool
+    public static function compare(string $version1, string $version2, string $operator, ?int $precision = null)
     {
         $version1 = self::normalize($version1, $precision);
         $version2 = self::normalize($version2, $precision);
@@ -60,8 +62,10 @@ class Version
      *
      * @param int|null $precision The number of components to include. Pass
      *                            NULL to return the version unchanged.
+     *
+     * @return string|null
      */
-    public static function normalize(string $version, ?int $precision): ?string
+    public static function normalize(string $version, ?int $precision)
     {
         if (null === $precision) {
             return $version;

@@ -6,8 +6,10 @@
 
 // Required
 @import "../node_modules/bootstrap/scss/functions";
-$primary: #e027c2;
-
+$primary: #A2140A;
+$secondary: #4B99BD;
+$light: #D5D0AF;
+$dark: #73422B;
 
 
 // Required
@@ -15,8 +17,10 @@ $primary: #e027c2;
 @import "../node_modules/bootstrap/scss/variables-dark";
 
 $theme-colors: (
-        "primary": $primary,
-
+    "primary": $primary,
+    "secondary": $secondary,
+    "light": $light,
+    "dark": $dark,
 );
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
@@ -25,4 +29,54 @@ $theme-colors: (
 @import "../node_modules/bootstrap/scss/bootstrap";
 .mycolor {
   color: $primary;
+}
+
+
+// Le header
+.header-bg {
+  background-color: #73422B; // Couleur de fond du header
+}
+
+.btn-custom {
+  background-color: #A2140A !important;
+  color: white !important;
+}
+
+.btn-light-custom {
+  background-color: #D5D0AF !important;
+  color: #73422B !important;
+}
+
+
+// Le footer
+.footer-bg {
+  background-color: #73422B; /* Couleur de fond pour la section inférieure */
+}
+
+.footer-nav {
+  color: #D5D0AF; /* Couleur du texte pour les liens de navigation */
+  font-size: 1rem;
+}
+
+.footer-link {
+  color: #D5D0AF;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #FFFFFF; /* Couleur au survol */
+}
+
+.footer-social i {
+  color: #D5D0AF;
+  font-size: 1.5rem;
+}
+
+.footer-social i:hover {
+  color: #FFFFFF; /* Couleur des icônes au survol */
+}
+
+.footer-copyright {
+  color: #D5D0AF;
+  font-size: 0.875rem;
 }

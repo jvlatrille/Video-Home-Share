@@ -17,6 +17,7 @@ require_once 'config/twig.php';
 require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
 require_once 'controllers/controller_oa.class.php';
+require_once 'controllers/controller_index.class.php';
 
 
 
