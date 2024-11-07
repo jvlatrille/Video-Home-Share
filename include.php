@@ -10,9 +10,14 @@ require_once 'config/constantes.php';
 require_once 'config/twig.php';
 
 //Ajout du code pour initialiser la connexion à la base de données
-require_once 'config/connexion.php';
+
+//require_once 'config/connexion.php';
 
 //Ajout des contrôleurs
-require_once 'controllers/jsp.php';
-//Ajout des modèles
-require_once 'modeles/jsp.php';
+require_once 'controllers/controller_factory.class.php';
+require_once 'controllers/controller.class.php';
+
+
+
+// //Ajout des modèles
+require_once 'modeles/bd.class.php';
