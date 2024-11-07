@@ -17,19 +17,17 @@ class OADao{
         $this->pdo = $pdo;
     }
 
-    public function find(?int $id): ?OA
-    {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "OA WHERE idOA = :idOA";
+    public function find(int $id): ?OA {
+        $sql = "SELECT * FROM OA WHERE idOA = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->bindValue(':idOA', $id, PDO::PARAM_INT);
-        $pdoStatement->execute();
-    
-        // Récupération de l'objet OA
-        $pdoStatement->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "OA");
-        $oa = $pdoStatement->fetch();
-    
-        return $oa;
+        $pdoStatement->execute(['id' => $id]);
+        $data = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        if($data === false){
+            return null;
+        }  
+        return $this->hydrate($data);
     }
+    
     
 
     // //Méthode pour récupérer toutes les oeuvres audiovisuelles
@@ -58,9 +56,9 @@ class OADao{
     
 
 
-    public function hydrate($tableauAssoc) : ?OA{
+    public function hydrate(array $tableauAssoc) : ?OA{
         $oa=new OA();
-        $oa->setId($tableauAssoc['id']);
+        $oa->setId($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
         $oa->setNote($tableauAssoc['note']);
         $oa->setType($tableauAssoc['type']);

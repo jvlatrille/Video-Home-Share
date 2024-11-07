@@ -12,7 +12,8 @@ class ControllerOA extends Controller
     //Recupere tous les films
     $managerOA=New OADao($this->getPdo());
     $oa=$managerOA->find(28);
-
+    var_dump($oa);
+        
     //Generer la vue
     $template = $this->getTwig()->load('index.html.twig');
     

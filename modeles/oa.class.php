@@ -13,7 +13,7 @@ class OA{
     private ?int $duree;
 
     //Constructeur de la classe OA
-    public function __construct(?int $id, ?string $nom, ?int $note, ?string $type, ?string $description, ?string $dateSortie, ?string $vo, ?int $limiteAge, ?int $duree){
+    public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $limiteAge=null, ?int $duree=null){
         $this->id = $id;
         $this->nom = $nom;
         $this->note = $note;
@@ -74,6 +74,31 @@ class OA{
         $this->dateSortie = $dateSortie;
     }
 
+    public function getVo(): ?string{
+        return $this->vo;
+    }
+
+    public function setVo(?string $vo): void{
+        $this->vo = $vo;
+    }
+
+    public function getLimiteAge(): ?int{
+        return $this->limiteAge;
+    }
+
+    public function setLimiteAge(?int $limiteAge): void{
+        $this->limiteAge = $limiteAge;
+    }
+
+    public function getDuree(): ?int{
+        return $this->duree;
+    }
+
+    public function setDuree(?int $duree): void{
+        $this->duree = $duree;
+    }
+
+    
 
 
 }
