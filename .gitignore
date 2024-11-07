@@ -1,2 +1,4 @@
 # Liste des fichiers à exclure
 
+/vendor
+/node_modules
