@@ -4,7 +4,17 @@
 <title>Bienvenue sur {{constant("WEBSITE_TITLE")}}</title>
 
 <h1>Les films pour l'instant</h1>
-<a href="">
+
+vardump({{ oa }})
+{% if oa %}
+    <h1>{{ oa.nom }}</h1>
+    <p>Note : {{ oa.note }}</p>
+    <p>Description : {{ oa.description }}</p>
+    <p>Date de sortie : {{ oa.dateSortie }}</p>
+    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+{% else %}
+    <p>Aucun film trouvé.</p>
+{% endif %}
 
 
 {% endblock %}
