@@ -18,41 +18,29 @@ class OADao{
     }
 
     public function find(?int $id): ?OA {
-        $sql = "SELECT * FROM".PREFIXE_TABLE." OA WHERE idOA = :id";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."oa WHERE idOA = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('id' => $id));
-        $pdoStatement->fetch(PDO::FETCH_CLASS);
-        $oa = $pdoStatement->fetch();   
-        return $oa;
-        
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $oaData = $pdoStatement->fetch();   
+        return $oaData ? $this->hydrate($oaData) : null;
     }
     
     
 
     //Méthode pour récupérer toutes les oeuvres audiovisuelles
     public function findAll() {
-        try {
-            $sql = "SELECT * FROM".PREFIXE_TABLE." oa";
-            $pdoStatement = $this->pdo->prepare($sql);
-            $pdoStatement->execute();
-    
-            $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
-    
-            $oaListe = [];
-            foreach ($resultats as $row) {
-                // Crée un nouvel objet OA vide, puis utilise hydrate
-                $oa = new OA();
-                $oa->hydrate($row);
-                $oaListe[] = $oa;
-            }
-    
-            return $oaListe;
-        } catch (PDOException $e) {
-            echo "Erreur lors de la récupération des oeuvres : " . $e->getMessage();
-            return [];
-        }
+        
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute();
+
+        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        // Appelle hydrateAll pour transformer tous les enregistrements en objets OA
+        return $this->hydrateAll($resultats);
     }
-    public function hydrate(array $tableauAssoc) : ?OA{
+    public function hydrate($tableauAssoc) : ?OA{
         $oa=new OA();
         $oa->setId($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
@@ -65,6 +53,16 @@ class OADao{
         $oa->setDuree($tableauAssoc['duree']);
         return $oa;
     }
+
+    public function hydrateAll(array $resultats): ?array {
+        $oaListe = [];
+        foreach ($resultats as $row) {
+            $oaListe[] = $this->hydrate($row);
+        }
+        
+        return $oaListe;
+    }
+    
     
     
 }

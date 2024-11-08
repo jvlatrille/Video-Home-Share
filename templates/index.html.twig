@@ -4,15 +4,16 @@
 <title>Bienvenue sur {{constant("WEBSITE_TITLE")}}</title>
 
 <h1>Les films pour l'instant</h1>
-
-    {% if oa is defined %}
-        <h1>{{ oa.nom }}</h1>
-        <p>Note : {{ oa.note }}</p>
-        <p>Description : {{ oa.description }}</p>
-        <p>Date de sortie : {{ oa.dateSortie }}</p>
-        <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
-    {% else %}
-        <p>Aucun film trouvé.</p>
-    {% endif %}
+{% if oaListe is empty %}
+    <p>Aucun film pour l'instant</p>
+{% endif %}
+{% for film in oaListe %}
+    <h2>{{ film.nom }}</h2>
+    <p>Note : {{ film.note }}</p>
+    <p>Description : {{ film.description }}</p>
+    <p>Date de sortie : {{ film.dateSortie }}</p>
+    <p>Version originale : {{ film.vo ? 'Oui' : 'Non' }}</p>
+{% endfor %}
 
 {% endblock %}
+
