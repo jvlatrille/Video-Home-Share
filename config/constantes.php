@@ -2,10 +2,10 @@
 
 // Ce ne sont que des exemples
 //Connexion à la base de données
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'vhs_bd');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', 'lakartxela.iutbayonne.univ-pau.fr');
+define('DB_NAME', 'abaros_pro');
+define('DB_USER', 'abaros_pro');
+define('DB_PASS', 'abaros_pro');
 
 define('PREFIXE_TABLE', '');
 
