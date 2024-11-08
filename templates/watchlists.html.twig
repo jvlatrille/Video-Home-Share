@@ -1,0 +1,26 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+<h1>Vos watchlist</h1>
+{% if watchListListe is not defined %}
+<p>Aucune WatchList</p>
+{% else %}
+<div class="container">
+    <div class="row">
+        {% for watchList in watchListListe %}
+        <div class="col-4">
+            <div class="card" style="width: 18rem;">
+                <img src="{{watchList.image}}" class="card-img-top" alt="{{watchList.nom}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ watchList.nom }}</h5>
+                    <p class="card-text">{{ watchList.description }}</p>
+                    <a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

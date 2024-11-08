@@ -34,8 +34,9 @@ class OADao{
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);  
 
-        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        $resultats = $pdoStatement->fetchAll();
 
         // Appelle hydrateAll pour transformer tous les enregistrements en objets OA
         return $this->hydrateAll($resultats);
