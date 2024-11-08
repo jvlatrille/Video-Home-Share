@@ -20,8 +20,8 @@ try  {
 
     //Gestion de la page d'accueil par défaut
     if ($controllerName == '' && $methode ==''){
-        $controllerName='index';
-        $methode='render';
+        $controllerName='oa';
+        $methode='listerFilms';
     }
 
     if ($controllerName == '' ){
