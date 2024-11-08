@@ -5,11 +5,14 @@
 
 <h1>Les films pour l'instant</h1>
 
-    <h1>{{ oa.nom }}</h1>
-    <p>Note : {{ oa.note }}</p>
-    <p>Description : {{ oa.description }}</p>
-    <p>Date de sortie : {{ oa.dateSortie }}</p>
-    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
-    <p>Aucun film trouvé.</p>
+    {% if oa is defined %}
+        <h1>{{ oa.nom }}</h1>
+        <p>Note : {{ oa.note }}</p>
+        <p>Description : {{ oa.description }}</p>
+        <p>Date de sortie : {{ oa.dateSortie }}</p>
+        <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+    {% else %}
+        <p>Aucun film trouvé.</p>
+    {% endif %}
 
 {% endblock %}

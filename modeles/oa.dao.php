@@ -17,45 +17,41 @@ class OADao{
         $this->pdo = $pdo;
     }
 
-    public function find(int $id): ?OA {
-        $sql = "SELECT * FROM OA WHERE idOA = :id";
+    public function find(?int $id): ?OA {
+        $sql = "SELECT * FROM".PREFIXE_TABLE." OA WHERE idOA = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['id' => $id]);
-        $data = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        if($data === false){
-            return null;
-        }  
-        return $this->hydrate($data);
+        $pdoStatement->execute(array('id' => $id));
+        $pdoStatement->fetch(PDO::FETCH_CLASS);
+        $oa = $pdoStatement->fetch();   
+        return $oa;
+        
     }
     
     
 
-    // //Méthode pour récupérer toutes les oeuvres audiovisuelles
-    // public function findAll() {
-    //     try {
-    //         $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa";
-    //         $pdoStatement = $this->pdo->prepare($sql);
-    //         $pdoStatement->execute();
+    //Méthode pour récupérer toutes les oeuvres audiovisuelles
+    public function findAll() {
+        try {
+            $sql = "SELECT * FROM".PREFIXE_TABLE." oa";
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute();
     
-    //         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+            $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
     
-    //         $oaList = [];
-    //         foreach ($resultats as $row) {
-    //             // Crée un nouvel objet OA vide, puis utilise hydrate
-    //             $oa = new OA();
-    //             $oa->hydrate($row);
-    //             $oaList[] = $oa;
-    //         }
+            $oaListe = [];
+            foreach ($resultats as $row) {
+                // Crée un nouvel objet OA vide, puis utilise hydrate
+                $oa = new OA();
+                $oa->hydrate($row);
+                $oaListe[] = $oa;
+            }
     
-    //         return $oaList;
-    //     } catch (PDOException $e) {
-    //         echo "Erreur lors de la récupération des oeuvres : " . $e->getMessage();
-    //         return [];
-    //     }
-    // }
-    
-
-
+            return $oaListe;
+        } catch (PDOException $e) {
+            echo "Erreur lors de la récupération des oeuvres : " . $e->getMessage();
+            return [];
+        }
+    }
     public function hydrate(array $tableauAssoc) : ?OA{
         $oa=new OA();
         $oa->setId($tableauAssoc['idOA']);

@@ -3,11 +3,11 @@
 // Ce ne sont que des exemples
 //Connexion à la base de données
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'vhs');
+define('DB_NAME', 'vhs_bd');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
-define('PREFIXE_TABLE', 'namrein_pro');
+define('PREFIXE_TABLE', '');
 
 // Constante de la partie vue
 define('WEBSITE_TITLE', 'VHS - Video Home Share');

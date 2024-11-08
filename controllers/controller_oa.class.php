@@ -9,15 +9,30 @@ class ControllerOA extends Controller
 
     public function afficherFilms()
     {
-    //Recupere tous les films
-    $managerOA=New OADao($this->getPdo());
-    $oa=$managerOA->find(28);
-    var_dump($oa);
+        // Recupere tous les films
+        $managerOA = new OADao($this->getPdo());
+        $oaListe = $managerOA->findAll();
+        var_dump($oaList);
         
-    //Generer la vue
-    $template = $this->getTwig()->load('index.html.twig');
-    
-    echo $template->render(['oa'=>$oa]);
-}
+        // Generer la vue
+        $template = $this->getTwig()->load('index.html.twig');
+        
+        echo $template->render(['oaListe' => $oaListe]);
+    }
 
-}
+    public function afficherFilm()
+    {
+        $id=isset($_GET['id']);
+
+        //Recupere le film
+        $managerOA=New OADao($this->getPdo());
+        $oa=$managerOA->find($id);
+        var_dump($oa);
+        
+        //Generer la vue
+        $template = $this->getTwig()->load('index.html.twig');
+        
+        echo $template->render(['oa'=>$oa]);
+
+    }
+    }
