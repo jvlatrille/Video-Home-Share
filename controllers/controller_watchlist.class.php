@@ -34,4 +34,17 @@ class ControllerWatchList extends Controller{
 
     }
 
+    //Fonction pour lister toutes les watchlists visibles
+    public function listerWatchListVisible()
+    {
+        // Recupere toutes les watchlists visibles
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchListListe = $managerWatchList->findAllVisible(1); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        
+        // Generer la vue
+        $template = $this->getTwig()->load('watchlistsCommu.html.twig');
+        
+        echo $template->render(['watchListListe' => $watchListListe]);
+    }
+
 }

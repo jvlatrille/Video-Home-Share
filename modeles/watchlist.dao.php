@@ -48,8 +48,7 @@ class WatchListDao{
     }
     
 
-    //Fonction pour recuperer tous les films d'une watchlist d'un utilisateur
- //   public function findOA
+
 
 
     public function hydrate(array $tableauAssoc) : ?WatchList{
@@ -69,4 +68,40 @@ class WatchListDao{
         }
         return $watchlistListe;
     }
+
+    ///////////////////////////////////
+    //TODO 08/11/2024
+    //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true)
+    //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible)
+    //Fonction pour modifier une watchlist
+    //Fonction pour supprimer une watchlist
+    //Fonction pour ajouter une OA à une watchlist
+    //Fonction pour supprimer une OA d'une watchlist
+    //Fonction pour partager une watchlist
+    ///////////////////////////////////
+
+
+    //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true) 
+    //et qui n'appartiennnt pas à l'utilisateur
+    public function findAllVisible(int $idUtilisateur): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist w
+        WHERE w.visible = 1 and w.idUtilisateur != :id";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array('id' => $idUtilisateur));    
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);  
+        
+        if (!$resultats) {
+            // Si aucun résultat n'est trouvé
+            var_dump("Aucune watchlist trouvée.");
+            return null;
+        }
+        
+        $watchlist = $this->hydrateAll($resultats);
+        return $watchlist;
+    }
+
+
+
 }

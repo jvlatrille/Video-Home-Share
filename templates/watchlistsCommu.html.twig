@@ -1,7 +1,7 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<h1>Vos watchlist</h1>
+<h1>Les watchlits visibles de la communauté !</h1>
 {% if watchListListe is not defined %}
 <p>Aucune WatchList</p>
 {% else %}
@@ -20,9 +20,6 @@
         </div>
         {% endfor %}
     </div>
-</div>
-<div class="text-center mt-4">
-    <a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
 </div>
 
 {% endif %}

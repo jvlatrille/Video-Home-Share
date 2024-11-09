@@ -1,12 +1,13 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-    <h1>Ma watchList</h1>
     {% if watchList is not defined %}
         <p>Aucune WatchList</p>
     {% else %}
     <!-- afficher les détail d'une watchlist-->
-    <h2>{{ watchList.titre }}</h2>
+    <h1>{{ watchList.titre }}</h1>
+    <p>on est dans la watchlist et ya des films (images)</p>
+    <!-- A FAIRE : afficher le créateur de la watchlist (utilisateur non créer le 09/11/2024 lors de ce test) et sa date de création (ajouter en bd)-->
     <p>{{ watchList.description }}</p>
     <p>{{ watchList.genre }}</p>
     <p>{{ watchList.visible}}</p>
