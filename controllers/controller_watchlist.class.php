@@ -47,4 +47,28 @@ class ControllerWatchList extends Controller{
         echo $template->render(['watchListListe' => $watchListListe]);
     }
 
-}
+
+    //Fonction pour ajouter une watchlist
+    public function ajouterWatchList()
+    {
+        //Recupere les données du formulaire
+        $titre = isset($_POST['titre']) ? $_POST['titre'] : null;
+        $genre = isset($_POST['genre']) ? $_POST['genre'] : null;
+        $description = isset($_POST['description']) ? $_POST['description'] : null;
+        $visible = isset($_POST['visible']) ? $_POST['visible'] : null;
+        var_dump($titre, $genre, $description, $visible);
+        //Ajoute la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = new WatchList();
+        $watchList->setTitre($titre);
+        $watchList->setGenre($genre);
+        $watchList->setDescription($description);
+        $watchList->setVisible($visible);
+        //$watchList->setIdUtilisateur(1); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        $managerWatchList->creerWatchlist($watchList);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }    
+
+} 

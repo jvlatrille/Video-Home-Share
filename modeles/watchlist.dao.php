@@ -71,7 +71,7 @@ class WatchListDao{
 
     ///////////////////////////////////
     //TODO 08/11/2024
-    //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true)
+    //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true) : fait
     //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible)
     //Fonction pour modifier une watchlist
     //Fonction pour supprimer une watchlist
@@ -102,6 +102,30 @@ class WatchListDao{
         return $watchlist;
     }
 
+    //Fonction pour creer une watchlist
+    public function creerWatchlist(WatchList $watchlist): ?WatchList {
+        $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
+                VALUES (:titre, :genre, :description, :visible, 2)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array(
+                'titre' => $watchlist->getTitre(),
+                'genre' => $watchlist->getGenre(),
+                'description' => $watchlist->getDescription(),
+                'visible' => $watchlist->getVisible(),
+                //'idUtilisateur' => $watchlist->getIdUtilisateur()
+            ));
+            
+            $watchlist->setIdWatchList($this->pdo->lastInsertId());
+            return $watchlist;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la création de la watchlist : " . $e->getMessage());
+            return null;
+        }
+    }
+    
 
 
 }
