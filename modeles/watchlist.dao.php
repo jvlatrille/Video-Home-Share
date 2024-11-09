@@ -72,7 +72,7 @@ class WatchListDao{
     ///////////////////////////////////
     //TODO 08/11/2024
     //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true) : fait
-    //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible)
+    //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible) : fait
     //Fonction pour modifier une watchlist
     //Fonction pour supprimer une watchlist
     //Fonction pour ajouter une OA à une watchlist
@@ -105,7 +105,7 @@ class WatchListDao{
     //Fonction pour creer une watchlist
     public function creerWatchlist(WatchList $watchlist): ?WatchList {
         $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
-                VALUES (:titre, :genre, :description, :visible, 2)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+                VALUES (:titre, :genre, :description, :visible, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -123,6 +123,43 @@ class WatchListDao{
             // Gérer l'erreur (log, retour d'erreur, etc.)
             error_log("Erreur lors de la création de la watchlist : " . $e->getMessage());
             return null;
+        }
+    }
+
+    //Fonction pour modifier une watchlist
+    // public function modifierWatchlist(WatchList $watchlist): ?WatchList {
+    //     $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET titre = :titre, genre = :genre, description = :description, visible = :visible
+    //             WHERE idWatchlist = 1"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+        
+    //     try {
+    //         $pdoStatement = $this->pdo->prepare($sql);
+    //         $pdoStatement->execute(array(
+    //             'titre' => $watchlist->getTitre(),
+    //             'genre' => $watchlist->getGenre(),
+    //             'description' => $watchlist->getDescription(),
+    //             'visible' => $watchlist->getVisible(),
+    //             'id' => $watchlist->getIdWatchList()
+    //         ));
+            
+    //         return $watchlist;
+    //     } catch (Exception $e) {
+    //         // Gérer l'erreur (log, retour d'erreur, etc.)
+    //         error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
+    //         return null;
+    //     }
+    // }
+
+    //Fonction pour supprimer une watchlist
+    public function supprimerUneWatchlist(int $id): ?bool {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id";
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array('id' => $id));
+            return true;
+        } catch (Exception $e) {
+            error_log("Erreur lors de la suppression de la watchlist : " . $e->getMessage());
+            return false;
         }
     }
     

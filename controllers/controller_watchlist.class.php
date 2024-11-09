@@ -70,5 +70,43 @@ class ControllerWatchList extends Controller{
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
     }    
+    
+    //Fonction pour modifier une watchlist
+    public function modifierWatchList()
+    {
+        //Recupere les données du formulaire
+        $id = isset($_POST['id']) ? $_POST['id'] : null;
+        $titre = isset($_POST['titre']) ? $_POST['titre'] : null;
+        $genre = isset($_POST['genre']) ? $_POST['genre'] : null;
+        $description = isset($_POST['description']) ? $_POST['description'] : null;
+        $visible = isset($_POST['visible']) ? $_POST['visible'] : null;
+        
+        //Modifie la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = new WatchList();
+        $watchList->setIdWatchList($id);
+        $watchList->setTitre($titre);
+        $watchList->setGenre($genre);
+        $watchList->setDescription($description);
+        $watchList->setVisible($visible);
+        $managerWatchList->modifierWatchlist($watchList);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }   
+
+    //Fonction pour supprimer une watchlist
+    public function supprimerWatchList()
+    {
+        //Recupere l'id de la watchlist
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        
+        //Supprime la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $managerWatchList->supprimerUneWatchlist($id);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }
 
 } 
