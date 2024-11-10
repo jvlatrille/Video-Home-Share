@@ -1,0 +1,13 @@
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+<h1>Liste des Personnes</h1>
+<ul>
+    {% for personne in personnes %}
+    <li>
+        {{ personne.nom }} {{ personne.prenom }} - {{ personne.dateNaiss|date("d/m/Y") }} - {{ personne.genre }}
+        <a href="/personne/{{ personne.idPersonne }}">Voir détails</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
