@@ -24,18 +24,24 @@ class ControllerOA extends Controller
         echo $template->render(['oaListe' => $oaListe]);
     }
 
+    //Fonction pour afficher un film, ajout de la watchlist pour afficher les watchlists de l'utilisateur s'il veut ajouter le film à une watchlist
     public function afficherFilm()
     {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         
 
-        //Recupere le film
-        $managerOA=New OADao($this->getPdo());
-        $oa=$managerOA->find($id);
-        //Generer la vue
-        $template = $this->getTwig()->load('film.html.twig');
-        
-        echo $template->render(['oa'=>$oa]);
+      // Recupere toutes les watchlists
+      $managerWatchList = new WatchListDao($this->getPdo());
+      $watchListListe = $managerWatchList->findAll(1); // normalement $_SESSION['idUtilisateur']
+                                                       // mais pour les tests on met 1
+      // Recupere l'oa
+      $idOa= isset($_GET['id']) ? $_GET['id'] : null;
+      $managerOa = new OADao($this->getPdo());
+      $oa = $managerOa->find($idOa);
+      // Generer la vue
+      $template = $this->getTwig()->load('film.html.twig');
+      
+      echo $template->render(['watchListListe' => $watchListListe, 'oa' => $oa]);
 
     }
     }

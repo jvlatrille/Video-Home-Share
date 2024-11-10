@@ -7,10 +7,13 @@
     <!-- afficher les détail d'une watchlist-->
     <h1>{{ watchList.titre }}</h1>
     <p>on est dans la watchlist et ya des films (images)</p>
+    
     <!-- A FAIRE : afficher le créateur de la watchlist (utilisateur non créer le 09/11/2024 lors de ce test) et sa date de création (ajouter en bd)-->
     <p>{{ watchList.description }}</p>
     <p>{{ watchList.genre }}</p>
     <p>{{ watchList.visible}}</p>
+
+
 <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" 
     onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-primary">
     Supprimer

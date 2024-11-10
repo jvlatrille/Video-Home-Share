@@ -99,14 +99,32 @@ class ControllerWatchList extends Controller{
     public function supprimerWatchList()
     {
         //Recupere l'id de la watchlist
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $idWatchList = isset($_GET['id']) ? $_GET['id'] : null;
+        $idUtilisateur = 1; //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
         
         //Supprime la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
-        $managerWatchList->supprimerUneWatchlist($id);
+        $managerWatchList->supprimerUneWatchlist($idWatchList, $idUtilisateur);
         
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
     }
 
-} 
+
+    //Fonction pour ajouter une oeuvre à une watchlist
+    public function ajouterOaWatchList()
+    {
+        //Recupere les données du formulaire
+        $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
+        $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : null;
+        
+        //Ajoute l'oeuvre à la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id='.$idWatchList);
+    }
+
+
+}

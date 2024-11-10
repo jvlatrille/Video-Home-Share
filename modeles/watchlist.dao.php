@@ -74,7 +74,7 @@ class WatchListDao{
     //Fonction pour recuperer toutes les watchlists qui existent (seulement celle qui ont le champ visible à true) : fait
     //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible) : fait
     //Fonction pour modifier une watchlist
-    //Fonction pour supprimer une watchlist
+    //Fonction pour supprimer une watchlist : fait
     //Fonction pour ajouter une OA à une watchlist
     //Fonction pour supprimer une OA d'une watchlist
     //Fonction pour partager une watchlist
@@ -94,7 +94,7 @@ class WatchListDao{
         
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Aucune watchlist trouvée.");
+            echo "Aucune watchlist trouvée.";
             return null;
         }
         
@@ -150,12 +150,12 @@ class WatchListDao{
     // }
 
     //Fonction pour supprimer une watchlist
-    public function supprimerUneWatchlist(int $id): ?bool {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id";
+    public function supprimerUneWatchlist(int $id, int $idUtilisateur): ?bool {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id and idUtilisateur = :idUtilisateur";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
-            $pdoStatement->execute(array('id' => $id));
+            $pdoStatement->execute(array('id' => $id, 'idUtilisateur' => $idUtilisateur));
             return true;
         } catch (Exception $e) {
             error_log("Erreur lors de la suppression de la watchlist : " . $e->getMessage());
@@ -164,5 +164,21 @@ class WatchListDao{
     }
     
 
+    //Fonction pour ajouter une OA à une watchlist
+    public function ajouterOA(int $idWatchlist, int $idOa): ?bool {
+        $sql = "INSERT INTO ".PREFIXE_TABLE."constituer (idWatchlist, idOA) 
+                VALUES (:idWatchlist, :idOA)";
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array(
+                'idWatchlist' => $idWatchlist,
+                'idOA' => $idOa));
+            return true;
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'ajout de l'OA à la watchlist : " . $e->getMessage());
+            return false;
+        }
+    }
 
 }
