@@ -1,13 +1,17 @@
 <?php
 
-class Personne {
-    private $idPersonne;
-    private $nom;
-    private $prenom;
-    private $dateNaiss;
-    private $genre;
+class Personne
+{
+    // Attributs de la classe Personne
+    private ?int $idPersonne;
+    private ?string $nom;
+    private ?string $prenom;
+    private ?string $dateNaiss;
+    private ?string $genre;
 
-    public function __construct($idPersonne, $nom, $prenom, $dateNaiss, $genre) {
+    // Constructeur de la classe Personne
+    public function __construct(?int $idPersonne = null, ?string $nom = null, ?string $prenom = null, ?string $dateNaiss = null, ?string $genre = null)
+    {
         $this->idPersonne = $idPersonne;
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -15,43 +19,54 @@ class Personne {
         $this->genre = $genre;
     }
 
-    // Getters
-    public function getIdPersonne() {
+    // Getters et Setters
+    public function getIdPersonne(): ?int
+    {
         return $this->idPersonne;
     }
 
-    public function getNom() {
+    public function setIdPersonne(?int $idPersonne): void
+    {
+        $this->idPersonne = $idPersonne;
+    }
+
+    public function getNom(): ?string
+    {
         return $this->nom;
     }
 
-    public function getPrenom() {
-        return $this->prenom;
-    }
-
-    public function getDateNaiss() {
-        return $this->dateNaiss;
-    }
-
-    public function getGenre() {
-        return $this->genre;
-    }
-
-    // Setters
-    public function setNom($nom) {
+    public function setNom(?string $nom): void
+    {
         $this->nom = $nom;
     }
 
-    public function setPrenom($prenom) {
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(?string $prenom): void
+    {
         $this->prenom = $prenom;
     }
 
-    public function setDateNaiss($dateNaiss) {
+    public function getDateNaiss(): ?string
+    {
+        return $this->dateNaiss;
+    }
+
+    public function setDateNaiss(?string $dateNaiss): void
+    {
         $this->dateNaiss = $dateNaiss;
     }
 
-    public function setGenre($genre) {
+    public function getGenre(): ?string
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(?string $genre): void
+    {
         $this->genre = $genre;
     }
 }
-
-?>

@@ -1,42 +1,35 @@
 <?php
 
-require_once 'modeles/personne.dao.php';
-
-class ControllerPersonne {
-    private $personneDAO;
-
-    public function __construct() {
-        $this->personneDAO = new PersonneDAO();
+class ControllerPersonne extends Controller
+{
+    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
+    {
+        parent::__construct($twig, $loader);
     }
 
     // Afficher toutes les personnes
-    public function afficherToutesPersonnes() {
-        $personnes = $this->personneDAO->obtenirToutesPersonnes();
-        include 'templates/personne.html.twig';  // Adapter le nom du fichier twig si nécessaire
+    public function listerPersonnes()
+    {
+        // Récupère toutes les personnes
+        $managerPersonne = new PersonneDAO($this->getPdo());
+        $personnesListe = $managerPersonne->findAll();
+
+        // Génère la vue
+        $template = $this->getTwig()->load('personne.html.twig');
+        echo $template->render(['personnesListe' => $personnesListe]);
     }
 
     // Afficher une personne spécifique
-    public function afficherPersonne($idPersonne) {
-        $personne = $this->personneDAO->obtenirPersonneParId($idPersonne);
-        include 'templates/personne_detail.html.twig';  // Adapter le nom du fichier twig si nécessaire
-    }
+    public function afficherPersonne()
+    {
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-    // Ajouter une nouvelle personne
-    public function ajouterPersonne($nom, $prenom, $dateNaiss, $genre) {
-        $personne = new Personne(null, $nom, $prenom, $dateNaiss, $genre);
-        return $this->personneDAO->ajouterPersonne($personne);
-    }
+        // Récupère la personne
+        $managerPersonne = new PersonneDAO($this->getPdo());
+        $personne = $managerPersonne->find($id);
 
-    // Mettre à jour une personne existante
-    public function mettreAJourPersonne($idPersonne, $nom, $prenom, $dateNaiss, $genre) {
-        $personne = new Personne($idPersonne, $nom, $prenom, $dateNaiss, $genre);
-        return $this->personneDAO->mettreAJourPersonne($personne);
-    }
-
-    // Supprimer une personne
-    public function supprimerPersonne($idPersonne) {
-        return $this->personneDAO->supprimerPersonne($idPersonne);
+        // Génère la vue
+        $template = $this->getTwig()->load('personne_detail.html.twig');
+        echo $template->render(['personne' => $personne]);
     }
 }
-
-?>
