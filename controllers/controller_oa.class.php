@@ -31,7 +31,7 @@ class ControllerOA extends Controller
         
 
       // Recupere toutes les watchlists
-      $managerWatchList = new WatchListDao($this->getPdo());
+      $managerWatchList = new WatchListDao($this->getPdo()); //je sais pas si c'est légal
       $watchListListe = $managerWatchList->findAll(1); // normalement $_SESSION['idUtilisateur']
                                                        // mais pour les tests on met 1
       // Recupere l'oa

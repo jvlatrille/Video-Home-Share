@@ -75,9 +75,10 @@ class WatchListDao{
     //Fonction pour ceer une watchlist (avec un titre, un genre, une description et un champ visible) : fait
     //Fonction pour modifier une watchlist
     //Fonction pour supprimer une watchlist : fait
-    //Fonction pour ajouter une OA à une watchlist
-    //Fonction pour supprimer une OA d'une watchlist
-    //Fonction pour partager une watchlist
+    //Fonction pour ajouter une OA à une watchlist : fait
+    //Fonction pour supprimer une OA d'une watchlist : fait
+    //Fonction pour partager une watchlist*
+    //Fonction pour afficher les films d'une watchlist d'un utilisateur
     ///////////////////////////////////
 
 
@@ -162,7 +163,6 @@ class WatchListDao{
             return false;
         }
     }
-    
 
     //Fonction pour ajouter une OA à une watchlist
     public function ajouterOA(int $idWatchlist, int $idOa): ?bool {
@@ -181,4 +181,38 @@ class WatchListDao{
         }
     }
 
+    //Fonction pour supprimer une OA d'une watchlist
+    public function supprimerOA(int $idWatchlist, int $idOa): ?bool {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist and idOA = :idOA";
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array('idWatchlist' => $idWatchlist, 'idOA' => $idOa));
+            return true;
+        } catch (Exception $e) {
+            error_log("Erreur lors de la suppression de l'OA de la watchlist : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    //Fonction pour afficher les films d'une watchlist d'un utilisateur
+    public function afficherFilmsWatchlist(int $idWatchlist): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."constituer c
+        JOIN ".PREFIXE_TABLE."oa o ON c.idOA = o.idOA
+        WHERE c.idWatchlist = :id";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array('id' => $idWatchlist));    
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);  
+        
+        if (!$resultats) {
+            // Si aucun résultat n'est trouvé
+            echo "Aucun film trouvé.";
+            return null;
+        }
+        $oatemp = new OADao($this->pdo); //je sais pas si c'est légal
+        $oas = $oatemp->hydrateAll($resultats);
+        return $oas;
+    }
 }

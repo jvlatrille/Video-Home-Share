@@ -27,10 +27,14 @@ class ControllerWatchList extends Controller{
         //Recupere la watchlist
         $managerWatchList=New WatchListDao($this->getPdo());
         $watchList=$managerWatchList->find($id);
+        
+        //Recupere les oeuvres de la watchlist
+        $oas = $managerWatchList->afficherFilmsWatchlist($id);
+        
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
         
-        echo $template->render(['watchList'=>$watchList]);
+        echo $template->render(['watchList'=>$watchList, 'oas'=>$oas]);
 
     }
 
@@ -125,6 +129,8 @@ class ControllerWatchList extends Controller{
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id='.$idWatchList);
     }
+
+
 
 
 }
