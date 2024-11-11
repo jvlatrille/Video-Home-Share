@@ -1,27 +1,55 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<h1>Toutes les watchlists</h1>
-{% if watchListListe is not defined %}
-<p>Aucune WatchList</p>
-{% else %}
-<div class="container">
-    <div class="row">
-        {% for watchList in watchListListe %}
-        <div class="col-4">
-            <div class="card" style="width: 18rem;">
-                <img src="{{watchList.image}}" class="card-img-top" alt="{{watchList.nom}}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ watchList.nom }}</h5>
-                    <p class="card-text">{{ watchList.description }}</p>
-                    <a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+	<h1>Toutes les watchlists</h1>
+	{% if watchListListe is not defined %}
+		<p>Aucune WatchList</p>
+	{% else %}
+		<div class="container">
+			<div class="row">
+				{% for watchList in watchListListe %}
+					<div class="col-4">
+						<div class="card" style="width: 18rem;">
+							<img src="{{watchList.image}}" class="card-img-top" alt="{{watchList.nom}}">
+							<div class="card-body">
+								<h5 class="card-title">{{ watchList.nom }}</h5>
+								<p class="card-text">{{ watchList.description }}</p>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
+									Voir la WatchList</button>
+                                </div>
+								{# <a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a> #}
+								<div class="modal fade" id="watchListModal{{ watchList.idWatchList }}" tabindex="-1" aria-labelledby="watchListModalLabel{{ watchList.idWatchList }}" aria-hidden="true">
+									<div class="modal-dialog modal-lg">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="watchListModalLabel{{ watchList.idWatchList }}">{{ watchList.nom }}</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<p>{{ watchList.description }}</p>
+												<p>{{ watchList.genre }}</p>
+												<p>{{ watchList.visible }}</p>
+                                                
+												<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+                                                    <input type="hidden" name="titre" value="{{ watchList.titre }}">
+                                                    <input type="hidden" name="genre" value="{{ watchList.genre }}">
+                                                    <input type="hidden" name="description" value="{{ watchList.description }}">
+                                                    <input type="hidden" name="visible" value="{{ watchList.visible }}">
+                                                    <button type="submit" class="btn btn-danger">Enregistrer cette watchlist</button>
+                                                </form>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
 
-{% endif %}
+			{% endif %}
 
-{% endblock %}
+		{% endblock %}
