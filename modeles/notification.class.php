@@ -17,6 +17,8 @@ class Notification{
         $this->vu = $vu;
     }
 
+
+    
     //Getters et setters de la classe Notification
     public function getDateNotif(): ?string{
         return $this->dateNotif;
