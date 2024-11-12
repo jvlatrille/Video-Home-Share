@@ -1,0 +1,15 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+<title>Bienvenue sur {{constant("WEBSITE_TITLE")}}</title>
+
+{% if oa is defined %}
+    <h1>{{ oa.nom }}</h1>
+    <p>Note : {{ oa.note }}</p>
+    <p>Description : {{ oa.description }}</p>
+    <p>Date de sortie : {{ oa.dateSortie }}</p>
+    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+{% else %}
+    <p>Le film n'existe pas</p>
+{% endif %}
+{% endblock %}

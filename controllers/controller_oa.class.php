@@ -7,17 +7,37 @@ class ControllerOA extends Controller
         parent::__construct($twig, $loader);
     }
 
-    public function afficherFilms()
+/////////////////////////////////////////  
+// La fonction afficherFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des films.
+/////////////////////////////////////////
+
+    public function listerFilms()
     {
-        //Recupere tous les films
-    //  $idOA=isset($_GET['idOA']) ? $_GET['idOA'] : null;
-     $managerOA=New OADao($this->getPdo());
-    $oa=$managerOA->findAll();
+        // Recupere tous les films
+        $managerOA = new OADao($this->getPdo());
+        $oaListe = $managerOA->findAll();
+ 
+        
+        // Generer la vue
+        $template = $this->getTwig()->load('index.html.twig');
+        
+        echo $template->render(['oaListe' => $oaListe]);
+    }
 
-    //Generer la vue
-    $template = $this->getTwig()->load('films.html.twig');
+    public function afficherFilm()
+    {
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        
+
+        //Recupere le film
+        $managerOA=New OADao($this->getPdo());
+        $oa=$managerOA->find($id);
+        //Generer la vue
+        $template = $this->getTwig()->load('film.html.twig');
+        
+        echo $template->render(['oa'=>$oa]);
+
+    }
+    }
+
     
-    echo $template->render(['oa'=>$oa]);
-}
-
-}

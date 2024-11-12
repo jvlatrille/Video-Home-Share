@@ -3,10 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <meta name="description" content="{%if description is defined %} {{description}} {% else %} {{constant('WEBSITE_DESCRIPTION')}} {% endif %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
     {% block css %} {% endblock %}
-    <title>{% block title %} {{ constant('WEBSITE_TITLE')}}{% endblock %}</title>
+    <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
 </head>
-<body class="container">   
+<body class="d-flex flex-column min-vh-100">
+    <header class="header-bg text-light header-sm container-fluid">
+        <nav class="navbar container-fluid d-flex justify-content-between align-items-center">
+            <!-- Logo et bouton Menu -->
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand d-flex align-items-center" href="index.php">
+                    <img src="img/LogoPopCorn.png" alt="Logo" width="80" height="80" class="me-2">
+                    VHS
+                </a>
+                <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
+                    Menu
+                </button>
+            </div>
+        
+            <!-- Barre de recherche -->
+            <form class="d-flex justify-content-center" style="flex-grow: 1;">
+                <input class="form-control" type="search" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+            </form>
+        
+            <!-- Boutons Connexion et Langue -->
+            <div class="me-3">
+                <button class="btn btn-custom me-2" type="button" data-bs-toggle="modal" data-bs-target="#authModal">Connexion</button>
+                <button class="btn btn-custom" type="button">FR</button>
+            </div>
+        </nav>
+        
+        <!-- Menu déroulant sous le bouton "Menu" -->
+        <div class="collapse" id="menuBar">
+            <div class="container py-2 d-flex justify-content-center">
+                <a href="forum.php" class="btn btn-light-custom mx-2">Forum</a>
+                <a href="watch2gather.php" class="btn btn-light-custom mx-2">Watch2Gather</a>
+                <a href="index.php?controleur=watchlist&methode=listerWatchList&id=1" class="btn btn-light-custom mx-2">WatchList</a>
+                                                                <!-- normelement c'est la var session id de l'user  -->
+                <a href="quizz.php" class="btn btn-light-custom mx-2">Quizz</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
+    <main class="flex-grow-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="footer-bg text-center text-light py-3 mt-auto">
+        <div class="container">
+            <!-- Liens de Navigation -->
+            <div class="footer-nav mb-3">
+                <a href="#" class="footer-link mx-2">Home</a>
+                <a href="#" class="footer-link mx-2">Experience</a>
+                <a href="#" class="footer-link mx-2">News</a>
+                <a href="#" class="footer-link mx-2">About us</a>
+                <a href="#" class="footer-link mx-2">Jobs</a>
+                <a href="#" class="footer-link mx-2">Contact</a>
+            </div>
+
+            <!-- Icônes des réseaux sociaux -->
+            <div class="footer-social mb-2">
+                <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
+                <a href="#"><i class="fab fa-twitter mx-2"></i></a>
+                <a href="#"><i class="fab fa-youtube mx-2"></i></a>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-copyright">
+                © Copyright 2019 - Lift Media
+            </div>
+        </div>
+    </footer>
+
+    {% block script %} {% endblock %}
+</body>
+</html>

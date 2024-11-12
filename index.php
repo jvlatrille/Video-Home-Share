@@ -4,6 +4,7 @@
 require_once 'include.php';
 
 
+
 try  {
     if (isset($_GET['controleur'])){
         $controllerName=$_GET['controleur'];
@@ -20,7 +21,7 @@ try  {
     //Gestion de la page d'accueil par défaut
     if ($controllerName == '' && $methode ==''){
         $controllerName='oa';
-        $methode='afficherFilms';
+        $methode='listerFilms';
     }
 
     if ($controllerName == '' ){
@@ -37,3 +38,4 @@ try  {
 }catch (Exception $e) {
    die('Erreur : ' . $e->getMessage());
 }
+

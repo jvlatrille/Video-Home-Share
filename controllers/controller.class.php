@@ -7,7 +7,7 @@ class Controller{
     private ?array $get = null;
     private ?array $post = null;
 
-    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) { // Corrected here
+    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
         $db = Bd::getInstance();
         $this->pdo = $db->getConnexion();
 
@@ -73,7 +73,7 @@ class Controller{
     /**
      * Get the value of twig
      */ 
-    public function getTwig(): \wig\Environment
+    public function getTwig(): \Twig\Environment
     {
         return $this->twig;
     }

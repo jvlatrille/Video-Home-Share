@@ -1,0 +1,55 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+	<title>Bienvenue sur
+		{{ constant("WEBSITE_TITLE") }}</title>
+
+	{% if oaListe is empty %}
+		<p>Aucun film pour l'instant</p>
+	{% else %}
+		<body class="container">
+			<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+
+				<div class="carousel-indicators">
+					{% for i in 0..(oaListe|length - 1) %}
+						<button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{ i }}" {% if i == 0 %} class="active" {% endif %} aria-label="Slide {{ i + 1 }}"></button>
+					{% endfor %}
+				</div>
+
+				<div class="carousel-inner">
+					{% for film in oaListe %}
+						<div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+							<svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveaspectratio="xMidYMid slice" focusable="false">
+								<title>{{ film.nom }}</title>
+								<rect width="100%" height="100%" fill="rgba(213, 208, 175, 1)"></rect>
+							</svg>
+							<div class="carousel-caption d-none d-md-block">
+								<a href="index.php?controleur=oa&methode=afficherFilm&id={{film.id}}">
+									<h5>{{ film.nom }}</h5>
+									<p>Note :
+										{{ film.note }}</p>
+									<p>Description :
+										{{ film.description }}</p>
+									<p>Date de sortie :
+										{{ film.dateSortie }}</p>
+									<p>Version originale :
+										{{ film.vo ? 'Oui' : 'Non' }}</p>
+								</a>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+			</div>
+		</body>
+	{% endif %}
+
+{% endblock %}

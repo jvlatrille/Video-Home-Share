@@ -16,8 +16,18 @@ require_once 'config/twig.php';
 //Ajout des contrôleurs
 require_once 'controllers/controller_factory.class.php';
 require_once 'controllers/controller.class.php';
+require_once 'controllers/controller_oa.class.php';
+require_once 'controllers/controller_index.class.php';
+require_once 'controllers/controller_watchlist.class.php';
+require_once 'controllers/controller_personne.class.php';
 
 
 
 // //Ajout des modèles
 require_once 'modeles/bd.class.php';
+require_once 'modeles/oa.class.php';
+require_once 'modeles/oa.dao.php';
+require_once 'modeles/watchlist.class.php';
+require_once 'modeles/watchlist.dao.php';
+require_once 'modeles/personne.class.php';
+require_once 'modeles/personne.dao.php';
