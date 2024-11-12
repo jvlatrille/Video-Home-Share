@@ -26,8 +26,4 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 //Ajout de l'extension d'internationalisation qui permet d'utiliser les filtres de date dans twig
 $twig->addExtension(new IntlExtension());
 
-$template = $twig->load('montemplate.html.twig');
-
-echo $template->render(array(
-    "machaine" => "Coucou"
-));
+$template = $twig->load('quizz_list.html.twig');
