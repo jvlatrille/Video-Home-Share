@@ -3,16 +3,9 @@
 // Ce ne sont que des exemples
 //Connexion à la base de donnée
 define('DB_HOST', 'lakartxela.iutbayonne.univ-pau.fr');
-define('DB_NAME', 'abaros_pro');
-define('DB_USER', 'abaros_pro');
-define('DB_PASS', 'abaros_pro');
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'vhs');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-
-
+define('DB_NAME', 'namrein_pro');
+define('DB_USER', 'namrein_pro');
+define('DB_PASS', 'namrein_pro');
 define('PREFIXE_TABLE', '');
 
 // Constante de la partie vue
