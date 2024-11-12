@@ -27,11 +27,124 @@ class ControllerWatchList extends Controller{
         //Recupere la watchlist
         $managerWatchList=New WatchListDao($this->getPdo());
         $watchList=$managerWatchList->find($id);
+        
+        //Recupere les oeuvres de la watchlist
+        $oas = $managerWatchList->afficherFilmsWatchlist($id);
+        
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
         
-        echo $template->render(['watchList'=>$watchList]);
+        echo $template->render(['watchList'=>$watchList, 'oas'=>$oas]);
 
     }
+
+    //Fonction pour lister toutes les watchlists visibles
+    public function listerWatchListVisible()
+    {
+        // Recupere toutes les watchlists visibles
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchListListe = $managerWatchList->findAllVisible(1); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        
+        // Generer la vue
+        $template = $this->getTwig()->load('watchlistsCommu.html.twig');
+        
+        echo $template->render(['watchListListe' => $watchListListe]);
+    }
+
+
+    //Fonction pour ajouter une watchlist
+    public function ajouterWatchList()
+    {
+        //Recupere les données du formulaire
+        $titre = isset($_POST['titre']) ? $_POST['titre'] : (isset($_GET['titre']) ? $_GET['titre'] : null);
+        $genre = isset($_POST['genre']) ? $_POST['genre'] : (isset($_GET['genre']) ? $_GET['genre'] : null);
+        $description = isset($_POST['description']) ? $_POST['description'] : (isset($_GET['description']) ? $_GET['description'] : null);
+        $visible = isset($_POST['visible']) ? $_POST['visible'] : (isset($_GET['visible']) ? $_GET['visible'] : null);
+        //Ajoute la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = new WatchList();
+        $watchList->setTitre($titre);
+        $watchList->setGenre($genre);
+        $watchList->setDescription($description);
+        $watchList->setVisible($visible);
+        //$watchList->setIdUtilisateur(1); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        $managerWatchList->creerWatchlist($watchList);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }    
+    
+    //Fonction pour modifier une watchlist
+    public function modifierWatchList()
+    {
+        //Recupere les données du formulaire
+        $id = isset($_POST['id']) ? $_POST['id'] : null;
+        $titre = isset($_POST['titre']) ? $_POST['titre'] : null;
+        $genre = isset($_POST['genre']) ? $_POST['genre'] : null;
+        $description = isset($_POST['description']) ? $_POST['description'] : null;
+        $visible = isset($_POST['visible']) ? $_POST['visible'] : null;
+        
+        //Modifie la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = new WatchList();
+        $watchList->setIdWatchList($id);
+        $watchList->setTitre($titre);
+        $watchList->setGenre($genre);
+        $watchList->setDescription($description);
+        $watchList->setVisible($visible);
+        $managerWatchList->modifierWatchlist($watchList);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }   
+
+    //Fonction pour supprimer une watchlist
+    public function supprimerWatchList()
+    {
+        //Recupere l'id de la watchlist
+        $idWatchList = isset($_GET['id']) ? $_GET['id'] : null;
+        $idUtilisateur = 1; //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        
+        //Supprime la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $managerWatchList->supprimerUneWatchlist($idWatchList, $idUtilisateur);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    }
+
+
+    //Fonction pour ajouter une oeuvre à une watchlist
+    public function ajouterOaWatchList()
+    {
+        //Recupere les données du formulaire
+        $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
+        $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : null;
+        
+        //Ajoute l'oeuvre à la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id='.$idWatchList);
+    }
+
+    //Fonction pour supprimer une oeuvre d'une watchlist
+    public function supprimerOaWatchList()
+    {
+        //Recupere les données du formulaire
+        $idWatchList = isset($_POST['id']) ? $_POST['id'] : (isset($_GET['id']) ? $_GET['id'] : null);
+        $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : (isset($_GET['idOeuvre']) ? $_GET['idOeuvre'] : null);
+        
+        //Supprime l'oeuvre de la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $managerWatchList->supprimerOA($idWatchList, $idOeuvre);
+        
+        //Redirige vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id='.$idWatchList);
+    }
+
+
+
 
 }
