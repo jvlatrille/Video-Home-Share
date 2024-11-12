@@ -1,0 +1,16 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+    <h1>Ma watchList</h1>
+    {% if watchList is not defined %}
+        <p>Aucune WatchList</p>
+    {% else %}
+    <!-- afficher les détail d'une watchlist-->
+    <h2>{{ watchList.titre }}</h2>
+    <p>{{ watchList.description }}</p>
+    <p>{{ watchList.genre }}</p>
+    <p>{{ watchList.visible}}</p>
+    
+    {% endif %}
+
+{% endblock %}
