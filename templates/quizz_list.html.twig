@@ -10,7 +10,7 @@
             <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-primary">Créer un quizz</a>
         </div>
 
-        <h2>Les quiz :</h2>
+        <h2>Les quizz :</h2>
 
         <div class="quiz-list">
             {% for quiz in quizzListe %}
@@ -18,7 +18,6 @@
                     <div>
                         <h4>{{ quiz.nom }}</h4>
                         <p>Thème : {{ quiz.theme }}</p>
-                        <small>Participants : {{ quiz.participantsActuels }}/{{ quiz.participantsMax }}</small>
                     </div>
                     <div>
                         <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quiz.idQuizz }}" class="btn btn-secondary">Rejoindre</a>
