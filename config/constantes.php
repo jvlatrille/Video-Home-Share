@@ -7,7 +7,7 @@ define('DB_NAME', 'namrein_pro');
 define('DB_USER', 'namrein_pro');
 define('DB_PASS', 'namrein_pro');
 
-define('PREFIXE_TABLE', 'vhs');
+define('PREFIXE_TABLE', 'vhs_');
 
 // Constante de la partie vue
 define('WEBSITE_TITLE', 'VHS - Video Home Share');

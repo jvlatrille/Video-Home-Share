@@ -1,0 +1,14 @@
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+<h1>Liste des utilisateurs</h1>
+<ul>
+    {% for utilisateur in utilisateurListe %}
+        <li>
+            {{ utilisateur.pseudo }} {{ utilisateur.photoProfil }} - {{ utilisateur.banniereProfil}} - {{ utilisateur.adressMail }} - {{ utilisateur.motDePasse }} - {{ utilisateur.role }}
+        </li>
+    {% else %}
+        <li>Aucun utilisateur trouvée.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
