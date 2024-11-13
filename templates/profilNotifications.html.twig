@@ -1,2 +1,48 @@
 {% extends 'base_template.html.twig' %}
-    {% block title %}Profil : Notification - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+    {% block title %}Profil : Notification - {{ constant('WEBSITE_TITLE')}} 
+    
+        
+        <!-- Liste des watchlists de l'utilisateur -->
+        {% if notificationsListe is not defined %}
+            <p>Aucune notification</p>
+        {% else %}
+            <div class="container">
+                <div class="row">
+                    {% for notification in notifListe %}
+                        <div class="col-4">
+                            <div class="card" style="width: 18rem;">
+                                
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ notification.nom }}</h5>
+                                    <p class="card-text">{{ watchList.description }}</p>
+                                    <a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
+            </div>
+
+        {% endif %}
+    
+    
+        <!-- Bouton pour supprimer -->
+		<div class="text-center">
+			<button type="submit" class="btn btn-primary">Supprimer une notification</button>
+		</div>
+    
+
+        <div class="modal-body">
+                <p>Nom : {{ oa.nom }}</p>
+                <p>Description : {{ oa.description }}</p>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=&methode=afficherFilm&id={{ oa.id }}'">Y aller</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&id={{ watchList.idWatchList }}&idOeuvre={{ oa.id }}'">Supprimer</button>
+        </div>
+    
+    
+    
+    
+    {% endblock %}

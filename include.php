@@ -20,6 +20,7 @@ require_once 'controllers/controller_oa.class.php';
 require_once 'controllers/controller_index.class.php';
 require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_personne.class.php';
+require_once 'controllers/controller_testNotif.class.php';
 
 
 
@@ -32,3 +33,5 @@ require_once 'modeles/watchlist.class.php';
 require_once 'modeles/watchlist.dao.php';
 require_once 'modeles/personne.class.php';
 require_once 'modeles/personne.dao.php';
+require_once 'modeles/notification.class.php';
+require_once 'modeles/notification.dao.php';
