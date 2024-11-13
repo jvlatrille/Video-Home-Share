@@ -9,13 +9,14 @@ class ControllerQuizz extends Controller {
     public function listerQuizz() {
         // Récupère tous les quizz
         $managerQuizz = new QuizzDao($this->getPdo());
-        $quizzListe = $managerQuizz->findAll();  // On peut filtrer par thème ou autre si nécessaire
+        $quizzListe = $managerQuizz->findAll();
         
         // Générer la vue
         $template = $this->getTwig()->load('quizz_list.html.twig');
         
         echo $template->render(['quizzListe' => $quizzListe]);
     }
+    
 
     // Fonction pour afficher un quizz spécifique
     public function afficherQuizz() {

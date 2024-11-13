@@ -5,17 +5,15 @@ class Quizz {
     private ?string $nom;
     private ?string $theme;
     private ?int $nbQuestion;
-    private ?int $difficulte;
-    private ?int $meilleurJ;
+    private ?string $difficulte;
 
     // Constructeur
-    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?int $difficulte, ?int $meilleurJ) {
+    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?string $difficulte) {
         $this->idQuizz = $idQuizz;
         $this->nom = $nom;
         $this->theme = $theme;
         $this->nbQuestion = $nbQuestion;
         $this->difficulte = $difficulte;
-        $this->meilleurJ = $meilleurJ;
     }
 
     // Getters et Setters
@@ -51,20 +49,12 @@ class Quizz {
         $this->nbQuestion = $nbQuestion;
     }
 
-    public function getDifficulte(): ?int {
+    public function getDifficulte(): ?string {
         return $this->difficulte;
     }
 
-    public function setDifficulte(?int $difficulte): void {
+    public function setDifficulte(?string $difficulte): void {
         $this->difficulte = $difficulte;
-    }
-
-    public function getMeilleurJ(): ?int {
-        return $this->meilleurJ;
-    }
-
-    public function setMeilleurJ(?int $meilleurJ): void {
-        $this->meilleurJ = $meilleurJ;
     }
 }
 ?>
