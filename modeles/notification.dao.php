@@ -28,7 +28,7 @@ class notificationDao{
     }
 
     //Méthode pour récupérer toutes les notifications d'une personne
-      public function findForPers(?string $dateNotif): ?Notification {
+    public function findForPers(?string $dateNotif): ?Notification {
       $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE  = :dateId";
       $pdoStatement = $this->pdo->prepare($sql);
       $pdoStatement->execute(array('idUsr' => $idUtilisateur));
@@ -37,6 +37,16 @@ class notificationDao{
       return $notifData ? $this->hydrate($notifData) : null;
     }
     
+    public function nbNotif(?string $dateNotif): ?Notification {
+        $sql = "SELECT COUNT * FROM ".PREFIXE_TABLE."notification WHERE dateNotif = :dateId";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array('dateId' => $dateNotif));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $notifData = $pdoStatement->fetch();   
+        return $notifData ? $this->hydrate($notifData) : null;
+    }
+
+
 
     public function hydrate($tableauAssoc) : ?Notification{
         $notif=new Notification();
