@@ -1,6 +1,15 @@
 <?php
 
+/**
+ * Une classe pour représenter les jeux de l'application
+ */
 class ControllerJeux extends Controller{
+	/**
+	 * Fonction qui permet de construire l'objet grâce au constructeur de son parent
+	 *
+	 * @param \Twig\Environment $twig 
+	 * @param \Twig\Loader\FilesystemLoader $loader 
+	 */
 	public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
 	{
 		parent::__construct($twig, $loader);
@@ -8,10 +17,15 @@ class ControllerJeux extends Controller{
 
 	public function afficher()
     {
-		// $template = $this->getTwig()->load("jeux.html.twig");
-    	// echo $template->render();
+		$template = $this->getTwig()->load("jeux.html.twig");
+    	echo $template->render();
 	}
 
+	/**
+	 * Fonction qui permet de d'afficher l'ensemble des jeux disponible
+	 *
+	 * @return void 
+	 */
 	public function listeTableau()
     {
 		echo "listerTableau jeux";
@@ -29,6 +43,11 @@ class ControllerJeux extends Controller{
 		));
 	}
 
+	/**
+	 * Fonction qui permet d'afficher un seul jeu en fonction de l'id choisi
+	 *
+	 * @return void
+	 */
 	public function lister(){
 		echo "lister jeux";
 
