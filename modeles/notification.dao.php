@@ -40,6 +40,7 @@ class notificationDao{
 
     public function hydrate($tableauAssoc) : ?Notification{
         $notif=new Notification();
+        $notif->setIdNotif($tableauAssoc['idNotif']);
         $notif->setDateNotif($tableauAssoc['dateNotif']);
         $notif->setType($tableauAssoc['type']);
         $notif->setDestinataire($tableauAssoc['destinataire']);
