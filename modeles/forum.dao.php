@@ -30,14 +30,14 @@ class forumDAO{
     //Méthode pour récupérer tout les forums
     public function findAll() {
         
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "forum";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);  
 
         $resultats = $pdoStatement->fetchAll();
 
-        // Appelle hydrateAll pour transformer tous les enregistrements en objets OA
+        // Appelle hydrateAll pour transformer tous les enregistrements en objets forum
         return $this->hydrateAll($resultats);
     }
     public function hydrate($tableauAssoc) : ?Forum{
