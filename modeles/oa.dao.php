@@ -50,7 +50,6 @@ class OADao{
         $oa->setDescription($tableauAssoc['description']);
         $oa->setDateSortie($tableauAssoc['dateSortie']);
         $oa->setVo($tableauAssoc['vo']);
-        $oa->setLimiteAge($tableauAssoc['limiteAge']);
         $oa->setDuree($tableauAssoc['duree']);
         return $oa;
     }
