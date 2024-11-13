@@ -6,6 +6,7 @@ class WatchList{
     private ?string $genre;
     private ?string $description;
     private ?bool $visible;
+    //private ?array $listeOeuvres;
 
     //Constructeur de la classe WatchList
     public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null){

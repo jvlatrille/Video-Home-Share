@@ -21,6 +21,10 @@ require_once 'controllers/controller_index.class.php';
 require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
+require_once 'controllers/controller_personne.class.php';
+
+
+
 
 // //Ajout des modèles
 require_once 'modeles/bd.class.php';
@@ -32,3 +36,6 @@ require_once 'modeles/quizz.class.php';
 require_once 'modeles/quizz.dao.php';
 require_once 'modeles/question.class.php';
 require_once 'modeles/question.dao.php';
+
+require_once 'modeles/personne.class.php';
+require_once 'modeles/personne.dao.php';
