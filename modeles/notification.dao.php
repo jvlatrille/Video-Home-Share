@@ -18,18 +18,18 @@ class notificationDao{
     }
 
     //Méthode pour récupérer une notification
-    public function find(?string $dateNotif): ?Notification {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE dateNotif = :dateId";
+    public function find(?string $idNotif): ?Notification {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :notificationId";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('dateId' => $dateNotif));
+        $pdoStatement->execute(array('notificationId' => $idNotif));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $notifData = $pdoStatement->fetch();   
         return $notifData ? $this->hydrate($notifData) : null;
     }
 
     //Méthode pour récupérer toutes les notifications d'une personne
-    public function findForPers(?string $dateNotif): ?Notification {
-      $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE  = :dateId";
+    public function findForPers(?string $idUtilisateur): ?Notification {
+      $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE  = :utilisateurId";
       $pdoStatement = $this->pdo->prepare($sql);
       $pdoStatement->execute(array('idUsr' => $idUtilisateur));
       $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -37,8 +37,9 @@ class notificationDao{
       return $notifData ? $this->hydrate($notifData) : null;
     }
     
-    public function nbNotif(?string $dateNotif): ?Notification {
-        $sql = "SELECT COUNT * FROM ".PREFIXE_TABLE."notification WHERE dateNotif = :dateId";
+    //Méthode pour calculer le nombre total de notification d'une personne
+    public function nbNotif(?string $idNotif): ?Notification {
+        $sql = "SELECT COUNT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('dateId' => $dateNotif));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -46,7 +47,25 @@ class notificationDao{
         return $notifData ? $this->hydrate($notifData) : null;
     }
 
+    //Méthode pour supprimer une notification
+    public function supprimerUneNotif(?string $idNotif): ?Notification {
+        $sql = "DELETE  FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array('dateId' => $idNotif));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $notifData = $pdoStatement->fetch();   
+        return $notifData ? $this->hydrate($notifData) : null;
+    }
 
+    //Méthode pour qu'une personne supprime toutes ses notifications
+    public function supprimerToutesLesNotifs(?string $idNotif): ?Notification {
+        $sql = "DELETE  FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(array('dateId' => $idNotif));
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $notifData = $pdoStatement->fetch();   
+        return $notifData ? $this->hydrate($notifData) : null;
+    }
 
     public function hydrate($tableauAssoc) : ?Notification{
         $notif=new Notification();
