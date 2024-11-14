@@ -6,15 +6,16 @@ class WatchList{
     private ?string $genre;
     private ?string $description;
     private ?bool $visible;
-    //private ?array $listeOeuvres;
+    private ?array $listeOeuvres;
 
     //Constructeur de la classe WatchList
-    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null){
+    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?array $listeOeuvres=null){
         $this->idWatchlist = $idWatchList;
         $this->titre = $titre;
         $this->genre = $genre;
         $this->description = $description;
         $this->visible = $visible;
+        $this->listeOeuvres = $listeOeuvres;
     }
 
     //Getters et setters de la classe WatchList
@@ -58,7 +59,24 @@ class WatchList{
         $this->visible = $visible;
     }
 
+    public function getListeOeuvres(): ?array{
+        return $this->listeOeuvres;
+    }
 
+    public function setListeOeuvres(?array $listeOeuvres): void{
+        $this->listeOeuvres = $listeOeuvres;
+    }
+
+    public function addOeuvre(OA $oa){
+        $this->listeOeuvres[] = $oa;
+    }
+
+    public function removeOeuvre(OA $oa){
+        $key = array_search($oa, $this->listeOeuvres);
+        if($key !== false){
+            unset($this->listeOeuvres[$key]);
+        }
+    }
     
 
 }
