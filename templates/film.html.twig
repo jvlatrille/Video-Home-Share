@@ -8,7 +8,52 @@
     <p>Note : {{ oa.note }}</p>
     <p>Description : {{ oa.description }}</p>
     <p>Date de sortie : {{ oa.dateSortie }}</p>
-    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+    <p>Version originale : {{ oa.vo }}</p>
+
+<!-- Bouton pour ouvrir la pop-up -->
+<div class="container text-center my-4">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
+        Ajouter l'oeuvre à une watchlist
+    </button>
+</div>
+
+<!-- Modal pour l'ajout de film à une watchlist -->
+<div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFilmModalLabel">Choisir dans quelle watchlist ajouter l'oeuvre</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulaire pour ajouter le film à une ou plusieurs watchlists -->
+                <form id="addFilmForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterOaWatchList">
+                    <input type="hidden" name="idOeuvre" value="{{ oa.id }}"> <!-- ID du film à ajouter -->
+
+                    <!-- Liste des watchlists avec cases à cocher -->
+                    {% if watchListListe is defined and watchListListe is not empty %}
+                        {% for watchlist in watchListListe %}
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
+                                    <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Aucune watchlist trouvée.</p>
+                    {% endif %}
+
+                    <!-- Bouton de soumission -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Ajouter à la watchlist</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% else %}
     <p>Le film n'existe pas</p>
 {% endif %}

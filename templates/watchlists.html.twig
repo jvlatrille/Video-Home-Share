@@ -1,26 +1,114 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<h1>Vos watchlist</h1>
-{% if watchListListe is not defined %}
-<p>Aucune WatchList</p>
-{% else %}
-<div class="container">
-    <div class="row">
-        {% for watchList in watchListListe %}
-        <div class="col-4">
-            <div class="card" style="width: 18rem;">
-                <img src="{{watchList.image}}" class="card-img-top" alt="{{watchList.nom}}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ watchList.nom }}</h5>
-                    <p class="card-text">{{ watchList.description }}</p>
-                    <a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
+	<h1>Vos watchlist</h1>
+	<!-- Bouton pour ouvrir la pop-up -->
+	<div class="container text-center my-4">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+			+
+		</button>
+	</div>
+
+	<!-- Modal de création de watchlist -->
+	<div class="modal fade" id="createWatchlistModal" tabindex="-1" aria-labelledby="createWatchlistModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="createWatchlistModalLabel">Créer une nouvelle Watchlist</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div
+					class="modal-body">
+					<!-- Formulaire de création de watchlist -->
+					<form id="createWatchlistForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterWatchList">
+						<div class="mb-3">
+							<label for="watchlistTitle" class="form-label">Titre :</label>
+							<input type="text" class="form-control" id="watchlistTitle" name="titre" required>
+						</div>
+						<div class="mb-3">
+							<label for="watchlistGenre" class="form-label">Genre :</label>
+							<input type="text" class="form-control" id="watchlistGenre" name="genre">
+						</div>
+						<div class="mb-3">
+							<label for="watchlistDescription" class="form-label">Description :</label>
+							<textarea class="form-control" id="watchlistDescription" name="description" rows="3"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+							<select class="form-select" id="watchlistVisibility" name="visible">
+								<option value="public">Publique</option>
+								<option value="private">Privée</option>
+							</select>
+						</div>
+
+						<!-- Champ de recherche pour ajouter des titres -->
+						<div class="input-group mb-3">
+							<input type="text" class="form-control" placeholder="Ajouter des titres" aria-label="Ajouter des titres" aria-describedby="search-button">
+							<button class="btn btn-outline-secondary" type="button" id="search-button">
+								<i class="bi bi-search"></i>
+								<!-- Icône de recherche (nécessite Bootstrap Icons) -->
+							</button>
+						</div>
+
+						<!-- Suggestions de titres -->
+						<div class="mb-3">
+							<label class="form-label">Suggestions :</label>
+							<div class="d-flex justify-content-start overflow-auto">
+								<div class="card me-2" style="width: 100px;">
+									<div class="card-body text-center">
+										<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
+										<p class="card-text mt-2">Titre 1</p>
+									</div>
+								</div>
+								<div class="card me-2" style="width: 100px;">
+									<div class="card-body text-center">
+										<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
+										<p class="card-text mt-2">Titre 2</p>
+									</div>
+								</div>
+								<div class="card me-2" style="width: 100px;">
+									<div class="card-body text-center">
+										<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
+										<p class="card-text mt-2">Titre 3</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Bouton de soumission -->
+						<div class="text-center">
+							<button type="submit" class="btn btn-primary">Créer une nouvelle watchlist</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Liste des watchlists de l'utilisateur -->
+	{% if watchListListe is not defined %}
+		<p>Aucune WatchList</p>
+	{% else %}
+		<div class="container">
+			<div class="row">
+				{% for watchList in watchListListe %}
+					<div class="col-4">
+						<div class="card" style="width: 18rem;">
+							<img src="{{watchList.image}}" class="card-img-top" alt="{{watchList.nom}}">
+							<div class="card-body">
+								<h5 class="card-title">{{ watchList.nom }}</h5>
+								<p class="card-text">{{ watchList.description }}</p>
+								<a href="index.php?controleur=watchlist&methode=afficherWatchList&id={{watchList.idWatchList}}" class="btn btn-primary">Voir la WatchList</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="text-center mt-4">
+			<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
+		</div>
+
+	{% endif %}
 
 {% endblock %}
