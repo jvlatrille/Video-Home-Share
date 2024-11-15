@@ -1,10 +1,31 @@
 <?php
+
+/**
+ * @file controller_watchlist.class.php
+ * @author Thibault CHIPY 
+ * @brief Controleur des watchlists 
+ * 
+ * @version 2.0
+ * @date 14/11/2024
+ */
 class ControllerWatchList extends Controller{
+
+    /**
+     * @brief Constructeur de la classe ControllerWatchList
+     *
+     * @param \Twig\Environment $twig Envrironnement twig
+     * @param \Twig\Loader\FilesystemLoader $loader loader de fichiers twig
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
     }
 
+    /**
+     * @brief Methode pour lister les watchlists de l'utilisateur
+     *
+     * @return void
+     */
     //Fonction pour lister les watchlists d'un utilisateur
     public function listerWatchList()
     {
@@ -19,6 +40,11 @@ class ControllerWatchList extends Controller{
         echo $template->render(['watchListListe' => $watchListListe]);
     }        
 
+    /**
+     * @brief Methode pour afficher une Watchlist et ses oeuvres
+     *
+     * @return void
+     */
     //Fonction pour afficher une watchlist
     public function afficherWatchList()
     {
@@ -38,6 +64,11 @@ class ControllerWatchList extends Controller{
 
     }
 
+    /**
+     * @brief Methode pour lister toutes les watchlists visibles
+     *
+     * @return void
+     */
     //Fonction pour lister toutes les watchlists visibles
     public function listerWatchListVisible()
     {
@@ -50,11 +81,12 @@ class ControllerWatchList extends Controller{
         echo $template->render(['watchListListe' => $watchListListe]);
     }
 
-
-    
-
-
-    //Fonction pour ajouter une watchlist
+    //Fonction pour ajouter une Watchlist
+    /**
+     * @brief Methode pour ajouter une watchlist à l'utilisateur
+     *@bug La fonction ne fonctionne pas, elle n'insert pas les données dans la base de données
+     * @return void
+     */
     public function ajouterWatchList()
     {
         //Recupere les données du formulaire
@@ -76,7 +108,12 @@ class ControllerWatchList extends Controller{
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
     }    
     
-    //Fonction pour modifier une watchlist
+    //Fonction pour modifier une Watchlist
+    /**
+     * @brief Methode pour modifier une Watchlist
+     *@remark peut etre pas utile car nous ne proposons pas de fonctionnalité de modification de watchlist
+     * @return void
+     */
     public function modifierWatchList()
     {
         //Recupere les données du formulaire
@@ -100,7 +137,12 @@ class ControllerWatchList extends Controller{
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
     }   
 
+
     //Fonction pour supprimer une watchlist
+    /**
+     * @brief Methode pour supprimer une Watchlist
+     * @return void
+     */
     public function supprimerWatchList()
     {
         //Recupere l'id de la watchlist
@@ -117,6 +159,11 @@ class ControllerWatchList extends Controller{
 
 
     //Fonction pour ajouter une oeuvre à une watchlist
+    /**
+     * @brief Methode pour ajouter une oeuvre OA à une Watchlist
+     *
+     * @return void
+     */
     public function ajouterOaWatchList()
     {
         //Recupere les données du formulaire
@@ -132,6 +179,11 @@ class ControllerWatchList extends Controller{
     }
 
     //Fonction pour supprimer une oeuvre d'une watchlist
+    /**
+     * @brief Methode pour supprimer une oeuvre OA d'une Watchlist
+     *
+     * @return void
+     */
     public function supprimerOaWatchList()
     {
         //Recupere les données du formulaire
