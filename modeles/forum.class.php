@@ -17,10 +17,10 @@
     //Getters et setters de la classe notification
 
     public function getIdForum(): ?int{
-        return $this->idforum;
+        return $this->idForum;
     }
 
-    public function setidForum(?int $intForum): void{
+    public function setIdForum(?int $idForum): void{
         $this->idForum = $idForum;
     }
 
@@ -36,7 +36,7 @@
         return $this->description;
     }
 
-    public function setDateNotif(?string $description): void{
+    public function setDescription(?string $description): void{
         $this->description = $description;
     }
 

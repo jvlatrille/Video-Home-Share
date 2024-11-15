@@ -17,8 +17,8 @@ class forumDAO{
     }
 
     //Méthode pour récupérer un forum
-    public function find(?int $idForum): ?Forum {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."forum WHERE idForum = :id";
+    public function listeForum(?int $idForum): ?Forum {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."forum";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idForum' => $idForum));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -42,7 +42,7 @@ class forumDAO{
     }
     public function hydrate($tableauAssoc) : ?Forum{
         $forum=new Forum();
-        $forum->setId($tableauAssoc['idForum']);
+        $forum->setIdForum($tableauAssoc['idForum']);
         $forum->setNom($tableauAssoc['nom']);
         $forum->setDescription($tableauAssoc['description']);
         $forum->setTheme($tableauAssoc['theme']);
