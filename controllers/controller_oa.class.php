@@ -8,14 +8,14 @@ class ControllerOA extends Controller
     }
 
 /////////////////////////////////////////  
-// La fonction afficherFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des films.
+// La fonction afficherFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
 /////////////////////////////////////////
 
     public function listerFilms()
     {
         // Recupere tous les films
         $managerOA = new OADao($this->getPdo());
-        $oaListe = $managerOA->findAll();
+        $oaListe = $managerOA->findMeilleurNote();
  
         
         // Generer la vue
