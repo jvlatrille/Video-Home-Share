@@ -2,6 +2,7 @@
 
 /**
  * @file oa.dao.php
+ * @author Thibault CHIPY
  * @brief Classe OADao pour accéder à la base de données
  * @details Cette classe permet de gérer les oeuvres audiovisuelles en base de données 
  * 
