@@ -12,7 +12,7 @@ class ControllerQuizz extends Controller {
         $quizzListe = $managerQuizz->findAll();
         
         // Générer la vue
-        $template = $this->getTwig()->load('quizz_list.html.twig');
+        $template = $this->getTwig()->load('listQuizzs.html.twig');
         
         echo $template->render(['quizzListe' => $quizzListe]);
     }
@@ -27,7 +27,7 @@ class ControllerQuizz extends Controller {
         $quizz = $managerQuizz->find($id);
 
         // Générer la vue
-        $template = $this->getTwig()->load('quizz.html.twig');
+        $template = $this->getTwig()->load('Unquizz.html.twig');
         
         echo $template->render(['quizz' => $quizz]);
     }

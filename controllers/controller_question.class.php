@@ -28,7 +28,7 @@ class ControllerQuestion extends Controller {
         $question = $managerQuestion->find($id);
         
         // Générer la vue
-        $template = $this->getTwig()->load('question.html.twig');
+        $template = $this->getTwig()->load('uneQuestion.html.twig');
         
         echo $template->render(['question' => $question]);
     }
