@@ -1,0 +1,19 @@
+{% extends 'base_template.html.twig' %}
+    {% block title %}Liste de Jeux - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+
+    {% block content %}
+        {% for jeu in jeux %}
+
+            <div class="column-3">
+                <div class="card" style="width: 18rem;">
+                    <img src="" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{jeu.nom}}</h5>
+                        <p class="card-text">{{jeu.regle}}</p>
+                        <a href="index.php?controleur=jeux&methode=lister&id={{jeu.idJeux}}" class="btn btn-primary">{{jeu.idJeux}}</a>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    {% endblock %}
