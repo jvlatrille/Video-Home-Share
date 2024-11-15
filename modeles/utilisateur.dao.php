@@ -36,13 +36,13 @@ class UtilisateurDao
     }
 
     // Récupérer toutes les utilisateurs
-    public function findAll(): ?Utilisateur {
+    public function findAll(): array {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $utilisateur = $pdoStatement->fetchAll();
-        return $utilisateur ? $this->hydrateAll($utilisateur) : null;
+        return $this->hydrateAll($utilisateur);
     }
 
     // Hydrate un utilisateur à partir d'un tableau associatif

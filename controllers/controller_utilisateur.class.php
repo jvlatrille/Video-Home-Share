@@ -1,6 +1,6 @@
 <?php
 
-class ContollerUtilisateur extends Controller
+class ControllerUtilisateur extends Controller
 {
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
@@ -8,7 +8,7 @@ class ContollerUtilisateur extends Controller
     }
 
     // Afficher tous les utilisateurs
-    public function AllUtilisateur()
+    public function AllUtilisateurs()
     {
         // Récupère toutes les utilisateur
         $managerUtilisateur = new UtilisateurDAO($this->getPdo());
@@ -26,10 +26,10 @@ class ContollerUtilisateur extends Controller
 
         // Récupère l'utilisateur'
         $managerUtilisateur = new UtilisateurDAO($this->getPdo());
-        $utilisateur = $managerUtilisateur->find($id);
+        $unUtilisateur = $managerUtilisateur->find($id);
 
         // Génère la vue
         $template = $this->getTwig()->load('utilisateur_detail.html.twig');
-        echo $template->render(['utilisateur' => $utilisateur]);
+        echo $template->render(['utilisateur' => $unUtilisateur]);
     }
 }

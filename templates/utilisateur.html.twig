@@ -5,7 +5,8 @@
 <ul>
     {% for utilisateur in utilisateurListe %}
         <li>
-            {{ utilisateur.pseudo }} {{ utilisateur.photoProfil }} - {{ utilisateur.banniereProfil}} - {{ utilisateur.adressMail }} - {{ utilisateur.motDePasse }} - {{ utilisateur.role }}
+            {{ utilisateur.pseudo }} {{ utilisateur.photoProfil }} - {{ utilisateur.banniereProfil}} - {{ utilisateur.adressMail }} - {{ utilisateur.role }}
+            <a href="index.php?controleur=utilisateur&methode=afficherUtilisateur&id={{utilisateur.idUtilisateur}}" class="btn btn-light-custom mx-2">utilisateur</a>
         </li>
     {% else %}
         <li>Aucun utilisateur trouvée.</li>
