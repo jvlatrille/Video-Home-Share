@@ -1,2 +1,30 @@
 {% extends 'base_template.html.twig' %}
-    {% block title %}Forums - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+    {% block content %}
+    <h1>Liste des forums</h1>
+
+    <!-- Liste des forums -->
+	{% if forumListe is not defined %}
+		<p>Aucun forum</p>
+	{% else %}
+		<div class="container">
+			<div class="row">
+				{% for forumList in forumListe %}
+					<div class="col-4">
+						<div class="card" style="width: 18rem;">
+							<div class="card-body">
+								<h5 class="card-title">{{ forumListe.nom }}</h5>
+								<p class="card-text">{{ forumListe.description }}</p>
+								<a href="index.php?controleur=forum&methode=afficherForum&id={{forumList.idForum}}" class="btn btn-primary">Voir le forum</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="text-center mt-4">
+			<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les forums</a>
+		</div>
+    
+    {% endif %}
+    
+

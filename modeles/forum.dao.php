@@ -44,8 +44,8 @@ class forumDAO{
         $forum=new Forum();
         $forum->setId($tableauAssoc['idForum']);
         $forum->setNom($tableauAssoc['nom']);
-        $forum->setNote($tableauAssoc['description']);
-        $forum->setType($tableauAssoc['theme']);
+        $forum->setDescription($tableauAssoc['description']);
+        $forum->setTheme($tableauAssoc['theme']);
         return $forum;
     }
 
@@ -57,13 +57,6 @@ class forumDAO{
         
         return $forumListe;
     }
-    
-
-
-
-
-
-
 
 }
 ?>
