@@ -26,12 +26,20 @@ class OADao{
         return $oaData ? $this->hydrate($oaData) : null;
     }
     
-    
+    //Fonction pour afficher sur la page d'acceuil les 10 OA les mieux notées
+    public function findMeilleurNote(): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."oa ORDER BY note DESC LIMIT 10";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute();
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultats = $pdoStatement->fetchAll();
+        return $this->hydrateAll($resultats);
+    }
 
     //Méthode pour récupérer toutes les oeuvres audiovisuelles
     public function findAll() {
         
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa";
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa limit 10";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);  
