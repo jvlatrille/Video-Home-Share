@@ -203,6 +203,7 @@ class WatchListDao {
      *
      * @param WatchList $watchlist la Watchlist à créer
      * @return WatchList|null la Watchlist créée ou null si erreur
+     * @bug la fonction ne créer pas la watchlist 
      */
     public function creerWatchlist(WatchList $watchlist): ?WatchList {
         $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
