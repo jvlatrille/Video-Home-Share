@@ -1,31 +1,32 @@
 {% extends 'base_template.html.twig' %}
-    {% block content %}
+{% block content %}
     <h1>Liste des forums</h1>
-
-    <!-- Liste des forums -->
-	{% if forumListe is not defined %}
-		<p>Aucun forum</p>
-	{% else %}
-		<div class="container">
-			<div class="row">
-				{% for forumList in forumListe %}
-					<div class="col-4">
-						<div class="card" style="width: 18rem;">
-							<div class="card-body">
-								<h5 class="card-title">{{ forumListe.nom }}</h5>
-								<p class="card-text">{{ forumListe.description }}</p>
-								<a href="index.php?controleur=forum&methode=afficherForum&id={{forumList.idForum}}" class="btn btn-primary">Voir le forum</a>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-		<div class="text-center mt-4">
-			<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les forums</a>
-		</div>
-    
+    {% if forumListe is not defined %}
+        <p>Aucun forum</p>
+    {% else %}
+        <div class="container">
+            {% for forumList in forumListe %}
+                <div class="card mb-3" style="background-color: #D2B48C;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">{{ forumList.nom }}</h5>
+                            </div>
+                            <div class="col-4 text-end">
+                                <a href="index.php?controleur=forum&methode=afficherForum&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col">
+                                <p class="card-text">{{ forumList.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4 mb-3">
+            <a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les forums</a>
+        </div>
     {% endif %}
-    
-
 {% endblock %}
