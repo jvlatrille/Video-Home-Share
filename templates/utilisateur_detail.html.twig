@@ -1,0 +1,12 @@
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+<h1>Un utilisateur</h1>
+<ul>
+    {% if utilisateur %}
+        {{ utilisateur.pseudo }} {{ utilisateur.photoProfil }} - {{ utilisateur.banniereProfil}} - {{ utilisateur.adressMail }} - {{ utilisateur.role }}
+    {% else %}
+        <li>Aucun utilisateur trouvée.</li>
+    {% endif %}
+</ul>
+{% endblock %}
