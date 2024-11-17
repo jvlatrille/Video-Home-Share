@@ -2,11 +2,11 @@
 
 /**
  * @file personne.dao.php
- * @author 
+ * @author VINET LATRILLE Jules
  * @brief Classe PersonneDAO pour accéder à la base de données
  * @details Cette classe permet de gérer les personnes en base de données
  * @version 1.0
- * @date 
+ * @date 17/11/2024
  */
 
 class PersonneDAO
@@ -74,8 +74,7 @@ class PersonneDAO
 
         $resultats = $pdoStatement->fetchAll();
 
-        // Si tu veux déboguer, tu peux utiliser var_dump ou logger ici au lieu d'utiliser exit
-        // Exemple de débogage conditionnel :
+        // Si tu veux déboguer, tu peux utiliser var_dump ou logger ici
         if (empty($resultats)) {
             error_log("Aucun résultat trouvé pour la table personne.");
         }
@@ -83,25 +82,20 @@ class PersonneDAO
         return $this->hydrateAll($resultats);
     }
 
-
-
-
     /**
      * @brief Hydrater un tableau associatif en objet Personne
      * @param array $tableauAssoc Tableau associatif contenant les données d'une personne
      * @return Personne|null Objet Personne ou null
      */
-    private function hydrate(array $tableauAssoc): ?Personne {
+    private function hydrate(array $tableauAssoc): ?Personne
+    {
         $personne = new Personne();
         $personne->setIdPersonne($tableauAssoc['IdPersonne'] ?? null); // Gérer les clés manquantes
         $personne->setNom($tableauAssoc['nom'] ?? null);
         $personne->setPrenom($tableauAssoc['prenom'] ?? null);
         $personne->setDateNaiss($tableauAssoc['dateNaiss'] ?? null);
-        $personne->setGenre($tableauAssoc['genre'] ?? null); // Ajouté pour éviter les warnings
         return $personne;
     }
-    
-
 
     /**
      * @brief Hydrater une liste de tableaux associatifs en tableau d'objets Personne
@@ -124,12 +118,11 @@ class PersonneDAO
      */
     public function ajouterPersonne(Personne $personne): bool
     {
-        $sql = 'INSERT INTO ' . PREFIXE_TABLE . 'personne (nom, prenom, dateNaiss, genre) VALUES (:nom, :prenom, :dateNaiss, :genre)';
+        $sql = 'INSERT INTO ' . PREFIXE_TABLE . 'personne (nom, prenom, dateNaiss) VALUES (:nom, :prenom, :dateNaiss)';
         $query = $this->pdo->prepare($sql);
         $query->bindValue(':nom', $personne->getNom());
         $query->bindValue(':prenom', $personne->getPrenom());
         $query->bindValue(':dateNaiss', $personne->getDateNaiss());
-        $query->bindValue(':genre', $personne->getGenre());
         return $query->execute();
     }
 
@@ -140,12 +133,11 @@ class PersonneDAO
      */
     public function mettreAJourPersonne(Personne $personne): bool
     {
-        $sql = 'UPDATE ' . PREFIXE_TABLE . 'personne SET nom = :nom, prenom = :prenom, dateNaiss = :dateNaiss, genre = :genre WHERE idPersonne = :idPersonne';
+        $sql = 'UPDATE ' . PREFIXE_TABLE . 'personne SET nom = :nom, prenom = :prenom, dateNaiss = :dateNaiss WHERE idPersonne = :idPersonne';
         $query = $this->pdo->prepare($sql);
         $query->bindValue(':nom', $personne->getNom());
         $query->bindValue(':prenom', $personne->getPrenom());
         $query->bindValue(':dateNaiss', $personne->getDateNaiss());
-        $query->bindValue(':genre', $personne->getGenre());
         $query->bindValue(':idPersonne', $personne->getIdPersonne());
         return $query->execute();
     }

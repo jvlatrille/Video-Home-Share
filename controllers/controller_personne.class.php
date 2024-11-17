@@ -2,11 +2,11 @@
 
 /**
  * @file controller_personne.class.php
- * @author 
+ * @author VINET LATRILLE Jules
  * @brief Contrôleur pour gérer les actions liées aux Personnes
  * @details Ce contrôleur permet de lister les personnes et d'afficher les détails d'une personne spécifique.
  * @version 1.0
- * @date 
+ * @date 17/11/2024
  */
 
 class ControllerPersonne extends Controller
@@ -44,7 +44,6 @@ class ControllerPersonne extends Controller
             'page' => $page,
         ]);
     }
-
 
     /**
      * @brief Affiche les détails d'une personne
