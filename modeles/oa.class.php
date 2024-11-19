@@ -56,7 +56,6 @@ class OA{
      * @param string|null $vo : version originale de l'oeuvre audiovisuelle
      * @param int|null $duree : durée de l'oeuvre audiovisuelle
      */
-
     public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $duree=null){
         $this->id = $id;
         $this->nom = $nom;
@@ -197,6 +196,7 @@ class OA{
     public function setVo(?string $vo): void{
         $this->vo = $vo;
     }
+
 
     /**
      * @brief Retourne la durée de l'oeuvre audiovisuelle OA

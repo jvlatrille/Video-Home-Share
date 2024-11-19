@@ -1,2 +1,25 @@
 {% extends 'base_template.html.twig' %}
-    {% block title %}Quizz - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="text-center mb-4">
+            <h1>{{ quizz.nom }}</h1>
+            <p><strong>Thème :</strong> {{ quizz.theme }}</p>
+            <p><strong>Difficulté :</strong> {{ quizz.difficulte }}</p>
+            <p><strong>Nombre de questions :</strong> {{ quizz.nbQuestion }}</p>
+            {% if quizz.meilleurJ %}
+                <p><strong>Meilleur joueur :</strong> {{ quizz.meilleurJ }}</p>
+            {% else %}
+                <p><strong>Aucun meilleur joueur enregistré.</strong                ></p>
+            {% endif %}
+        </div>
+        
+         <div>
+                        <a href="index.php?controleur=question&methode=afficherQuestion&id=1" class="btn btn-secondary">Lancer le quizz</a>
+        </div>
+
+        <div class="text-center mt-4  mb-4">
+            <a href="index.php?controleur=Quizz&methode=listerQuizz " class="btn btn-primary">Retour à la liste des quizz</a>
+        </div>
+    </div>
+{% endblock %}
