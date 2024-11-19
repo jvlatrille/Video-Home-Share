@@ -203,6 +203,7 @@ class OA{
      *
      * @return integer|null durée de l'oeuvre audiovisuelle
      */
+
     public function getDuree(): ?int{
         return $this->duree;
     }

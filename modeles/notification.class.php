@@ -2,16 +2,16 @@
 
 class Notification{
     //Attributs d'une notification
+    private ?int $idNotif;
     private ?string $dateNotif;
-    private ?string $type;
     private ?string $destinataire;
     private ?string $contenu;
     private ?bool $vu;
 
     //Constructeur de la classe Notification
-    public function __construct(?string $dateNotif=null, ?string $type=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null){
+    public function __construct(?int $idNotif=null, ?string $dateNotif=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null){
+        $this->idNotif=$idNotif;
         $this->dateNotif = $dateNotif;
-        $this->type = $type;
         $this->destinataire = $destinataire;
         $this->contenu = $contenu;
         $this->vu = $vu;
@@ -20,20 +20,20 @@ class Notification{
 
     
     //Getters et setters de la classe Notification
+    public function getIdNotif(): ?string{
+        return $this->idNotif;
+    }
+
+    public function setIdNotif(?string $idNotif): void{
+        $this->idNotif = $idNotif;
+    }
+
     public function getDateNotif(): ?string{
         return $this->dateNotif;
     }
 
     public function setDateNotif(?string $dateNotif): void{
         $this->dateNotif = $dateNotif;
-    }
-
-    public function getType(): ?string{
-        return $this->type;
-    }
-
-    public function setType(?string $type): void{
-        $this->type = $type;
     }
 
     public function getDestinataire(): ?string{
@@ -57,7 +57,7 @@ class Notification{
     }
 
     public function setVu(?bool $vu): void{
-        $this->bool = $bool;
+        $this->vu = $vu;
     }  
 
 }
