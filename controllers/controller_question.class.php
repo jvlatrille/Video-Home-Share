@@ -8,29 +8,32 @@ class ControllerQuestion extends Controller {
     // Fonction pour lister toutes les questions d'un quizz
     public function listerQuestion() {
         $idQuizz = isset($_GET['idQuizz']) ? $_GET['idQuizz'] : null;
-        
+
         // Récupère toutes les questions du quizz
         $managerQuestion = new QuestionDao($this->getPdo());
-        $questionListe = $managerQuestion->findAll($idQuizz);  // Lister les questions par quizz
-        
+        $questionListe = $managerQuestion->findAll($idQuizz);
+
         // Générer la vue
         $template = $this->getTwig()->load('questions_list.html.twig');
-        
         echo $template->render(['questionListe' => $questionListe]);
     }
 
     // Fonction pour afficher une question spécifique
     public function afficherQuestion() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
+
         // Récupère la question
         $managerQuestion = new QuestionDao($this->getPdo());
         $question = $managerQuestion->find($id);
-        
+
         // Générer la vue
         $template = $this->getTwig()->load('uneQuestion.html.twig');
-        
-        echo $template->render(['question' => $question]);
+        echo $template->render([
+            'question' => $question,
+            'mauvaiseReponse1' => $question->getMauvaiseReponse1(),
+            'mauvaiseReponse2' => $question->getMauvaiseReponse2(),
+            'mauvaiseReponse3' => $question->getMauvaiseReponse3(),
+        ]);
     }
 
     // Fonction pour ajouter une question à un quizz
@@ -40,12 +43,25 @@ class ControllerQuestion extends Controller {
             $contenu = $_POST['contenu'] ?? '';
             $numero = $_POST['numero'] ?? 1;
             $nvDifficulte = $_POST['nvDifficulte'] ?? 1;
-            $bonneReponse = $_POST['bonneReponse'] ?? 1;
+            $bonneReponse = $_POST['bonneReponse'] ?? '';
+            $cheminImage = $_POST['cheminImage'] ?? '';
+            $mauvaiseReponse1 = $_POST['mauvaiseReponse1'] ?? '';
+            $mauvaiseReponse2 = $_POST['mauvaiseReponse2'] ?? '';
+            $mauvaiseReponse3 = $_POST['mauvaiseReponse3'] ?? '';
             $idQuizz = $_POST['idQuizz'] ?? null;
-            
+
             // Crée une nouvelle question
-            $question = new Question(null, $contenu, $numero, $nvDifficulte, $bonneReponse);
-            
+            $question = new Question(
+                null, 
+                $contenu, 
+                $numero, 
+                $nvDifficulte, 
+                $bonneReponse, 
+                $mauvaiseReponse1, 
+                $mauvaiseReponse2, 
+                $mauvaiseReponse3
+            );
+
             // Ajoute la question dans la base de données
             $managerQuestion = new QuestionDao($this->getPdo());
             if ($managerQuestion->add($question, $idQuizz)) {
@@ -66,7 +82,7 @@ class ControllerQuestion extends Controller {
     // Fonction pour modifier une question
     public function modifierQuestion() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
+
         // Récupère la question
         $managerQuestion = new QuestionDao($this->getPdo());
         $question = $managerQuestion->find($id);
@@ -77,12 +93,20 @@ class ControllerQuestion extends Controller {
             $numero = $_POST['numero'] ?? $question->getNumero();
             $nvDifficulte = $_POST['nvDifficulte'] ?? $question->getNvDifficulte();
             $bonneReponse = $_POST['bonneReponse'] ?? $question->getBonneReponse();
-            
+            $bonneReponse = $_POST['cheminImage'] ?? $question->getcheminImage();
+            $mauvaiseReponse1 = $_POST['mauvaiseReponse1'] ?? $question->getMauvaiseReponse1();
+            $mauvaiseReponse2 = $_POST['mauvaiseReponse2'] ?? $question->getMauvaiseReponse2();
+            $mauvaiseReponse3 = $_POST['mauvaiseReponse3'] ?? $question->getMauvaiseReponse3();
+
             // Met à jour l'objet Question
             $question->setContenu($contenu);
             $question->setNumero($numero);
             $question->setNvDifficulte($nvDifficulte);
             $question->setBonneReponse($bonneReponse);
+            $question->setcheminImage($cheminImage);
+            $question->setMauvaiseReponse1($mauvaiseReponse1);
+            $question->setMauvaiseReponse2($mauvaiseReponse2);
+            $question->setMauvaiseReponse3($mauvaiseReponse3);
 
             // Met à jour la question dans la base de données
             if ($managerQuestion->update($question)) {
@@ -103,7 +127,7 @@ class ControllerQuestion extends Controller {
     // Fonction pour supprimer une question
     public function supprimerQuestion() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
+
         // Supprime la question
         $managerQuestion = new QuestionDao($this->getPdo());
         if ($managerQuestion->delete($id)) {

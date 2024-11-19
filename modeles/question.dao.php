@@ -3,6 +3,23 @@
 class QuestionDao {
     private ?PDO $pdo;
 
+    // Constructeur pour initialiser la connexion PDO
+    public function __construct(?PDO $pdo = null) {
+        // Si l'objet PDO n'est pas fourni, on essaie de créer une nouvelle connexion PDO
+        if ($pdo === null) {
+            try {
+                $this->pdo = new PDO('mysql:host=localhost;dbname=nom_de_base_de_donnees', 'utilisateur', 'mot_de_passe');
+ 
+                $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                // Gestion des erreurs de connexion
+                die("Erreur de connexion à la base de données : " . $e->getMessage());
+            }
+        } else {
+            $this->pdo = $pdo;
+        }
+    }
+
     // Getters et setters
     public function getPdo(): ?PDO {
         return $this->pdo;
@@ -14,56 +31,53 @@ class QuestionDao {
 
     // Fonction pour afficher une question
     public function find(int $id): ?question {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q
-        WHERE q.idQuestion = :id";
-
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q WHERE q.idQuestion = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('id' => $id));    
+        $pdoStatement->execute(['id' => $id]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);  
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
         if (!$resultat) {
-            // Si aucun résultat n'est trouvé
+            // Si aucune question n'est trouvée
             var_dump("Aucune question trouvée.");
             return null;
         }
 
         // Hydrate l'objet question avec les données récupérées
-        $question = $this->hydrate($resultat);
-        return $question;
+        return $this->hydrate($resultat);
     }
 
     // Fonction pour afficher toutes les questions d'un quizz
     public function findAll(int $idQuizz): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q
-        WHERE q.idQuizz = :id";
-
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q WHERE q.idQuizz = :id";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('id' => $idQuizz));    
+        $pdoStatement->execute(['id' => $idQuizz]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);  
+        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$resultats) {
-            // Si aucun résultat n'est trouvé
+            // Si aucune question n'est trouvée pour ce quizz
             var_dump("Aucune question trouvée pour ce quizz.");
             return null;
         }
 
         // Hydrate toutes les questions récupérées
-        $questions = $this->hydrateAll($resultats);
-        return $questions;
+        return $this->hydrateAll($resultats);
     }
 
     // Fonction pour hydrater une seule question
     public function hydrate(array $data): ?question {
-        $question = new question(
+        return new question(
             $data['idQuestion'],  // idQuestion
             $data['contenu'],     // contenu
-            $data['numero'],      // numero
+            $data['numero'],      // numéro
             $data['nvDifficulte'],// niveau de difficulté
-            $data['bonneReponse'] // bonneReponse
+            $data['bonneReponse'], // bonne réponse
+            $data['cheminImage'],
+            $data['mauvaiseReponse1'],
+            $data['mauvaiseReponse2'],
+            $data['mauvaiseReponse3']
         );
-        return $question;
     }
 
     // Fonction pour hydrater un tableau de questions
@@ -75,4 +89,5 @@ class QuestionDao {
         return $questions;
     }
 }
+
 ?>
