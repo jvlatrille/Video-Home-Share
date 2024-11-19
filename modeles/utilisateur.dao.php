@@ -66,4 +66,26 @@ class UtilisateurDao
         }
         return $utilisateurListe;
     }
+
+    //Changer un pseudo
+    public function changerPseudo(?int $id, ?string $newPseudo): bool{
+        $sql = "UPDATE vhs_utilisateur
+                SET pseudo = :pseudo
+                WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['pseudo' => $newPseudo, 'id' => $id]);
+
+        return $reussite;
+    }
+
+        //Changer un pseudo
+        public function changerMail(?int $id, ?string $newMail): bool{
+            $sql = "UPDATE vhs_utilisateur
+                    SET adressMail = :mail
+                    WHERE idUtilisateur = :id"; 
+            $pdoStatement = $this->pdo->prepare($sql);
+            $reussite = $pdoStatement->execute(['mail' => $newMail, 'id' => $id]);
+    
+            return $reussite;
+        }
 }
