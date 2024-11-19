@@ -12,14 +12,14 @@
 
     
     {# {% if notifListe is not defined %}
-        auoer
-    {% else %} #}
+        
+    {% else %} 
         <li>
             {{ notifs.id }} - {{ notifs.dateNotif }} - {{ notifs.destinataire}} - {{ notifs.contenu }} - {{ notifs.vu }}
         </li>
-    {# {% endif %} #}
+    {% endif %} #}
 
-    {# <!-- Liste des notifications de l'utilisateur -->
+    <!-- Liste des notifications de l'utilisateur -->
     {% if notifListe is not defined  %} <!--or notifListe is empty-->
         <div class="container mt-4">
             <p>Aucune notification.</p>
@@ -28,14 +28,14 @@
     {% else %}
         <div class="container">
              <div class="row">
-                {% for notification in notifListe %}
+                {% for notifs in notifListe %}
                     <p>%JKLF</p>
                     <div class="col-4">
                         <div class="card" style="width: 18rem;">                                
                             <div class="card-body">
-                                <h5 class="card-title">{{ notification.type }}</h5>
-                                 <p class="card-text">{{ notification.contenu }}</p>
-                                <a href="index.php?controleur=TestNotif&methode=afficherUneNotification&id={{notification.idNotif}}" class="btn btn-primary">Voir une notification</a>
+                                <h5 class="card-title">{{ notifs.type }}</h5>
+                                 <p class="card-text">{{ notifs.contenu }}</p>
+                                <a href="index.php?controleur=TestNotif&methode=afficherUneNotification&id={{notifs.idNotif}}" class="btn btn-primary">Voir une notification</a>
                             </div>
                         </div>
                     </div>
@@ -51,19 +51,13 @@
     
     
     <!-- Bouton pour supprimer -->
-    {% if notifListe is not empty %}
+    {# {% if notifListe is not empty %} #}
         <div class="text-center mt-4">
             <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotification&id={{ notification.idNotif }}'">Supprimer</button>
-            <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.idNotif }}'">Tout supprimer</button>
-        
-        
-        <!-- Suppression d'une notification spécifique -->
-            <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotif&id={{ notification.idNotif }}'">Supprimer</button>
-            
             <!-- Suppression de toutes les notifications -->
-            <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
         
         </div>  
-    {% endif %}     #}
+    {# {% endif %}     #}
     
 {% endblock %}

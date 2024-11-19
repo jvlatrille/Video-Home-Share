@@ -56,16 +56,6 @@ class NotificationDao{
         return $resultat;
     }
     
-            
-            // //Méthode pour calculer le nombre total de notification d'une personne
-            // public function nbNotif(?string $idNotif): ?Notification {
-            //     $sql = "SELECT COUNT(*) FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
-            //     $pdoStatement = $this->pdo->prepare($sql);
-            //     $pdoStatement->execute(array('dateId' => $dateNotif));
-            //     $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-            //     $notifData = $pdoStatement->fetch();   
-            //     return $notifData ? $this->hydrate($notifData) : null;
-            // }
 
      // Méthode pour compter le nombre total de notifications pour un utilisateur
      public function nbNotif(?string $idUtilisateur): ?int {
@@ -78,16 +68,6 @@ class NotificationDao{
     }
 
     // //Méthode pour supprimer une notification d'une personne
-    // public function supprimerUneNotif(?string $idNotif): ?Notification {
-    //     $sql = "DELETE  FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
-    //     $pdoStatement = $this->pdo->prepare($sql);
-    //     $pdoStatement->execute(array('dateId' => $idNotif));
-    //     $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-    //     $notifData = $pdoStatement->fetch();   
-    //     return $notifData ? $this->hydrate($notifData) : null;
-    // }
-
-    // Fonction pour supprimer une notification
     public function supprimerUneNotif() {
         // Récupère l'ID de la notification à supprimer depuis l'URL
         $idNotif = isset($_GET['id']) ? $_GET['id'] : null;
@@ -109,16 +89,6 @@ class NotificationDao{
     }
 
     // //Méthode pour qu'une personne supprime toutes ses notifications
-    // public function supprimerToutesLesNotifs(?string $idNotif): ?Notification {
-    //     $sql = "DELETE  FROM ".PREFIXE_TABLE."notification WHERE idNotif = :dateId";
-    //     $pdoStatement = $this->pdo->prepare($sql);
-    //     $pdoStatement->execute(array('dateId' => $idNotif));
-    //     $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-    //     $notifData = $pdoStatement->fetch();   
-    //     return $notifData ? $this->hydrate($notifData) : null;
-    // }
-
-    // Fonction pour supprimer toutes les notifications d'une personne
     public function supprimerToutesLesNotifs() {
         // Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
         $idUtilisateur = isset($_GET['id']) ? $_GET['id'] : 1; // Pour les tests, on utilise l'ID utilisateur 1
