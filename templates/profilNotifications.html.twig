@@ -19,23 +19,24 @@
         </li>
     {% endif %} #}
 
-    <!-- Liste des notifications de l'utilisateur -->
+     <!-- Liste des notifications de l'utilisateur -->
     {% if notifListe is not defined  %} <!--or notifListe is empty-->
         <div class="container mt-4">
             <p>Aucune notification.</p>
         </div>
         
-    {% else %}
+    {% else %} 
         <div class="container">
              <div class="row">
                 {% for notifs in notifListe %}
-                    <p>%JKLF</p>
                     <div class="col-4">
                         <div class="card" style="width: 18rem;">                                
                             <div class="card-body">
-                                <h5 class="card-title">{{ notifs.type }}</h5>
-                                 <p class="card-text">{{ notifs.contenu }}</p>
-                                <a href="index.php?controleur=TestNotif&methode=afficherUneNotification&id={{notifs.idNotif}}" class="btn btn-primary">Voir une notification</a>
+                                <h5 class="card-title">{{ notifs.destinataire}}</h5>
+                                <li>
+                                {{ notifs.dateNotif }} - {{ notifs.contenu }} - {{ notifs.vu }}
+                                </li>
+                                <a href="index.php?controleur=TestNotif&methode=listerNotif&id={{notifs.idNotif}}" class="btn btn-primary">Voir une notification</a>
                             </div>
                         </div>
                     </div>

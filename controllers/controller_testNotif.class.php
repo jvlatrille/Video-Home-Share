@@ -6,30 +6,9 @@ class ControllerTestNotif extends Controller{
         parent::__construct($twig, $loader);
     }
 
-    //Fonction pour afficher
-    public function afficherToutesLesNotification()
-    {
-        // Récupérer l'ID de l'utilisateur, ici pour les tests on met 1
-        $idUtilisateur = 1; // $_SESSION['idUtilisateur'] normalement
-
-        // Recupere toutes les notifications
-        $managerNotif = new NotificationDao($this->getPdo());
-        $notifListe = $managerNotif->findForPers($idUtilisateur); 
-        
-        // normalement $_SESSION['idUtilisateur']
-        // mais pour les tests on met 1
-        
-        // Generer la vue
-        $template = $this->getTwig()->load('profilNotifications.html.twig');
-        
-        echo $template->render(['notifListe' => $notifListe]);
-    }  
-    //faire 2ème twig pour mettre ça dedans      
 
 
-
-
-    //Fonction pour afficher 
+    //Fonction pour afficher toutes les notif d'une personne
     public function listerNotif()
     {
         $id = isset($_GET['id']) ? $_GET['id'] : null;// Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
@@ -41,17 +20,17 @@ class ControllerTestNotif extends Controller{
 
         //Recupere les notifications
         $managerNotif=New NotificationDao($this->getPdo());
-        $notifs=$managerNotif->findForPers($id);
+        $notifListe=$managerNotif->findAll($id);
         
         //Generer la vue avec les notifications de l'utilisateur
         $template = $this->getTwig()->load('profilNotifications.html.twig');
         
-        echo $template->render(['notifs' => $notifs]);
+        echo $template->render(['notifListe' => $notifListe]);
             
     }
     
-
     
+
     //Fonction pour afficher le nombre total de notifications d'une personne
     public function nbNotif()
     {
@@ -80,7 +59,7 @@ class ControllerTestNotif extends Controller{
     //     $managerNotif->supprimerUneWatchlist($idNotif, $idUtilisateur);
         
     //     //Redirige vers la liste des watchlists
-    //     header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=1'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+    //     header('Location: index.php?controleur=testNotif&methode=supprimerUneNotif'); //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
     // }
 
     // //Fonction pour supprimer toutes les notifications d'une personne
