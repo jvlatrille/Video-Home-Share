@@ -12,4 +12,5 @@ define('PREFIXE_TABLE', 'vhs_');
 define('WEBSITE_TITLE', 'VHS - Video Home Share');
 define('WEBSITE_VERSION', '1.0');
 define('WEBSITE_DESCRIPTION', 'Un site de partage de films');
+
 define('WEBSITE_LANGUAGE', 'fr');

@@ -1,2 +1,63 @@
 {% extends 'base_template.html.twig' %}
-    {% block title %}Profil : Notification - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+    
+{% block title %}
+    Profil : Notification - {{ constant('WEBSITE_TITLE')}} 
+{% endblock %}
+    
+{% block content %}    
+    <!-- Titre de la partie notification -->
+    <div class="container mt-4">
+        <h1>Mes notifications</h1>
+    </div>
+
+    
+    {# {% if notifListe is not defined %}
+        
+    {% else %} 
+        <li>
+            {{ notifs.id }} - {{ notifs.dateNotif }} - {{ notifs.destinataire}} - {{ notifs.contenu }} - {{ notifs.vu }}
+        </li>
+    {% endif %} #}
+
+    <!-- Liste des notifications de l'utilisateur -->
+    {% if notifListe is not defined  %} <!--or notifListe is empty-->
+        <div class="container mt-4">
+            <p>Aucune notification.</p>
+        </div>
+        
+    {% else %}
+        <div class="container">
+             <div class="row">
+                {% for notifs in notifListe %}
+                    <p>%JKLF</p>
+                    <div class="col-4">
+                        <div class="card" style="width: 18rem;">                                
+                            <div class="card-body">
+                                <h5 class="card-title">{{ notifs.type }}</h5>
+                                 <p class="card-text">{{ notifs.contenu }}</p>
+                                <a href="index.php?controleur=TestNotif&methode=afficherUneNotification&id={{notifs.idNotif}}" class="btn btn-primary">Voir une notification</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bouton pour voir toutes les notifications -->
+        <div class="text-center mt-4">
+            <a href="index.php?controleur=TestNotif&methode=listerNotif&id=1" class="btn btn-secondary">Voir toutes les notifications</a>
+        </div>
+    {% endif %}
+    
+    
+    <!-- Bouton pour supprimer -->
+    {# {% if notifListe is not empty %} #}
+        <div class="text-center mt-4">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotification&id={{ notification.idNotif }}'">Supprimer</button>
+            <!-- Suppression de toutes les notifications -->
+            <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
+        
+        </div>  
+    {# {% endif %}     #}
+    
+{% endblock %}
