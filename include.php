@@ -3,8 +3,8 @@
 //Ajout de l'autoload de composer
 require_once 'vendor/autoload.php';
 
-//Ajout du fichier constantes qui permet de configurer le site
-require_once 'config/constantes.php';
+//Récupération des constantes
+require_once 'config/init.php';
 
 //Ajout du code pour initialiser twig
 require_once 'config/twig.php';
@@ -53,5 +53,3 @@ require_once 'modeles/jeux.dao.php';
 
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
-
-
