@@ -1,4 +1,4 @@
-# Renommer par template.yaml et remplir me mdp
+# Renommer ce fichier par constantes.yaml et remplir le mot de passe de la base de données
 
 # Connexion à la base de donnée
 DB_:
