@@ -106,7 +106,7 @@ class OADao{
      */
     public function hydrate(array $tableauAssoc) : ?OA{
         $oa=new OA();
-        $oa->setId($tableauAssoc['idOA']);
+        $oa->setIdOa($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
         $oa->setNote($tableauAssoc['note']);
         $oa->setType($tableauAssoc['type']);
