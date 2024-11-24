@@ -28,7 +28,7 @@
             <div class="modal-body">
                 <!-- Formulaire pour ajouter le film à une ou plusieurs watchlists -->
                 <form id="addFilmForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterOaWatchList">
-                    <input type="hidden" name="idOeuvre" value="{{ oa.id }}"> <!-- ID du film à ajouter -->
+                    <input type="hidden" name="idOeuvre" value="{{ oa.idOa }}"> <!-- ID du film à ajouter -->
 
                     <!-- Liste des watchlists avec cases à cocher -->
                     {% if watchListListe is defined and watchListListe is not empty %}

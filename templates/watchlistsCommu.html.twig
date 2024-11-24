@@ -34,9 +34,13 @@
                                             
                                             <h6>Films associés :</h6>
                                             <ul>
+                                            {% if watchList.listeOeuvres is not empty %}
                                                 {% for oa in watchList.listeOeuvres %}
                                                     <li>{{ oa.nom }} - Note : {{ oa.note }}/10 - {{ oa.duree }} min</li>
                                                 {% endfor %}
+                                            {% else %}
+                                                <li>Aucun film associé</li>
+                                            {% endif %}
                                             </ul>
                                             
                                             <!-- Formulaire d'enregistrement de la watchlist avec les films associés -->
@@ -46,10 +50,8 @@
                                                 <input type="hidden" name="genre" value="{{ watchList.genre }}">
                                                 <input type="hidden" name="description" value="{{ watchList.description }}">
                                                 <input type="hidden" name="visible" value="{{ watchList.visible }}">
-                                                
-                                                <!-- Ajout des films associés à la watchlist -->
-                                                {% for oa in watchList.films %}
-                                                    <input type="hidden" name="films[]" value="{{ oa.idOA }}">
+                                                {% for oa in watchList.listeOeuvres %}
+                                                    <input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}"> <!-- ca marche pas -->
                                                 {% endfor %}
                                                 
                                                 <button type="submit" class="btn btn-danger">Enregistrer cette watchlist</button>

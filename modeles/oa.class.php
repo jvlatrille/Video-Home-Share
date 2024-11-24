@@ -14,7 +14,7 @@ class OA{
     /**
      * @brief Identifiant de l'oeuvre audiovisuelle
      */
-    private ?int $id;
+    private ?int $idOa;
     /**
      * @brief Nom de l'oeuvre audiovisuelle
      */
@@ -47,7 +47,7 @@ class OA{
 
     /**
      * @brief Constructeur de la classe OA
-     * @param int|null $id : identifiant de l'oeuvre audiovisuelle
+     * @param int|null $idOa : identifiant de l'oeuvre audiovisuelle
      * @param string|null $nom : nom de l'oeuvre audiovisuelle
      * @param int|null $note : note de l'oeuvre audiovisuelle
      * @param string|null $type : type de l'oeuvre audiovisuelle
@@ -57,7 +57,7 @@ class OA{
      * @param int|null $duree : durée de l'oeuvre audiovisuelle
      */
     public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $duree=null){
-        $this->id = $id;
+        $this->idOa = $id;
         $this->nom = $nom;
         $this->note = $note;
         $this->type = $type;
@@ -74,8 +74,8 @@ class OA{
      *
      * @return integer|null identifiant de l'oeuvre audiovisuelle
      */
-    public function getId(): ?int{
-        return $this->id;
+    public function getIdOa(): ?int{
+        return $this->idOa;
     }
 
     /**
@@ -84,8 +84,8 @@ class OA{
      * @param integer|null $id : identifiant de l'oeuvre audiovisuelle
      */
 
-    public function setId(?int $id): void{
-        $this->id = $id;
+    public function setIdOa(?int $id): void{
+        $this->idOa = $id;
     }
 
     /**

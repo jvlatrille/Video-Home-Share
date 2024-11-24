@@ -22,7 +22,7 @@ class ControllerOA extends Controller
     }
 
 /////////////////////////////////////////  
-// La fonction afficherFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
+// La fonction listerFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
 /////////////////////////////////////////
 
     /**
@@ -36,7 +36,6 @@ class ControllerOA extends Controller
         // Recupere tous les films
         $managerOA = new OADao($this->getPdo());
         $oaListe = $managerOA->findMeilleurNote();
- 
         
         // Generer la vue
         $template = $this->getTwig()->load('index.html.twig');
@@ -52,15 +51,12 @@ class ControllerOA extends Controller
      */
     public function afficherFilm()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
-
       // Recupere toutes les watchlists
       $managerWatchList = new WatchListDao($this->getPdo()); //je sais pas si c'est légal
       $watchListListe = $managerWatchList->findAll(1); // normalement $_SESSION['idUtilisateur']
                                                        // mais pour les tests on met 1
       // Recupere l'oa
-      $idOa= isset($_GET['id']) ? $_GET['id'] : null;
+      $idOa= isset($_GET['idOa']) ? $_GET['idOa'] : null;
       $managerOa = new OADao($this->getPdo());
       $oa = $managerOa->find($idOa);
       // Generer la vue
