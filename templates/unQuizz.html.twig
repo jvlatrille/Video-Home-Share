@@ -10,16 +10,17 @@
             {% if quizz.meilleurJ %}
                 <p><strong>Meilleur joueur :</strong> {{ quizz.meilleurJ }}</p>
             {% else %}
-                <p><strong>Aucun meilleur joueur enregistré.</strong                ></p>
+                <p><strong>Aucun meilleur joueur enregistré.</strong></p>
             {% endif %}
         </div>
         
-         <div>
-                        <a href="index.php?controleur=question&methode=afficherQuestion&id=1" class="btn btn-secondary">Lancer le quizz</a>
+        <!-- Bouton pour lancer le quizz -->
+        <div class="text-center mb-4">
+            <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ quizz.idQuizz }}" class="btn btn-secondary">Lancer le quizz</a>
         </div>
 
         <div class="text-center mt-4  mb-4">
-            <a href="index.php?controleur=Quizz&methode=listerQuizz " class="btn btn-primary">Retour à la liste des quizz</a>
+            <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-primary">Retour à la liste des quizz</a>
         </div>
     </div>
 {% endblock %}

@@ -1,54 +1,83 @@
 {% extends "base_template.html.twig" %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Illustration -->
-    <div class="row justify-content-center mb-4">
-        <div class="col-12 col-md-8">
-            <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
-                {% if question.getCheminImage() %}
-                    <img src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                {% else %}
-                    <span class="text-secondary">Aucune image disponible</span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+	<div
+		class="container py-5">
+		<!-- Illustration -->
+		<div class="row justify-content-center mb-4">
+			<div class="col-12 col-md-8">
+				<div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
+					{% if question.getCheminImage() %}
+						<img src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+					{% else %}
+						<span class="text-secondary">Aucune image disponible</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
 
-    <!-- Question -->
-    <div class="row justify-content-center mb-4">
-        <div class="col-12 col-md-8">
-            <div class="text-center bg-danger text-white py-2 rounded">
-                <h4>{{ question.getContenu() }}</h4>
-            </div>
-        </div>
-    </div>
+		<!-- Question -->
+		<div class="row justify-content-center mb-4">
+			<div class="col-12 col-md-8">
+				<div class="text-center bg-danger text-white py-2 rounded">
+					<h4>{{ question.getContenu() }}</h4>
+				</div>
+			</div>
+		</div>
+		<!-- difficulté -->
+		<div class="row justify-content-center mt-4">
+			<div class="col-12 col-md-8 text-center">
+				<p class="text-primary">Difficulté :
+					<strong>{{ question.getNvDifficulte() }}</strong>
+				</p>
+			</div>
+		</div>
 
-    <!-- Réponses -->
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8">
-            <div class="row">
-                <div class="col-6 mb-3">
-                    <button class="btn btn-light w-100 py-2 border border-primary">{{ question.getBonneReponse() }}</button>
-                </div>
-                <div class="col-6 mb-3">
-                    <button class="btn btn-light w-100 py-2 border border-primary">{{ question.getMauvaiseReponse1() }}</button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-light w-100 py-2 border border-primary">{{ question.getMauvaiseReponse2() }}</button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-light w-100 py-2 border border-primary">{{ question.getMauvaiseReponse3() }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Réponses -->
 
-    <!-- difficulté -->
-    <div class="row justify-content-center mt-4">
-        <div class="col-12 col-md-8 text-center">
-            <p class="text-primary">Question <strong>{{ question.getNvDifficulte() }}</strong></p>
-        </div>
-    </div>
-</div>
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-8">
+				<div class="row">
+					{% for reponse in reponses %}
+						<div class="col-6 mb-3">
+							<button class="btn btn-light w-100 py-2 border border-primary response-button" data-correct="{{ reponse == question.getBonneReponse() ? 'true' : 'false' }}">
+								{{ reponse }}
+							</button>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+
+		
+	</div>
+
+    {% block javascripts %}
+    <script>
+        // Fonction pour gérer le clic sur une réponse
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.response-button');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Désactiver les autres boutons après un clic
+                    buttons.forEach(btn => btn.disabled = true);
+
+                    // Vérifie si la réponse est correcte
+                    if (button.getAttribute('data-correct') === 'true') {
+                        button.classList.add('bg-success', 'text-white'); // Bonne réponse
+                    } else {
+                        button.classList.add('bg-danger', 'text-white'); // Mauvaise réponse
+                    }
+
+                    // Met en surbrillance la bonne réponse
+                    const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
+                    correctButton.classList.add('bg-success', 'text-white'); // Mise en avant de la bonne réponse
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
 {% endblock %}
