@@ -88,6 +88,29 @@ class QuestionDao {
         }
         return $questions;
     }
+    public function findFirstQuestionByQuizz(int $idQuizz): ?question {
+        // Requête pour récupérer la première question du quizz
+        $sql = "SELECT q.* FROM ".PREFIXE_TABLE."question q
+                INNER JOIN ".PREFIXE_TABLE."porterSur p ON p.idQuestion = q.idQuestion
+                WHERE p.idQuizz = :idQuizz
+                LIMIT 1"; // Limite à 1 question, la première
+    
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idQuizz' => $idQuizz]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$resultat) {
+            // Si aucune question n'est trouvée
+            return null;
+        }
+    
+        // Hydrate l'objet question avec les données récupérées
+        return $this->hydrate($resultat);
+    }
+    
 }
+
+
 
 ?>

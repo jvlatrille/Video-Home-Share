@@ -20,21 +20,41 @@ class ControllerQuestion extends Controller {
 
     // Fonction pour afficher une question spécifique
     public function afficherQuestion() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-        // Récupère la question
+        $idQuizz = isset($_GET['idQuizz']) ? $_GET['idQuizz'] : null;
+    
+        if ($idQuizz === null) {
+            echo "ID du quizz manquant.";
+            return;
+        }
+    
+        // Récupère la première question du quizz
         $managerQuestion = new QuestionDao($this->getPdo());
-        $question = $managerQuestion->find($id);
-
+        $question = $managerQuestion->findFirstQuestionByQuizz($idQuizz);
+    
+        if ($question === null) {
+            echo "Aucune question trouvée pour ce quizz.";
+            return;
+        }
+    
+        // Récupère toutes les réponses et les mélange
+        $reponses = [
+            $question->getBonneReponse(),
+            $question->getMauvaiseReponse1(),
+            $question->getMauvaiseReponse2(),
+            $question->getMauvaiseReponse3()
+        ];
+    
+        // Mélanger les réponses
+        shuffle($reponses);
+    
         // Générer la vue
         $template = $this->getTwig()->load('uneQuestion.html.twig');
         echo $template->render([
             'question' => $question,
-            'mauvaiseReponse1' => $question->getMauvaiseReponse1(),
-            'mauvaiseReponse2' => $question->getMauvaiseReponse2(),
-            'mauvaiseReponse3' => $question->getMauvaiseReponse3(),
+            'reponses' => $reponses // On passe le tableau des réponses mélangées à la vue
         ]);
     }
+    
 
     // Fonction pour ajouter une question à un quizz
     public function ajouterQuestion() {
