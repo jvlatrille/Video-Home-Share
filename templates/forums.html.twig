@@ -1,6 +1,48 @@
 {% extends 'base_template.html.twig' %}
 {% block content %}
     <h1>Liste des forums</h1>
+    <!-- Bouton pour ouvrir la pop-up -->
+	<div class="container text-center my-4">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createForumModal">
+			Créer un forum
+		</button>
+	</div>
+
+    <!-- Modal de création de forum -->
+    <div class="modal fade" id="createForumModal" tabindex="-1" aria-labelledby="createForumModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Formulaire de création de forum -->
+                    <form id="createForumForm" method="POST" action="index.php?controleur=forum&methode=ajouterForum">
+                        <!-- Nom du forum -->
+                        <div class="mb-3">
+                            <label for="forumName" class="form-label">Nom du forum :</label>
+                            <input type="text" class="form-control" id="forumName" name="nom" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="forumTheme" class="form-label">Thème :</label>
+                            <input type="text" class="form-control" id="forumTheme" name="theme" required>
+                        </div>
+                    
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="forumDescription" class="form-label">Description :</label>
+                            <textarea class="form-control" id="forumDescription" name="description" rows="3" required></textarea>
+                        </div>
+
+                        <!-- Bouton de soumission -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">Créer un nouveau forum</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Affichage des forums -->
     {% if forumListe is not defined %}
         <p>Aucun forum</p>
     {% else %}
@@ -24,9 +66,6 @@
                     </div>
                 </div>
             {% endfor %}
-        </div>
-        <div class="text-center mt-4 mb-3">
-            <a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les forums</a>
         </div>
     {% endif %}
 {% endblock %}

@@ -58,5 +58,29 @@ class forumDAO{
         return $forumListe;
     }
 
+    //Fonction pour creer un forum
+    public function creerForum(Forum $forum): ?Forum {
+        $sql = "INSERT INTO ".PREFIXE_TABLE."forum (id, nom, description, theme, idUtilisateur) 
+                VALUES (:titre, :genre, :description, :visible, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array(
+                'id' => $forum->getIdForum(),
+                'nom' => $forum->getNom(),
+                'description' => $forum->getDescription(),
+                'theme' => $forum->getTheme(),
+                //'idUtilisateur' => $watchlist->getIdUtilisateur()
+            ));
+            
+            $forum->setIdForum($this->pdo->lastInsertId());
+            return $forum;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la création du forum : " . $e->getMessage());
+            return null;
+        }
+    }
+
 }
 ?>
