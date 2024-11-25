@@ -22,3 +22,29 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 
 //Ajout de l'extension d'internationalisation qui permet d'utiliser les filtres de date dans twig
 $twig->addExtension(new IntlExtension());
+
+use Symfony\Component\Yaml\Yaml;
+
+// Chemin vers le fichier YAML
+$configPath = __DIR__ . '/constantes.yaml';
+
+if (file_exists($configPath)) {
+    // Charger les constantes depuis le fichier YAML
+    $constants = Yaml::parseFile($configPath);
+
+    if (!empty($constants)) {
+        foreach ($constants as $section => $values) {
+            if (is_array($values)) {
+                foreach ($values as $key => $value) {
+                    // Ajouter les constantes comme variables globales accessibles dans Twig
+                    $twig->addGlobal(strtolower($section) . '_' . strtolower($key), $value);
+                }
+            } else {
+                // Ajouter cette constante comme variable globale
+                $twig->addGlobal(strtolower($section), $values);
+            }
+        }
+    }
+} else {
+    die('Le fichier config/constantes.yaml est introuvable.');
+}
