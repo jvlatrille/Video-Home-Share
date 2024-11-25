@@ -10,54 +10,82 @@
         <h1>Mes notifications</h1>
     </div>
 
-    
-    {# {% if notifListe is not defined %}
+ <!-- Bouton pour supprimer -->
+    {% if notifListe is not empty %}
+        <div class="text-end my-3">
+            <button type="button" class="btn btn-primary me-5" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotification&id={{ notification.idNotif }}'">Supprimer</button>
+            <!-- Suppression de toutes les notifications -->
+            <button type="button" class="btn btn-primary me-5" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
         
-    {% else %} 
-        <li>
-            {{ notifs.id }} - {{ notifs.dateNotif }} - {{ notifs.destinataire}} - {{ notifs.contenu }} - {{ notifs.vu }}
-        </li>
-    {% endif %} #}
+        </div>  
+    {% endif %} 
 
-    <!-- Liste des notifications de l'utilisateur -->
+     <!-- Liste des notifications de l'utilisateur -->
     {% if notifListe is not defined  %} <!--or notifListe is empty-->
         <div class="container mt-4">
             <p>Aucune notification.</p>
         </div>
         
-    {% else %}
-        <div class="container">
-             <div class="row">
-                {% for notifs in notifListe %}
-                    <p>%JKLF</p>
-                    <div class="col-4">
-                        <div class="card" style="width: 18rem;">                                
-                            <div class="card-body">
-                                <h5 class="card-title">{{ notifs.type }}</h5>
-                                 <p class="card-text">{{ notifs.contenu }}</p>
-                                <a href="index.php?controleur=TestNotif&methode=afficherUneNotification&id={{notifs.idNotif}}" class="btn btn-primary">Voir une notification</a>
+    {% else %} 
+        <div class="container my-4">
+            <ul class="list-group">
+                <div class="row">
+                    {% for notifs in notifListe %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="col-4">
+                                <div class="card" style="width: 18rem;">                              
+                                    <div class="card-body ">
+                                        <form method='POST' action='fenetre.php'>
+                                        <input type='checkbox' name='case' value='on'>
+                                        </form>
+                                        
+                                        <h5 class="card-title">{{ notifs.destinataire}}</h5>
+                                        <div>
+                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
+                                            {{ notifs.contenu }}<br>
+                                            <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}<br>
+                                            <a href="index.php?controleur=TestNotif&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
             </div>
         </div>
 
-        <!-- Bouton pour voir toutes les notifications -->
-        <div class="text-center mt-4">
-            <a href="index.php?controleur=TestNotif&methode=listerNotif&id=1" class="btn btn-secondary">Voir toutes les notifications</a>
-        </div>
     {% endif %}
+
+
+    {# {% else %}
+        <div class="container mt-4">
+            <ul class="list-group">
+                <div class="row">
+                    {% for notifs in notifListe %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center w-100">
+                            <div class="col-12">
+                                <div class="card mb-3 w-100">
+                                    <div class="card-body">
+                                        <form method='POST' action='fenetre.php'>
+                                            <input type='checkbox' name='case' value='on'>
+                                        </form>
+                                        <h5 class="card-title">{{ notifs.destinataire }}</h5>
+                                        <div>
+                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
+                                            {{ notifs.contenu }}<br>
+                                            <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}<br>
+                                            <a href="index.php?controleur=TestNotif&methode=listerNotif&id={{ notifs.idNotif }}" class="btn btn-primary">Voir la notification</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
+            </ul>
+        </div>
+    {% endif %} #}
     
     
-    <!-- Bouton pour supprimer -->
-    {# {% if notifListe is not empty %} #}
-        <div class="text-center mt-4">
-            <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotification&id={{ notification.idNotif }}'">Supprimer</button>
-            <!-- Suppression de toutes les notifications -->
-            <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
-        
-        </div>  
-    {# {% endif %}     #}
+       
     
 {% endblock %}

@@ -17,29 +17,25 @@ class NotificationDao{
         $this->pdo = $pdo;
     }
 
-    //Méthode pour récupérer une notification
-    public function findAll(?int $idNotif): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE notification.idUtilisateur = :dateId";
+    //Méthode pour récupérer TOUTES les notifications d'une personne
+    public function findAll(?int $idUtilisateur): ?array {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur";
 
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('id' => $idUtilisateur));    
+        $pdoStatement->execute(array('idUtilisateur' => $idUtilisateur));    
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);   
-
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Aucune watchlist trouvée.");
+            var_dump("Pas d'autres informations trouvées");
             return null;
         }
-
         $notifData =$this->hydrateAll($resultats);
         return $notifData;
     }
 
-                                            
-
-    //Méthode pour récupérer toutes les notifications d'une personne
-    public function findForPers(?int $idNotif): ?Notification {
+    //Méthode pour récupérer UNE notification d'une personne
+    public function findNotif(?int $idNotif): ?Notification {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idNotif' => $idNotif]);
@@ -50,7 +46,6 @@ class NotificationDao{
         if ($notifData === false) {
             return null;  // Si aucune donnée n'est trouvée
         }
-    
         // Hydrater et retourner l'objet Notification
         $resultat =  $this->hydrate($notifData);
         return $resultat;
@@ -66,6 +61,7 @@ class NotificationDao{
         $count = $pdoStatement->fetch();  
         return (int)$count;  // Retourne le nombre sous forme d'un entier
     }
+
 
     // //Méthode pour supprimer une notification d'une personne
     public function supprimerUneNotif() {
@@ -87,6 +83,7 @@ class NotificationDao{
         header('Location: index.php?controleur=ControllerTestNotif&methode=listerNotif&id=' . $idUtilisateur);
         exit;
     }
+
 
     // //Méthode pour qu'une personne supprime toutes ses notifications
     public function supprimerToutesLesNotifs() {
