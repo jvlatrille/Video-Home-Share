@@ -11,7 +11,7 @@ class ControllerTestNotif extends Controller{
     //Fonction pour afficher toutes les notif d'une personne
     public function listerNotif()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;// Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
+        $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;// Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
         
         if ($id === null) {
             // Si l'ID n'est pas fourni, utiliser un ID par défaut (par exemple l'ID de l'utilisateur connecté)
@@ -29,6 +29,27 @@ class ControllerTestNotif extends Controller{
             
     }
     
+
+
+    //Fonction pour afficher une notification
+    public function afficherNotif()
+    {
+        $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
+        
+        //Recupere la notification
+        $managerNotif=New NotificationDao($this->getPdo());
+        $notif=$managerNotif->findNotif($id);
+        
+        //Recupere le contenu de la notification
+        $contenuNotif = $managerNotif->findNotif($id);
+        
+        //Generer la vue
+        $template = $this->getTwig()->load('uneNotification.html.twig');
+        
+        echo $template->render(['notification'=>$notif]);
+
+    }
+
     
 
     //Fonction pour afficher le nombre total de notifications d'une personne

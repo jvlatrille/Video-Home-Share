@@ -27,29 +27,29 @@ class NotificationDao{
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);   
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Aucune watchlist trouvée.");
+            var_dump("Pas d'autres informations trouvées");
             return null;
         }
         $notifData =$this->hydrateAll($resultats);
         return $notifData;
     }
 
-    // //Méthode pour récupérer UNE notification d'une personne
-    // public function find(?int $idNotif): ?Notification {
-    //     $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
-    //     $pdoStatement = $this->pdo->prepare($sql);
-    //     $pdoStatement->execute(['idNotif' => $idNotif]);
-    //     $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+    //Méthode pour récupérer UNE notification d'une personne
+    public function findNotif(?int $idNotif): ?Notification {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idNotif' => $idNotif]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         
-    //     $notifData = $pdoStatement->fetch();
+        $notifData = $pdoStatement->fetch();
         
-    //     if ($notifData === false) {
-    //         return null;  // Si aucune donnée n'est trouvée
-    //     }
-    //     // Hydrater et retourner l'objet Notification
-    //     $resultat =  $this->hydrate($notifData);
-    //     return $resultat;
-    // }
+        if ($notifData === false) {
+            return null;  // Si aucune donnée n'est trouvée
+        }
+        // Hydrater et retourner l'objet Notification
+        $resultat =  $this->hydrate($notifData);
+        return $resultat;
+    }
     
 
      // Méthode pour compter le nombre total de notifications pour un utilisateur
