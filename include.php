@@ -22,14 +22,10 @@ require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
 require_once 'controllers/controller_personne.class.php';
-<<<<<<< HEAD
 require_once 'controllers/controller_forum.class.php';
 
-
-=======
 require_once 'controllers/controller_testNotif.class.php';
 require_once 'controllers/controller_jeux.class.php';
->>>>>>> main
 
 
 
@@ -49,10 +45,8 @@ require_once 'modeles/question.dao.php';
 
 require_once 'modeles/personne.class.php';
 require_once 'modeles/personne.dao.php';
-<<<<<<< HEAD
 require_once 'modeles/forum.dao.php';
 require_once 'modeles/forum.class.php';
-=======
 
 require_once 'modeles/notification.class.php';
 require_once 'modeles/notification.dao.php';
@@ -63,4 +57,3 @@ require_once 'modeles/jeux.dao.php';
 
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
->>>>>>> main

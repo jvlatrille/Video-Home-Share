@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : lun. 25 nov. 2024 à 10:19
+-- Généré le : lun. 25 nov. 2024 à 14:18
 -- Version du serveur : 8.3.0
 -- Version de PHP : 8.2.18
 
@@ -1494,6 +1494,13 @@ CREATE TABLE IF NOT EXISTS `vhs_constituer` (
   KEY `idOA` (`idOA`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `vhs_constituer`
+--
+
+INSERT INTO `vhs_constituer` (`idWatchlist`, `idOA`) VALUES
+(1, 249474);
+
 -- --------------------------------------------------------
 
 --
@@ -2837,21 +2844,21 @@ CREATE TABLE IF NOT EXISTS `vhs_repondre` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `vhs_tags`
+-- Structure de la table `vhs_tag`
 --
 
-DROP TABLE IF EXISTS `vhs_tags`;
-CREATE TABLE IF NOT EXISTS `vhs_tags` (
+DROP TABLE IF EXISTS `vhs_tag`;
+CREATE TABLE IF NOT EXISTS `vhs_tag` (
   `idTag` int NOT NULL,
   `nom` varchar(255) NOT NULL,
   PRIMARY KEY (`idTag`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Déchargement des données de la table `vhs_tags`
+-- Déchargement des données de la table `vhs_tag`
 --
 
-INSERT INTO `vhs_tags` (`idTag`, `nom`) VALUES
+INSERT INTO `vhs_tag` (`idTag`, `nom`) VALUES
 (11, 'Space Opéra'),
 (12, 'Aventure'),
 (13, 'Conte fantastique'),
@@ -2952,7 +2959,14 @@ CREATE TABLE IF NOT EXISTS `vhs_watchlist` (
   `idUtilisateur` int NOT NULL,
   PRIMARY KEY (`idWatchlist`),
   KEY `idUtilisateur` (`idUtilisateur`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `vhs_watchlist`
+--
+
+INSERT INTO `vhs_watchlist` (`idWatchlist`, `titre`, `genre`, `description`, `visible`, `idUtilisateur`) VALUES
+(1, 'ouei', 'non', 'dazeffgze', 1, 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
