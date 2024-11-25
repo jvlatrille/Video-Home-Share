@@ -8,12 +8,12 @@
     <p>Note : {{ oa.note }}</p>
     <p>Description : {{ oa.description }}</p>
     <p>Date de sortie : {{ oa.dateSortie }}</p>
-    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+    <p>Version originale : {{ oa.vo }}</p>
 
 <!-- Bouton pour ouvrir la pop-up -->
 <div class="container text-center my-4">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-        Ajouter le film à une watchlist
+        Ajouter l'oeuvre à une watchlist
     </button>
 </div>
 
@@ -22,7 +22,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addFilmModalLabel">Choisir dans quelle watchlist ajouter le film</h5>
+                <h5 class="modal-title" id="addFilmModalLabel">Choisir dans quelle watchlist ajouter l'oeuvre</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -35,7 +35,7 @@
                         {% for watchlist in watchListListe %}
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
+                                    <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
                                     <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
                                 </div>
                             </div>

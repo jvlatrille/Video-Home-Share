@@ -22,11 +22,13 @@ require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
 require_once 'controllers/controller_personne.class.php';
-
-
+require_once 'controllers/controller_jeux.class.php';
 
 
 // //Ajout des modèles
+
+require_once 'controllers/controller_utilisateur.class.php';
+
 require_once 'modeles/bd.class.php';
 require_once 'modeles/oa.class.php';
 require_once 'modeles/oa.dao.php';
@@ -39,3 +41,10 @@ require_once 'modeles/question.dao.php';
 
 require_once 'modeles/personne.class.php';
 require_once 'modeles/personne.dao.php';
+
+require_once 'modeles/jeux.class.php';
+require_once 'modeles/jeux.dao.php';
+
+require_once 'modeles/utilisateur.class.php';
+require_once 'modeles/utilisateur.dao.php';
+
