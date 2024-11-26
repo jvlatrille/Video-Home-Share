@@ -80,6 +80,17 @@ class OADao{
         return $this->hydrateAll($resultats);
     }
 
+    /*
+    "SELECT o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree,
+                        t.nom,c.nom,c.type
+         FROM ".PREFIXE_TABLE."oa o 
+         JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
+         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag
+         JOIN ".PREFIXE_TABLE."fairepartie f ON o.idOA=f.idOA
+         JOIN ".PREFIXE_TABLE."collection c ON f.idCollection=c.idCollection         
+         ORDER BY o.note DESC LIMIT 10";
+    */
+
     //Méthode pour récupérer toutes les oeuvres audiovisuelles
     /**
      * @brief Fonction pour recupérer toutes les oeuvres audiovisuelles

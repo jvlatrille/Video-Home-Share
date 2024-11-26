@@ -59,7 +59,7 @@
     /**
      * @brief Fonction pour recupérer le nom des tags en fonction de l'id de l'oeuvre audiovisuelle OA
      * 
-     * @param integer $idOA identifiant de l'oeuvre audiovisuelle
+     * @param integer $idOA identifiant de l'oeuvre audiovisuelle OA
      * @return array tableau de tags
      */
     public function findTagsOA(int $idOA): array {

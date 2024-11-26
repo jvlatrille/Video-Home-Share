@@ -6,7 +6,7 @@
  * @brief Classe WatchListDao pour accéder à la base de données et gérer les watchlists
  * @details Cette classe permet de gérer les watchlists en base de données 
  * 
- * @version 2.0
+ * @version 2.5
  * @date 24/11/2024
  */
 
@@ -226,7 +226,7 @@ class WatchListDao {
      * @return bool true si l'OA a été ajoutée à la Watchlist, false sinon
      */
     public function ajouterOAWatchlist(int $idWatchlist, int $idOA): bool {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."constituer (idWatchlist, idOA) VALUES (:idWatchlist, :idOA)";
+        $sql = "INSERT INTO ".PREFIXE_TABLE."constituer (idWatchlist, idOa) VALUES (:idWatchlist, :idOA)";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -247,7 +247,7 @@ class WatchListDao {
      * @return bool true si l'OA a été supprimée de la Watchlist, false sinon
      */
     public function supprimerOA(int $idWatchlist, int $idOA): bool {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist AND idOA = :idOA";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist AND idOa = :idOA";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -268,7 +268,7 @@ class WatchListDao {
      */
     public function afficherFilmsWatchlist(int $idWatchlist): ?array {
         $sql = "SELECT o.* FROM ".PREFIXE_TABLE."constituer c
-                JOIN ".PREFIXE_TABLE."oa o ON c.idOA = o.idOA
+                JOIN ".PREFIXE_TABLE."oa o ON c.idOa = o.idOa
                 WHERE c.idWatchlist = :id";
         
         $pdoStatement = $this->pdo->prepare($sql);
