@@ -28,7 +28,32 @@ class QuestionDao {
     public function setPdo(?PDO $pdo): void {
         $this->pdo = $pdo;
     }
-
+    
+    public function findQuestionByQuizzAndNumero(int $idQuizz, int $numero): ?question {
+        // Requête pour récupérer une question spécifique du quizz
+        $sql = "SELECT q.* FROM ".PREFIXE_TABLE."question q
+                INNER JOIN ".PREFIXE_TABLE."porterSur p ON p.idQuestion = q.idQuestion
+                WHERE p.idQuizz = :idQuizz AND q.numero = :numero
+                LIMIT 1"; // Limite à 1 question, correspond au numéro demandé
+    
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([
+            'idQuizz' => $idQuizz,
+            'numero' => $numero
+        ]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$resultat) {
+            // Si aucune question n'est trouvée
+            return null;
+        }
+    
+        // Hydrate l'objet question avec les données récupérées
+        return $this->hydrate($resultat);
+    }
+    
+    
     // Fonction pour afficher une question
     public function find(int $id): ?question {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."question q WHERE q.idQuestion = :id";
