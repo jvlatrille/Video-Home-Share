@@ -89,7 +89,7 @@ class ControllerWatchList extends Controller{
      */
     public function ajouterWatchList()
     {
-        var_dump($_POST);
+        
         //Recupere les données de la watchlist du formulaire
         $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
         $titre = isset($_POST['titre']) ? $_POST['titre'] : (isset($_GET['titre']) ? $_GET['titre'] : null);
