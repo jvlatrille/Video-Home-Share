@@ -39,7 +39,7 @@ class ControllerOA extends Controller
         
         // Generer la vue
         $template = $this->getTwig()->load('index.html.twig');
-        
+        // var_dump($oaListe);
         echo $template->render(['oaListe' => $oaListe]);
     }
 

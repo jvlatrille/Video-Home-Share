@@ -26,14 +26,12 @@
 							<div class="carousel-caption d-none d-md-block">
 								<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{oa.idOa}}">
 									<h5>{{ oa.nom }}</h5>
-									<p>Note :
-										{{ oa.note }}</p>
 									<p>Description :
 										{{ oa.description }}</p>
 									<p>Date de sortie :
 										{{ oa.dateSortie }}</p>
-									<p>Version originale :
-										{{ oa.vo ? 'Oui' : 'Non' }}</p>
+									<p>Genre :
+										{{ oa.genres[0] }}</p>
 								</a>
 							</div>
 						</div>

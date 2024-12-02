@@ -36,8 +36,10 @@ require_once 'controllers/controller_utilisateur.class.php';
 require_once 'modeles/bd.class.php';
 require_once 'modeles/oa.class.php';
 require_once 'modeles/oa.dao.php';
+
 require_once 'modeles/watchlist.class.php';
 require_once 'modeles/watchlist.dao.php';
+
 require_once 'modeles/quizz.class.php';
 require_once 'modeles/quizz.dao.php';
 require_once 'modeles/question.class.php';
