@@ -35,18 +35,23 @@ class ControllerTestNotif extends Controller{
     public function afficherNotif()
     {
         $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
+
+        if ($id === null) {
+            // Si l'ID n'est pas fourni, utiliser un ID par défaut (par exemple l'ID de l'utilisateur connecté)
+            $id = 1; // $_SESSION['idUtilisateur'] normalement
+        }
         
         //Recupere la notification
         $managerNotif=New NotificationDao($this->getPdo());
-        $notif=$managerNotif->findNotif($id);
+        $contenuNotif=$managerNotif->findNotif($id);
         
         //Recupere le contenu de la notification
-        $contenuNotif = $managerNotif->findNotif($id);
+        //$contenuNotif = $managerNotif->findNotif($id);
         
         //Generer la vue
         $template = $this->getTwig()->load('uneNotification.html.twig');
         
-        echo $template->render(['notification'=>$notif]);
+        echo $template->render(['contenuNotif'=>$contenuNotif]);
 
     }
 

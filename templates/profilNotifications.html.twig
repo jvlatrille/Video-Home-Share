@@ -1,7 +1,7 @@
-{% extends 'base_template.html.twig' %}
+{% extends 'base_template_profil.html.twig' %}
     
 {% block title %}
-    Profil : Notification - {{ constant('WEBSITE_TITLE')}} 
+    Profil : Une Notification - {{ constant('WEBSITE_TITLE')}} 
 {% endblock %}
     
 {% block content %}    
@@ -32,8 +32,9 @@
                 <div class="row">
                     {% for notifs in notifListe %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="col-4">
-                                <div class="card" style="width: 18rem;">                              
+                            {# <div class="col-4"> #}
+                            <div class="container my-2">
+                                {# <div class="card" style="width: 18rem;">                               #}
                                     <div class="card-body ">
                                         <form method='POST' action='fenetre.php'>
                                         <input type='checkbox' name='case' value='on'>
@@ -41,51 +42,23 @@
                                         
                                         <h5 class="card-title">{{ notifs.destinataire}}</h5>
                                         <div>
-                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
+                                            <strong>Date :</strong> {{ notifs.dateNotif }}
                                             {{ notifs.contenu }}<br>
-                                            <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}<br>
-                                            <a href="index.php?controleur=TestNotif&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <a href="index.php?controleur=TestNotif&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
+                                                <div class="ms-3">
+                                                    <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {# </div> #}
                             </div>
                     {% endfor %}
             </div>
         </div>
 
-    {% endif %}
-
-
-    {# {% else %}
-        <div class="container mt-4">
-            <ul class="list-group">
-                <div class="row">
-                    {% for notifs in notifListe %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center w-100">
-                            <div class="col-12">
-                                <div class="card mb-3 w-100">
-                                    <div class="card-body">
-                                        <form method='POST' action='fenetre.php'>
-                                            <input type='checkbox' name='case' value='on'>
-                                        </form>
-                                        <h5 class="card-title">{{ notifs.destinataire }}</h5>
-                                        <div>
-                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
-                                            {{ notifs.contenu }}<br>
-                                            <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}<br>
-                                            <a href="index.php?controleur=TestNotif&methode=listerNotif&id={{ notifs.idNotif }}" class="btn btn-primary">Voir la notification</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </div>
-            </ul>
-        </div>
-    {% endif %} #}
-    
-    
+    {% endif %}   
        
     
 {% endblock %}
