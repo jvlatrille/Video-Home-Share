@@ -21,6 +21,23 @@
 
             {% endif %}
 
+			<!-- Section des participants -->
+			{% if participants is defined and participants is not empty %}
+				<h2>Participants</h2>
+				<ul>
+					{% for participant in participants %}
+						<li>
+							{{ participant.prenom }} {{ participant.nom }} - {{ participant.role }} 
+							{% if participant.rang is defined and participant.rang is not empty %}
+								({{ participant.rang }})
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<p>Aucun participant trouvé pour ce film.</p>
+			{% endif %}
+			
 		<div class="container text-center my-4">
 			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
 				Ajouter l'oeuvre à une watchlist

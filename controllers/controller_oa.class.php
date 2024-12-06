@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file controller_oa.class.php
  * @author Thibault CHIPY 
@@ -21,9 +22,9 @@ class ControllerOA extends Controller
         parent::__construct($twig, $loader);
     }
 
-/////////////////////////////////////////  
-// La fonction listerFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
-/////////////////////////////////////////
+    /////////////////////////////////////////  
+    // La fonction listerFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
+    /////////////////////////////////////////
 
     /**
      * @brief Methode pour lister les films avec les meilleures notes sur la page d'acceuil
@@ -36,7 +37,7 @@ class ControllerOA extends Controller
         // Recupere tous les films
         $managerOA = new OADao($this->getPdo());
         $oaListe = $managerOA->findMeilleurNote();
-        
+
         // Generer la vue
         $template = $this->getTwig()->load('index.html.twig');
         // var_dump($oaListe);
@@ -51,20 +52,28 @@ class ControllerOA extends Controller
      */
     public function afficherFilm()
     {
-      // Recupere toutes les watchlists
-      $managerWatchList = new WatchListDao($this->getPdo()); //je sais pas si c'est légal
-      $watchListListe = $managerWatchList->findAll(1); // normalement $_SESSION['idUtilisateur']
-                                                       // mais pour les tests on met 1
-      // Recupere l'oa
-      $idOa= isset($_GET['idOa']) ? $_GET['idOa'] : null;
-      $managerOa = new OADao($this->getPdo());
-      $oa = $managerOa->find($idOa);
-      // Generer la vue
-      $template = $this->getTwig()->load('film.html.twig');
-      
-      echo $template->render(['watchListListe' => $watchListListe, 'oa' => $oa]);
+        // Récupérer l'ID du film depuis l'URL
+        $idOa = isset($_GET['idOa']) ? $_GET['idOa'] : null;
 
-    }
-    }
+        // Instancier les DAOs nécessaires
+        $managerOa = new OADao($this->getPdo());
+        $managerWatchList = new WatchListDao($this->getPdo()); // Si tu as besoin d'utiliser les watchlists
 
-    
+        // Récupérer les informations du film
+        $oa = $managerOa->find($idOa);
+
+        // Récupérer les participants associés au film
+        $participants = $managerOa->getParticipantsByFilmId($idOa);
+
+        // Récupérer les watchlists si nécessaire
+        $watchListListe = $managerWatchList->findAll(1); // Pour les tests, idUtilisateur = 1
+
+        // Générer la vue
+        $template = $this->getTwig()->load('film.html.twig');
+        echo $template->render([
+            'oa' => $oa,
+            'participants' => $participants,
+            'watchListListe' => $watchListListe
+        ]);
+    }
+}
