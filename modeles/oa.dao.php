@@ -202,4 +202,17 @@ class OADao{
         
         return $oaListe;
     }   
+
+    public function getParticipantsByFilmId(int $idOA): array {
+        $sql = "SELECT p.nom, p.prenom, c.role, c.rang
+                FROM vhs_personne p
+                JOIN vhs_collaborer c ON p.idPersonne = c.idPersonne
+                WHERE c.idOA = :idOA
+                LIMIT 10";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idOA' => $idOA]);
+        
+        return $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }
