@@ -104,4 +104,25 @@ class UtilisateurDao
         $utilisateur = $pdoStatement->fetch();
         return $utilisateur ? $this->hydrate($utilisateur) : null;
     }
+
+    /**
+     * @brief Creer un utilisateur en base de données
+     * @author Thibault CHIPY 
+     * @param Utilisateur $utilisateur
+     * @return bool
+     */
+    public function creeUtilisateur(?Utilisateur $utilisateur): ?bool {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) 
+                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role)";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            'pseudo' => $utilisateur->getPseudo(),
+            'photoProfil' => $utilisateur->getPhotoProfil(),
+            'banniereProfil' => $utilisateur->getBanniereProfil(),
+            'adressMail' => $utilisateur->getAdressMail(),
+            'motDePasse' => $utilisateur->getMotDePasse(),
+            'role' => $utilisateur->getRole()
+        ]);
+        return $reussite;
+    }
 }
