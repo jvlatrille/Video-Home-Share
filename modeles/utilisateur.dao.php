@@ -88,4 +88,20 @@ class UtilisateurDao
     
             return $reussite;
         }
+
+
+    /**
+     * @brief Recherche un Utilisateur par son adresse mail
+     * @author Thibault CHIPY
+     * @param string $mail
+     * @return Utilisateur|null
+     */
+    public function findByMail(?string $mail): ?Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE adressMail = :mail";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['mail' => $mail]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetch();
+        return $utilisateur ? $this->hydrate($utilisateur) : null;
+    }
 }

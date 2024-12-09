@@ -75,5 +75,57 @@ class ControllerUtilisateur extends Controller
             'utilisateur' => $utilisateur,
             'message' => $message
         ]);
-    }  
+    }
+    
+    /**
+     * @brief Affiche le formulaire de connexion d'un utilisateur
+     * @author Thibault CHIPY 
+     *
+     * @return void
+     */
+    public function connexion(){
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
+    }
+
+    /**
+     * @brief Affiche le formulaire d'inscription d'un utilisateur
+     * @author Thibault CHIPY 
+     * 
+     * @return void
+     */
+
+    public function inscription(){
+        $template = $this->getTwig()->load('inscription.html.twig');
+        echo $template->render();
+    }
+    
+    /**
+     * @brief Vérifie la connexion d'un utilisateur
+     * @author Thibault Chipy 
+     * @version 1.0
+     * 
+     * @return void
+     */
+    public function verifConnexion(){
+        $mail=isset($_POST['mail'])?$_POST['mail']:null;
+        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
+
+        $mail = str_replace(' ', '', $mail); // On enlève les espaces
+
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $utilisateur = $managerUtilisateur->findByMail($mail);
+
+        if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
+            $_SESSION['idUtilisateur'] = $utilisateur->getIdUtilisateur();
+            $_SESSION['pseudo'] = $utilisateur->getPseudo();
+            $_SESSION['role'] = $utilisateur->getRole();
+
+            $this->show();
+            header('Location: index.php');
+        }else{
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render();
+        }
+    }
 }
