@@ -149,8 +149,9 @@ class ControllerUtilisateur extends Controller
         $role=isset($_POST['role'])?$_POST['role']:'utilisateur'; // Role par défaut : utilisateur
         $mail = str_replace(' ', '', $mail); // On enlève les espaces
 
+        var_dump($_POST);
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $utilisateur = $managerUtilisateur->findByMail($mail);
+        $utilisateur = $managerUtilisateur->emailExiste($mail);
 
         if($utilisateur){
             $template = $this->getTwig()->load('inscription.html.twig');
@@ -159,6 +160,10 @@ class ControllerUtilisateur extends Controller
             if($mdp != $mdpVerif){
                 $template = $this->getTwig()->load('inscription.html.twig');
                 echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
+            }
+            if(estRobuste($mdp)==false){
+                $template = $this->getTwig()->load('inscription.html.twig');
+                echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
             }
 
             $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
@@ -170,4 +175,6 @@ class ControllerUtilisateur extends Controller
             header('Location: index.php?controler=utilisateur&methode=verifConnexion');
         }
     }
+
+
 }

@@ -91,7 +91,7 @@ class UtilisateurDao
 
 
     /**
-     * @brief Recherche un Utilisateur par son adresse mail
+     * @brief Creer un Utilisateur par son adresse mail
      * @author Thibault CHIPY
      * @param string $mail
      * @return Utilisateur|null
@@ -111,7 +111,7 @@ class UtilisateurDao
      * @param Utilisateur $utilisateur
      * @return bool
      */
-    public function creeUtilisateur(?Utilisateur $utilisateur): ?bool {
+    public function creerUtilisateur(?Utilisateur $utilisateur): ?bool {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) 
                 VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -124,5 +124,42 @@ class UtilisateurDao
             'role' => $utilisateur->getRole()
         ]);
         return $reussite;
+    }
+
+    /**
+     * @brief Vérifier si un utilisateur existe en base de données avec son adresse mail
+     * @author Thibault CHIPY 
+     * 
+     * @param email de l'Utilisateur 
+     * @return bool
+     */
+
+     public function emailExiste(string $mail):bool{
+        $sql="SELECT COUNT(adressMail) FROM" .PREFIXE_TABLE. "utilisateur WHERE adressMail = :mail";
+        $sqlStatement = $this->pdo->prepare($sql);
+        $sqlStatement->execute(['mail' => $mail]);
+        return $sqlStatement->fetchColumn() > 0;
+     }
+
+
+     /**
+     * Vérifie si un mot de passe est robuste.
+     *
+     * Critères de robustesse :
+     * - Longueur minimale de 8 caractères.
+     * - Contient au moins une lettre majuscule (A-Z).
+     * - Contient au moins une lettre minuscule (a-z).
+     * - Contient au moins un chiffre (0-9).
+     * - Contient au moins un caractère spécial (@$!%*?&).
+     *
+     * @param string $password Le mot de passe à valider.
+     * @return bool true si le mot de passe respecte les critères, false sinon.
+     */
+    public function estRobuste(string $password): bool
+    {
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+
+        // La fonction preg_match retourne 1 si une correspondance est trouvée.
+        return preg_match($regex, $password) === 1;
     }
 }
