@@ -73,7 +73,7 @@ class OADao{
     private function getTagsByOA(int $idOA): array {
         $sql = "SELECT t.nom
             FROM ".PREFIXE_TABLE."tag t
-            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTag
+            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTags
             WHERE p.idOA = :idOA
         ";
         
@@ -120,7 +120,7 @@ class OADao{
         $sql = "SELECT distinct o.idOA,o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree
          FROM ".PREFIXE_TABLE."oa o 
          JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
-         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag   
+         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTags
          ORDER BY o.note DESC LIMIT 5";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();

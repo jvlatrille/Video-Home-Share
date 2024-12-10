@@ -63,7 +63,7 @@
      * @return array tableau de tags
      */
     public function findTagsOA(int $idOA): array {
-        $sql = "SELECT t.nom FROM ".PREFIXE_TABLE."tag t JOIN ".PREFIXE_TABLE."posseder p ON t.idTag = p.idTag WHERE p.idOA = :idOA";
+        $sql = "SELECT t.nom FROM ".PREFIXE_TABLE."tag t JOIN ".PREFIXE_TABLE."posseder p ON t.idTags = p.idTag WHERE p.idOA = :idOA";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->bindValue(':idOA', $idOA, PDO::PARAM_INT);
         $pdoStatement->execute();

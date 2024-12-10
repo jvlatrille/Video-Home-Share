@@ -88,23 +88,60 @@ class WatchListDao {
         foreach ($watchlistsData as $data) {
             $watchlist = $this->hydrate($data);
             
-            // Récupère les oeuvres pour chaque watchlist
-            $oeuvres = "SELECT o.* FROM ".PREFIXE_TABLE."constituer c
+            // Récupère les films pour chaque watchlist
+            $sqlFilms = "SELECT o.* FROM ".PREFIXE_TABLE."constituer c
                          JOIN ".PREFIXE_TABLE."oa o ON c.idOA = o.idOA
                          WHERE c.idWatchlist = :idWatchlist";
-            $statementOeuvres = $this->pdo->prepare($oeuvres);
-            $statementOeuvres->execute(['idWatchlist' => $watchlist->getIdWatchlist()]);
-            $oas= $statementOeuvres->fetchAll(PDO::FETCH_ASSOC);
+            $statementFilms = $this->pdo->prepare($sqlFilms);
+            $statementFilms->execute(['idWatchlist' => $watchlist->getIdWatchlist()]);
+            $filmsData = $statementFilms->fetchAll(PDO::FETCH_ASSOC);
     
-            foreach ($oas as $oa) {
-                $oeuvre= (new OADao($this->pdo))->hydrate($oa);
-                $watchlist->addOeuvre($oeuvre);
+            foreach ($filmsData as $filmData) {
+                $film = (new OADao($this->pdo))->hydrate($filmData);
+                $watchlist->addOeuvre($film);
             }
     
             $watchlists[] = $watchlist;
         }
     
         return $watchlists;
+    }
+
+    // Fonction pour récupérer les films d'une Watchlist
+    /**
+     * @brief Fonction pour récupérer les films d'une Watchlist
+     *
+     * @param integer $idWatchlist identifiant de la Watchlist
+     * @return array la liste des films de la Watchlist
+     */
+    private function recupererFilmsParWatchlistId(int $idWatchlist): array {
+        $sql = "SELECT o.idOA, o.nom, o.note, o.type, o.description, o.dateSortie, o.vo, o.duree 
+                FROM ".PREFIXE_TABLE."constituer c
+                JOIN ".PREFIXE_TABLE."oa o ON c.idOA = o.idOA
+                WHERE c.idWatchlist = :idWatchlist";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
+        return $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Fonction pour hydrater une watchlist avec ses films
+    /**
+     * @brief Fonction pour hydrater une Watchlist avec ses films
+     *
+     * @param array $data tableau associatif contenant les données de la Watchlist
+     * @return WatchList la Watchlist hydratée avec ses films
+     */
+    public function hydrateWithFilms(array $data): WatchList {
+        $watchlist = $this->hydrate($data);
+
+        $films = $this->recupererFilmsParWatchlistId($data['idWatchlist']);
+        foreach ($films as $filmData) {
+            $film = (new OADao($this->pdo))->hydrate($filmData);
+            $watchlist->addOeuvre($film);
+        }
+    
+        return $watchlist;
     }
 
     // Fonction pour hydrater une watchlist
@@ -166,6 +203,7 @@ class WatchListDao {
      *
      * @param WatchList $watchlist la Watchlist à créer
      * @return WatchList|null la Watchlist créée ou null si erreur
+     * @bug la fonction ne créer pas la watchlist 
      */
     public function creerWatchlist(WatchList $watchlist): ?WatchList {
         $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
@@ -181,14 +219,6 @@ class WatchListDao {
             ]);
 
             $watchlist->setIdWatchlist($this->pdo->lastInsertId());
-
-            //Vérifier si la watchlist contient des films, si oui les ajouter
-            if ($watchlist->getListeOeuvres()) {
-                foreach ($watchlist->getListeOeuvres() as $oeuvre) {
-                    $this->ajouterOAWatchlist($watchlist->getIdWatchlist(), $oeuvre->getIdOA());
-                }
-            }
-
             return $watchlist;
         } catch (Exception $e) {
             error_log("Erreur lors de la création de la watchlist : " . $e->getMessage());
@@ -225,8 +255,8 @@ class WatchListDao {
      * @param integer $idOA identifiant de l'OA
      * @return bool true si l'OA a été ajoutée à la Watchlist, false sinon
      */
-    public function ajouterOAWatchlist(int $idWatchlist, int $idOA): bool {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."constituer (idWatchlist, idOa) VALUES (:idWatchlist, :idOA)";
+    public function ajouterOA(int $idWatchlist, int $idOA): bool {
+        $sql = "INSERT INTO ".PREFIXE_TABLE."constituer (idWatchlist, idOA) VALUES (:idWatchlist, :idOA)";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -247,7 +277,7 @@ class WatchListDao {
      * @return bool true si l'OA a été supprimée de la Watchlist, false sinon
      */
     public function supprimerOA(int $idWatchlist, int $idOA): bool {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist AND idOa = :idOA";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist AND idOA = :idOA";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -266,9 +296,9 @@ class WatchListDao {
      * @param integer $idWatchlist identifiant de la Watchlist
      * @return array|null la liste des films de la Watchlist ou null si non trouvée
      */
-    public function afficherFilmsWatchlist(int $idWatchlist): ?array {
+    public function afficherOaWatchlist(int $idWatchlist): ?array {
         $sql = "SELECT o.* FROM ".PREFIXE_TABLE."constituer c
-                JOIN ".PREFIXE_TABLE."oa o ON c.idOa = o.idOa
+                JOIN ".PREFIXE_TABLE."oa o ON c.idOA = o.idOA
                 WHERE c.idWatchlist = :id";
         
         $pdoStatement = $this->pdo->prepare($sql);
@@ -282,4 +312,42 @@ class WatchListDao {
         $oaDao = new OADao($this->pdo);
         return $oaDao->hydrateAll($resultats);
     }
+
+    public function afficherAllOaWatchList(): ?array {
+        $sql = "SELECT o.idOA, o.nom, o.note, o.type, o.description, o.dateSortie, o.vo, o.duree
+                FROM ".PREFIXE_TABLE. "oa o 
+                JOIN ".PREFIXE_TABLE."constituer c ON o.idOA = c.idOA
+                JOIN ".PREFIXE_TABLE."watchlist w ON c.idWatchlist = w.idWatchlist";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute();
+        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$resultats) {
+            return null;
+        }
+        
+        $oaDao = new OADao($this->pdo);
+        return $oaDao->hydrateAll($resultats);
+    }
+
+    //Rajouté par Nathan, permet de renvoyer toutes les informations d'une watchlist avec ses oa.
+    // public function afficherAllOaWatchList(): ?array {
+    //     $sql = "SELECT SELECT * FROM ".PREFIXE_TABLE."oa o 
+    //             JOIN ".PREFIXE_TABLE."constituer c ON o.idOA = c.idOA
+    //             JOIN ".PREFIXE_TABLE."watchlist w ON c.idWatchlist = w.idWatchlist
+    //             WHERE w.idWatchlist = :id";
+        
+    //     $pdoStatement = $this->pdo->prepare($sql);
+    //     $pdoStatement->execute();
+    //     $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+
+    //     if (!$resultats) {
+    //         return null;
+    //     }
+        
+    //     $oaDao = new OADao($this->pdo);
+    //     return $oaDao->hydrateAll($resultats);
+    // }
+
 }
