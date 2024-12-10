@@ -121,12 +121,12 @@ class ControllerUtilisateur extends Controller
             $_SESSION['pseudo'] = $utilisateur->getPseudo();
             $_SESSION['role'] = $utilisateur->getRole();
             $_SESSION['mail'] = $utilisateur->getAdressMail();
-            session_start();
 
             header('Location: index.php');
+            exit;
         }else{
             $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render();
+            echo $template->render(['message' => 'Identifiants incorrects']);
         }
     }
 
@@ -182,7 +182,7 @@ class ControllerUtilisateur extends Controller
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
         }
-        if($verifMdp){
+        if(!$verifMdp){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
         }
