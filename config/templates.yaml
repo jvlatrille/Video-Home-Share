@@ -2,10 +2,10 @@
 
 # Connexion à la base de donnée
 DB_:
-  HOST: localhost
-  NAME: vhs
-  USER: root
-  PASS:  
+  HOST: lakartxela.iutbayonne.univ-pau.fr
+  NAME: namrein_pro
+  USER: namrein_pro
+  PASS: # A compléter
 PREFIXE_TABLE: vhs_
 
 # Constante de la partie vue
