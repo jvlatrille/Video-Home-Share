@@ -131,11 +131,11 @@ class UtilisateurDao
      * @author Thibault CHIPY 
      * 
      * @param email de l'Utilisateur 
-     * @return bool
+     * @return bool true si l'email existe, false sinon.
      */
 
      public function emailExiste(string $mail):bool{
-        $sql="SELECT COUNT(adressMail) FROM" .PREFIXE_TABLE. "utilisateur WHERE adressMail = :mail";
+        $sql="SELECT COUNT(adressMail) FROM vhs_utilisateur WHERE adressMail = :mail";
         $sqlStatement = $this->pdo->prepare($sql);
         $sqlStatement->execute(['mail' => $mail]);
         return $sqlStatement->fetchColumn() > 0;

@@ -111,7 +111,7 @@ class ControllerUtilisateur extends Controller
         $mail=isset($_POST['mail'])?$_POST['mail']:null;
         $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
 
-        $mail = str_replace(' ', '', $mail); // On enlève les espaces
+        // $mail = str_replace(' ', '', $mail); // On enlève les espaces
 
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
@@ -143,38 +143,56 @@ class ControllerUtilisateur extends Controller
         $pseudo=isset($_POST['pseudo'])?$_POST['pseudo']:null;
         $photoProfil=isset($_POST['photoProfil'])?$_POST['photoProfil']:null;
         $banniereProfil=isset($_POST['banniereProfil'])?$_POST['banniereProfil']:null;
+        $dateNaiss=isset($_POST['dateNaiss'])?$_POST['dateNaiss']:null;
         $mail=isset($_POST['mail'])?$_POST['mail']:null;
         $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
         $mdpVerif=isset($_POST['mdpVerif'])?$_POST['mdpVerif']:null;
         $role=isset($_POST['role'])?$_POST['role']:'utilisateur'; // Role par défaut : utilisateur
-        $mail = str_replace(' ', '', $mail); // On enlève les espaces
+        // $mail = str_replace(' ', '', $mail); // On enlève les espaces
 
-        var_dump($_POST);
+        
+        //Vérifier l'age de l'utilisateur
+        $dateJour = date('Y-m-d');
+        
+        //Comparé la date du jour avec la date de naissance de l'utilisateur
+        $dateNaiss = new DateTime($dateNaiss);
+        $dateJour = new DateTime($dateJour);
+        $age = $dateNaiss->diff($dateJour);
+        $age = $age->format('%y');
+
+        //Si l'utilisateur a moins de 13 ans
+        if($age < 13){
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'Vous devez avoir au moins
+            13 ans pour vous inscrire']);
+        }
+        
+
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->emailExiste($mail);
+        $verifMdp=$managerUtilisateur->estRobuste($mdp);
 
+        // Vérifie si l'email existe déjà
         if($utilisateur){
             $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Mail déjà utilisé']);
-        }else{
-            if($mdp != $mdpVerif){
-                $template = $this->getTwig()->load('inscription.html.twig');
-                echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
-            }
-            if(estRobuste($mdp)==false){
-                $template = $this->getTwig()->load('inscription.html.twig');
-                echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
-            }
+            echo $template->render(['message' => 'L\'adresse mail est déjà utilisée']);
+        }
+        
+        if($mdp != $mdpVerif){
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
+        }
+        if($verifMdp){
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
+        }
 
-            $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
-            $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
-            $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
-            $managerUtilisateur->creeUtilisateur($utilisateur);
+        $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
+        $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
+        $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
+        $managerUtilisateur->creerUtilisateur($utilisateur);
 
 
-            header('Location: index.php?controler=utilisateur&methode=verifConnexion');
+        header('Location: index.php?controleur=utilisateur&methode=verifConnexion');
         }
     }
-
-
-}
