@@ -19,19 +19,37 @@ class ControllerUtilisateur extends Controller
         echo $template->render(['utilisateurListe' => $utilisateurListe]);
     }
 
-    // Afficher un seul utilisateur
     public function afficherUtilisateur()
-    {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
+{
+    $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-        // Récupère l'utilisateur
-        $managerUtilisateur = new UtilisateurDAO($this->getPdo());
-        $utilisateur = $managerUtilisateur->find($id);
-
-        // Génère la vue
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
-        echo $template->render(['utilisateur' => $utilisateur]);
+    // Vérifie si un utilisateur est connecté
+    $utilisateurConnecte = null;
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
     }
+
+    // Récupère l'utilisateur demandé
+    $managerUtilisateur = new UtilisateurDAO($this->getPdo());
+    $utilisateur = $managerUtilisateur->findByMail($utilisateurConnecte->getAdressMail());
+
+    // Si un utilisateur est trouvé, affiche la page de détail de l'utilisateur
+    if ($utilisateur != null) {
+        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
+        echo $template->render([
+
+            'utilisateurConnecte' => $utilisateurConnecte,
+            'utilisateur' => $utilisateur
+
+        ]);
+        return; // Évite de charger une autre vue après
+    }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
 
     // Changer de pseudo
     public function changerPseudo() {
@@ -115,16 +133,11 @@ class ControllerUtilisateur extends Controller
 
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
-
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            $_SESSION['idUtilisateur'] = $utilisateur->getIdUtilisateur();
-            $_SESSION['pseudo'] = $utilisateur->getPseudo();
-            $_SESSION['role'] = $utilisateur->getRole();
-            $_SESSION['mail'] = $utilisateur->getAdressMail();
+            $_SESSION['utilisateur'] = serialize($utilisateur);
 
-            header('Location: index.php');
-            exit;
-        }else{
+            $this->afficherUtilisateur();
+        }else{  
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
@@ -160,6 +173,8 @@ class ControllerUtilisateur extends Controller
         $age = $dateNaiss->diff($dateJour);
         $age = $age->format('%y');
 
+        $verifPassee=true;
+
         //Si l'utilisateur a moins de 13 ans
         if($age < 13){
             $template = $this->getTwig()->load('inscription.html.twig');
@@ -171,28 +186,38 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->emailExiste($mail);
         $verifMdp=$managerUtilisateur->estRobuste($mdp);
-
+        
         // Vérifie si l'email existe déjà
         if($utilisateur){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'L\'adresse mail est déjà utilisée']);
+            $verifPassee=false;
+            return;
         }
         
         if($mdp != $mdpVerif){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
+            $verifPassee=false;
+            return;
         }
         if(!$verifMdp){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
+            $verifPassee=false;
+            return;
         }
 
+        if($verifPassee){
         $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
         $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
         $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
         $managerUtilisateur->creerUtilisateur($utilisateur);
-
-
+        }
+        else{
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'Erreur lors de l\'inscription']);
+        }
         header('Location: index.php?controleur=utilisateur&methode=connexion');
         }
     }

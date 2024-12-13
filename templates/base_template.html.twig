@@ -30,12 +30,18 @@
             <form class="d-flex justify-content-center" style="flex-grow: 1;">
                 <input class="form-control" type="search" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
             </form>
-        
+            {% if utilisateurConnecte is null %}
             <!-- Boutons Connexion et Langue -->
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
                 <button class="btn btn-custom" type="button">FR</button>
             </div>
+            {% else %}
+            <div class="me-3">
+                <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
+                <button class="btn btn-custom" type="button">FR</button>
+            </div>
+            {% endif %}
         </nav>
         
         <!-- Menu déroulant sous le bouton "Menu" -->
