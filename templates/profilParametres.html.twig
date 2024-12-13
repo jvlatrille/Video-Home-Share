@@ -1,2 +1,89 @@
-{% extends 'base_template.html.twig' %}
-    {% block title %}Profil : Paramètres - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+<!-- Couleur des marges -->
+<div style="background-color: #AA8463;">
+    <!-- Bloc principal avec des marges -->
+    <div class="container-fluid min-vh-100 ms-* me-*m-auto" style="background-color: #D5D0AF; border: none; width: 70%;">
+        <!-- Bloc principal avec bordures personnalisées -->
+
+        <!-- Boutons en haut -->
+        <div class="d-flex justify-content-around p-3 bg-light border-bottom">
+            <button class="btn" style="background-color: #AA8463; color: black;">A propos</button>
+            <button class="btn" style="background-color: #AA8463; color: black;">Vos notifications</button>
+            <button class="btn" style="background-color: #AA8463; color: black;">Paramètres</button>
+        </div>
+
+        <!-- Formulaires de modification -->
+        <div class="p-5">
+            <h4>Paramètres utilisateur</h4>
+
+            <!-- Changer pseudo -->
+            <div class="mb-3">
+                <label class="form-label">Changer de pseudo :</label>
+                <button class="btn btn-primary w-100" onclick="changerPseudo({{ utilisateur.idUtilisateur }})">Changer Pseudo</button>
+            </div>
+
+            <!-- Changer photo de profil -->
+            <div class="mb-3">
+                <label class="form-label">Changer de Photo de Profil :</label>
+                <form action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="post" enctype="multipart/form-data">
+                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('photoProfile').click();">Changer Photo de Profil</button>
+                    <!-- Formulaire de téléchargement -->
+                    <input type="file" name="photo" id="photoProfile" style="display: none;" accept="image/*">
+                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
+                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la photo</button>
+                </form>
+            </div>
+
+            <!-- Changer banniere -->
+            <div class="mb-3">
+                <label class="form-label">Changer de Banniere :</label>
+                <form action="index.php?controleur=utilisateur&methode=changerBanniere" method="post" enctype="multipart/form-data">
+                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('banniereProfile').click();">Changer Banniere</button>
+                    <!-- Formulaire de téléchargement de la bannière -->
+                    <input type="file" name="banniere" id="banniereProfile" style="display: none;" accept="image/*">
+                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
+                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la bannière</button>
+                </form>
+            </div>
+
+            <!-- Changer mail -->
+            <div class="mb-3">
+                <label class="form-label">Changer de mail :</label>
+                <button class="btn btn-primary w-100" onclick="changerMail({{ utilisateur.idUtilisateur }})">Changer Mail</button>
+            </div>
+
+            <!-- Changer mot de passe -->
+            <div class="mb-3">
+                <label class="form-label">Changer de mot de passe :</label>
+                <button class="btn btn-primary w-100">Changer Mot de Passe</button>
+            </div>
+
+            <!-- Vérifier le mail -->
+            <div>
+                <label class="form-label">Vérifier le mail :</label>
+                <button class="btn btn-primary w-100">Vérifier Mail</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts pour changement -->
+<script>
+    function changerPseudo(userId) {
+        const newPseudo = prompt("Entrez le nouveau pseudo :");
+        if (newPseudo) {
+            window.location.href = `index.php?controleur=utilisateur&methode=changerPseudo&id=${userId}&pseudo=${(newPseudo)}`;
+        }
+    }
+
+    function changerMail(userId) {
+        const newMail = prompt("Entrez le nouveau mail :");
+        if (newMail) {
+            window.location.href = `index.php?controleur=utilisateur&methode=changerMail&id=${userId}&mail=${(newMail)}`;
+        }
+    }
+</script>
+
+{% endblock %}
