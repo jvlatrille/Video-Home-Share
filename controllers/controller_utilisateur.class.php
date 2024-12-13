@@ -193,6 +193,6 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur->creerUtilisateur($utilisateur);
 
 
-        header('Location: index.php?controleur=utilisateur&methode=verifConnexion');
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
         }
     }
