@@ -17,23 +17,21 @@
 				</div>
 
 				<div class="carousel-inner">
-					{% for film in oaListe %}
+					{% for oa in oaListe %}
 						<div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
 							<svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveaspectratio="xMidYMid slice" focusable="false">
-								<title>{{ film.nom }}</title>
+								<title>{{ oa.nom }}</title>
 								<rect width="100%" height="100%" fill="rgba(213, 208, 175, 1)"></rect>
 							</svg>
 							<div class="carousel-caption d-none d-md-block">
-								<a href="index.php?controleur=oa&methode=afficherFilm&id={{film.id}}">
-									<h5>{{ film.nom }}</h5>
-									<p>Note :
-										{{ film.note }}</p>
+								<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{oa.idOa}}">
+									<h5>{{ oa.nom }}</h5>
 									<p>Description :
-										{{ film.description }}</p>
+										{{ oa.description }}</p>
 									<p>Date de sortie :
-										{{ film.dateSortie }}</p>
-									<p>Version originale :
-										{{ film.vo ? 'Oui' : 'Non' }}</p>
+										{{ oa.dateSortie }}</p>
+									<p>Genre :
+										{{ oa.genres[0] }}</p>
 								</a>
 							</div>
 						</div>

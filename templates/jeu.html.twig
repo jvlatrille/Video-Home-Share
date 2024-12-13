@@ -1,0 +1,14 @@
+{% extends 'base_template.html.twig' %}
+    {% block title %}Le jeu : {{jeu.nom}} - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+
+    {% block content %}
+       
+        <div class="card" style="width: 18rem;">
+            <img src="" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{jeu.nom}}</h5>
+                <p class="card-text">{{jeu.regle}}</p>
+            </div>
+        </div>
+
+    {% endblock %}

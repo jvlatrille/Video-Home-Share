@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -32,7 +33,7 @@
         
             <!-- Boutons Connexion et Langue -->
             <div class="me-3">
-                <button class="btn btn-custom me-2" type="button" data-bs-toggle="modal" data-bs-target="#authModal">Connexion</button>
+                <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
                 <button class="btn btn-custom" type="button">FR</button>
             </div>
         </nav>
@@ -42,13 +43,19 @@
             <div class="container py-2 d-flex justify-content-center">
                 <a href="index.php?controleur=forum&methode=listerForums" class="btn btn-light-custom mx-2">Forum</a>
 
-                <a href="jeux.php" class="btn btn-light-custom mx-2">Jeux</a>
+                <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
 
                 <a href="index.php?controleur=watchlist&methode=listerWatchList&id=1" class="btn btn-light-custom mx-2">WatchList</a>
-                                                                <!-- normelement c'est la var session id de l'user  -->
+                <!-- normelement c'est la var session id de l'user  -->
 
-                <a href="quizz.php" class="btn btn-light-custom mx-2">Quizz</a>
-                <a href="profil.php" class="btn btn-light-custom mx-2">Profil</a>
+
+                <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
+
+                <a href="index.php?controleur=utilisateur&methode=AllUtilisateurs" class="btn btn-light-custom mx-2">utilisateur</a> <!-- utilisateur A SUPPRIMER-->
+
+                <a href="index.php?controleur=testNotif&methode=listerNotif&id=1" class="btn btn-light-custom mx-2">Profil</a>
+                
+
             </div>
         </div>
     </header>

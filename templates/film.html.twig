@@ -1,60 +1,122 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<title>Bienvenue sur {{constant("WEBSITE_TITLE")}}</title>
+	<title>Bienvenue sur
+		{{ constant("WEBSITE_TITLE") }}</title>
 
-{% if oa is defined %}
-    <h1>{{ oa.nom }}</h1>
-    <p>Note : {{ oa.note }}</p>
-    <p>Description : {{ oa.description }}</p>
-    <p>Date de sortie : {{ oa.dateSortie }}</p>
-    <p>Version originale : {{ oa.vo ? 'Oui' : 'Non' }}</p>
+	{% if oa is defined %}
+		<h1>{{ oa.nom }}</h1>
+		<p>Note :
+			{{ oa.note }}</p>
+		<p>Description :
+			{{ oa.description }}</p>
+		<p>Date de sortie :
+			{{ oa.dateSortie }}</p>
+		<p>Version originale :
+			{{ oa.vo }}</p>
+            
+        {% if oa.genres is defined and oa.genres is not empty %}
+            <p>Genres :
+            {{ oa.genres[0] }}
 
-<!-- Bouton pour ouvrir la pop-up -->
-<div class="container text-center my-4">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-        Ajouter le film à une watchlist
-    </button>
-</div>
+            {% endif %}
 
-<!-- Modal pour l'ajout de film à une watchlist -->
-<div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addFilmModalLabel">Choisir dans quelle watchlist ajouter le film</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Formulaire pour ajouter le film à une ou plusieurs watchlists -->
-                <form id="addFilmForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterOaWatchList">
-                    <input type="hidden" name="idOeuvre" value="{{ oa.id }}"> <!-- ID du film à ajouter -->
+			<!-- Section des participants -->
+			{% if participants is defined and participants is not empty %}
+				<h2>Participants</h2>
+				<ul>
+					{% for participant in participants %}
+						<li>
+							{{ participant.prenom }} {{ participant.nom }} - {{ participant.role }} 
+						</li>
+					{% endfor %}
+				</ul>
+			{% else %}
+				<p>Aucun participant trouvé pour ce film.</p>
+			{% endif %}
+			
+		<div class="container text-center my-4">
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
+				Ajouter l'oeuvre à une watchlist
+			</button>
+		</div>
 
-                    <!-- Liste des watchlists avec cases à cocher -->
-                    {% if watchListListe is defined and watchListListe is not empty %}
-                        {% for watchlist in watchListListe %}
-                            <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
-                                    <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>Aucune watchlist trouvée.</p>
-                    {% endif %}
+		{% if watchListListe is defined and watchListListe is not empty %}
+			<div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addFilmModalLabel">Choisir une watchlist</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form method="POST" action="index.php?controleur=watchlist&methode=ajouterOaWatchList">
+								<input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
 
-                    <!-- Bouton de soumission -->
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Ajouter à la watchlist</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+								{% for watchlist in watchListListe %}
+									<div class="form-check mb-3">
+										<input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="watchlist{{ watchlist.idWatchlist }}">
+										<label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
+									</div>
+								{% endfor %}
+								<div class="text-center">
+									<button type="submit" class="btn btn-primary">Ajouter à la watchlist</button>
+									<button type="button" class="btn btn-secondary" data-bs-target="#createWatchlistModal" data-bs-toggle="modal">Créer une nouvelle watchlist</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% else %}
+                                             <p>Aucune watchList n'a été créée pour l'instant. Créer en une</p>
+        {% endif %}
+			<div class="container text-center my-4">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
+					Créer une watchlist
+				</button>
+			</div>
 
-{% else %}
-    <p>Le film n'existe pas</p>
-{% endif %}
+			<div class="modal fade" id="createWatchlistModal" tabindex="-1" aria-labelledby="createWatchlistModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="createWatchlistModalLabel">Créer une nouvelle Watchlist</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form method="POST" action="index.php?controleur=watchlist&methode=ajouterWatchList">
+								<div class="mb-3">
+									<label for="watchlistTitle" class="form-label">Titre :</label>
+									<input type="text" class="form-control" id="watchlistTitle" name="titre" required>
+								</div>
+								<div class="mb-3">
+									<label for="watchlistGenre" class="form-label">Genre :</label>
+									<input type="text" class="form-control" id="watchlistGenre" name="genre">
+								</div>
+								<div class="mb-3">
+									<label for="watchlistDescription" class="form-label">Description :</label>
+									<textarea class="form-control" id="watchlistDescription" name="description" rows="3"></textarea>
+								</div>
+								<div class="mb-3">
+									<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+									<select class="form-select" id="watchlistVisibility" name="visible">
+										<option value="public">Publique</option>
+										<option value="private">Privée</option>
+									</select>
+								</div>
+								<div class="text-center">
+									<button type="submit" class="btn btn-primary">Créer une nouvelle watchlist</button>
+									<button type="button" class="btn btn-secondary" data-bs-target="#addFilmModal" data-bs-toggle="modal">Retour à l'ajout</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+
+	{% else %}
+		<p>Le film n'existe pas.</p>
+	{% endif %}
 {% endblock %}
