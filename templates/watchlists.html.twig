@@ -118,8 +118,8 @@
 					</div>
 				</div> #}
 
-				<div class="container text-center">
 				{% for watchList in watchListListe %}
+				<div class="container text-center mt-2">
 					<div class="row">
 						<div class="col text-start">
 							<h2>{{watchList.titre}}</h2>
@@ -127,70 +127,44 @@
 					</div>
 					<div class="row">
 						<div class="col">
-							<button class="bg-primary mt-5" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+							<button class="bg-primary mt-5" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="prev">
 								<span class="carousel-control-prev-icon align-middle" aria-hidden="true"></span>
 								<span class="visually-hidden">Précédent</span>
 							</button>
 						</div>
 						<div class="col">
-							<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+							<div id="{{watchList.idWatchlist}}" class="carousel slide" data-bs-ride="carousel">
 								<div class="carousel-inner">
-									<!-- Groupe de 3 films (première vue) -->
-									<div class="carousel-item active">
-										<div class="row">
-											<div class="col-4">
-												<img src="imagesNathanTest/film1.jpg" class="d-block w-100" alt="Film 1" max-width max-height>
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film2.jpg" class="d-block w-100" alt="Film 2" max-width max-height>
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film3.jpg" class="d-block w-100" alt="Film 3" max-width max-height>
-											</div>
-										</div>
-									</div>
-									
-									<!-- Groupe de 3 films (deuxième vue) -->
-									<div class="carousel-item">
-										<div class="row">
-											<div class="col-4">
-												<img src="imagesNathanTest/film4.jpg" class="d-block w-100" alt="Film 4" max-width max-height>
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film5.jpg" class="d-block w-100" alt="Film 5" max-width max-height>
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film6.jpg" class="d-block w-100" alt="Film 6" max-width max-height>
+										<div class="carousel-item active">
+											<div class="row">
+												{% for oa in watchList.listeOeuvres %}
+													<div class="col-4">
+														<img src="imagesNathanTest/film1.jpg" class="d-block w-100" alt="Film 1" max-width max-height>
+														<p>{{oa.nom}}</p>
+													</div>
+													
+													{% if loop.index % 3 == 0 %}
+														</div>
+														</div>
+														<div class="carousel-item">
+														<div class="row">
+													{% endif %}
+
+												{% endfor %}
 											</div>
 										</div>
-									</div>
-									
-									<!-- Groupe de 3 films (troisième vue) -->
-									<div class="carousel-item">
-										<div class="row">
-											<div class="col-4">
-												<img src="imagesNathanTest/film7.jpg" class="d-block w-100" alt="Film 7">
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film8.jpg" class="d-block w-100" alt="Film 8">
-											</div>
-											<div class="col-4">
-												<img src="imagesNathanTest/film9.jpg" class="d-block w-100" alt="Film 9">
-											</div>
-										</div>
-									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col">
-							<button class="bg-primary mt-5" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+							<button class="bg-primary mt-5" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="next">
 								<span class="carousel-control-next-icon align-middle" aria-hidden="true"></span>
 								<span class="visually-hidden">Suivant</span>
 							</button>
 						</div>
 					</div>
-					{% endfor %}
 				</div>
+				{% endfor %}
 
 				{# <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
 					<div class="carousel-inner">
@@ -252,7 +226,7 @@
 				{# </div> #}
 
 
-
+				{# Sortir de la div si on veut le laisser en bas #}
 				<div class="text-center mt-4">
 					<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id=1" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
 				</div>
