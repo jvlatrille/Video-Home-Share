@@ -66,6 +66,7 @@ class OADao
         }
 
         var_dump($this->getPosterUrl($movie['poster_path']));
+
         return new OA(
             $movie['id'],
             $movie['title'],
@@ -76,9 +77,9 @@ class OADao
             $movie['original_language'],
             $movie['runtime'],
             array_column($movie['genres'], 'name'),
-            $this->getPosterUrl($movie['poster_path'])
+            null,
+            $this->getPosterUrl($movie['poster_path']) // Passe l'URL complète ici
         );
-        
     }
 
     public function findMeilleurNote(): array
@@ -92,6 +93,9 @@ class OADao
         }
 
         foreach ($results['results'] as $movie) {
+            $runtime = $movie['runtime'] ?? null; // Vérification de l'existence de 'runtime'
+            $genres = isset($movie['genres']) && is_array($movie['genres']) ? array_column($movie['genres'], 'name') : null; // Vérification de 'genres'
+
             $movies[] = new OA(
                 $movie['id'],
                 $movie['title'],
@@ -100,9 +104,10 @@ class OADao
                 $movie['overview'],
                 $movie['release_date'],
                 $movie['original_language'],
-                null,
-                null,
-                $this->getPosterUrl($movie['poster_path']) // URL complète de l'affiche
+                $runtime, // Utilisation de $runtime après vérification
+                $genres,  // Utilisation de $genres après vérification
+                null, // Pas de collection ici
+                $this->getPosterUrl($movie['poster_path'])
             );
         }
 

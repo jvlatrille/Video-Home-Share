@@ -23,6 +23,6 @@ class ControllerOA extends Controller
         $oa = $managerOa->find($idOa);
 
         $template = $this->getTwig()->load('film.html.twig');
-        echo $template->render(['oa' => $oa]);
+        echo $template->render(['oa' => $oa]); // Envoi de l'objet 'oa' à Twig
     }
 }

@@ -310,7 +310,7 @@ class OA
      *
      * @return integer|null lien de la couverture de l'oeuvre audiovisuelle
      */
-    public function getposterPath(): ?string
+    public function getPosterPath(): ?string
     {
         return $this->posterPath;
     }
@@ -320,7 +320,7 @@ class OA
      *
      * @param integer|null $path : lien de la couverture de l'oeuvre audiovisuelle
      */
-    public function setposterPath(?int $path): void
+    public function setPosterPath(?string $path): void
     {
         $this->posterPath = $path;
     }
