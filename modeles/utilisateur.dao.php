@@ -69,7 +69,7 @@ class UtilisateurDao
 
     //Changer un pseudo
     public function changerPseudo(?int $id, ?string $newPseudo): bool{
-        $sql = "UPDATE vhs_utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
                 SET pseudo = :pseudo
                 WHERE idUtilisateur = :id"; 
         $pdoStatement = $this->pdo->prepare($sql);
@@ -78,16 +78,38 @@ class UtilisateurDao
         return $reussite;
     }
 
-        //Changer un pseudo
-        public function changerMail(?int $id, ?string $newMail): bool{
-            $sql = "UPDATE vhs_utilisateur
-                    SET adressMail = :mail
-                    WHERE idUtilisateur = :id"; 
-            $pdoStatement = $this->pdo->prepare($sql);
-            $reussite = $pdoStatement->execute(['mail' => $newMail, 'id' => $id]);
+    //Changer un pseudo
+    public function changerMail(?int $id, ?string $newMail): bool{
+         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                 SET adressMail = :mail
+                 WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['mail' => $newMail, 'id' => $id]);
     
-            return $reussite;
-        }
+        return $reussite;
+    }
+
+    public function updateUserPhoto(int $userId, string $filePath): bool{
+        // Requête pour mettre à jour la photo de profil de l'utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET photoProfil = :photoProfil 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute(['photoProfil' => $filePath, 'id' => $userId]);
+
+        return $result;
+    }
+
+    public function updateUserBanniere(int $userId, string $filePath): bool{
+        // Requête pour mettre à jour la photo de profil de l'utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET banniereProfil = :banniere 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute(['banniere' => $filePath, 'id' => $userId]);
+
+        return $result;
+    }
 
 
     /**

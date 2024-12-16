@@ -3,7 +3,7 @@
 use Symfony\Component\Yaml\Yaml;
 
 // Chemin vers le fichier de configuration YAML
-$configPath = __DIR__ . '/constantes.yaml';
+$configPath = __DIR__ . '/templates.yaml';
 
 if (file_exists($configPath)) {
     // Parse le fichier YAML pour obtenir les configurations

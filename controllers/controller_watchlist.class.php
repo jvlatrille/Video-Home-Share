@@ -34,10 +34,15 @@ class ControllerWatchList extends Controller{
         $watchListListe = $managerWatchList->findAll(1); // normalement $_SESSION['idUtilisateur']
                                                          // mais pour les tests on met 1
         
+        //Recupere les oeuvres de la watchlist
+        //$oas = $managerWatchList->afficherAllOaWatchlist(1); // ici $_SESSION['idUtilisateur']
+
         // Generer la vue
         $template = $this->getTwig()->load('watchlists.html.twig');
         
         echo $template->render(['watchListListe' => $watchListListe]);
+        //Test de données : var_dump($oas) et var_dump($watchListListe);
+        // Il faut que je fasse une requete pour que je récupère la titre de la watchlist avec ses propres oa
     }        
 
     /**
@@ -55,7 +60,7 @@ class ControllerWatchList extends Controller{
         $watchList=$managerWatchList->find($id);
         
         //Recupere les oeuvres de la watchlist
-        $oas = $managerWatchList->afficherFilmsWatchlist($id);
+        $oas = $managerWatchList->afficherOaWatchlist($id);
         
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');

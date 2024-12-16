@@ -5,7 +5,7 @@ DB_:
   HOST: lakartxela.iutbayonne.univ-pau.fr
   NAME: namrein_pro
   USER: namrein_pro
-  PASS: # A compléter
+  PASS: namrein_pro
 PREFIXE_TABLE: vhs_
 
 # Constante de la partie vue
