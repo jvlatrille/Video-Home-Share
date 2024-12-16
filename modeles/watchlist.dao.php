@@ -221,7 +221,7 @@ class WatchListDao {
      */
     public function creerWatchlist(WatchList $watchlist): ?WatchList {
         $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
-                VALUES (:titre, :genre, :description, :visible, 1)"; // 1 pour les tests, normalement $_SESSION['idUtilisateur']
+                VALUES (:titre, :genre, :description, :visible, :id)"; 
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -229,7 +229,8 @@ class WatchListDao {
                 'titre' => $watchlist->getTitre(),
                 'genre' => $watchlist->getGenre(),
                 'description' => $watchlist->getDescription(),
-                'visible' => $watchlist->getVisible()
+                'visible' => $watchlist->getVisible(),
+                'id'=>$watchlist->getIdUtilisateur()
             ]);
 
             $watchlist->setIdWatchlist($this->pdo->lastInsertId());
