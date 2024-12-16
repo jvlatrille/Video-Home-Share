@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file oa.class.php
  * @author Thibault CHIPY
@@ -9,7 +10,8 @@
  * @date : 13/11/2024
  */
 
-class OA{
+class OA
+{
     //Attributs d'une oeuvre audiovisuelle
     /**
      * @brief Identifiant de l'oeuvre audiovisuelle
@@ -22,7 +24,7 @@ class OA{
     /**
      * @brief Note de l'oeuvre audiovisuelle
      */
-    private ?int $note;
+    private ?float $note;
     /**
      * @brief Type de l'oeuvre audiovisuelle
      */
@@ -50,7 +52,7 @@ class OA{
      *
      * @var string|null
      */
-    private ?array $genres =[];
+    private ?array $genres = [];
 
     /**
      * @brief Collection de l'oeuvre audiovisuelle
@@ -59,12 +61,19 @@ class OA{
      */
     private ?string $collection;
 
+    /**
+     * @brief Lien vers la couverture de l'oeuvre audiovisuelle
+     * 
+     * * @var string|null
+     */
+    private ?string $posterPath;
+
 
     /**
      * @brief Constructeur de la classe OA
      * @param int|null $idOa : identifiant de l'oeuvre audiovisuelle
      * @param string|null $nom : nom de l'oeuvre audiovisuelle
-     * @param int|null $note : note de l'oeuvre audiovisuelle
+     * @param float|null $note : note de l'oeuvre audiovisuelle
      * @param string|null $type : type de l'oeuvre audiovisuelle
      * @param string|null $description : description de l'oeuvre audiovisuelle
      * @param string|null $dateSortie : date de sortie de l'oeuvre audiovisuelle
@@ -72,8 +81,10 @@ class OA{
      * @param int|null $duree : durée de l'oeuvre audiovisuelle
      * @param array|null $genres : genres de l'oeuvre audiovisuelle
      * @param string|null $collection : Collection de l'oeuvre audiovisuelle
+     * @param string|null $posterPath : Collection de l'oeuvre audiovisuelle
      */
-    public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $duree=null, ?array $genres=null, ?string $collection=null){
+    public function __construct(?int $id = null, ?string $nom = null, ?float $note = null, ?string $type = null, ?string $description = null, ?string $dateSortie = null, ?string $vo = null, ?int $duree = null, ?array $genres = null, ?string $collection = null, ?string $posterPath = null)
+    {
         $this->idOa = $id;
         $this->nom = $nom;
         $this->note = $note;
@@ -84,6 +95,7 @@ class OA{
         $this->duree = $duree;
         $this->genres = $genres;
         $this->collection = $collection;
+        $this->posterPath = $posterPath;
     }
 
     //Getters et setters de la classe OA
@@ -93,7 +105,8 @@ class OA{
      *
      * @return integer|null identifiant de l'oeuvre audiovisuelle
      */
-    public function getIdOa(): ?int{
+    public function getIdOa(): ?int
+    {
         return $this->idOa;
     }
 
@@ -102,8 +115,8 @@ class OA{
      *
      * @param integer|null $id : identifiant de l'oeuvre audiovisuelle
      */
-
-    public function setIdOa(?int $id): void{
+    public function setIdOa(?int $id): void
+    {
         $this->idOa = $id;
     }
 
@@ -112,7 +125,8 @@ class OA{
      *
      * @return string|null nom de l'oeuvre audiovisuelle
      */
-    public function getNom(): ?string{
+    public function getNom(): ?string
+    {
         return $this->nom;
     }
 
@@ -121,7 +135,8 @@ class OA{
      *
      * @param string|null $nom : nom de l'oeuvre audiovisuelle
      */
-    public function setNom(?string $nom): void{
+    public function setNom(?string $nom): void
+    {
         $this->nom = $nom;
     }
 
@@ -130,7 +145,8 @@ class OA{
      *
      * @return integer|null note de l'oeuvre audiovisuelle
      */
-    public function getNote(): ?int{
+    public function getNote(): ?float
+    {
         return $this->note;
     }
 
@@ -139,7 +155,8 @@ class OA{
      *
      * @param integer|null $note : note de l'oeuvre audiovisuelle
      */
-    public function setNote(?int $note): void{
+    public function setNote(?float $note): void
+    {
         $this->note = $note;
     }
 
@@ -148,7 +165,8 @@ class OA{
      *
      * @return string|null type de l'oeuvre audiovisuelle
      */
-    public function getType(): ?string{
+    public function getType(): ?string
+    {
         return $this->type;
     }
 
@@ -157,7 +175,8 @@ class OA{
      *
      * @param string|null $type : type de l'oeuvre audiovisuelle
      */
-    public function setType(?string $type): void{
+    public function setType(?string $type): void
+    {
         $this->type = $type;
     }
 
@@ -167,7 +186,8 @@ class OA{
      * @return string|null description de l'oeuvre audiovisuelle
      */
 
-    public function getDescription(): ?string{
+    public function getDescription(): ?string
+    {
         return $this->description;
     }
 
@@ -176,7 +196,8 @@ class OA{
      *
      * @param string|null $description : description de l'oeuvre audiovisuelle
      */
-    public function setDescription(?string $description): void{
+    public function setDescription(?string $description): void
+    {
         $this->description = $description;
     }
 
@@ -185,7 +206,8 @@ class OA{
      *
      * @return string|null date de sortie de l'oeuvre audiovisuelle
      */
-    public function getDateSortie(): ?string{
+    public function getDateSortie(): ?string
+    {
         return $this->dateSortie;
     }
 
@@ -194,7 +216,8 @@ class OA{
      *
      * @param string|null $dateSortie : date de sortie de l'oeuvre audiovisuelle
      */
-    public function setDateSortie(?string $dateSortie): void{
+    public function setDateSortie(?string $dateSortie): void
+    {
         $this->dateSortie = $dateSortie;
     }
 
@@ -203,7 +226,8 @@ class OA{
      *
      * @return string|null version originale de l'oeuvre audiovisuelle
      */
-    public function getVo(): ?string{
+    public function getVo(): ?string
+    {
         return $this->vo;
     }
 
@@ -212,7 +236,8 @@ class OA{
      *
      * @param string|null $vo : version originale de l'oeuvre audiovisuelle
      */
-    public function setVo(?string $vo): void{
+    public function setVo(?string $vo): void
+    {
         $this->vo = $vo;
     }
 
@@ -223,7 +248,8 @@ class OA{
      * @return integer|null durée de l'oeuvre audiovisuelle
      */
 
-    public function getDuree(): ?int{
+    public function getDuree(): ?int
+    {
         return $this->duree;
     }
 
@@ -232,7 +258,8 @@ class OA{
      *
      * @param integer|null $duree : durée de l'oeuvre audiovisuelle
      */
-    public function setDuree(?int $duree): void{
+    public function setDuree(?int $duree): void
+    {
         $this->duree = $duree;
     }
 
@@ -241,7 +268,8 @@ class OA{
      *
      * @return array|null genres de l'oeuvre audiovisuelle
      */
-    public function getGenres(): ?array{
+    public function getGenres(): ?array
+    {
         return $this->genres;
     }
 
@@ -252,17 +280,18 @@ class OA{
      * 
      */
 
-    public function setGenres(?array $genres): void{
+    public function setGenres(?array $genres): void
+    {
         $this->genres = $genres;
-
     }
-    
+
     /**
      * @brief Retourne la collection de l'oeuvre audiovisuelle OA
      *
      * @return string|null collection de l'oeuvre audiovisuelle
      */
-    public function getCollection(): ?string{
+    public function getCollection(): ?string
+    {
         return $this->collection;
     }
 
@@ -271,7 +300,28 @@ class OA{
      *
      * @param string|null $collection : collection de l'oeuvre audiovisuelle
      */
-    public function setCollection(?string $collection): void{
+    public function setCollection(?string $collection): void
+    {
         $this->collection = $collection;
+    }
+
+    /**
+     * @brief Retourne le chemin de la couverture de l'oeuvre audiovisuelle OA 
+     *
+     * @return integer|null lien de la couverture de l'oeuvre audiovisuelle
+     */
+    public function getposterPath(): ?string
+    {
+        return $this->posterPath;
+    }
+
+    /**
+     * @brief Modifie le chemin de la couverture de l'oeuvre audiovisuelle OA 
+     *
+     * @param integer|null $path : lien de la couverture de l'oeuvre audiovisuelle
+     */
+    public function setposterPath(?int $path): void
+    {
+        $this->posterPath = $path;
     }
 }
