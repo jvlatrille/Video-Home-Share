@@ -78,7 +78,7 @@ class WatchListDao {
             $pdoStatementOeuvres->execute(['idWatchlist' => $watchlist->getIdWatchlist()]);
             $oeuvres = $pdoStatementOeuvres->fetchAll(PDO::FETCH_ASSOC);
 
-            $watchlist->setListeOeuvres(OADao::hydrateAll($oeuvres));
+            $watchlist->setListeOeuvres(OADao::hydrateAll($oeuvres)); 
         }
 
         return $watchlists;

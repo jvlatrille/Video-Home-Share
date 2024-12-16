@@ -135,8 +135,6 @@
 						<div class="col">
 							<div id="{{watchList.idWatchlist}}" class="carousel slide" data-bs-ride="carousel">
 								<div class="carousel-inner">
-									{# {% for watchList in watchListListe %} #}
-										<!-- Groupe de 3 films (première vue) -->
 										<div class="carousel-item active">
 											<div class="row">
 												{% for oa in watchList.listeOeuvres %}
@@ -153,21 +151,8 @@
 													{% endif %}
 
 												{% endfor %}
-												{# <div class="col-4">
-													<img src="imagesNathanTest/film2.jpg" class="d-block w-100" alt="Film 2" max-width max-height>
-												</div>
-												<div class="col-4">
-													<img src="imagesNathanTest/film3.jpg" class="d-block w-100" alt="Film 3" max-width max-height>
-												</div> #}
 											</div>
 										</div>
-									{# {% endfor %} #}
-									
-									<!-- Groupe de 3 films (deuxième vue) -->
-									
-									
-									<!-- Groupe de 3 films (troisième vue) -->
-									
 								</div>
 							</div>
 						</div>
