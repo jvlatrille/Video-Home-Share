@@ -35,12 +35,14 @@ class ControllerWatchList extends Controller{
                                                          // mais pour les tests on met 1
         
         //Recupere les oeuvres de la watchlist
-        $oas = $managerWatchList->afficherOaWatchlist(11);
+        //$oas = $managerWatchList->afficherAllOaWatchlist(1); // ici $_SESSION['idUtilisateur']
 
         // Generer la vue
         $template = $this->getTwig()->load('watchlists.html.twig');
         
-        echo $template->render(['watchListListe' => $watchListListe, 'oas' => $oas]);
+        echo $template->render(['watchListListe' => $watchListListe]);
+        //Test de données : var_dump($oas) et var_dump($watchListListe);
+        // Il faut que je fasse une requete pour que je récupère la titre de la watchlist avec ses propres oa
     }        
 
     /**

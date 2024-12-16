@@ -73,7 +73,7 @@ class OADao{
     private function getTagsByOA(int $idOA): array {
         $sql = "SELECT t.nom
             FROM ".PREFIXE_TABLE."tag t
-            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTags
+            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTag
             WHERE p.idOA = :idOA
         ";
         
@@ -120,7 +120,7 @@ class OADao{
         $sql = "SELECT distinct o.idOA,o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree
          FROM ".PREFIXE_TABLE."oa o 
          JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
-         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTags
+         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag
          ORDER BY o.note DESC LIMIT 5";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
@@ -175,7 +175,7 @@ class OADao{
      * @param array $tableauAssoc Tableau associatif contenant les données d'une OA 
      * @return OA|null L'objet OA ou null
      */
-    public function hydrate(array $tableauAssoc) : ?OA{
+    public static function hydrate(array $tableauAssoc) : ?OA{ //Static car l'objet n'est pas crée
         $oa=new OA();
         $oa->setIdOa($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
@@ -194,10 +194,10 @@ class OADao{
      * @param array $resultats Tableau de tableaux associatifs contenant les données de plusieurs OA
      * @return array|null Tableau d'objets OA ou null
      */
-    public function hydrateAll(array $resultats): ?array {
+    public static function hydrateAll(array $resultats): ?array { //Static car l'objet n'est pas crée
         $oaListe = [];
         foreach ($resultats as $row) {
-            $oaListe[] = $this->hydrate($row);
+            $oaListe[] = OADao::hydrate($row); //Sans static : $oaListe[] = $this->hydrate($row);
         }
         
         return $oaListe;

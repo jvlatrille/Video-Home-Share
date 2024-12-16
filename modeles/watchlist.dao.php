@@ -67,7 +67,21 @@ class WatchListDao {
             return null;
         }
         
-        return $this->hydrateAll($resultats);
+        // return $this->hydrateAll($resultats);
+        $watchlists = $this->hydrateAll($resultats);
+
+        foreach ($watchlists as $watchlist) {
+            $sqlOeuvres = "SELECT * FROM ".PREFIXE_TABLE."oa o
+            JOIN ".PREFIXE_TABLE."constituer c ON o.idOA = c.idOA
+            WHERE idWatchlist = :idWatchlist";
+            $pdoStatementOeuvres = $this->pdo->prepare($sqlOeuvres);
+            $pdoStatementOeuvres->execute(['idWatchlist' => $watchlist->getIdWatchlist()]);
+            $oeuvres = $pdoStatementOeuvres->fetchAll(PDO::FETCH_ASSOC);
+
+            $watchlist->setListeOeuvres(OADao::hydrateAll($oeuvres));
+        }
+
+        return $watchlists;
     }
 
     // Fonction pour afficher toutes les watchlists avec les films associés des autres utilisateurs (pour la page communauté)
@@ -313,14 +327,15 @@ class WatchListDao {
         return $oaDao->hydrateAll($resultats);
     }
 
-    public function afficherAllOaWatchList(): ?array {
-        $sql = "SELECT o.idOA, o.nom, o.note, o.type, o.description, o.dateSortie, o.vo, o.duree
+    public function afficherAllOaWatchList(int $idUtilisateur): ?array {
+        $sql = "SELECT w.idWatchlist, o.idOA, o.nom, o.note, o.type, o.description, o.dateSortie, o.vo, o.duree
                 FROM ".PREFIXE_TABLE. "oa o 
                 JOIN ".PREFIXE_TABLE."constituer c ON o.idOA = c.idOA
-                JOIN ".PREFIXE_TABLE."watchlist w ON c.idWatchlist = w.idWatchlist";
+                JOIN ".PREFIXE_TABLE."watchlist w ON c.idWatchlist = w.idWatchlist
+                WHERE w.idUtilisateur = :id";
         
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute();
+        $pdoStatement->execute(['id' => $idUtilisateur]);
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$resultats) {
