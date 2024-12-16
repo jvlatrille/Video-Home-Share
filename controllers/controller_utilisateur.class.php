@@ -21,28 +21,17 @@ class ControllerUtilisateur extends Controller
 
     public function afficherUtilisateur()
 {
-    $id = isset($_GET['id']) ? $_GET['id'] : null;
-
     // Vérifie si un utilisateur est connecté
-    $utilisateurConnecte = null;
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-    }
+        $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
-    // Récupère l'utilisateur demandé
-    $managerUtilisateur = new UtilisateurDAO($this->getPdo());
-    $utilisateur = $managerUtilisateur->findByMail($utilisateurConnecte->getAdressMail());
-
-    // Si un utilisateur est trouvé, affiche la page de détail de l'utilisateur
-    if ($utilisateur != null) {
+        // Récupère l'utilisateur
         $template = $this->getTwig()->load('utilisateur_detail.html.twig');
         echo $template->render([
-
-            'utilisateurConnecte' => $utilisateurConnecte,
-            'utilisateur' => $utilisateur
-
+            'utilisateur' => $utilisateurConnecte
         ]);
-        return; // Évite de charger une autre vue après
+        return;
     }
 
     // Sinon, affiche la page de connexion
@@ -53,8 +42,12 @@ class ControllerUtilisateur extends Controller
 
     // Changer de pseudo
     public function changerPseudo() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
+            $id = $utilisateurConnecte->getIdUtilisateur();
+            $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
     
         if (!$id || !$newPseudo) {
             throw new Exception('Informations manquantes : ID ou pseudo.');
@@ -72,7 +65,7 @@ class ControllerUtilisateur extends Controller
             'message' => $message
         ]);
     }    
-    
+}
     // Changer de Mail
     public function changerMail() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -134,8 +127,6 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            $_SESSION['utilisateur'] = serialize($utilisateur);
-
             $this->afficherUtilisateur();
         }else{  
             $template = $this->getTwig()->load('connexion.html.twig');
@@ -219,5 +210,16 @@ class ControllerUtilisateur extends Controller
             echo $template->render(['message' => 'Erreur lors de l\'inscription']);
         }
         header('Location: index.php?controleur=utilisateur&methode=connexion');
+        }
+
+        /**
+         * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
+         * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
+         * 
+         * @return void
+         */
+        public function deconnexion(){
+            session_destroy();
+            header('Location: index.php');
         }
     }
