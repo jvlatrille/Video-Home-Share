@@ -3,6 +3,7 @@
     "require": {
         "twig/twig": "^3.17",
         "twig/intl-extra": "^3.17",
-        "symfony/yaml": "^6.0"
+        "symfony/yaml": "^6.0",
+        "guzzlehttp/guzzle": "^7.9"
     }
 }
