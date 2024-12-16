@@ -67,8 +67,9 @@ class ControllerWatchList extends Controller
         $watchList = $managerWatchList->find($id);
 
         //Recupere les oeuvres de la watchlist
-        $oas = $managerWatchList->afficherFilmsWatchlist($id);
 
+        $oas = $managerWatchList->afficherOaWatchlist($id);
+        
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
 

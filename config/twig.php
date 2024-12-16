@@ -26,7 +26,7 @@ $twig->addExtension(new IntlExtension());
 use Symfony\Component\Yaml\Yaml;
 
 // Chemin vers le fichier YAML
-$configPath = __DIR__ . '/constantes.yaml';
+$configPath = __DIR__ . '/templates.yaml';
 
 if (file_exists($configPath)) {
     // Charger les constantes depuis le fichier YAML
