@@ -1,123 +1,89 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-    <title>Bienvenue sur {{ constant('WEBSITE_TITLE') }}</title>
+    <title>{{ oa.nom }}</title>
 
     {% if oa is defined %}
-        <div class="container">
-            <h1>{{ oa.nom }}</h1>
-
-            <!-- Affichage de l'image du film -->
-			{% if oa.posterPath %}
-    			<img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mb-3">
-			{% else %}
-    			<p><em>Affiche non disponible</em></p>
-			{% endif %}
-
-            <!-- Informations principales -->
-            <p><strong>Note :</strong> {{ oa.note }}/10</p>
-            <p><strong>Description :</strong> {{ oa.description }}</p>
-            <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-            <p><strong>Version originale :</strong> {{ oa.vo }}</p>
-
-            <!-- Genres -->
-            {% if oa.genres is defined and oa.genres is not empty %}
-                <p><strong>Genres :</strong> {{ oa.genres|join(', ') }}</p>
-            {% endif %}
-
-            <!-- Section des participants -->
-            {% if participants is defined and participants is not empty %}
-                <h2>Participants</h2>
-                <ul>
-                    {% for participant in participants %}
-                        <li>{{ participant.nom }} - {{ participant.role }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p><em>Aucun participant trouvé pour ce film.</em></p>
-            {% endif %}
-
-            <!-- Section pour ajouter à une watchlist -->
-            <div class="text-center my-4">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-                    Ajouter l'œuvre à une watchlist
-                </button>
+    <div class="container mt-4" style="background-color: #f4f0d6; padding: 20px; border: 1px solid #c1b494; border-radius: 10px;">
+        <!-- Section principale -->
+        <div class="row">
+            <!-- Affiche du film -->
+            <div class="col-md-4">
+                {% if oa.posterPath %}
+                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: cover;">
+                {% else %}
+                    <p><em>Affiche non disponible</em></p>
+                {% endif %}
             </div>
 
-            {% if watchListListe is defined and watchListListe is not empty %}
-                <div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addFilmModalLabel">Choisir une watchlist</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" action="index.php?controleur=watchlist&methode=ajouterOaWatchList">
-                                    <input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
-
-                                    {% for watchlist in watchListListe %}
-                                        <div class="form-check mb-3">
-                                            <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="watchlist{{ watchlist.idWatchlist }}">
-                                            <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
-                                        </div>
-                                    {% endfor %}
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Ajouter à la watchlist</button>
-                                    </div>
-                                </form>
-                            </div>
+            <!-- Détails du film -->
+            <div class="col-md-8">
+                <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
+                <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                            <p><strong>Durée :</strong> {{ oa.duree }} min</p>
+                            <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                        </div>
+                        <div>
+                            <p><strong>Producteur :</strong> 
+								{% if oa.producteur %}
+									{{ oa.producteur }}
+								{% else %}
+									<em>Non spécifié</em>
+								{% endif %}
+							</p>
+							
                         </div>
                     </div>
+                    <!-- Note du film -->
+                    <p><strong>Note :</strong> 
+                        {% for i in 1..5 %}
+                            {% if i <= (oa.note / 2) %}
+                                ⭐
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                    </p>
                 </div>
-            {% else %}
-                <p>Aucune watchlist disponible pour l'instant. Créez-en une ci-dessous.</p>
-            {% endif %}
-
-            <!-- Formulaire pour créer une nouvelle watchlist -->
-            <div class="text-center my-4">
-                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
-                    Créer une watchlist
-                </button>
-            </div>
-
-            <div class="modal fade" id="createWatchlistModal" tabindex="-1" aria-labelledby="createWatchlistModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createWatchlistModalLabel">Créer une nouvelle Watchlist</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="POST" action="index.php?controleur=watchlist&methode=ajouterWatchList">
-                                <div class="mb-3">
-                                    <label for="watchlistTitle" class="form-label">Titre :</label>
-                                    <input type="text" class="form-control" id="watchlistTitle" name="titre" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="watchlistGenre" class="form-label">Genre :</label>
-                                    <input type="text" class="form-control" id="watchlistGenre" name="genre">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="watchlistDescription" class="form-label">Description :</label>
-                                    <textarea class="form-control" id="watchlistDescription" name="description" rows="3"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="watchlistVisibility" class="form-label">Visibilité :</label>
-                                    <select class="form-select" id="watchlistVisibility" name="visible">
-                                        <option value="public">Publique</option>
-                                        <option value="private">Privée</option>
-                                    </select>
-                                </div>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">Créer une nouvelle watchlist</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="d-flex mt-3">
+                    <button class="btn btn-sm btn-secondary me-2">Ajouter un avis</button>
+                    <button class="btn btn-sm btn-secondary me-2">Ajouter watch list</button>
+                    <button class="btn btn-sm btn-primary">Noter</button>
                 </div>
             </div>
         </div>
+
+        <!-- Description -->
+        <div class="mt-4 p-3 bg-light rounded">
+            <h4 class="fw-bold">Description</h4>
+            <p>{{ oa.description }}</p>
+        </div>
+
+        <!-- Casting -->
+        {% if oa.participants is defined and oa.participants|length > 0 %}
+        <div class="mt-4">
+            <h4 class="fw-bold">Casting</h4>
+            <div class="row">
+                {% for participant in oa.participants|slice(0, 25) %}
+                <div class="col-4 col-md-2 text-center mb-3">
+                    {% if participant.photo %}
+                        <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
+                    {% endif %}
+                    <p class="mt-2 fw-bold">{{ participant.nom }}</p>
+                    <p class="text-muted small">{{ participant.role }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+            <p><em>Aucun participant trouvé pour ce film.</em></p>
+        {% endif %}
+    </div>
     {% else %}
         <p>Le film n'existe pas.</p>
     {% endif %}

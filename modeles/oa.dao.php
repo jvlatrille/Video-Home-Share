@@ -65,7 +65,33 @@ class OADao
             return null;
         }
 
-        var_dump($this->getPosterUrl($movie['poster_path']));
+        // Récupérer les participants (cast & crew)
+        $credits = $this->makeApiRequest("/movie/$id/credits");
+        $participants = [];
+        $producer = null;
+
+        if (!empty($credits['cast'])) {
+            foreach ($credits['cast'] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'],
+                    'role' => $member['character'] ?? 'Non spécifié',
+                    'photo' => isset($member['profile_path']) ? 'https://image.tmdb.org/t/p/w500' . $member['profile_path'] : null,
+                ];
+            }
+        }
+
+        if (!empty($credits['crew'])) {
+            foreach ($credits['crew'] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'],
+                    'role' => $member['job'] ?? 'Non spécifié',
+                    'photo' => isset($member['profile_path']) ? 'https://image.tmdb.org/t/p/w500' . $member['profile_path'] : null,
+                ];
+            }
+
+            // Récupérer le producteur
+            $producer = $this->getProducer($credits['crew']);
+        }
 
         return new OA(
             $movie['id'],
@@ -77,10 +103,13 @@ class OADao
             $movie['original_language'],
             $movie['runtime'],
             array_column($movie['genres'], 'name'),
-            null,
-            $this->getPosterUrl($movie['poster_path']) // Passe l'URL complète ici
+            $producer, // Producteur récupéré
+            $this->getPosterUrl($movie['poster_path']),
+            $participants
         );
     }
+
+
 
     public function findMeilleurNote(): array
     {
@@ -112,5 +141,43 @@ class OADao
         }
 
         return $movies;
+    }
+
+    public function getParticipantsByFilmId(int $idOA): array
+    {
+        $credits = $this->makeApiRequest("/movie/$idOA/credits");
+        $participants = [];
+        $baseImageUrl = 'https://image.tmdb.org/t/p/w185'; // Taille des images de profil
+
+        if (!empty($credits['cast'])) {
+            foreach ($credits['cast'] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'], // Nom du participant
+                    'role' => $member['character'] ?? 'Non spécifié', // Rôle dans le film
+                    'photo' => $member['profile_path'] ? $baseImageUrl . $member['profile_path'] : null, // Photo ou null
+                ];
+            }
+        }
+
+        if (!empty($credits['crew'])) {
+            foreach ($credits['crew'] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'], // Nom du participant
+                    'role' => $member['job'] ?? 'Non spécifié', // Job dans l'équipe
+                    'photo' => $member['profile_path'] ? $baseImageUrl . $member['profile_path'] : null, // Photo ou null
+                ];
+            }
+        }
+
+        return $participants;
+    }
+    private function getProducer(array $crew): ?string
+    {
+        foreach ($crew as $member) {
+            if (isset($member['job']) && $member['job'] === 'Producer') {
+                return $member['name']; // Retourne le nom du premier producteur trouvé
+            }
+        }
+        return null; // Aucun producteur trouvé
     }
 }

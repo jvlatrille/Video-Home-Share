@@ -68,6 +68,21 @@ class OA
      */
     private ?string $posterPath;
 
+    /**
+     * @brief Liste des participants pour le film
+     * 
+     * * @var array|null
+     */
+    private ?array $participants = [];
+
+    /**
+     * @brief Nom du producteur de l'oeuvre audiovisuelle
+     * 
+     * * @var string|null
+     */
+    private ?string $producteur;
+
+
 
     /**
      * @brief Constructeur de la classe OA
@@ -82,8 +97,9 @@ class OA
      * @param array|null $genres : genres de l'oeuvre audiovisuelle
      * @param string|null $collection : Collection de l'oeuvre audiovisuelle
      * @param string|null $posterPath : Collection de l'oeuvre audiovisuelle
+     * @param array|null $participants : Liste des participants de l'oeuvre audiovisuelle
      */
-    public function __construct(?int $id = null, ?string $nom = null, ?float $note = null, ?string $type = null, ?string $description = null, ?string $dateSortie = null, ?string $vo = null, ?int $duree = null, ?array $genres = null, ?string $collection = null, ?string $posterPath = null)
+    public function __construct(?int $id = null, ?string $nom = null, ?float $note = null, ?string $type = null, ?string $description = null, ?string $dateSortie = null, ?string $vo = null, ?int $duree = null, ?array $genres = null, ?string $collection = null, ?string $posterPath = null, ?array $participants = null, ?string $producteur = null)
     {
         $this->idOa = $id;
         $this->nom = $nom;
@@ -96,6 +112,8 @@ class OA
         $this->genres = $genres;
         $this->collection = $collection;
         $this->posterPath = $posterPath;
+        $this->participants = $participants;
+        $this->producteur = $producteur;
     }
 
     //Getters et setters de la classe OA
@@ -323,5 +341,45 @@ class OA
     public function setPosterPath(?string $path): void
     {
         $this->posterPath = $path;
+    }
+
+    /**
+     * @brief Retourne les participants de l'oeuvre audiovisuelle OA
+     *
+     * @return array|null Liste des participants
+     */
+    public function getParticipants(): ?array
+    {
+        return $this->participants;
+    }
+
+    /**
+     * @brief Modifie les participants de l'oeuvre audiovisuelle OA
+     *
+     * @param array|null $participants : Liste des participants
+     */
+    public function setParticipants(?array $participants): void
+    {
+        $this->participants = $participants;
+    }
+
+    /**
+     * @brief Retourne le producteur de l'oeuvre audiovisuelle OA
+     *
+     * @return string|null Nom du producteur
+     */
+    public function getProducteur(): ?string
+    {
+        return $this->producteur;
+    }
+
+    /**
+     * @brief Modifie le producteur de l'oeuvre audiovisuelle OA
+     *
+     * @param string|null $producteur : Nom du producteur
+     */
+    public function setProducteur(?string $producteur): void
+    {
+        $this->producteur = $producteur;
     }
 }
