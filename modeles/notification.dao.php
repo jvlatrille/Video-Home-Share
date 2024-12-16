@@ -19,7 +19,7 @@ class NotificationDao{
 
     //Méthode pour récupérer TOUTES les notifications d'une personne
     public function findAll(?int $idUtilisateur): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur ORDER BY dateNotif DESC";
 
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idUtilisateur' => $idUtilisateur));    
@@ -27,7 +27,6 @@ class NotificationDao{
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);   
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Pas d'autres informations trouvées");
             return null;
         }
         $notifData =$this->hydrateAll($resultats);
@@ -63,40 +62,47 @@ class NotificationDao{
     }
 
 
-    // //Méthode pour supprimer une notification d'une personne
-    public function supprimerUneNotif() {
-        // Récupère l'ID de la notification à supprimer depuis l'URL
-        $idNotif = isset($_GET['id']) ? $_GET['id'] : null;
-        $idUtilisateur = 1; // Pour les tests, on utilise l'ID utilisateur 1, normalement $_SESSION['idUtilisateur']
 
-        if ($idNotif === null) {
-            // Gérer le cas où l'ID de la notification est manquant
-            echo "Notification non spécifiée.";
-            return;
-        }
 
-        // Supprimer la notification
-        $managerNotif = new NotificationDao($this->getPdo());
-        $managerNotif->supprimerUneNotif($idNotif); // Utilise la méthode correcte de suppression
-
-        // Rediriger vers la liste des notifications
-        header('Location: index.php?controleur=ControllerTestNotif&methode=listerNotif&id=' . $idUtilisateur);
-        exit;
+    public function supprimerUneNotification(?string $idNotif, ?int $idUtilisateur): ?bool {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."notification WHERE idNotif = :id AND idUtilisateur = :idUtilisateur";
+            
+            try {
+                $pdoStatement = $this->pdo->prepare($sql);
+                $pdoStatement->execute(['id' => $idNotif, 'idUtilisateur' => $idUtilisateur]);
+                return true;
+            } catch (Exception $e) {
+                error_log("Erreur lors de la suppression de la notification : " . $e->getMessage());
+                return false;
+            }
     }
+
+    // public function supprimerSelection()
+    // {
+    //     if (isset($_POST['notifications']) && !empty($_POST['notifications'])) {
+    //         $notificationsToDelete = $_POST['notifications']; // Un tableau contenant les IDs des notifications sélectionnées
+
+    //         $managerNotif = new NotificationDao($this->getPdo());
+
+    //         foreach ($notificationsToDelete as $idNotif) {
+    //             $managerNotif->supprimerUneNotification((int)$idNotif, 1); // Utilisation de l'ID utilisateur par défaut (1) pour les tests
+    //         }
+    //     }
+    // }
 
 
     // //Méthode pour qu'une personne supprime toutes ses notifications
-    public function supprimerToutesLesNotifs() {
-        // Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
-        $idUtilisateur = isset($_GET['id']) ? $_GET['id'] : 1; // Pour les tests, on utilise l'ID utilisateur 1
-
-        // Supprimer toutes les notifications de cet utilisateur
-        $managerNotif = new NotificationDao($this->getPdo());
-        $managerNotif->supprimerToutesLesNotifs($idUtilisateur); // Utilise la méthode correcte de suppression
-
-        // Rediriger vers la liste des notifications
-        header('Location: index.php?controleur=ControllerTestNotif&methode=listerNotif&id=' . $idUtilisateur);
-        exit;
+    public function supprimerToutesLesNotifs(?int $idUtilisateur) {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur";
+            
+            try {
+                $pdoStatement = $this->pdo->prepare($sql);
+                $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
+                return true;
+            } catch (Exception $e) {
+                error_log("Erreur lors de la suppression des notifications : " . $e->getMessage());
+                return false;
+            }      
     }
 
     public function hydrate($tableauAssoc) : ?Notification{
@@ -106,6 +112,7 @@ class NotificationDao{
         $notif->setDestinataire($tableauAssoc['destinataire']);
         $notif->setContenu($tableauAssoc['contenu']);
         $notif->setVu($tableauAssoc['vu']);
+        $notif->setIdUtilisateur($tableauAssoc['idUtilisateur']);
         return $notif;
     }
 

@@ -4,20 +4,21 @@
     Profil : Une Notification - {{ constant('WEBSITE_TITLE')}} 
 {% endblock %}
     
+
+
 {% block content %}    
     <!-- Titre de la partie notification -->
-    <div class="container mt-4">
+    <div class="container mt-2">
         <h1>Mes notifications</h1>
     </div>
 
  <!-- Bouton pour supprimer -->
     {% if notifListe is not empty %}
-        <div class="text-end my-3">
-            <button type="button" class="btn btn-primary me-5" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerUneNotification&id={{ notification.idNotif }}'">Supprimer</button>
-            <!-- Suppression de toutes les notifications -->
-            <button type="button" class="btn btn-primary me-5" onclick="window.location.href='index.php?controleur=TestNotif&methode=supprimerToutesLesNotifs&id={{notification.destinataire}}'">Tout supprimer</button>
-        
-        </div>  
+    <pre>{{ dump(notifListe) }}</pre>
+            <div class="container text-end my-4 mx-10">
+                <!-- Suppression de toutes les notifications -->
+                <button type="button" class="btn btn-primary " onclick="window.location.href='index.php?controleur=profil&methode=supprimerToutesLesNotifs&idUtilisateur={{notifListe[0].idUtilisateur}}'">Tout supprimer</button>
+            </div> 
     {% endif %} 
 
      <!-- Liste des notifications de l'utilisateur -->
@@ -27,32 +28,35 @@
         </div>
         
     {% else %} 
-        <div class="container my-4">
+        <div class="container my-4 my-5">
             <ul class="list-group">
                 <div class="row">
                     {% for notifs in notifListe %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {# <div class="col-4"> #}
                             <div class="container my-2">
-                                {# <div class="card" style="width: 18rem;">                               #}
                                     <div class="card-body ">
-                                        <form method='POST' action='fenetre.php'>
-                                        <input type='checkbox' name='case' value='on'>
-                                        </form>
+                                        {# <form method='POST' action='fenetre.php'>
+                                        <input type='checkbox' name='case' value='on'>  
+                                        <input type="checkbox" class="form-check-input" id="idNotif" />
+                                        <label class="form-check-label" for="idNotif"></label>
+                                        </form> #}
                                         
                                         <h5 class="card-title">{{ notifs.destinataire}}</h5>
                                         <div>
-                                            <strong>Date :</strong> {{ notifs.dateNotif }}
+                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
                                             {{ notifs.contenu }}<br>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <a href="index.php?controleur=TestNotif&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
-                                                <div class="ms-3">
+                                            <div class="d-flex justify-content-between align-items-center my-2">
+                                                <div>
                                                     <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}
+                                                </div>
+                                                <a href="index.php?controleur=profil&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
+                                                
+                                                <div class="ms-3">
+                                                    <button type="button" class="btn btn-primary me-3" onclick="window.location.href='index.php?controleur=profil&methode=supprimerUneNotif&idNotif={{ notifs.idNotif }}'">Supprimer</button>  
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                {# </div> #}
                             </div>
                     {% endfor %}
             </div>

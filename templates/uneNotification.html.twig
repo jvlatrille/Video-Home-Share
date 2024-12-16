@@ -6,32 +6,6 @@
     
 {% block content %}    
 
-    {% block content2 %} 
-
-    <div class="image-bg container-fluid"
-        style="background-image: url('/~ldhildevert/VHS/Video-Home-Share/img/turtleTestBanniere.png');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        height: 30vh;
-        position: relative">
-            <!--Image de profil-->
-           <div class="rounded-circle " 
-                style="background-image: url('/~ldhildevert/VHS/Video-Home-Share/img/tortueProfil.png');
-                height: 150px; 
-                width: 150px; 
-                background-size: cover; 
-                background-position: center;
-                position: absolute;
-                top: 50%;
-                left: 8%;
-                transform: translateY(-50%);
-                border: 4px solid #fff;">
-            </div>
-    </div>
-
-    {% endblock %} 
-
 
     <!-- Titre de la partie notification -->
     <div class="container mt-4">
@@ -49,9 +23,9 @@
                                 <strong>Date :</strong> {{ contenuNotif.dateNotif }}<br>
                                 <strong>Vu :</strong> {{ contenuNotif.vu ? 'Oui' : 'Non' }}<br>
                                 <div class="text-center my-3">
-                                    <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=accepterJeux&id={{ notification.idNotif }}'">Accepter</button>
+                                    <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=profil&methode=accepterJeux&methode=supprimerUneNotif&id={{ notification.idNotif }}'">Accepter</button>
                                     <!-- Suppression de toutes les notifications -->
-                                    <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=TestNotif&methode=refuserJeux&id={{notification.destinataire}}'">Refuser</button>
+                                    <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=profil&methode=refuserJeux&id={{notification.destinataire}}'">Refuser</button>
                                 </div>
                             </div>
                         </div>
