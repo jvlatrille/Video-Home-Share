@@ -19,13 +19,21 @@
             <h4>Paramètres utilisateur</h4>
 
             <!-- Changer pseudo -->
-            <div class="mb-3">
-                <label class="form-label">Changer de pseudo :</label>
-                <button class="btn btn-primary w-100" onclick="changerPseudo({{ utilisateur.idUtilisateur }})">Changer Pseudo</button>
+            <div class="mb-4">
+                <label class="form-label">Changer de Pseudo :</label>
+                <form action="index.php?controleur=utilisateur&methode=changerPseudo" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="prenom" class="form-label d-none">Changer de pseudo :</label>
+                        <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Votre pseudo" required
+                            maxlength="50" minlength="5" title="Entrez un pseudo entre 5 et 50 caractères.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Pseudo</button>
+                </form>
             </div>
 
             <!-- Changer photo de profil -->
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Changer de Photo de Profil :</label>
                 <form action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="post" enctype="multipart/form-data">
                     <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('photoProfile').click();">Changer Photo de Profil</button>
@@ -37,7 +45,7 @@
             </div>
 
             <!-- Changer banniere -->
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Changer de Banniere :</label>
                 <form action="index.php?controleur=utilisateur&methode=changerBanniere" method="post" enctype="multipart/form-data">
                     <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('banniereProfile').click();">Changer Banniere</button>
@@ -49,15 +57,30 @@
             </div>
 
             <!-- Changer mail -->
-            <div class="mb-3">
-                <label class="form-label">Changer de mail :</label>
-                <button class="btn btn-primary w-100" onclick="changerMail({{ utilisateur.idUtilisateur }})">Changer Mail</button>
+            <div class="mb-4">
+                <label class="form-label">Changer d'Adresse Mail :</label>
+                <form action="index.php?controleur=utilisateur&methode=changerMail" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
+                        <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
+                            required title="Entrez une adresse email valide, comme pierre@gmail.com">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Mail</button>
+                </form>
             </div>
 
             <!-- Changer mot de passe -->
-            <div class="mb-3">
-                <label class="form-label">Changer de mot de passe :</label>
-                <button class="btn btn-primary w-100">Changer Mot de Passe</button>
+            <div class="mb-4">
+                <label class="form-label">Changer de Mot de Passe :</label>
+                <form action="index.php?controleur=utilisateur&methode=changerMDP" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="MDP" class="form-label d-none">Changer de Mot de Passe :</label>
+                        <input type="text" class="form-control" id="MDP" name="MDP">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Mot de Passe</button>
+                </form>
             </div>
 
             <!-- Vérifier le mail -->
@@ -68,22 +91,5 @@
         </div>
     </div>
 </div>
-
-<!-- Scripts pour changement -->
-<script>
-    function changerPseudo(userId) {
-        const newPseudo = prompt("Entrez le nouveau pseudo :");
-        if (newPseudo) {
-            window.location.href = `index.php?controleur=utilisateur&methode=changerPseudo&id=${userId}&pseudo=${(newPseudo)}`;
-        }
-    }
-
-    function changerMail(userId) {
-        const newMail = prompt("Entrez le nouveau mail :");
-        if (newMail) {
-            window.location.href = `index.php?controleur=utilisateur&methode=changerMail&id=${userId}&mail=${(newMail)}`;
-        }
-    }
-</script>
 
 {% endblock %}

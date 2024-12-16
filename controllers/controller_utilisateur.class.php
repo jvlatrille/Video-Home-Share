@@ -35,41 +35,47 @@ class ControllerUtilisateur extends Controller
 
     // Changer de pseudo
     public function changerPseudo() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
-    
-        if (!$id || !$newPseudo) {
-            throw new Exception('Informations manquantes : ID ou pseudo.');
+        // Récupération des données via POST
+        $id = isset($_POST['utilisateurId']) ? intval($_POST['utilisateurId']) : null;
+        $newPseudo = isset($_POST['prenom']) ? trim($_POST['prenom']) : null;
+
+        // Vérification des données reçues
+        if (!$id || !$newPseudo || strlen($newPseudo) <= 5 || strlen($newPseudo) >= 50) {
+            throw new Exception('Informations invalides : ID manquant ou pseudo non conforme.');
         }
-        
+    
+        // Interaction avec le DAO pour mettre à jour le pseudo
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
     
+        // Génération d'un message en fonction du succès ou de l'échec
         $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
         $utilisateur = $managerUtilisateur->find($id);
     
+        // Chargement et rendu du template
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
             'message' => $message
         ]);
-    }    
+    }
+     
     
     // Changer de Mail
     public function changerMail() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $newMail = isset($_GET['mail']) ? $_GET['mail'] : null;
+        // Récupération des données via POST
+        $id = isset($_POST['utilisateurId']) ? intval($_POST['utilisateurId']) : null;
+        $newMail = isset($_POST['mail']) ? trim($_POST['mail']) : null;
     
-        if (!$id || !$newMail) {
-            throw new Exception('Informations manquantes : ID ou mail.');
-        }
-        
+        // Interaction avec le DAO pour mettre à jour le pseudo
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $reussite = $managerUtilisateur->changerMail($id, $newMail);
     
-        $message = $reussite ? "Le mail a été changé avec succès." : "Erreur lors du changement de mail.";
+        // Génération d'un message en fonction du succès ou de l'échec
+        $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
         $utilisateur = $managerUtilisateur->find($id);
     
+        // Chargement et rendu du template
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
