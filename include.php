@@ -23,14 +23,15 @@ require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
 require_once 'controllers/controller_personne.class.php';
 require_once 'controllers/controller_forum.class.php';
-require_once 'controllers/controller_testNotif.class.php';
 require_once 'controllers/controller_jeux.class.php';
+require_once 'controllers/controller_utilisateur.class.php';
+require_once 'controllers/controller_profil.class.php';
+
 
 
 
 // //Ajout des modèles
 
-require_once 'controllers/controller_utilisateur.class.php';
 require_once 'modeles/bd.class.php';
 require_once 'modeles/oa.class.php';
 require_once 'modeles/oa.dao.php';
