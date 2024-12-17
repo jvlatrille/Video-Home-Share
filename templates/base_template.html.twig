@@ -60,15 +60,21 @@
 
                 <a href="index.php?controleur=utilisateur&methode=AllUtilisateurs" class="btn btn-light-custom mx-2">utilisateur</a> <!-- utilisateur A SUPPRIMER-->
 
-                <a href="index.php?controleur=testNotif&methode=listerNotif&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
+                <a href="index.php?controleur=testNotif&methode=listerNotif&idNotif={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
                 
 
             </div>
         </div>
     </header>
 
+
+
     <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
     <main class="flex-grow-1">
+        {# affiche le base_template_profil #}
+        {% block content2 %}
+        {% endblock %}
+
         {% block content %}
         {% endblock %}
     </main>
