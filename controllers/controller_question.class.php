@@ -23,7 +23,17 @@ class ControllerQuestion extends Controller {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-    
+        if (!isset($_SESSION['score'])) {
+            $_SESSION['score'] = 0;
+        }
+        if (isset($_POST['reponseDonnee'])) {
+            $reponseDonnee = $_POST['reponseDonnee'];
+            $bonneReponse = $question->getBonneReponse();
+        
+            if ($reponseDonnee === $bonneReponse) {
+                $_SESSION['score'] += 1;
+            }
+        }
         $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
         $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
     
@@ -32,34 +42,16 @@ class ControllerQuestion extends Controller {
             return;
         }
     
-        // Vérifier si une réponse a été soumise
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reponseChoisie'])) {
-            $reponseChoisie = $_POST['reponseChoisie'];
     
-            // Récupère la question pour comparer la réponse
-            $managerQuestion = new QuestionDao($this->getPdo());
-            $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
-    
-            if ($question && $reponseChoisie === $question->getBonneReponse()) {
-                $_SESSION['score']++; // Incrémenter le score
-            }
-    
-            // Redirige vers la question suivante
-            header("Location: index.php?controller=question&action=afficherQuestion&idQuizz=$idQuizz&numero=" . ($numero + 1));
-            exit;
-        }
-    
-        // Initialiser le score pour la première question
-        if ($numero === 1) {
-            $_SESSION['score'] = 0;
-        }
-        
         // Récupérer la question courante
         $managerQuestion = new QuestionDao($this->getPdo());
         $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
     
+        // Vérifie si c'est la dernière question
+        $isLastQuestion = !$managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero + 1);
+    
         if (!$question) {
-            // Si aucune question n'est trouvée, afficher le score final
+            // Si aucune question n'est trouvée, redirige vers le score final
             header("Location: index.php?controller=question&action=afficherScore&idQuizz=$idQuizz");
             exit;
         }
@@ -71,8 +63,6 @@ class ControllerQuestion extends Controller {
             $question->getMauvaiseReponse2(),
             $question->getMauvaiseReponse3()
         ];
-        shuffle($reponses);
-    
         // Générer la vue
         $template = $this->getTwig()->load('question.html.twig');
         echo $template->render([
@@ -80,14 +70,10 @@ class ControllerQuestion extends Controller {
             'reponses' => $reponses,
             'idQuizz' => $idQuizz,
             'numero' => $numero,
-            'score' => $_SESSION['score']
+            'score' => $_SESSION['score'],
+            'isLastQuestion' => $isLastQuestion
         ]);
     }
-
-    
-    
-    
-    
     
 
     // Fonction pour ajouter une question à un quizz
