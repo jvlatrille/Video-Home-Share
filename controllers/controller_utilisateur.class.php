@@ -24,7 +24,7 @@ class ControllerUtilisateur extends Controller
     // Vérifie si un utilisateur est connecté
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+        //$this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
         // Récupère l'utilisateur
         $template = $this->getTwig()->load('profilNotifications.html.twig');
