@@ -1,12 +1,12 @@
 <?php
     class Forum{
-    //Attributs d'une notification
+    //Attributs d'un forum
     private ?int $idForum;
     private ?string $nom;
     private ?string $description;
     private ?string $theme;
     
-    //Constructeur de la classe Notification
+    //Constructeur de la classe Forum
     public function __construct(?int $idForum=null, ?string $nom=null, ?string $description=null, ?string $theme=null){
         $this->idForum = $idForum;
         $this->nom = $nom;
@@ -14,7 +14,7 @@
         $this->theme = $theme;
     }
 
-    //Getters et setters de la classe notification
+    //Getters et setters de la classe Forum
 
     public function getIdForum(): ?int{
         return $this->idForum;

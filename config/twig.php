@@ -48,3 +48,15 @@ if (file_exists($configPath)) {
 } else {
     die('Le fichier config/constantes.yaml est introuvable.');
 }
+
+require_once 'modeles/utilisateur.class.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_SESSION['utilisateur']) && ! empty($_SESSION['utilisateur'])) {
+    $utilisateur = unserialize($_SESSION['utilisateur']);
+    $twig->addGlobal('utilisateurConnecte', $utilisateur);
+} else {
+    $twig->addGlobal('utilisateurConnecte', null);
+}
