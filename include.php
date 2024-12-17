@@ -22,12 +22,8 @@ require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
 require_once 'controllers/controller_personne.class.php';
-<<<<<<< HEAD
-require_once 'controllers/controller_profil.class.php';
-=======
 require_once 'controllers/controller_forum.class.php';
 require_once 'controllers/controller_testNotif.class.php';
->>>>>>> main
 require_once 'controllers/controller_jeux.class.php';
 
 
