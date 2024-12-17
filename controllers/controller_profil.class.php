@@ -8,7 +8,7 @@ class ControllerProfil extends Controller{
 
 
 
-    //Fonction pour afficher toutes les notif d'une personne
+    //Fonction pour afficher toutes les notif d'une personne 
     public function listerNotif()
     {
         // Vérifie si un utilisateur est connecté
@@ -19,11 +19,14 @@ class ControllerProfil extends Controller{
             //Recupere les notifications
             $managerNotif=New NotificationDao($this->getPdo());
             $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
-            
             //Generer la vue avec les notifications de l'utilisateur
             $template = $this->getTwig()->load('profilNotifications.html.twig');
             echo $template->render(['notifListe' => $notifListe]);
             
+    }
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
     }
     
 }
