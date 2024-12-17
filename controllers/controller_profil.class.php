@@ -43,10 +43,7 @@ class ControllerProfil extends Controller{
         //Recupere la notification
         $managerNotif=New NotificationDao($this->getPdo());
         $contenuNotif=$managerNotif->findNotif($id);
-        
-        //Recupere le contenu de la notification
-        //$contenuNotif = $managerNotif->findNotif($id);
-        
+    
         //Generer la vue
         $template = $this->getTwig()->load('uneNotification.html.twig');
         
@@ -55,23 +52,6 @@ class ControllerProfil extends Controller{
     }
 
     
-
-    //Fonction pour afficher le nombre total de notifications d'une personne
-    public function nbNotif()
-    {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
-        //Recupere le nombre de notificationo pour cet utilisateur
-        $managerNotif=New NotificationDao($this->getPdo());
-        $nbNotif=$managerNotif->find($id);
-
-        //Generer la vue
-        $template = $this->getTwig()->load('profilNotifications.html.twig');
-        
-        echo $template->render(['nbNotif'=>$nbNotif]);
-
-    }
-
     //Fonction pour supprimer une notification
     public function supprimerUneNotif()
     {

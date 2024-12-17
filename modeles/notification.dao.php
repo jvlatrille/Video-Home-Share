@@ -33,7 +33,7 @@ class NotificationDao{
         return $notifData;
     }
 
-    //Méthode pour récupérer UNE notification d'une personne
+    //Méthode pour récupérer UNE notification d'un utilisateur
     public function findNotif(?int $idNotif): ?Notification {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -51,19 +51,7 @@ class NotificationDao{
     }
     
 
-     // Méthode pour compter le nombre total de notifications pour un utilisateur
-     public function nbNotif(?string $idUtilisateur): ?int {
-        $sql = "SELECT COUNT(*) FROM ".PREFIXE_TABLE."notification WHERE destinataire = :idUtilisateur";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $count = $pdoStatement->fetch();  
-        return (int)$count;  // Retourne le nombre sous forme d'un entier
-    }
-
-
-
-
+    // Méthode pour supprimer une notification d'un utilisateur
     public function supprimerUneNotification(?string $idNotif, ?int $idUtilisateur): ?bool {
         $sql = "DELETE FROM ".PREFIXE_TABLE."notification WHERE idNotif = :id AND idUtilisateur = :idUtilisateur";
             
@@ -91,7 +79,7 @@ class NotificationDao{
     // }
 
 
-    // //Méthode pour qu'une personne supprime toutes ses notifications
+    // //Méthode pour qu'un utilisateur supprime toutes ses notifications
     public function supprimerToutesLesNotifs(?int $idUtilisateur) {
         $sql = "DELETE FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur";
             
