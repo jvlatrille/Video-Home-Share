@@ -2,9 +2,37 @@
 
 class ControllerUtilisateur extends Controller
 {
+    private array $reglesValidation;
+
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
+        $this->reglesValidation = [
+            'pseudo' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 40,
+                'format' => '/^[a-zA-ZÀ-ÿ\'-]+$/'
+            ],
+            'mail' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 255,
+                'format' => FILTER_VALIDATE_EMAIL
+            ],
+        ];
+    }
+
+    public function get_regles(): ?array
+    {
+        return $this->reglesValidation;
+    }
+
+    public function set_regles(array $regle): void
+    {
+        $this->reglesValidation = regle;
     }
 
     // Afficher tous les utilisateurs
@@ -37,26 +65,29 @@ class ControllerUtilisateur extends Controller
     public function changerPseudo() {
         // Récupération des données via POST
         $id = isset($_POST['utilisateurId']) ? intval($_POST['utilisateurId']) : null;
-        $newPseudo = isset($_POST['prenom']) ? trim($_POST['prenom']) : null;
+        $newPseudo = isset($_POST['pseudo']) ? trim($_POST['pseudo']) : null;
+        $donnees = ["pseudo" => $newPseudo];
 
         // Vérification des données reçues
-        if (!$id || !$newPseudo || strlen($newPseudo) <= 5 || strlen($newPseudo) >= 50) {
-            throw new Exception('Informations invalides : ID manquant ou pseudo non conforme.');
-        }
+        $validator = new Validator($this->get_regles());
+        $valides = $validator->valider($donnees);
     
         // Interaction avec le DAO pour mettre à jour le pseudo
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
+        if ($valides)
+        {
+            $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
+        }
     
         // Génération d'un message en fonction du succès ou de l'échec
-        $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
+        $messages = $validator->getMessagesErreurs();
         $utilisateur = $managerUtilisateur->find($id);
-    
+
         // Chargement et rendu du template
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
-            'message' => $message
+            'message' => $messages
         ]);
     }
      
@@ -66,127 +97,126 @@ class ControllerUtilisateur extends Controller
         // Récupération des données via POST
         $id = isset($_POST['utilisateurId']) ? intval($_POST['utilisateurId']) : null;
         $newMail = isset($_POST['mail']) ? trim($_POST['mail']) : null;
+        $donnees = ["mail" => $newMail];
+
+        // Vérification des données reçues
+        $validator = new Validator($this->get_regles());
+        $valides = $validator->valider($donnees);
     
         // Interaction avec le DAO pour mettre à jour le pseudo
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $reussite = $managerUtilisateur->changerMail($id, $newMail);
+        if ($valides)
+        {
+            $reussite = $managerUtilisateur->changerMail($id, $newMail);
+        }
     
         // Génération d'un message en fonction du succès ou de l'échec
-        $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
+        $messages = $validator->getMessagesErreurs();
         $utilisateur = $managerUtilisateur->find($id);
     
         // Chargement et rendu du template
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
-            'message' => $message
+            'message' => $messages
         ]);
     }
 
     public function changerPhotoProfil()
     {
+        $messages = [];
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        
         // Vérifier si un fichier a été envoyé
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-
-            // Récupérer l'ID de l'utilisateur depuis la requête
-            $userId = $_POST['userId'];
-
-            // Récupérer les informations du fichier téléchargé
-            $fileTmpName = $_FILES['photo']['tmp_name'];
-            $fileName = basename($_FILES['photo']['name']);
-
-            // Définir le dossier cible où l'image sera enregistrée
-            $targetDir = "img/profils/"; // Dossier relatif à l'arborescence de votre projet
-            $targetFile = $targetDir . $fileName;
+            // Valider le fichier photo
+            $validator = new Validator($this->get_regles());
+            $photoValide = $validator->validerUploadEtPhoto($_FILES['photo'], $messages);
             
-            // Vérifier que l'extension du fichier est autorisée
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-            if (!in_array($fileExtension, $allowedExtensions)) {
-                echo json_encode(["success" => false, "message" => "Extension de fichier non autorisée."]);
-                return;
-            }
-
-            // Déplacer le fichier téléchargé vers le dossier de destination
-            if (move_uploaded_file($fileTmpName, $targetFile)) {
-                // Appeler la méthode pour mettre à jour la photo de profil dans la base de données
-                $managerUtilisateur = new UtilisateurDao($this->getPdo());
-                $updateSuccess = $managerUtilisateur->updateUserPhoto($userId, $fileName);
-
-                if ($updateSuccess) {
-                    $message = "La photo de profil a été changée avec succès.";
+            // Si la photo est valide
+            if ($photoValide) {
+                // Définir le dossier de destination
+                $uploadDir = 'img/profils/';
+                $fileName = basename($_FILES['photo']['name']); //time() . '_' . basename($_FILES['photo']['name']);
+                $filePath = $uploadDir . $fileName;
+                
+                // Déplacer le fichier téléchargé
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                    // Mettre à jour la photo de profil dans la base de données
+                    $userId = $_POST['utilisateurId']; // Récupérer l'ID utilisateur depuis le formulaire
+                    $reussite = $managerUtilisateur->updateUserPhoto($userId, $fileName);
+                    
+                    if ($reussite) {
+                        $messages[] = "La photo de profil a été mise à jour avec succès.";
+                    } else {
+                        $messages[] = "Erreur lors de la mise à jour de la photo de profil dans la base de données.";
+                    }
                 } else {
-                    $message = "Erreur lors du changement de photo de profil.";
+                    $messages[] = "Erreur lors du téléchargement du fichier.";
                 }
-
-                // Récupérer l'utilisateur mis à jour pour l'afficher dans le template
-                $utilisateur = $managerUtilisateur->find($userId);
-
-                // Charger et rendre le template Twig
-                $template = $this->getTwig()->load('profilParametres.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateur,
-                    'message' => $message
-                ]);
             } else {
-                echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de la photo."]);
+                $messages[] = "La photo de profil n'est pas valide.";
             }
         } else {
-            echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
+            $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
         }
+    
+        // Chargement et rendu du template
+        $utilisateur = $managerUtilisateur->find($_POST['utilisateurId']);
+        $template = $this->getTwig()->load('profilParametres.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur,
+            'messages' => $messages
+        ]);
     }
+    
 
     public function changerBanniere()
     {
-        // Vérifier si un fichier a été téléchargé
+        $messages = [];
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        
+        // Vérifier si un fichier a été envoyé
         if (isset($_FILES['banniere']) && $_FILES['banniere']['error'] == 0) {
-            $userId = $_POST['userId'];
-
-            // Récupérer les informations du fichier téléchargé
-            $fileTmpName = $_FILES['banniere']['tmp_name'];
-            $fileName = basename($_FILES['banniere']['name']);
-
-            // Définir le dossier de destination
-            $targetDir = "img/banniere/"; // Le dossier des bannières
-            $targetFile = $targetDir . $fileName;
-
-            // Vérifier l'extension du fichier
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-            if (!in_array($fileExtension, $allowedExtensions)) {
-                echo json_encode(["success" => false, "message" => "Extension de fichier non autorisée."]);
-                return;
-            }
-
-            // Déplacer le fichier téléchargé
-            if (move_uploaded_file($fileTmpName, $targetFile)) {
-                // Appeler la méthode pour mettre à jour la bannière dans la base de données
-                $managerUtilisateur = new UtilisateurDao($this->getPdo());
-                $updateSuccess = $managerUtilisateur->updateUserBanniere($userId, $fileName);
-
-                if ($updateSuccess) {
-                    $message = "La bannière a été changée avec succès.";
+            // Valider le fichier photo
+            $validator = new Validator($this->get_regles());
+            $photoValide = $validator->validerUploadEtPhoto($_FILES['banniere'], $messages);
+            
+            // Si la photo est valide
+            if ($photoValide) {
+                // Définir le dossier de destination
+                $uploadDir = 'img/banniere/';
+                $fileName = basename($_FILES['banniere']['name']); //time() . '_' . basename($_FILES['banniere']['name']);
+                $filePath = $uploadDir . $fileName;
+                
+                // Déplacer le fichier téléchargé
+                if (move_uploaded_file($_FILES['banniere']['tmp_name'], $filePath)) {
+                    // Mettre à jour la banniere dans la base de données
+                    $userId = $_POST['utilisateurId']; // Récupérer l'ID utilisateur depuis le formulaire
+                    $reussite = $managerUtilisateur->updateUserBanniere($userId, $fileName);
+                    
+                    if ($reussite) {
+                        $messages[] = "La banniere a été mise à jour avec succès.";
+                    } else {
+                        $messages[] = "Erreur lors de la mise à jour de la banniere dans la base de données.";
+                    }
                 } else {
-                    $message = "Erreur lors du changement de la bannière.";
+                    $messages[] = "Erreur lors du téléchargement du fichier.";
                 }
-
-                // Récupérer l'utilisateur mis à jour pour l'afficher
-                $utilisateur = $managerUtilisateur->find($userId);
-
-                // Charger et rendre le template
-                $template = $this->getTwig()->load('profilParametres.html.twig');
-                echo $template->render([
-                    'utilisateur' => $utilisateur,
-                    'message' => $message
-                ]);
             } else {
-                echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de la bannière."]);
+                $messages[] = "La banniere n'est pas valide.";
             }
         } else {
-            echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
+            $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
         }
+    
+        // Chargement et rendu du template
+        $utilisateur = $managerUtilisateur->find($_POST['utilisateurId']);
+        $template = $this->getTwig()->load('profilParametres.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur,
+            'messages' => $messages
+        ]);
     }
  
 

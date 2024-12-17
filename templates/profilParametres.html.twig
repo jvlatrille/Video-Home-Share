@@ -21,10 +21,10 @@
             <!-- Changer pseudo -->
             <div class="mb-4">
                 <label class="form-label">Changer de Pseudo :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerPseudo" method="POST" class="d-flex align-items-center">
+                <form id="changerPseudo" action="index.php?controleur=utilisateur&methode=changerPseudo" method="POST" class="d-flex align-items-center" novalidate>
                     <div class="me-2 flex-grow-1">
-                        <label for="prenom" class="form-label d-none">Changer de pseudo :</label>
-                        <input type="text" class="form-control" id="prenom" name="prenom" placeholder="Votre pseudo" required
+                        <label for="pseudo" class="form-label d-none">Changer de pseudo :</label>
+                        <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required
                             maxlength="50" minlength="5" title="Entrez un pseudo entre 5 et 50 caractères.">
                     </div>
                     <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
@@ -34,32 +34,38 @@
 
             <!-- Changer photo de profil -->
             <div class="mb-4">
-                <label class="form-label">Changer de Photo de Profil :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="post" enctype="multipart/form-data">
-                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('photoProfile').click();">Changer Photo de Profil</button>
-                    <!-- Formulaire de téléchargement -->
-                    <input type="file" name="photo" id="photoProfile" style="display: none;" accept="image/*">
-                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
-                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la photo</button>
+                <label for="photo" class="form-label">Photo de Profil</label>
+                <form id="changerPhotoProfil" action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center" novalidate>
+                    <div class="me-2 flex-grow-1">
+                        <label for="photo" class="form-label d-none">Changer Photo de Profil :</label>
+                        <input type="file" class="form-control" id="photo" name="photo"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Photo de Profil</button>
                 </form>
+                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
             <!-- Changer banniere -->
             <div class="mb-4">
-                <label class="form-label">Changer de Banniere :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerBanniere" method="post" enctype="multipart/form-data">
-                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('banniereProfile').click();">Changer Banniere</button>
-                    <!-- Formulaire de téléchargement de la bannière -->
-                    <input type="file" name="banniere" id="banniereProfile" style="display: none;" accept="image/*">
-                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
-                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la bannière</button>
+                <label for="banniere" class="form-label">Banniere</label>
+                <form id="changerBanniere" action="index.php?controleur=utilisateur&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="d-flex align-items-center" novalidate>
+                    <div class="me-2 flex-grow-1">
+                        <label for="banniere" class="form-label d-none">Changer Banniere :</label>
+                        <input type="file" class="form-control" id="banniere" name="banniere"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Banniere</button>
                 </form>
+                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
             <!-- Changer mail -->
             <div class="mb-4">
                 <label class="form-label">Changer d'Adresse Mail :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerMail" method="POST" class="d-flex align-items-center">
+                <form action="index.php?controleur=utilisateur&methode=changerMail" method="POST" class="d-flex align-items-center" novalidate>
                     <div class="me-2 flex-grow-1">
                         <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
                         <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
@@ -73,7 +79,7 @@
             <!-- Changer mot de passe -->
             <div class="mb-4">
                 <label class="form-label">Changer de Mot de Passe :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerMDP" method="POST" class="d-flex align-items-center">
+                <form action="index.php?controleur=utilisateur&methode=changerMDP" method="POST" class="d-flex align-items-center" novalidate>
                     <div class="me-2 flex-grow-1">
                         <label for="MDP" class="form-label d-none">Changer de Mot de Passe :</label>
                         <input type="text" class="form-control" id="MDP" name="MDP">
@@ -88,6 +94,18 @@
                 <label class="form-label">Vérifier le mail :</label>
                 <button class="btn btn-primary w-100">Vérifier Mail</button>
             </div>
+
+            {% if message is empty %}
+                <p class="text-success">c bon :</p>
+            {% else %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for messages in message %}
+                            <li>{{ messages }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
