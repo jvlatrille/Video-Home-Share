@@ -64,6 +64,51 @@ class OADao{
         return $oaData ? $this->hydrate($oaData) : null;
     }
     
+    /**
+     * @brief Fonction pour récupérer les genres d'une oeuvre audiovisuelle OA
+     * 
+     * @param integer $idOA Identifiant de l'oeuvre audiovisuelle OA
+     * @return array|null Tableau de genres ou null si non trouvé
+     */
+    private function getTagsByOA(int $idOA): array {
+        $sql = "SELECT t.nom
+            FROM ".PREFIXE_TABLE."tag t
+            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTag
+            WHERE p.idOA = :idOA
+        ";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idOA' => $idOA]);
+        
+        $tags = [];
+        while ($row = $pdoStatement->fetch(PDO::FETCH_ASSOC)) {
+            $tags[] = $row['nom'];
+        }
+        
+        return $tags;
+    }
+
+    /**
+     * @brief Fonction pour récupérer la collection d'une oeuvre audiovisuelle OA
+     * 
+     * @param int $idOa Identifiant de l'oeuvre audiovisuelle OA
+     * @return Collection|null Collection de l'oeuvre audiovisuelle OA ou null si non trouvé
+     */
+
+     private function getCollectionByOA(int $idOA): ?string {
+        $sql = "
+            SELECT c.nom
+            FROM vhs_collection c
+            JOIN vhs_fairepartie f ON f.idCollection = c.idCollection
+            WHERE f.idOA = :idOA
+        ";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idOA' => $idOA]);
+        
+        $collection = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $collection ? $collection['nom'] : null;
+    }
     
     //Fonction pour afficher sur la page d'acceuil les 10 OA les mieux notées
     /**
@@ -72,13 +117,39 @@ class OADao{
      * @return array|null Tableau d'OA ou null si non trouvé
      */
     public function findMeilleurNote(): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."oa ORDER BY note DESC LIMIT 10";
+        $sql = "SELECT distinct o.idOA,o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree
+         FROM ".PREFIXE_TABLE."oa o 
+         JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
+         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag
+         ORDER BY o.note DESC LIMIT 5";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $resultats = $pdoStatement->fetchAll();
-        return $this->hydrateAll($resultats);
+        $topOas = [];
+        while ($row = $pdoStatement->fetch(PDO::FETCH_ASSOC)) {
+            // Hydrate un objet OA
+            $oa = $this->hydrate($row);
+            
+            // Ajoute les tags et collections
+            $oa->setGenres($this->getTagsByOA($oa->getIdOA()));
+            $oa->setCollection($this->getCollectionByOA($oa->getIdOA()));
+
+            $topOas[] = $oa;
+        }
+        
+        return $topOas;
+        
     }
+
+    /*
+    "SELECT o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree,
+                        t.nom,c.nom,c.type
+         FROM ".PREFIXE_TABLE."oa o 
+         JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
+         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag
+         JOIN ".PREFIXE_TABLE."fairepartie f ON o.idOA=f.idOA
+         JOIN ".PREFIXE_TABLE."collection c ON f.idCollection=c.idCollection         
+         ORDER BY o.note DESC LIMIT 10";
+    */
 
     //Méthode pour récupérer toutes les oeuvres audiovisuelles
     /**
@@ -104,7 +175,7 @@ class OADao{
      * @param array $tableauAssoc Tableau associatif contenant les données d'une OA 
      * @return OA|null L'objet OA ou null
      */
-    public function hydrate(array $tableauAssoc) : ?OA{
+    public static function hydrate(array $tableauAssoc) : ?OA{ //Static car l'objet n'est pas crée
         $oa=new OA();
         $oa->setIdOa($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
@@ -123,12 +194,25 @@ class OADao{
      * @param array $resultats Tableau de tableaux associatifs contenant les données de plusieurs OA
      * @return array|null Tableau d'objets OA ou null
      */
-    public function hydrateAll(array $resultats): ?array {
+    public static function hydrateAll(array $resultats): ?array { //Static car l'objet n'est pas crée
         $oaListe = [];
         foreach ($resultats as $row) {
-            $oaListe[] = $this->hydrate($row);
+            $oaListe[] = OADao::hydrate($row); //Sans static : $oaListe[] = $this->hydrate($row);
         }
         
         return $oaListe;
     }   
+
+    public function getParticipantsByFilmId(int $idOA): array {
+        $sql = "SELECT p.nom, p.prenom, c.role, c.rang
+                FROM vhs_personne p
+                JOIN vhs_collaborer c ON p.idPersonne = c.idPersonne
+                WHERE c.idOA = :idOA
+                LIMIT 10";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idOA' => $idOA]);
+        
+        return $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

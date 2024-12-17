@@ -5,7 +5,7 @@
  * @brief classe OA pour représenter une oeuvre audiovisuelle
  * @details Cette OA classe permet de représenter une oeuvre audiovisuelle avec 
  * ses attributs(id, nom, note, type, description, dateSortie, vo, duree)
- * @version 1.0
+ * @version 2.0
  * @date : 13/11/2024
  */
 
@@ -46,6 +46,21 @@ class OA{
     private ?int $duree;
 
     /**
+     * @brief Genres de l'oeuvre audiovisuelle 
+     *
+     * @var string|null
+     */
+    private ?array $genres =[];
+
+    /**
+     * @brief Collection de l'oeuvre audiovisuelle
+     * 
+     * @var string|null
+     */
+    private ?string $collection;
+
+
+    /**
      * @brief Constructeur de la classe OA
      * @param int|null $idOa : identifiant de l'oeuvre audiovisuelle
      * @param string|null $nom : nom de l'oeuvre audiovisuelle
@@ -55,8 +70,10 @@ class OA{
      * @param string|null $dateSortie : date de sortie de l'oeuvre audiovisuelle
      * @param string|null $vo : version originale de l'oeuvre audiovisuelle
      * @param int|null $duree : durée de l'oeuvre audiovisuelle
+     * @param array|null $genres : genres de l'oeuvre audiovisuelle
+     * @param string|null $collection : Collection de l'oeuvre audiovisuelle
      */
-    public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $duree=null){
+    public function __construct(?int $id=null, ?string $nom=null, ?int $note=null, ?string $type=null, ?string $description=null, ?string $dateSortie=null, ?string $vo=null, ?int $duree=null, ?array $genres=null, ?string $collection=null){
         $this->idOa = $id;
         $this->nom = $nom;
         $this->note = $note;
@@ -65,6 +82,8 @@ class OA{
         $this->dateSortie = $dateSortie;
         $this->vo = $vo;
         $this->duree = $duree;
+        $this->genres = $genres;
+        $this->collection = $collection;
     }
 
     //Getters et setters de la classe OA
@@ -215,5 +234,44 @@ class OA{
      */
     public function setDuree(?int $duree): void{
         $this->duree = $duree;
+    }
+
+    /**
+     * @brief Retourne les genres de l'oeuvre audiovisuelle OA
+     *
+     * @return array|null genres de l'oeuvre audiovisuelle
+     */
+    public function getGenres(): ?array{
+        return $this->genres;
+    }
+
+    /**
+     * @brief Modifie les genres de l'oeuvre audiovisuelle OA
+     * 
+     * @param array|null $genres : genres de l'oeuvre audiovisuelle
+     * 
+     */
+
+    public function setGenres(?array $genres): void{
+        $this->genres = $genres;
+
+    }
+    
+    /**
+     * @brief Retourne la collection de l'oeuvre audiovisuelle OA
+     *
+     * @return string|null collection de l'oeuvre audiovisuelle
+     */
+    public function getCollection(): ?string{
+        return $this->collection;
+    }
+
+    /**
+     * @brief Modifie la collection de l'oeuvre audiovisuelle OA
+     *
+     * @param string|null $collection : collection de l'oeuvre audiovisuelle
+     */
+    public function setCollection(?string $collection): void{
+        $this->collection = $collection;
     }
 }
