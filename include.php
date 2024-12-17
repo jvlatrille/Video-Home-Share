@@ -26,6 +26,8 @@ require_once 'controllers/controller_forum.class.php';
 require_once 'controllers/controller_testNotif.class.php';
 require_once 'controllers/controller_jeux.class.php';
 
+require_once 'controllers/controller_newsletter.class.php';
+
 
 
 // //Ajout des modèles
