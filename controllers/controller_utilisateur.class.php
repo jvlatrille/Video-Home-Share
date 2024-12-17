@@ -27,7 +27,7 @@ class ControllerUtilisateur extends Controller
         $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
         // Récupère l'utilisateur
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
+        $template = $this->getTwig()->load('profil.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateurConnecte
         ]);
@@ -231,11 +231,13 @@ class ControllerUtilisateur extends Controller
         $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
 
         // $mail = str_replace(' ', '', $mail); // On enlève les espaces
-
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
+            
             $this->afficherUtilisateur();
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+
         }else{  
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
