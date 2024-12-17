@@ -67,7 +67,7 @@
         <div class="mt-4">
             <h4 class="fw-bold">Casting</h4>
             <div class="row">
-                {% for participant in oa.participants|slice(0, 25) %}
+                {% for participant in oa.participants|slice(0, 12) %}
                 <div class="col-4 col-md-2 text-center mb-3">
                     {% if participant.photo %}
                         <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
