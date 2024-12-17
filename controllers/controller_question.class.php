@@ -14,46 +14,80 @@ class ControllerQuestion extends Controller {
         $questionListe = $managerQuestion->findAll($idQuizz);
 
         // Générer la vue
-        $template = $this->getTwig()->load('questions_list.html.twig');
+        $template = $this->getTwig()->load('questions.html.twig');
         echo $template->render(['questionListe' => $questionListe]);
     }
 
     // Fonction pour afficher une question spécifique
     public function afficherQuestion() {
-        $idQuizz = isset($_GET['idQuizz']) ? $_GET['idQuizz'] : null;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     
-        if ($idQuizz === null) {
-            echo "ID du quizz manquant.";
+        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+        $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
+    
+        if (!$idQuizz) {
+            echo "ID du quizz manquant ou invalide.";
             return;
         }
     
-        // Récupère la première question du quizz
+        // Vérifier si une réponse a été soumise
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reponseChoisie'])) {
+            $reponseChoisie = $_POST['reponseChoisie'];
+    
+            // Récupère la question pour comparer la réponse
+            $managerQuestion = new QuestionDao($this->getPdo());
+            $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+    
+            if ($question && $reponseChoisie === $question->getBonneReponse()) {
+                $_SESSION['score']++; // Incrémenter le score
+            }
+    
+            // Redirige vers la question suivante
+            header("Location: index.php?controller=question&action=afficherQuestion&idQuizz=$idQuizz&numero=" . ($numero + 1));
+            exit;
+        }
+    
+        // Initialiser le score pour la première question
+        if ($numero === 1) {
+            $_SESSION['score'] = 0;
+        }
+        
+        // Récupérer la question courante
         $managerQuestion = new QuestionDao($this->getPdo());
-        $question = $managerQuestion->findFirstQuestionByQuizz($idQuizz);
+        $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
     
-        if ($question === null) {
-            echo "Aucune question trouvée pour ce quizz.";
-            return;
+        if (!$question) {
+            // Si aucune question n'est trouvée, afficher le score final
+            header("Location: index.php?controller=question&action=afficherScore&idQuizz=$idQuizz");
+            exit;
         }
     
-        // Récupère toutes les réponses et les mélange
+        // Mélanger les réponses
         $reponses = [
             $question->getBonneReponse(),
             $question->getMauvaiseReponse1(),
             $question->getMauvaiseReponse2(),
             $question->getMauvaiseReponse3()
         ];
-    
-        // Mélanger les réponses
         shuffle($reponses);
     
         // Générer la vue
-        $template = $this->getTwig()->load('uneQuestion.html.twig');
+        $template = $this->getTwig()->load('question.html.twig');
         echo $template->render([
             'question' => $question,
-            'reponses' => $reponses // On passe le tableau des réponses mélangées à la vue
+            'reponses' => $reponses,
+            'idQuizz' => $idQuizz,
+            'numero' => $numero,
+            'score' => $_SESSION['score']
         ]);
     }
+
+    
+    
+    
+    
     
 
     // Fonction pour ajouter une question à un quizz
@@ -95,7 +129,7 @@ class ControllerQuestion extends Controller {
         }
 
         // Générer la vue
-        $template = $this->getTwig()->load('ajouter_question.html.twig');
+        $template = $this->getTwig()->load('question_ajout.html.twig');
         echo $template->render();
     }
 
@@ -140,7 +174,7 @@ class ControllerQuestion extends Controller {
         }
 
         // Générer la vue
-        $template = $this->getTwig()->load('modifier_question.html.twig');
+        $template = $this->getTwig()->load('question_modifier.html.twig');
         echo $template->render(['question' => $question]);
     }
 
@@ -159,4 +193,23 @@ class ControllerQuestion extends Controller {
             echo "Erreur lors de la suppression de la question.";
         }
     }
+    public function afficherScore() {
+        // Récupère le score de la session
+        $score = $_SESSION['score'] ?? 0;
+    
+        // Récupère l'ID du quizz
+        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+    
+        // Générer la vue pour afficher le score
+        $template = $this->getTwig()->load('quizzResultat.html.twig');
+        echo $template->render([
+            'score' => $score,
+            'idQuizz' => $idQuizz
+        ]);
+    
+        // Réinitialiser le score pour un futur quizz
+        unset($_SESSION['score']);
+    }
 }
+
+

@@ -1,0 +1,17 @@
+# Renommer ce fichier par constantes.yaml et remplir le mot de passe de la base de données
+
+# Connexion à la base de donnée
+DB_:
+  HOST: lakartxela.iutbayonne.univ-pau.fr
+  NAME: namrein_pro
+  USER: namrein_pro
+  PASS: namrein_pro
+PREFIXE_TABLE: vhs_
+
+# Constante de la partie vue
+WEBSITE_:
+  TITLE: VHS - Video Home Share
+  VERSION: 1.0
+  DESCRIPTION: Un site de partage de films
+  LANGUAGE: fr
+  LOGO: img\LogoPopCorn.png

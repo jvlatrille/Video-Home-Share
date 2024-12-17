@@ -22,3 +22,41 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 
 //Ajout de l'extension d'internationalisation qui permet d'utiliser les filtres de date dans twig
 $twig->addExtension(new IntlExtension());
+
+use Symfony\Component\Yaml\Yaml;
+
+// Chemin vers le fichier YAML
+$configPath = __DIR__ . '/templates.yaml';
+
+if (file_exists($configPath)) {
+    // Charger les constantes depuis le fichier YAML
+    $constants = Yaml::parseFile($configPath);
+
+    if (!empty($constants)) {
+        foreach ($constants as $section => $values) {
+            if (is_array($values)) {
+                foreach ($values as $key => $value) {
+                    // Ajouter les constantes comme variables globales accessibles dans Twig
+                    $twig->addGlobal(strtolower($section) . '_' . strtolower($key), $value);
+                }
+            } else {
+                // Ajouter cette constante comme variable globale
+                $twig->addGlobal(strtolower($section), $values);
+            }
+        }
+    }
+} else {
+    die('Le fichier config/constantes.yaml est introuvable.');
+}
+
+require_once 'modeles/utilisateur.class.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_SESSION['utilisateur']) && ! empty($_SESSION['utilisateur'])) {
+    $utilisateur = unserialize($_SESSION['utilisateur']);
+    $twig->addGlobal('utilisateurConnecte', $utilisateur);
+} else {
+    $twig->addGlobal('utilisateurConnecte', null);
+}
