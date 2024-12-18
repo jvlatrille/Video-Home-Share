@@ -175,7 +175,7 @@ class OADao{
      * @param array $tableauAssoc Tableau associatif contenant les données d'une OA 
      * @return OA|null L'objet OA ou null
      */
-    public function hydrate(array $tableauAssoc) : ?OA{
+    public static function hydrate(array $tableauAssoc) : ?OA{ //Static car l'objet n'est pas crée
         $oa=new OA();
         $oa->setIdOa($tableauAssoc['idOA']);
         $oa->setNom($tableauAssoc['nom']);
@@ -194,10 +194,10 @@ class OADao{
      * @param array $resultats Tableau de tableaux associatifs contenant les données de plusieurs OA
      * @return array|null Tableau d'objets OA ou null
      */
-    public function hydrateAll(array $resultats): ?array {
+    public static function hydrateAll(array $resultats): ?array { //Static car l'objet n'est pas crée
         $oaListe = [];
         foreach ($resultats as $row) {
-            $oaListe[] = $this->hydrate($row);
+            $oaListe[] = OADao::hydrate($row); //Sans static : $oaListe[] = $this->hydrate($row);
         }
         
         return $oaListe;

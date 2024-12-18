@@ -48,21 +48,11 @@
     {% else %}
         <div class="container">
             {% for forumList in forumListe %}
-                <div class="card mb-3" style="background-color: #D2B48C;">
+                <div class="card mb-3">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <h5 class="card-title">{{ forumList.nom }}</h5>
-                            </div>
-                            <div class="col-4 text-end">
-                                <a href="index.php?controleur=forum&methode=afficherForum&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col">
-                                <p class="card-text">{{ forumList.description }}</p>
-                            </div>
-                        </div>
+                        <h5 class="card-title">{{ forumList.nom }}</h5>
+						<p class="card-text">{{ forumList.description }}</p>
+                        <a href="index.php?controleur=forum&methode=afficherForum&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>            
                     </div>
                 </div>
             {% endfor %}

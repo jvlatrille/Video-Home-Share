@@ -30,14 +30,21 @@
             <form class="d-flex justify-content-center" style="flex-grow: 1;">
                 <input class="form-control" type="search" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
             </form>
-        
+            {% if utilisateurConnecte is null %}
             <!-- Boutons Connexion et Langue -->
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
                 <button class="btn btn-custom" type="button">FR</button>
             </div>
+            {% else %}
+            <div class="me-3">
+                <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
+                <button class="btn btn-custom" type="button">FR</button>
+            </div>
+            {% endif %}
+
         </nav>
-        
+
         <!-- Menu déroulant sous le bouton "Menu" -->
         <div class="collapse" id="menuBar">
             <div class="container py-2 d-flex justify-content-center">
@@ -46,23 +53,28 @@
 
                 <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
 
-                <a href="index.php?controleur=watchlist&methode=listerWatchList&id=1" class="btn btn-light-custom mx-2">WatchList</a>
-                <!-- normelement c'est la var session id de l'user  -->
+                <a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">WatchList</a>
 
 
                 <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
 
                 <a href="index.php?controleur=utilisateur&methode=AllUtilisateurs" class="btn btn-light-custom mx-2">utilisateur</a> <!-- utilisateur A SUPPRIMER-->
 
-                <a href="index.php?controleur=testNotif&methode=listerNotif&id=1" class="btn btn-light-custom mx-2">Profil</a>
+                <a href="index.php?controleur=profil&methode=listerNotif&idNotif={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
                 
 
             </div>
         </div>
     </header>
 
+
+
     <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
     <main class="flex-grow-1">
+        {# affiche le base_template_profil #}
+        {% block content2 %}
+        {% endblock %}
+
         {% block content %}
         {% endblock %}
     </main>
@@ -71,12 +83,10 @@
         <div class="container">
             <!-- Liens de Navigation -->
             <div class="footer-nav mb-3">
-                <a href="#" class="footer-link mx-2">Home</a>
-                <a href="#" class="footer-link mx-2">Experience</a>
-                <a href="#" class="footer-link mx-2">News</a>
-                <a href="#" class="footer-link mx-2">About us</a>
-                <a href="#" class="footer-link mx-2">Jobs</a>
+                <a href="#" class="footer-link mx-2">Accueil</a>
+                <a href="#" class="footer-link mx-2">A propos</a>
                 <a href="#" class="footer-link mx-2">Contact</a>
+                <a href="#" class="footer-link mx-2">Newletter</a>
             </div>
 
             <!-- Icônes des réseaux sociaux -->
@@ -88,7 +98,7 @@
 
             <!-- Copyright -->
             <div class="footer-copyright">
-                © Copyright 2019 - Lift Media
+                © Copyright 2024 - IUT de Bayonne et du Pays Basque - BUT2 Groupe 8
             </div>
         </div>
     </footer>
