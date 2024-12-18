@@ -1,0 +1,36 @@
+{% extends 'base_template.html.twig' %}
+
+    {% block content2 %} 
+
+     {% if utilisateurConnecte is defined %}
+    {% set banniere = utilisateurConnecte.banniereProfil ?? 'img/turtleTestBanniere.png' %}
+    {% set photo = utilisateurConnecte.photoProfil ?? 'img/tortueProfil.png' %}
+
+    <div class="image-bg container-fluid"
+         style="background-image: url('{{ banniere }}'); 
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+         height: 30vh;
+         position: relative">
+        <div class="rounded-circle" 
+             style="background-image: url('{{ photo }}');
+             height: 150px; 
+             width: 150px; 
+             background-size: cover; 
+             background-position: center;
+             position: absolute;
+             top: 50%;
+             left: 8%;
+             transform: translateY(-50%);
+             border: 4px solid #fff;">
+        </div>
+    </div>
+{% endif %}
+
+    <div class="container py-4 d-flex justify-content-center">
+        <a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" class="btn btn-light-custom mx-2">A propos</a>
+        <a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" class="btn btn-light-custom mx-2">Paramètres</a>
+        <a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" class="btn btn-light-custom mx-2">Notifications</a>
+    </div>
+    {% endblock %} 
