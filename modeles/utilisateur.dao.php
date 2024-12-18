@@ -128,6 +128,21 @@ class UtilisateurDao
     }
 
     /**
+     * @brief Rechercher un Utilisateur par son pseudo
+     * @author Jules VINET 
+     * @param string $pseudo
+     * @return Utilisateur|null
+     */
+    public function findByPseudo(?string $pseudo): ?Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE pseudo = :pseudo";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['pseudo' => $pseudo]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetch();
+        return $utilisateur ? $this->hydrate($utilisateur) : null;
+    }
+    
+    /**
      * @brief Creer un utilisateur en base de données
      * @author Thibault CHIPY 
      * @param Utilisateur $utilisateur

@@ -35,6 +35,25 @@ class ControllerUtilisateur extends Controller
     echo $template->render();
 }
 
+public function afficherAutreUtilisateur()
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+        $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+        $template = $this->getTwig()->load('profilAutre.html.twig');
+        echo $template->render(['utilisateur' => $autreUtilisateur]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+    }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
 
     // Changer de pseudo
     public function changerPseudo() {

@@ -1,7 +1,7 @@
 CREATE TABLE vhs_utilisateur
 (
     idUtilisateur INT PRIMARY KEY AUTO_INCREMENT,
-    pseudo VARCHAR(50) NOT NULL,
+    pseudo VARCHAR(50) NOT NULL UNIQUE,
     photoProfil VARCHAR(255),
     banniereProfil VARCHAR(255),
     adressMail VARCHAR(50) NOT NULL UNIQUE,
@@ -183,7 +183,7 @@ CREATE TABLE vhs_voir (
 
 -- Table: vhs_utilisateur 
 INSERT INTO vhs_utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) VALUES 
-('Alice', 'alice.jpg', 'banner1.jpg', 'alice@example.com', 'password1', 'admin'),
+('Elona', 'Elona.jpg', 'Elona_banniere.jpg', 'elona@example.com', 'password1', 'admin'),
 ('Bob', 'bob.jpg', 'banner2.jpg', 'bob@example.com', 'password2', 'user'), 
 ('Charlie', 'charlie.jpg', 'banner3.jpg', 'charlie@example.com', 'password3', 'moderator'), 
 ('David', 'david.jpg', 'banner4.jpg', 'david@example.com', 'password4', 'user'), 
@@ -192,7 +192,8 @@ INSERT INTO vhs_utilisateur (pseudo, photoProfil, banniereProfil, adressMail, mo
 ('Grace', 'grace.jpg', 'banner7.jpg', 'grace@example.com', 'password7', 'user'), 
 ('Heidi', 'heidi.jpg', 'banner8.jpg', 'heidi@example.com', 'password8', 'user'), 
 ('Ivan', 'ivan.jpg', 'banner9.jpg', 'ivan@example.com', 'password9', 'user'), 
-('Judy', 'judy.jpg', 'banner10.jpg', 'judy@example.com', 'password10', 'user'); 
+('Judy', 'judy.jpg', 'banner10.jpg', 'judy@example.com', 'password10', 'user'),
+('jules', 'jules.jpg', 'jules_banniere.jpg', 'jules@gmail.com', '$2y$10$xGzdLVzKOOPtWdApztNyrOiJzV0tHT9twPfDiMbVZIlwM89txqpMC', 'user');
 
 
 -- Table: vhs_jeu 
@@ -297,7 +298,7 @@ INSERT INTO vhs_question (idTMDB, contenu, numero, nvDifficulte, bonneReponse, i
 INSERT INTO vhs_commentaire (idTMDB, contenu, idUtilisateur) VALUES 
 (123, 'Great chess content!', 1), 
 (456, 'Monopoly is awesome!', 2),
-(372058, 'Amazing movie!', 3), 
+(372058, 'Une masterclass :)', 1), 
 (372058, 'Loved the plot!', 4), 
 (372058, 'Great acting!', 5), 
 (789, 'Uno is a fun game!', 6), 

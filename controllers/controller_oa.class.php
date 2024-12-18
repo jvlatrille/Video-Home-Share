@@ -22,7 +22,13 @@ class ControllerOA extends Controller
         $managerOa = new OADao();
         $oa = $managerOa->find($idOa);
 
+        // Récupérer les commentaires associés à l'idTMDB
+        $commentaires = $managerOa->getCommentairesByTMDB($idOa);
+var_dump($commentaires);
         $template = $this->getTwig()->load('film.html.twig');
-        echo $template->render(['oa' => $oa]); // Envoi de l'objet 'oa' à Twig
+        echo $template->render([
+            'oa' => $oa,
+            'commentaires' => $commentaires
+        ]);
     }
 }

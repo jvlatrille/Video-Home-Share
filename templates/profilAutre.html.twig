@@ -1,0 +1,30 @@
+{% extends 'base_template.html.twig' %}
+
+    {% block content2 %} 
+
+    {% if utilisateur is defined %}
+    {% set banniere = 'img/profils/' ~utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
+    {% set photo = 'img/profils/' ~utilisateur.photoProfil ?? 'img/tortueProfil.png' %}
+
+    <div class="image-bg container-fluid"
+         style="background-image: url('{{ banniere }}'); 
+         background-size: cover;
+         background-position: center;
+         background-repeat: no-repeat;
+         height: 30vh;
+         position: relative">
+        <div class="rounded-circle" 
+             style="background-image: url('{{ photo }}');
+             height: 150px; 
+             width: 150px; 
+             background-size: cover; 
+             background-position: center;
+             position: absolute;
+             top: 50%;
+             left: 8%;
+             transform: translateY(-50%);
+             border: 4px solid #fff;">
+        </div>
+    </div>
+{% endif %}
+    {% endblock %} 

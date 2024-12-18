@@ -109,8 +109,6 @@ class OADao
         );
     }
 
-
-
     public function findMeilleurNote(): array
     {
         $results = $this->makeApiRequest('/movie/top_rated', ['language' => 'fr-FR', 'page' => 1]);
@@ -179,5 +177,23 @@ class OADao
             }
         }
         return null; // Aucun producteur trouvé
+    }
+
+
+    public function getCommentairesByTMDB(int $idTMDB): array
+    {
+        // Connexion à la base de données
+        $pdo = new PDO('mysql:host=localhost;dbname=namrein_pro', 'root', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $sql = "SELECT c.contenu, u.pseudo, u.photoProfil 
+            FROM vhs_commentaire c 
+            JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur 
+            WHERE c.idTMDB = :idTMDB";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['idTMDB' => $idTMDB]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
