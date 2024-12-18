@@ -28,8 +28,6 @@ class ControllerJeux extends Controller{
 	 */
 	public function listeTableau()
     {
-		echo "listerTableau jeux";
-
 		// Récupérer la liste des jeux
 		$managerJeux = new JeuxDao($this->getPdo());
 		$tableau = $managerJeux->findAll();
