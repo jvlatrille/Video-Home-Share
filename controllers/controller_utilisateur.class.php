@@ -19,24 +19,31 @@ class ControllerUtilisateur extends Controller
         echo $template->render(['utilisateurListe' => $utilisateurListe]);
     }
 
-    // Afficher un seul utilisateur
     public function afficherUtilisateur()
-    {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        // Récupère l'utilisateur
-        $managerUtilisateur = new UtilisateurDAO($this->getPdo());
-        $utilisateur = $managerUtilisateur->find($id);
-
-        // Génère la vue
-        $template = $this->getTwig()->load('profilParametres.html.twig');
-        echo $template->render(['utilisateur' => $utilisateur]);
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(['utilisateur' => $utilisateurConnecte]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
     }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
 
     // Changer de pseudo
     public function changerPseudo() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
+            $id = $utilisateurConnecte->getIdUtilisateur();
+            $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
     
         if (!$id || !$newPseudo) {
             throw new Exception('Informations manquantes : ID ou pseudo.');
@@ -54,7 +61,7 @@ class ControllerUtilisateur extends Controller
             'message' => $message
         ]);
     }    
-    
+}
     // Changer de Mail
     public function changerMail() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -211,7 +218,7 @@ class ControllerUtilisateur extends Controller
     /**
      * @brief Vérifie la connexion d'un utilisateur
      * @author Thibault Chipy 
-     * @version 1.0
+     * @version 2.0
      * 
      * @return void
      */
@@ -220,22 +227,20 @@ class ControllerUtilisateur extends Controller
         $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
 
         // $mail = str_replace(' ', '', $mail); // On enlève les espaces
-
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
-
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            $_SESSION['idUtilisateur'] = $utilisateur->getIdUtilisateur();
-            $_SESSION['pseudo'] = $utilisateur->getPseudo();
-            $_SESSION['role'] = $utilisateur->getRole();
-            $_SESSION['mail'] = $utilisateur->getAdressMail();
 
-            header('Location: index.php');
-            exit;
-        }else{
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+            $this->afficherUtilisateur();
+  
+
+        }else{  
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
+     
     }
 
     /**
@@ -268,6 +273,8 @@ class ControllerUtilisateur extends Controller
         $age = $dateNaiss->diff($dateJour);
         $age = $age->format('%y');
 
+        $verifPassee=true;
+
         //Si l'utilisateur a moins de 13 ans
         if($age < 13){
             $template = $this->getTwig()->load('inscription.html.twig');
@@ -279,28 +286,49 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->emailExiste($mail);
         $verifMdp=$managerUtilisateur->estRobuste($mdp);
-
+        
         // Vérifie si l'email existe déjà
         if($utilisateur){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'L\'adresse mail est déjà utilisée']);
+            $verifPassee=false;
+            return;
         }
         
         if($mdp != $mdpVerif){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
+            $verifPassee=false;
+            return;
         }
         if(!$verifMdp){
             $template = $this->getTwig()->load('inscription.html.twig');
             echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
+            $verifPassee=false;
+            return;
         }
 
+        if($verifPassee){
         $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
         $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
         $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
         $managerUtilisateur->creerUtilisateur($utilisateur);
+        }
+        else{
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'Erreur lors de l\'inscription']);
+        }
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        }
 
-
-        header('Location: index.php?controleur=utilisateur&methode=verifConnexion');
+        /**
+         * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
+         * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
+         * 
+         * @return void
+         */
+        public function deconnexion(){
+            session_destroy();
+            header('Location: index.php');
         }
 }

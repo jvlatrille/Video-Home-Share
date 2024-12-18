@@ -32,7 +32,7 @@ class ControllerForum extends Controller
         $noms = $managerForum->afficherNomForum($idForum);
         
         //Generer la vue
-        $template = $this->getTwig()->load('unForum.html.twig');
+        $template = $this->getTwig()->load('forum_detail.html.twig');
         
         echo $template->render(['forum'=>$forumList, 'noms'=>$noms]);
 

@@ -50,7 +50,11 @@ class WatchList{
      */
     private ?array $listeOeuvres;
 
-    //Constructeur de la classe WatchList
+    /**
+     * @brief Id de l'utilisateur qui a créé la watchlist
+     *@var int|null
+     */
+    private ?int $idUtilisateur;
 
     /**
      * @brief Constructeur de la classe WatchList
@@ -61,13 +65,14 @@ class WatchList{
      * @param bool|null $visible : visibilité de la watchlist
      * @param array|null $listeOeuvres : liste des oeuvres de la watchlist
      */
-    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?array $listeOeuvres=null){
+    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?array $listeOeuvres=null, ?int $idUtilisateur=null){
         $this->idWatchlist = $idWatchList;
         $this->titre = $titre;
         $this->genre = $genre;
         $this->description = $description;
         $this->visible = $visible;
         $this->listeOeuvres = $listeOeuvres;
+        $this->idUtilisateur = $idUtilisateur;
     }
 
     //Getters et setters de la classe WatchList
@@ -207,6 +212,25 @@ class WatchList{
         if($key !== false){
             unset($this->listeOeuvres[$key]);
         }
+    }
+
+    /**
+     * @brief Retourne l'id de l'utilisateur qui a créé la watchlist
+     *
+     * @return int|null id de l'utilisateur
+     */
+    public function getIdUtilisateur(): ?int{
+        return $this->idUtilisateur;
+    }
+
+    /**
+     * @brief Modifie l'id de l'utilisateur qui a créé la watchlist
+     *
+     * @param int|null $idUtilisateur : id de l'utilisateur
+     * @return void
+     */
+    public function setIdUtilisateur(?int $idUtilisateur): void{
+        $this->idUtilisateur = $idUtilisateur;
     }
     
 

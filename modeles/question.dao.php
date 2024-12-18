@@ -32,7 +32,7 @@ class QuestionDao {
     public function findQuestionByQuizzAndNumero(int $idQuizz, int $numero): ?question {
         // Requête pour récupérer une question spécifique du quizz
         $sql = "SELECT q.* FROM ".PREFIXE_TABLE."question q
-                INNER JOIN ".PREFIXE_TABLE."porterSur p ON p.idQuestion = q.idQuestion
+                INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
                 WHERE p.idQuizz = :idQuizz AND q.numero = :numero
                 LIMIT 1"; // Limite à 1 question, correspond au numéro demandé
     
@@ -116,7 +116,7 @@ class QuestionDao {
     public function findFirstQuestionByQuizz(int $idQuizz): ?question {
         // Requête pour récupérer la première question du quizz
         $sql = "SELECT q.* FROM ".PREFIXE_TABLE."question q
-                INNER JOIN ".PREFIXE_TABLE."porterSur p ON p.idQuestion = q.idQuestion
+                INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
                 WHERE p.idQuizz = :idQuizz
                 LIMIT 1"; // Limite à 1 question, la première
     
