@@ -8,12 +8,27 @@ class OADao
     private $apiKey = TMDB_CLE_KEY;
     private $accessToken = TMDB_TOKEN_ACCES;
 
+    private function getConnection(): PDO
+    {
+        static $pdo = null;
+
+        if ($pdo === null) {
+            try {
+                $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                error_log('Erreur PDO : ' . $e->getMessage());
+                throw $e;
+            }
+        }
+        return $pdo;
+    }
+
     private function makeApiRequest(string $endpoint, array $params = []): array
     {
         $url = $this->apiBaseUrl . $endpoint . '?api_key=' . $this->apiKey;
+        $params['include_image_language'] = 'fr,null';
 
-        // Ajouter les paramètres supplémentaires
-        $params['include_image_language'] = 'fr,null'; // Inclut les images sans langue spécifique
         foreach ($params as $key => $value) {
             $url .= "&$key=" . urlencode($value);
         }
@@ -28,7 +43,6 @@ class OADao
 
         $response = curl_exec($curl);
 
-        // Vérification des erreurs cURL
         if (curl_errno($curl)) {
             error_log('Erreur cURL : ' . curl_error($curl));
             curl_close($curl);
@@ -38,14 +52,36 @@ class OADao
         curl_close($curl);
 
         $decodedResponse = json_decode($response, true);
-
-        // Vérification des erreurs API TMDB
         if (isset($decodedResponse['status_code'])) {
             error_log('Erreur API TMDB : ' . $decodedResponse['status_message']);
             return [];
         }
 
         return $decodedResponse ?? [];
+    }
+
+    private function hydrate(array $data): ?OA
+    {
+        return new OA(
+            $data['id'] ?? null,
+            $data['title'] ?? 'Titre inconnu',
+            $data['vote_average'] ?? 0.0,
+            'Film',
+            $data['overview'] ?? 'Description non disponible',
+            $data['release_date'] ?? 'Date inconnue',
+            $data['original_language'] ?? 'Langue inconnue',
+            $data['runtime'] ?? null,
+            isset($data['genres']) ? array_column($data['genres'], 'name') : [],
+            $data['producer'] ?? 'Non spécifié',
+            $this->getPosterUrl($data['poster_path'] ?? null),
+            $data['participants'] ?? []
+        );
+    }
+
+
+    private function hydrateAll(array $dataList): array
+    {
+        return array_map(fn($data) => $this->hydrate($data), $dataList);
     }
 
     private function getPosterUrl(?string $posterPath, string $size = 'w500'): string
@@ -59,141 +95,75 @@ class OADao
     public function find(?int $id): ?OA
     {
         $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR']);
-
         if (empty($movie)) {
             error_log("Aucun film trouvé pour l'ID : $id");
             return null;
         }
 
-        // Récupérer les participants (cast & crew)
         $credits = $this->makeApiRequest("/movie/$id/credits");
-        $participants = [];
-        $producer = null;
+        $movie['participants'] = $this->parseParticipants($credits);
+        $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
 
-        if (!empty($credits['cast'])) {
-            foreach ($credits['cast'] as $member) {
-                $participants[] = [
-                    'nom' => $member['name'],
-                    'role' => $member['character'] ?? 'Non spécifié',
-                    'photo' => isset($member['profile_path']) ? 'https://image.tmdb.org/t/p/w500' . $member['profile_path'] : null,
-                ];
-            }
-        }
-
-        if (!empty($credits['crew'])) {
-            foreach ($credits['crew'] as $member) {
-                $participants[] = [
-                    'nom' => $member['name'],
-                    'role' => $member['job'] ?? 'Non spécifié',
-                    'photo' => isset($member['profile_path']) ? 'https://image.tmdb.org/t/p/w500' . $member['profile_path'] : null,
-                ];
-            }
-
-            // Récupérer le producteur
-            $producer = $this->getProducer($credits['crew']);
-        }
-
-        return new OA(
-            $movie['id'],
-            $movie['title'],
-            $movie['vote_average'],
-            'Film',
-            $movie['overview'],
-            $movie['release_date'],
-            $movie['original_language'],
-            $movie['runtime'],
-            array_column($movie['genres'], 'name'),
-            $producer, // Producteur récupéré
-            $this->getPosterUrl($movie['poster_path']),
-            $participants
-        );
+        return $this->hydrate($movie);
     }
 
     public function findMeilleurNote(): array
     {
         $results = $this->makeApiRequest('/movie/top_rated', ['language' => 'fr-FR', 'page' => 1]);
-        $movies = [];
-
         if (empty($results['results'])) {
             error_log("Aucun film trouvé dans les films les mieux notés.");
-            return $movies;
+            return [];
         }
 
-        foreach ($results['results'] as $movie) {
-            $runtime = $movie['runtime'] ?? null; // Vérification de l'existence de 'runtime'
-            $genres = isset($movie['genres']) && is_array($movie['genres']) ? array_column($movie['genres'], 'name') : null; // Vérification de 'genres'
-
-            $movies[] = new OA(
-                $movie['id'],
-                $movie['title'],
-                $movie['vote_average'],
-                'Film',
-                $movie['overview'],
-                $movie['release_date'],
-                $movie['original_language'],
-                $runtime, // Utilisation de $runtime après vérification
-                $genres,  // Utilisation de $genres après vérification
-                null, // Pas de collection ici
-                $this->getPosterUrl($movie['poster_path'])
-            );
-        }
-
-        return $movies;
+        return $this->hydrateAll($results['results']);
     }
 
-    public function getParticipantsByFilmId(int $idOA): array
+    private function parseParticipants(array $credits): array
     {
-        $credits = $this->makeApiRequest("/movie/$idOA/credits");
         $participants = [];
-        $baseImageUrl = 'https://image.tmdb.org/t/p/w185'; // Taille des images de profil
+        $baseImageUrl = 'https://image.tmdb.org/t/p/w185';
 
-        if (!empty($credits['cast'])) {
-            foreach ($credits['cast'] as $member) {
+        foreach (['cast', 'crew'] as $key) {
+            foreach ($credits[$key] ?? [] as $member) {
                 $participants[] = [
-                    'nom' => $member['name'], // Nom du participant
-                    'role' => $member['character'] ?? 'Non spécifié', // Rôle dans le film
-                    'photo' => $member['profile_path'] ? $baseImageUrl . $member['profile_path'] : null, // Photo ou null
-                ];
-            }
-        }
-
-        if (!empty($credits['crew'])) {
-            foreach ($credits['crew'] as $member) {
-                $participants[] = [
-                    'nom' => $member['name'], // Nom du participant
-                    'role' => $member['job'] ?? 'Non spécifié', // Job dans l'équipe
-                    'photo' => $member['profile_path'] ? $baseImageUrl . $member['profile_path'] : null, // Photo ou null
+                    'nom' => $member['name'],
+                    'role' => $member['character'] ?? $member['job'] ?? 'Non spécifié',
+                    'photo' => isset($member['profile_path']) ? $baseImageUrl . $member['profile_path'] : null,
                 ];
             }
         }
 
         return $participants;
     }
+
     private function getProducer(array $crew): ?string
     {
         foreach ($crew as $member) {
-            if (isset($member['job']) && $member['job'] === 'Producer') {
-                return $member['name']; // Retourne le nom du premier producteur trouvé
+            if (($member['job'] ?? '') === 'Producer') {
+                return $member['name'];
             }
         }
-        return null; // Aucun producteur trouvé
+        return null;
     }
-
 
     public function getCommentairesByTMDB(int $idTMDB): array
     {
-        // Connexion à la base de données
-        $pdo = new PDO('mysql:host=localhost;dbname=namrein_pro', 'root', '');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try {
+            $pdo = $this->getConnection();
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $sql = "SELECT c.contenu, u.pseudo, u.photoProfil 
-            FROM vhs_commentaire c 
-            JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur 
-            WHERE c.idTMDB = :idTMDB";
+            $sql = "SELECT c.contenu, u.pseudo, u.photoProfil 
+                FROM vhs_commentaire c 
+                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur 
+                WHERE c.idTMDB = :idTMDB";
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute(['idTMDB' => $idTMDB]);
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['idTMDB' => $idTMDB]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('Erreur lors de la récupération des commentaires : ' . $e->getMessage());
+            return [];
+        }
     }
 }

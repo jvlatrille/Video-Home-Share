@@ -3,7 +3,7 @@
     {% block content2 %} 
 
     {% if utilisateur is defined %}
-    {% set banniere = 'img/profils/' ~utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
+    {% set banniere = 'img/banniere/' ~utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
     {% set photo = 'img/profils/' ~utilisateur.photoProfil ?? 'img/tortueProfil.png' %}
 
     <div class="image-bg container-fluid"

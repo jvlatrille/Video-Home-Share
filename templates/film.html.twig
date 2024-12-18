@@ -86,37 +86,30 @@
 
 
         <!-- Section des commentaires -->
-{% if commentaires is defined and commentaires is not empty %}
-    <h2>Commentaires</h2>
-    <ul class="list-group mb-4">
-        {% for commentaire in commentaires %}
-            <li class="list-group-item d-flex align-items-center">
-                <!-- Affichage de la photo de profil -->
-                {% if commentaire.photoProfil %}
-    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" 
-             alt="Photo de {{ commentaire.pseudo }}" 
-             class="rounded-circle me-3" width="50" height="50">
-    </a>
-{% else %}
+        {% if commentaires is defined and commentaires is not empty %}
+            <h2>Commentaires</h2>
+            <ul class="list-group mb-4">
+            {% for commentaire in commentaires %}
+                <li class="list-group-item d-flex align-items-center">
+                    {% if commentaire.photoProfil %}
+                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+                        </a>
+                    {% else %}
+                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                        <img src = '/img/tortueProfil.png' alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                        </a>
+                    {% endif %}
 
-    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-        <img src="{{ 'img/default.png' }}" 
-             alt="Photo par défaut" 
-             class="rounded-circle me-3" width="50" height="50">
-    </a>
-{% endif %}
 
-<!-- Pseudo avec lien -->
-<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-    <strong>{{ commentaire.pseudo }}</strong>
-</a>
 
 
 
                 <!-- Contenu du commentaire -->
                 <div>
-                    <strong>{{ commentaire.pseudo }}</strong>
+                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                        {{ commentaire.pseudo }}
+                    </a>
                     <p>{{ commentaire.contenu }}</p>
                 </div>
             </li>

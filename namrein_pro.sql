@@ -2,8 +2,8 @@ CREATE TABLE vhs_utilisateur
 (
     idUtilisateur INT PRIMARY KEY AUTO_INCREMENT,
     pseudo VARCHAR(50) NOT NULL UNIQUE,
-    photoProfil VARCHAR(255),
-    banniereProfil VARCHAR(255),
+    photoProfil VARCHAR(255) DEFAULT 'default.png',
+    banniereProfil VARCHAR(255) DEFAULT 'default.png',
     adressMail VARCHAR(50) NOT NULL UNIQUE,
     motDePasse VARCHAR(200) NOT NULL,
     role VARCHAR(50) NOT NULL
@@ -183,16 +183,16 @@ CREATE TABLE vhs_voir (
 
 -- Table: vhs_utilisateur 
 INSERT INTO vhs_utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) VALUES 
-('Elona', 'Elona.jpg', 'Elona_banniere.jpg', 'elona@example.com', 'password1', 'admin'),
-('Bob', 'bob.jpg', 'banner2.jpg', 'bob@example.com', 'password2', 'user'), 
-('Charlie', 'charlie.jpg', 'banner3.jpg', 'charlie@example.com', 'password3', 'moderator'), 
-('David', 'david.jpg', 'banner4.jpg', 'david@example.com', 'password4', 'user'), 
-('Eve', 'eve.jpg', 'banner5.jpg', 'eve@example.com', 'password5', 'user'), 
-('Frank', 'frank.jpg', 'banner6.jpg', 'frank@example.com', 'password6', 'user'), 
-('Grace', 'grace.jpg', 'banner7.jpg', 'grace@example.com', 'password7', 'user'), 
-('Heidi', 'heidi.jpg', 'banner8.jpg', 'heidi@example.com', 'password8', 'user'), 
-('Ivan', 'ivan.jpg', 'banner9.jpg', 'ivan@example.com', 'password9', 'user'), 
-('Judy', 'judy.jpg', 'banner10.jpg', 'judy@example.com', 'password10', 'user'),
+('elona', 'Elona.jpg', 'Elona_banniere.jpg', 'elona@gmail.com', '$2y$10$xGzdLVzKOOPtWdApztNyrOiJzV0tHT9twPfDiMbVZIlwM89txqpMC', 'admin'),
+('Bob', 'default.png', 'default.png', 'bob@example.com', 'password2', 'user'), 
+('Charlie', 'default.png', 'default.png', 'charlie@example.com', 'password3', 'admin'), 
+('David', 'default.png', 'default.png', 'david@example.com', 'password4', 'user'), 
+('Eve', 'default.png', 'default.png', 'eve@example.com', 'password5', 'user'), 
+('Frank', 'default.png', 'default.png', 'frank@example.com', 'password6', 'user'), 
+('Grace', 'default.png', 'default.png', 'grace@example.com', 'password7', 'user'), 
+('Heidi', 'default.png', 'default.png', 'heidi@example.com', 'password8', 'user'), 
+('Ivan', 'default.png', 'default.png', 'ivan@example.com', 'password9', 'user'), 
+('Judy', 'default.png', 'default.png', 'judy@example.com', 'password10', 'user'),
 ('jules', 'jules.jpg', 'jules_banniere.jpg', 'jules@gmail.com', '$2y$10$xGzdLVzKOOPtWdApztNyrOiJzV0tHT9twPfDiMbVZIlwM89txqpMC', 'user');
 
 
