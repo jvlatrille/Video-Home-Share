@@ -1,4 +1,4 @@
-{% extends "base_template.html.twig" %}
+{% extends "base_template_profil.html.twig" %}
 
 {% block content %}
 <!-- Couleur des marges -->
@@ -7,83 +7,95 @@
     <div class="container-fluid min-vh-100 ms-* me-*m-auto" style="background-color: #D5D0AF; border: none; width: 70%;">
         <!-- Bloc principal avec bordures personnalisées -->
 
-        <!-- Boutons en haut -->
-        <div class="d-flex justify-content-around p-3 bg-light border-bottom">
-            <button class="btn" style="background-color: #AA8463; color: black;">A propos</button>
-            <button class="btn" style="background-color: #AA8463; color: black;">Vos notifications</button>
-            <button class="btn" style="background-color: #AA8463; color: black;">Paramètres</button>
-        </div>
-
         <!-- Formulaires de modification -->
         <div class="p-5">
             <h4>Paramètres utilisateur</h4>
 
             <!-- Changer pseudo -->
-            <div class="mb-3">
-                <label class="form-label">Changer de pseudo :</label>
-                <button class="btn btn-primary w-100" onclick="changerPseudo({{ utilisateur.idUtilisateur }})">Changer Pseudo</button>
+            <div class="mb-4">
+                <label class="form-label">Changer de Pseudo :</label>
+                <form id="changerPseudo" action="index.php?controleur=profil&methode=changerPseudo" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="pseudo" class="form-label d-none">Changer de pseudo :</label>
+                        <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required
+                            maxlength="50" minlength="5" title="Entrez un pseudo entre 5 et 50 caractères.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Pseudo</button>
+                </form>
             </div>
 
             <!-- Changer photo de profil -->
-            <div class="mb-3">
-                <label class="form-label">Changer de Photo de Profil :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="post" enctype="multipart/form-data">
-                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('photoProfile').click();">Changer Photo de Profil</button>
-                    <!-- Formulaire de téléchargement -->
-                    <input type="file" name="photo" id="photoProfile" style="display: none;" accept="image/*">
-                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
-                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la photo</button>
+            <div class="mb-4">
+                <label for="photo" class="form-label">Photo de Profil</label>
+                <form id="changerPhotoProfil" action="index.php?controleur=profil&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="photo" class="form-label d-none">Changer Photo de Profil :</label>
+                        <input type="file" class="form-control" id="photo" name="photo"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Photo de Profil</button>
                 </form>
+                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
             <!-- Changer banniere -->
-            <div class="mb-3">
-                <label class="form-label">Changer de Banniere :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerBanniere" method="post" enctype="multipart/form-data">
-                    <button class="btn btn-primary w-100" type="button" onclick="document.getElementById('banniereProfile').click();">Changer Banniere</button>
-                    <!-- Formulaire de téléchargement de la bannière -->
-                    <input type="file" name="banniere" id="banniereProfile" style="display: none;" accept="image/*">
-                    <input type="hidden" name="userId" value="{{ utilisateur.idUtilisateur }}">
-                    <button class="btn btn-success w-100 mt-2" type="submit">Télécharger la bannière</button>
+            <div class="mb-4">
+                <label for="banniere" class="form-label">Banniere</label>
+                <form id="changerBanniere" action="index.php?controleur=profil&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="banniere" class="form-label d-none">Changer Banniere :</label>
+                        <input type="file" class="form-control" id="banniere" name="banniere"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Banniere</button>
                 </form>
+                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
             <!-- Changer mail -->
-            <div class="mb-3">
-                <label class="form-label">Changer de mail :</label>
-                <button class="btn btn-primary w-100" onclick="changerMail({{ utilisateur.idUtilisateur }})">Changer Mail</button>
+            <div class="mb-4">
+                <label class="form-label">Changer d'Adresse Mail :</label>
+                <form action="index.php?controleur=profil&methode=changerMail" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
+                        <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
+                            required title="Entrez une adresse email valide, comme pierre@gmail.com">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer Mail</button>
+                </form>
             </div>
 
             <!-- Changer mot de passe -->
-            <div class="mb-3">
-                <label class="form-label">Changer de mot de passe :</label>
-                <button class="btn btn-primary w-100">Changer Mot de Passe</button>
+            <div class="mb-4">
+                <label class="form-label d-block">Changer de Mot de Passe :</label>
+                <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                <button type="submit" class="btn btn-primary w-100">Changer Mot de Passe</button>
             </div>
 
+
             <!-- Vérifier le mail -->
-            <div>
+            {# <div>
                 <label class="form-label">Vérifier le mail :</label>
                 <button class="btn btn-primary w-100">Vérifier Mail</button>
-            </div>
+            </div> #}
+
+            {% if message|length == 1 %}
+                <p class="text-success">{{ message[0] }}</p>
+            {% else %}
+                <div class="text alert alert-danger">
+                    <ul>
+                        {% for messages in message %}
+                            <li>{{ messages }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
-
-<!-- Scripts pour changement -->
-<script>
-    function changerPseudo(userId) {
-        const newPseudo = prompt("Entrez le nouveau pseudo :");
-        if (newPseudo) {
-            window.location.href = `index.php?controleur=utilisateur&methode=changerPseudo&id=${userId}&pseudo=${(newPseudo)}`;
-        }
-    }
-
-    function changerMail(userId) {
-        const newMail = prompt("Entrez le nouveau mail :");
-        if (newMail) {
-            window.location.href = `index.php?controleur=utilisateur&methode=changerMail&id=${userId}&mail=${(newMail)}`;
-        }
-    }
-</script>
 
 {% endblock %}
