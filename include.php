@@ -25,6 +25,7 @@ require_once 'controllers/controller_personne.class.php';
 require_once 'controllers/controller_forum.class.php';
 require_once 'controllers/controller_testNotif.class.php';
 require_once 'controllers/controller_jeux.class.php';
+require_once 'controllers/controller_message.class.php';
 
 
 
@@ -58,3 +59,6 @@ require_once 'modeles/jeux.dao.php';
 
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
+
+require_once 'modeles/message.class.php';
+require_once 'modeles/message.dao.php';

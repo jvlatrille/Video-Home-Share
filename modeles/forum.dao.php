@@ -70,7 +70,7 @@ class forumDAO{
                 'nom' => $forum->getNom(),
                 'description' => $forum->getDescription(),
                 'theme' => $forum->getTheme(),
-                //'idUtilisateur' => $forum->getIdUtilisateur()
+                'idUtilisateur' => $forum->getIdUtilisateur()
             ));
             
             $forum->setIdForum($this->pdo->lastInsertId());
