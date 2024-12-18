@@ -74,7 +74,8 @@ class QuestionDao {
 
     // Fonction pour afficher toutes les questions d'un quizz
     public function findAll(int $idQuizz): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q WHERE q.idQuizz = :id";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
+        WHERE p.idQuizz = :idQuizz";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['id' => $idQuizz]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -135,14 +136,17 @@ class QuestionDao {
     }
     // Fonction pour ajouter une question à un quizz
     public function add(question $question): bool {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."question (contenu, numero, nvDifficulte, bonneReponse, cheminImage, mauvaiseReponse1, mauvaiseReponse2, mauvaiseReponse3) 
-                VALUES (:contenu, :numero, :nvDifficulte, :bonneReponse, :cheminImage, :mauvaiseReponse1, :mauvaiseReponse2, :mauvaiseReponse3)";
-
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "question 
+                    (contenu, numero, nvDifficulte, bonneReponse, cheminImage, mauvaiseReponse1, mauvaiseReponse2, mauvaiseReponse3) 
+                VALUES 
+                    (:contenu, :numero, :nvDifficulte, :bonneReponse, :cheminImage, :mauvaiseReponse1, :mauvaiseReponse2, :mauvaiseReponse3)";
+    
+                    var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
-
+    
         return $stmt->execute([
             'contenu' => $question->getContenu(),
-            'numero' => $question->getNumero(),
+            'numero' => $question->getNumero(), // Assurez-vous de passer cette valeur correctement ici
             'nvDifficulte' => $question->getNvDifficulte(),
             'bonneReponse' => $question->getBonneReponse(),
             'cheminImage' => $question->getcheminImage(),
@@ -151,6 +155,9 @@ class QuestionDao {
             'mauvaiseReponse3' => $question->getMauvaiseReponse3()
         ]);
     }
+    
+
+    
     public function update(question $question): bool {
         $sql = "UPDATE ".PREFIXE_TABLE."question SET contenu = :contenu, numero = :numero, nvDifficulte = :nvDifficulte, 
                 bonneReponse = :bonneReponse, cheminImage = :cheminImage, mauvaiseReponse1 = :mauvaiseReponse1, 

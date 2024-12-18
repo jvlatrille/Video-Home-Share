@@ -47,7 +47,7 @@ class ControllerQuizz extends Controller {
         
             if ($idQuizz) {
                 // Rediriger avec l'ID du quizz et son nombre de questions
-                header('Location: index.php?controleur=question&methode=ajouterQuestion&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
+                header('Location: index.php?controleur=question&methode=ajouterQuestions&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
                 exit;
             } else {
                 echo "Erreur lors de l'ajout du quizz.";

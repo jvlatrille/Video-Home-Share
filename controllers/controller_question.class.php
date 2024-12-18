@@ -86,69 +86,77 @@ class ControllerQuestion extends Controller {
 
 
     // Fonction pour ajouter une question à un quizz
-    public function ajouterQuestion() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nom = $_POST['nom'] ?? '';
-            $theme = $_POST['theme'] ?? '';
-            $nbQuestion = $_POST['nbQuestion'] ?? 1;
-            $difficulte = $_POST['difficulte'] ?? 1;
+    public function ajouterQuestions() {
+        $idQuizz = $_GET['idQuizz'] ?? null; // Récupérer 'idQuizz' de l'URL
+        $nbQuestion = $_GET['nbQuestion'] ?? 1; // Récupérer 'nbQuestion' de l'URL
     
-            // Crée un nouveau quizz
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte);
-    
-            // Sauvegarde dans la base de données
-            $managerQuizz = new QuizzDao($this->getPdo());
-            if ($managerQuizz->add($quizz)) {
-                // Obtenir l'ID du quizz créé
-                $idQuizz = $managerQuizz->getLastInsertedId();
-    
-                // Redirection vers la page d'ajout de questions avec ID du quizz et nbQuestion
-                header('Location: index.php?controleur=question&methode=ajouterQuestions&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
-                exit;
-            } else {
-                echo "Erreur lors de l'ajout du quizz.";
-            }
+        // Vérification si les paramètres existent
+        if ($idQuizz === null) {
+            die("L'identifiant du quizz est requis !");
         }
     
-        // Afficher la vue d'ajout si ce n'est pas une soumission valide
+        // Appeler le template avec les variables nécessaires
         $template = $this->getTwig()->load('questionAjouter.html.twig');
-        echo $template->render();
+        echo $template->render([ 'idQuizz' => $idQuizz,
+        'nbQuestion' => $nbQuestion]);
     }
     
     
     public function saveQuestions() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $idQuizz = $_POST['idQuizz'];
-            $questions = $_POST['questions']; // Toutes les questions envoyées depuis le formulaire
-            
-            $questionDao = new QuestionDao();
-    
-            foreach ($questions as $key => $questionData) {
-                $question = new Question(
-                    null, // L'ID sera généré automatiquement par la base de données
-                    $questionData['contenu'],
-                    $key, // Numéro basé sur l'index de la boucle
-                    $questionData['nvDifficulte'],
-                    $questionData['bonneReponse'],
-                    $questionData['cheminImage'] ?? null,
-                    $questionData['mauvaiseReponse1'],
-                    $questionData['mauvaiseReponse2'],
-                    $questionData['mauvaiseReponse3']
-                );
-    
-                $success = $questionDao->add($question);
-    
-                if (!$success) {
-                    // En cas d'erreur, afficher un message ou loguer
-                    echo "Erreur lors de l'ajout de la question numéro $key.";
-                }
-            }
-    
-            // Redirection après l'enregistrement
-            header('Location: index.php?controleur=quizz&methode=listerQuizz');
-            exit;
+        // Vérifie si une session est active
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
+    
+        $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
+        $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
+    
+        // Si l'ID du quizz est manquant
+        if (!$idQuizz) {
+            die("L'identifiant du quizz est requis !");
+        }
+    
+        $managerQuestion = new QuestionDao($this->getPdo());
+    
+        foreach ($questionsData as $questionData) {
+            // Extraction des données pour chaque question
+    
+            $contenu = $questionData['contenu'] ?? '';
+            $numero = $questionData['numero'] ?? 1;
+            $nvDifficulte = $questionData['nvDifficulte'] ?? '';
+            $bonneReponse = $questionData['bonneReponse'] ?? '';
+            $mauvaiseReponse1 = $questionData['mauvaiseReponse1'] ?? '';
+            $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
+            $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
+            $cheminImage = $questionData['cheminImage'] ?? '';
+    
+            // Création de l'objet Question
+            $question = new question(
+                null, // L'ID sera généré automatiquement par la base de données
+                $contenu,
+                $numero,
+                $nvDifficulte,
+                $bonneReponse,
+                $cheminImage,
+                $mauvaiseReponse1,
+                $mauvaiseReponse2,
+                $mauvaiseReponse3
+            );
+    
+            var_dump($question); // Affiche les données reçues
+            // Ajout de la question
+            if (!$managerQuestion->add($question)) {
+                // Si l'ajout échoue, afficher une erreur
+                die("Erreur lors de l'ajout de la question.");
+            }
+        }
+    
+        // Redirection après l'ajout des questions
+        header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
+        exit;
     }
+    
+    
     
 
     // Fonction pour modifier une question
