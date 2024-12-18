@@ -33,7 +33,6 @@ class ControllerWatchList extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             // Recupere toutes les watchlists
             $managerWatchList = new WatchListDao($this->getPdo());
@@ -87,7 +86,6 @@ class ControllerWatchList extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
 
             $managerWatchList = new WatchListDao($this->getPdo());
@@ -112,7 +110,6 @@ class ControllerWatchList extends Controller
     
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             //Recupere les données de la watchlist du formulaire
             $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
@@ -190,7 +187,6 @@ class ControllerWatchList extends Controller
     {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             //Recupere l'id de la watchlist
             $idWatchList = isset($_GET['id']) ? $_GET['id'] : null;

@@ -52,14 +52,10 @@ class ControllerUtilisateur extends Controller
     // Vérifie si un utilisateur est connecté
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
-        // Récupère l'utilisateur
         $template = $this->getTwig()->load('profil.html.twig');
-        echo $template->render([
-            'utilisateur' => $utilisateurConnecte
-        ]);
-        return;
+        echo $template->render(['utilisateur' => $utilisateurConnecte]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
     }
 
     // Sinon, affiche la page de connexion
@@ -254,7 +250,7 @@ class ControllerUtilisateur extends Controller
     /**
      * @brief Vérifie la connexion d'un utilisateur
      * @author Thibault Chipy 
-     * @version 1.0
+     * @version 2.0
      * 
      * @return void
      */
@@ -266,14 +262,17 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            
-            $this->afficherUtilisateur();
+
             $_SESSION['utilisateur'] = serialize($utilisateur);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+            $this->afficherUtilisateur();
+  
 
         }else{  
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
+     
     }
 
     /**

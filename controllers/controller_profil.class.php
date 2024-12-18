@@ -8,27 +8,28 @@ class ControllerProfil extends Controller{
 
 
 
-    //Fonction pour afficher toutes les notif d'une personne
+    //Fonction pour afficher toutes les notif d'une personne 
     public function listerNotif()
     {
-        $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;// Récupère l'ID de l'utilisateur depuis l'URL ou utilise une valeur par défaut
-        
-        if ($id === null) {
-            // Si l'ID n'est pas fourni, utiliser un ID par défaut (par exemple l'ID de l'utilisateur connecté)
-            $id = 1; // $_SESSION['idUtilisateur'] normalement
-        }
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        //Recupere les notifications
-        $managerNotif=New NotificationDao($this->getPdo());
-        $notifListe=$managerNotif->findAll($id);
-        
-        //Generer la vue avec les notifications de l'utilisateur
-        $template = $this->getTwig()->load('profilNotifications.html.twig');
-        echo $template->render(['notifListe' => $notifListe]);
+
+            //Recupere les notifications
+            $managerNotif=New NotificationDao($this->getPdo());
+            $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
+            //Generer la vue avec les notifications de l'utilisateur
+            $template = $this->getTwig()->load('profilNotifications.html.twig');
+            echo $template->render(['notifListe' => $notifListe]);
             
     }
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
     
-
+}
 
     //Fonction pour afficher une notification
     public function afficherNotif()
@@ -36,8 +37,9 @@ class ControllerProfil extends Controller{
         $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
 
         if ($id === null) {
-            // Si l'ID n'est pas fourni, utiliser un ID par défaut (par exemple l'ID de l'utilisateur connecté)
-            $id = 1; // $_SESSION['idUtilisateur'] normalement
+            $template = $this->getTwig()->load('profilNotifications.html.twig');
+            echo $template->render();
+
         }
         
         //Recupere la notification
@@ -55,9 +57,13 @@ class ControllerProfil extends Controller{
     //Fonction pour supprimer une notification
     public function supprimerUneNotif()
     {
+        // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
         //Recupere l'id de la notification
         $idNotif = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
-        $idUtilisateur = 1; //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
         
         //Supprime la notification
         $managerNotif = new NotificationDao($this->getPdo());
@@ -67,15 +73,18 @@ class ControllerProfil extends Controller{
         $template = $this->getTwig()->load('profilNotifications.html.twig');
 
         //Redirige vers la liste des notifications
-        header('Location: index.php?controleur=profil&methode=listerNotif&id=1');
+        header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
     }
 
+}
     //Fonction pour supprimer toutes les notifications d'une personne
     public function supprimerToutesLesNotifs()
     {
+        // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         //Recupere l'id de la notification
-        $idUtilisateur = isset($_GET['idUtilisateur']) ? $_GET['idUtilisateur'] : null;
-        //$idUtilisateur = 1; //Id toujours 1 pour les tests mais normalement $_SESSION['idUtilisateur']
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
         
         //Supprime la notification
         $managerNotif = new NotificationDao($this->getPdo());
@@ -85,8 +94,8 @@ class ControllerProfil extends Controller{
         $template = $this->getTwig()->load('profilNotifications.html.twig');
 
         //Redirige vers la liste des notifications
-        header('Location: index.php?controleur=profil&methode=listerNotif&id=1');
-        
+        header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
+    }
 
     }
     
