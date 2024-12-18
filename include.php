@@ -28,6 +28,8 @@ require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_profil.class.php';
 
 
+require_once 'controllers/controller_newsletter.class.php';
+
 
 
 // //Ajout des modèles
