@@ -9,6 +9,7 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
     {% block css %} {% endblock %}
     <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
 </head>
@@ -85,9 +86,10 @@
 
             <!-- Icônes des réseaux sociaux -->
             <div class="footer-social mb-2">
-                <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
+                <div class="sharethis-inline-share-buttons"></div>
+                {# <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
                 <a href="#"><i class="fab fa-twitter mx-2"></i></a>
-                <a href="#"><i class="fab fa-youtube mx-2"></i></a>
+                <a href="#"><i class="fab fa-youtube mx-2"></i></a> #}
             </div>
 
             <!-- Copyright -->
