@@ -62,26 +62,31 @@ class OADao
 
     private function hydrate(array $data): ?OA
     {
-        return new OA(
-            $data['id'] ?? null,
-            $data['title'] ?? 'Titre inconnu',
-            $data['vote_average'] ?? 0.0,
-            'Film',
-            $data['overview'] ?? 'Description non disponible',
-            $data['release_date'] ?? 'Date inconnue',
-            $data['original_language'] ?? 'Langue inconnue',
-            $data['runtime'] ?? null,
-            isset($data['genres']) ? array_column($data['genres'], 'name') : [],
-            $data['producer'] ?? 'Non spécifié',
-            $this->getPosterUrl($data['poster_path'] ?? null),
-            $data['participants'] ?? []
-        );
+        $oa = new OA();
+        $oa->setIdOa($data['id'] ?? null);
+        $oa->setNom($data['title'] ?? 'Titre inconnu');
+        $oa->setNote($data['vote_average'] ?? 0.0);
+        $oa->setType('Film');
+        $oa->setDescription($data['overview'] ?? 'Description non disponible');
+        $oa->setDateSortie($data['release_date'] ?? 'Date inconnue');
+        $oa->setVo($data['original_language'] ?? 'Langue inconnue');
+        $oa->setDuree($data['runtime'] ?? null);
+        $oa->setGenres(isset($data['genres']) ? array_column($data['genres'], 'name') : []);
+        $oa->setProducteur($data['producer'] ?? 'Non spécifié');
+        $oa->setPosterPath($this->getPosterUrl($data['poster_path'] ?? null));
+        $oa->setParticipants($data['participants'] ?? []);
+        return $oa;
+        
     }
 
 
     private function hydrateAll(array $dataList): array
     {
-        return array_map(fn($data) => $this->hydrate($data), $dataList);
+        $oaList = [];
+        foreach ($dataList as $data) {
+            $oaList[] = $this->hydrate($data);
+        }
+        return $oaList;
     }
 
     private function getPosterUrl(?string $posterPath, string $size = 'w500'): string

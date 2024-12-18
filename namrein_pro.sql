@@ -104,6 +104,7 @@ CREATE TABLE vhs_commentaire
     idCom INT PRIMARY KEY AUTO_INCREMENT,
     idTMDB INT NOT NULL,
     contenu VARCHAR(255) NOT NULL,
+    dateCommentaire DATE,
     idUtilisateur INT,
     FOREIGN KEY (idUtilisateur) REFERENCES vhs_utilisateur(idUtilisateur) ON DELETE CASCADE
 );
@@ -295,24 +296,24 @@ INSERT INTO vhs_question (idTMDB, contenu, numero, nvDifficulte, bonneReponse, i
 
 
 -- Table: vhs_commentaire
-INSERT INTO vhs_commentaire (idTMDB, contenu, idUtilisateur) VALUES 
-(123, 'Great chess content!', 1), 
-(456, 'Monopoly is awesome!', 2),
-(372058, 'Une masterclass :)', 1), 
-(372058, 'Loved the plot!', 4), 
-(372058, 'Great acting!', 5), 
-(789, 'Uno is a fun game!', 6), 
-(1011, 'Scrabble is challenging!', 7), 
-(1213, 'Poker nights are the best!', 8), 
-(1415, 'Clue is a classic!', 9), 
-(1617, 'Catan is strategic!', 10), 
-(1819, 'Risk is intense!', 1), 
-(2021, 'Go is a deep game!', 2), 
-(2223, 'Battleship is exciting!', 3), 
-(123, 'Chess is timeless!', 4), 
-(456, 'Monopoly never gets old!', 5), 
-(789, 'Uno is a family favorite!', 6), 
-(1011, 'Scrabble expands vocabulary!', 7);
+INSERT INTO vhs_commentaire (idTMDB, contenu, dateCommentaire, idUtilisateur) VALUES 
+(123, 'Great chess content!', '2024-11-01', 1), 
+(456, 'Monopoly is awesome!', '2024-11-02', 2),
+(372058, 'Une masterclass :)', '2024-11-03', 1), 
+(372058, 'Loved the plot!', '2024-11-04', 4), 
+(372058, 'Great acting!', '2024-11-05', 5), 
+(789, 'Uno is a fun game!', '2024-11-06', 6), 
+(1011, 'Scrabble is challenging!', '2024-11-07', 7), 
+(1213, 'Poker nights are the best!', '2024-11-08', 8), 
+(1415, 'Clue is a classic!', '2024-11-09', 9), 
+(1617, 'Catan is strategic!', '2024-11-10', 10), 
+(1819, 'Risk is intense!', '2024-11-11', 1), 
+(2021, 'Go is a deep game!', '2024-11-12', 2), 
+(2223, 'Battleship is exciting!', '2024-11-13', 3), 
+(123, 'Chess is timeless!', '2024-11-14', 4), 
+(456, 'Monopoly never gets old!', '2024-11-15', 5), 
+(789, 'Uno is a family favorite!', '2024-11-16', 6), 
+(1011, 'Scrabble expands vocabulary!', '2024-11-17', 7);
 
 
 -- Table: vhs_repondre

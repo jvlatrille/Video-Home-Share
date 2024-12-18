@@ -17,18 +17,37 @@ class ControllerOA extends Controller
     }
 
     public function afficherFilm()
-    {
-        $idOa = $_GET['idOa'] ?? null;
-        $managerOa = new OADao();
-        $oa = $managerOa->find($idOa);
+{
+    $idOa = $_GET['idOa'] ?? null;
 
-        // Récupérer les commentaires associés à l'idTMDB
-        $commentaires = $managerOa->getCommentairesByTMDB($idOa);
-var_dump($commentaires);
-        $template = $this->getTwig()->load('film.html.twig');
-        echo $template->render([
-            'oa' => $oa,
-            'commentaires' => $commentaires
-        ]);
+    // Vérifier que l'ID est un entier valide
+    if (!is_numeric($idOa) || (int)$idOa <= 0) {
+        die('ID du film invalide ou non spécifié.');
     }
+
+    $idOa = (int)$idOa; // Convertir en entier
+
+    $managerOa = new OADao();
+
+    // Récupérer les informations du film
+    $oa = $managerOa->find($idOa);
+
+    if (!$oa) {
+        die('Film non trouvé.');
+    }
+
+    // Utiliser l'ID TMDB récupéré depuis l'objet OA
+    $idTMDB = $oa->getIdOa();
+
+    // Récupérer les commentaires associés
+    $commentaires = $managerOa->getCommentairesByTMDB($idTMDB);
+
+    // Charger le template et afficher les données
+    $template = $this->getTwig()->load('film.html.twig');
+    echo $template->render([
+        'oa' => $oa,
+        'commentaires' => $commentaires
+    ]);
+}
+
 }

@@ -101,10 +101,6 @@
                         </a>
                     {% endif %}
 
-
-
-
-
                 <!-- Contenu du commentaire -->
                 <div>
                     <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
@@ -118,6 +114,24 @@
 {% else %}
     <p><em>Aucun commentaire pour ce film.</em></p>
 {% endif %}
+<!-- Formulaire pour ajouter un commentaire (affiché uniquement si connecté) -->
+{% if utilisateurConnecte is defined %}
+<div class="mt-4">
+    <h4 class="fw-bold">Ajouter un commentaire</h4>
+    <form action="index.php?controleur=commentaire&methode=ajouterCommentaire&id={{oa.idOa}}" method="post">
+        <div class="mb-3">
+            <label for="contenu" class="form-label">Commentaire</label>
+            <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+        </div>
+        <!-- Ajout de l'ID du film -->
+        <input type="hidden" name="film_id" value="{{ oa.idOa}}">
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% else %}
+    <p class="text-muted"><em>Connectez-vous pour ajouter un commentaire.</em></p>
+{% endif %}
+
 
     </div>
     {% else %}
