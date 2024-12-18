@@ -47,8 +47,6 @@ class ControllerJeux extends Controller{
 	 * @return void
 	 */
 	public function lister(){
-		echo "lister jeux";
-
 		// Récupérer la liste des jeux
 		$id = $_GET["id"];
 		$managerJeux = new JeuxDao($this->getPdo());
