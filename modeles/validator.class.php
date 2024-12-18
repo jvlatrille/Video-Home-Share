@@ -32,6 +32,15 @@ class Validator
             }
         }
 
+        if($valide === true)
+        {
+            $this->messagesErreurs[] = "Les changements ont été effectués.";
+        }
+        else
+        {
+            $this->messagesErreurs[] = "Veuillez rectifier les erreurs.";
+        }
+
         return $valide;
     }
 

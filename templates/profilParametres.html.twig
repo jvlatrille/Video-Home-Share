@@ -1,4 +1,4 @@
-{% extends "base_template.html.twig" %}
+{% extends "base_template_profil.html.twig" %}
 
 {% block content %}
 <!-- Couleur des marges -->
@@ -7,13 +7,6 @@
     <div class="container-fluid min-vh-100 ms-* me-*m-auto" style="background-color: #D5D0AF; border: none; width: 70%;">
         <!-- Bloc principal avec bordures personnalisées -->
 
-        <!-- Boutons en haut -->
-        <div class="d-flex justify-content-around p-3 bg-light border-bottom">
-            <button class="btn" style="background-color: #AA8463; color: black;">A propos</button>
-            <button class="btn" style="background-color: #AA8463; color: black;">Vos notifications</button>
-            <button class="btn" style="background-color: #AA8463; color: black;">Paramètres</button>
-        </div>
-
         <!-- Formulaires de modification -->
         <div class="p-5">
             <h4>Paramètres utilisateur</h4>
@@ -21,7 +14,7 @@
             <!-- Changer pseudo -->
             <div class="mb-4">
                 <label class="form-label">Changer de Pseudo :</label>
-                <form id="changerPseudo" action="index.php?controleur=utilisateur&methode=changerPseudo" method="POST" class="d-flex align-items-center" novalidate>
+                <form id="changerPseudo" action="index.php?controleur=profil&methode=changerPseudo" method="POST" class="d-flex align-items-center">
                     <div class="me-2 flex-grow-1">
                         <label for="pseudo" class="form-label d-none">Changer de pseudo :</label>
                         <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required
@@ -35,7 +28,7 @@
             <!-- Changer photo de profil -->
             <div class="mb-4">
                 <label for="photo" class="form-label">Photo de Profil</label>
-                <form id="changerPhotoProfil" action="index.php?controleur=utilisateur&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center" novalidate>
+                <form id="changerPhotoProfil" action="index.php?controleur=profil&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
                     <div class="me-2 flex-grow-1">
                         <label for="photo" class="form-label d-none">Changer Photo de Profil :</label>
                         <input type="file" class="form-control" id="photo" name="photo"
@@ -50,7 +43,7 @@
             <!-- Changer banniere -->
             <div class="mb-4">
                 <label for="banniere" class="form-label">Banniere</label>
-                <form id="changerBanniere" action="index.php?controleur=utilisateur&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="d-flex align-items-center" novalidate>
+                <form id="changerBanniere" action="index.php?controleur=profil&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
                     <div class="me-2 flex-grow-1">
                         <label for="banniere" class="form-label d-none">Changer Banniere :</label>
                         <input type="file" class="form-control" id="banniere" name="banniere"
@@ -65,7 +58,7 @@
             <!-- Changer mail -->
             <div class="mb-4">
                 <label class="form-label">Changer d'Adresse Mail :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerMail" method="POST" class="d-flex align-items-center" novalidate>
+                <form action="index.php?controleur=profil&methode=changerMail" method="POST" class="d-flex align-items-center">
                     <div class="me-2 flex-grow-1">
                         <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
                         <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
@@ -78,27 +71,22 @@
 
             <!-- Changer mot de passe -->
             <div class="mb-4">
-                <label class="form-label">Changer de Mot de Passe :</label>
-                <form action="index.php?controleur=utilisateur&methode=changerMDP" method="POST" class="d-flex align-items-center" novalidate>
-                    <div class="me-2 flex-grow-1">
-                        <label for="MDP" class="form-label d-none">Changer de Mot de Passe :</label>
-                        <input type="text" class="form-control" id="MDP" name="MDP">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer Mot de Passe</button>
-                </form>
+                <label class="form-label d-block">Changer de Mot de Passe :</label>
+                <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                <button type="submit" class="btn btn-primary w-100">Changer Mot de Passe</button>
             </div>
+
 
             <!-- Vérifier le mail -->
-            <div>
+            {# <div>
                 <label class="form-label">Vérifier le mail :</label>
                 <button class="btn btn-primary w-100">Vérifier Mail</button>
-            </div>
+            </div> #}
 
-            {% if message is empty %}
-                <p class="text-success">c bon :</p>
+            {% if message|length == 1 %}
+                <p class="text-success">{{ message[0] }}</p>
             {% else %}
-                <div class="alert alert-danger">
+                <div class="text alert alert-danger">
                     <ul>
                         {% for messages in message %}
                             <li>{{ messages }}</li>
