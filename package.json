@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "tarteaucitronjs": "^1.19.0"
   },
   "scripts": {
-  "build-css": "sass scss/custom.scss css/styles.css"
-}
-
+    "build-css": "sass scss/custom.scss css/styles.css"
+  }
 }
