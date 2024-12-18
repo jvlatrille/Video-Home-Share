@@ -45,7 +45,7 @@ class ControllerQuestion extends Controller {
             }
     
             // Redirige vers la question suivante
-            header("Location: index.php?controller=question&action=afficherQuestion&idQuizz=$idQuizz&numero=" . ($numero + 1));
+            header("Location: index.php?controleur=question&methode=afficherQuestion&idQuizz=$idQuizz&numero=" . ($numero + 1));
             exit;
         }
     
@@ -60,7 +60,7 @@ class ControllerQuestion extends Controller {
     
         if (!$question) {
             // Si aucune question n'est trouvée, afficher le score final
-            header("Location: index.php?controller=question&action=afficherScore&idQuizz=$idQuizz");
+            header("Location: index.php?controleur=question&methode=afficherScore&idQuizz=$idQuizz");
             exit;
         }
     
@@ -84,54 +84,72 @@ class ControllerQuestion extends Controller {
         ]);
     }
 
-    
-    
-    
-    
-    
 
     // Fonction pour ajouter une question à un quizz
     public function ajouterQuestion() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupère les données du formulaire
-            $contenu = $_POST['contenu'] ?? '';
-            $numero = $_POST['numero'] ?? 1;
-            $nvDifficulte = $_POST['nvDifficulte'] ?? 1;
-            $bonneReponse = $_POST['bonneReponse'] ?? '';
-            $cheminImage = $_POST['cheminImage'] ?? '';
-            $mauvaiseReponse1 = $_POST['mauvaiseReponse1'] ?? '';
-            $mauvaiseReponse2 = $_POST['mauvaiseReponse2'] ?? '';
-            $mauvaiseReponse3 = $_POST['mauvaiseReponse3'] ?? '';
-            $idQuizz = $_POST['idQuizz'] ?? null;
-
-            // Crée une nouvelle question
-            $question = new Question(
-                null, 
-                $contenu, 
-                $numero, 
-                $nvDifficulte, 
-                $bonneReponse, 
-                $mauvaiseReponse1, 
-                $mauvaiseReponse2, 
-                $mauvaiseReponse3
-            );
-
-            // Ajoute la question dans la base de données
-            $managerQuestion = new QuestionDao($this->getPdo());
-            if ($managerQuestion->add($question, $idQuizz)) {
-                // Redirige vers la liste des questions du quizz
-                header('Location: index.php?controller=question&action=listerQuestion&idQuizz=' . $idQuizz);
+            $nom = $_POST['nom'] ?? '';
+            $theme = $_POST['theme'] ?? '';
+            $nbQuestion = $_POST['nbQuestion'] ?? 1;
+            $difficulte = $_POST['difficulte'] ?? 1;
+    
+            // Crée un nouveau quizz
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte);
+    
+            // Sauvegarde dans la base de données
+            $managerQuizz = new QuizzDao($this->getPdo());
+            if ($managerQuizz->add($quizz)) {
+                // Obtenir l'ID du quizz créé
+                $idQuizz = $managerQuizz->getLastInsertedId();
+    
+                // Redirection vers la page d'ajout de questions avec ID du quizz et nbQuestion
+                header('Location: index.php?controleur=question&methode=ajouterQuestions&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
                 exit;
             } else {
-                // Erreur d'ajout
-                echo "Erreur lors de l'ajout de la question.";
+                echo "Erreur lors de l'ajout du quizz.";
             }
         }
-
-        // Générer la vue
-        $template = $this->getTwig()->load('question_ajout.html.twig');
+    
+        // Afficher la vue d'ajout si ce n'est pas une soumission valide
+        $template = $this->getTwig()->load('questionAjouter.html.twig');
         echo $template->render();
     }
+    
+    
+    public function saveQuestions() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $idQuizz = $_POST['idQuizz'];
+            $questions = $_POST['questions']; // Toutes les questions envoyées depuis le formulaire
+            
+            $questionDao = new QuestionDao();
+    
+            foreach ($questions as $key => $questionData) {
+                $question = new Question(
+                    null, // L'ID sera généré automatiquement par la base de données
+                    $questionData['contenu'],
+                    $key, // Numéro basé sur l'index de la boucle
+                    $questionData['nvDifficulte'],
+                    $questionData['bonneReponse'],
+                    $questionData['cheminImage'] ?? null,
+                    $questionData['mauvaiseReponse1'],
+                    $questionData['mauvaiseReponse2'],
+                    $questionData['mauvaiseReponse3']
+                );
+    
+                $success = $questionDao->add($question);
+    
+                if (!$success) {
+                    // En cas d'erreur, afficher un message ou loguer
+                    echo "Erreur lors de l'ajout de la question numéro $key.";
+                }
+            }
+    
+            // Redirection après l'enregistrement
+            header('Location: index.php?controleur=quizz&methode=listerQuizz');
+            exit;
+        }
+    }
+    
 
     // Fonction pour modifier une question
     public function modifierQuestion() {
@@ -165,7 +183,7 @@ class ControllerQuestion extends Controller {
             // Met à jour la question dans la base de données
             if ($managerQuestion->update($question)) {
                 // Redirige vers la liste des questions
-                header('Location: index.php?controller=question&action=listerQuestion&idQuizz=' . $question->getIdQuizz());
+                header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $question->getIdQuizz());
                 exit;
             } else {
                 // Erreur de mise à jour
@@ -186,7 +204,7 @@ class ControllerQuestion extends Controller {
         $managerQuestion = new QuestionDao($this->getPdo());
         if ($managerQuestion->delete($id)) {
             // Redirige vers la liste des questions
-            header('Location: index.php?controller=question&action=listerQuestion&idQuizz=' . $_GET['idQuizz']);
+            header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $_GET['idQuizz']);
             exit;
         } else {
             // Erreur de suppression
