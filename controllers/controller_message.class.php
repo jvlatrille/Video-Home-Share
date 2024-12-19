@@ -16,6 +16,9 @@ class ControllerMessage extends Controller
 
         // Récupère l'identifiant du forum
         $idForum = (int) $_GET['idForum'];
+        $managerForum = new ForumDAO($this->getPdo());
+        $forum = $managerForum->find($idForum);
+        
 
         // Récupère tous les messages
         $managerMessage = new MessageDAO($this->getPdo());
@@ -23,7 +26,9 @@ class ControllerMessage extends Controller
 
         // Génère la vue
         $template = $this->getTwig()->load('forum_detail.html.twig');
-        echo $template->render(['messageListe' => $messagesListe]);
+        echo $template->render([
+            'messageListe' => $messagesListe,
+            'forum' => $forum]);
     }
     public function like()
 {
