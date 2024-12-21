@@ -76,7 +76,6 @@ class OADao
         $oa->setPosterPath($this->getPosterUrl($data['poster_path'] ?? null));
         $oa->setParticipants($data['participants'] ?? []);
         return $oa;
-        
     }
 
 
@@ -154,7 +153,7 @@ class OADao
     public function getCommentairesByTMDB(int $idTMDB): array
     {
         try {
-            $pdo = $this->getConnection();
+            $pdo = $this->getPdo(); // Assure-toi que cette méthode existe bien dans OADao
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $sql = "SELECT c.contenu, u.pseudo, u.photoProfil 
@@ -170,5 +169,10 @@ class OADao
             error_log('Erreur lors de la récupération des commentaires : ' . $e->getMessage());
             return [];
         }
+    }
+
+    public function getPdo(): PDO
+    {
+        return $this->getConnection();
     }
 }

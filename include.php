@@ -60,3 +60,6 @@ require_once 'modeles/jeux.dao.php';
 
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
+
+require_once 'modeles/commentaire.class.php';
+require_once 'modeles/commentaire.dao.php';

@@ -70,10 +70,10 @@
         </div>
     </header>
 
-
-
     <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
     <main class="flex-grow-1">
+        {# affiche le base_template_film #}
+        {% block content1 %} {% endblock %}
         {# affiche le base_template_profil #}
         {% block content2 %}
         {% endblock %}

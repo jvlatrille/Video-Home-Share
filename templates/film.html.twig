@@ -86,22 +86,20 @@
 
 
         <!-- Section des commentaires -->
-        {% if commentaires is defined and commentaires is not empty %}
-            <h2>Commentaires</h2>
-            <ul class="list-group mb-4">
-            {% for commentaire in commentaires %}
-                <li class="list-group-item d-flex align-items-center">
-                    {% if commentaire.photoProfil %}
-                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+{% if commentaires is defined and commentaires is not empty %}
+    <h2>Commentaires</h2>
+    <ul class="list-group mb-4">
+        {% for commentaire in commentaires %}
+            <li class="list-group-item d-flex align-items-center">
+                {% if commentaire.photoProfil %}
+                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
                         <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
-                        </a>
-                    {% else %}
-                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                        <img src = '/img/tortueProfil.png' alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
-                        </a>
-                    {% endif %}
-
-                <!-- Contenu du commentaire -->
+                    </a>
+                {% else %}
+                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                        <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                    </a>
+                {% endif %}
                 <div>
                     <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
                         {{ commentaire.pseudo }}
@@ -114,22 +112,19 @@
 {% else %}
     <p><em>Aucun commentaire pour ce film.</em></p>
 {% endif %}
-<!-- Formulaire pour ajouter un commentaire (affiché uniquement si connecté) -->
-{% if utilisateurConnecte is defined %}
-<div class="mt-4">
-    <h4 class="fw-bold">Ajouter un commentaire</h4>
-    <form action="index.php?controleur=commentaire&methode=ajouterCommentaire&id={{oa.idOa}}" method="post">
+
+{% if utilisateurConnecte %}
+    <p>Connecté en tant que {{ utilisateurConnecte.pseudo }}</p>
+    <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
         <div class="mb-3">
             <label for="contenu" class="form-label">Commentaire</label>
             <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
         </div>
-        <!-- Ajout de l'ID du film -->
-        <input type="hidden" name="film_id" value="{{ oa.idOa}}">
+        <input type="hidden" name="film_id" value="{{ oa.idOa }}">
         <button type="submit" class="btn btn-primary">Envoyer</button>
     </form>
-</div>
 {% else %}
-    <p class="text-muted"><em>Connectez-vous pour ajouter un commentaire.</em></p>
+    <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>
 {% endif %}
 
 
