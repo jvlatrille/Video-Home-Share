@@ -41,9 +41,9 @@
                     <p><strong>Note :</strong> 
                         {% for i in 1..5 %}
                             {% if i <= (oa.note / 2) %}
-                                ⭐
+                                <img src="{{'img/noteRemplie.png'}}" alt="Note remplie" width="30" height="30">
                             {% else %}
-                                ☆
+                                <img src="{{'img/noteVide.png'}}" alt="Note vide" width="30" height="30">
                             {% endif %}
                         {% endfor %}
                     </p>
