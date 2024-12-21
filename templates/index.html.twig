@@ -61,13 +61,26 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Suivant</span>
             </button>
-			<!-- Rend les flèches noires -->
 			<style>
+				/* Flèches noires du carrousel */
 				.carousel-control-prev-icon,
 				.carousel-control-next-icon {
 					filter: invert(1);
 				}
+			
+				/* Indicateurs noirs et repositionnés */
+				.carousel-indicators {
+					bottom: -30px; /* Abaisse les indicateurs */
+				}
+			
+				.carousel-indicators [data-bs-target] {
+					background-color: black; /* Rend les indicateurs noirs */
+					width: 12px; /* Ajuste la taille si nécessaire */
+					height: 12px;
+					border-radius: 50%; /* Rend les indicateurs ronds */
+				}
 			</style>
+			
         </div>
     {% endif %}
 {% endblock %}
