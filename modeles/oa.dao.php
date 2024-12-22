@@ -1,13 +1,31 @@
 <?php
 
+/**
+ * @file oa.dao.php
+ * @author Thibault CHIPY, VINET LATRILLE Jules
+ * @brief Classe OADao pour gérer les accès aux données des œuvres audiovisuelles
+ * @details Cette classe combine les appels API TMDB et les accès à la base de données pour les œuvres audiovisuelles.
+ * @version 2.0
+ * @date 2024-12-22
+ */
+
 require_once 'oa.class.php';
 
 class OADao
 {
-    private $apiBaseUrl = 'https://api.themoviedb.org/3';
-    private $apiKey = TMDB_CLE_KEY;
-    private $accessToken = TMDB_TOKEN_ACCES;
+    /** @brief URL de base de l'API TMDB */
+    private string $apiBaseUrl = 'https://api.themoviedb.org/3';
 
+    /** @brief Clé API TMDB */
+    private string $apiKey = TMDB_CLE_KEY;
+
+    /** @brief Token d'accès API TMDB */
+    private string $accessToken = TMDB_TOKEN_ACCES;
+
+    /**
+     * @brief Établit une connexion PDO avec la base de données
+     * @return PDO Instance PDO
+     */
     private function getConnection(): PDO
     {
         static $pdo = null;
@@ -21,9 +39,16 @@ class OADao
                 throw $e;
             }
         }
+
         return $pdo;
     }
 
+    /**
+     * @brief Effectue une requête API TMDB
+     * @param string $endpoint L'URL de l'endpoint API
+     * @param array $params Paramètres supplémentaires
+     * @return array Réponse API sous forme de tableau associatif
+     */
     private function makeApiRequest(string $endpoint, array $params = []): array
     {
         $url = $this->apiBaseUrl . $endpoint . '?api_key=' . $this->apiKey;
@@ -60,34 +85,12 @@ class OADao
         return $decodedResponse ?? [];
     }
 
-    private function hydrate(array $data): ?OA
-    {
-        $oa = new OA();
-        $oa->setIdOa($data['id'] ?? null);
-        $oa->setNom($data['title'] ?? 'Titre inconnu');
-        $oa->setNote($data['vote_average'] ?? 0.0);
-        $oa->setType('Film');
-        $oa->setDescription($data['overview'] ?? 'Description non disponible');
-        $oa->setDateSortie($data['release_date'] ?? 'Date inconnue');
-        $oa->setVo($data['original_language'] ?? 'Langue inconnue');
-        $oa->setDuree($data['runtime'] ?? null);
-        $oa->setGenres(isset($data['genres']) ? array_column($data['genres'], 'name') : []);
-        $oa->setProducteur($data['producer'] ?? 'Non spécifié');
-        $oa->setPosterPath($this->getPosterUrl($data['poster_path'] ?? null));
-        $oa->setParticipants($data['participants'] ?? []);
-        return $oa;
-    }
-
-
-    private function hydrateAll(array $dataList): array
-    {
-        $oaList = [];
-        foreach ($dataList as $data) {
-            $oaList[] = $this->hydrate($data);
-        }
-        return $oaList;
-    }
-
+    /**
+     * @brief Retourne l'URL complète du poster
+     * @param string|null $posterPath Chemin de l'image
+     * @param string $size Taille de l'image
+     * @return string URL complète du poster
+     */
     private function getPosterUrl(?string $posterPath, string $size = 'w500'): string
     {
         $baseUrl = 'https://image.tmdb.org/t/p/';
@@ -96,32 +99,11 @@ class OADao
         return $posterPath ? $baseUrl . $size . $posterPath : $defaultImage;
     }
 
-    public function find(?int $id): ?OA
-    {
-        $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR']);
-        if (empty($movie)) {
-            error_log("Aucun film trouvé pour l'ID : $id");
-            return null;
-        }
-
-        $credits = $this->makeApiRequest("/movie/$id/credits");
-        $movie['participants'] = $this->parseParticipants($credits);
-        $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
-
-        return $this->hydrate($movie);
-    }
-
-    public function findMeilleurNote(): array
-    {
-        $results = $this->makeApiRequest('/movie/top_rated', ['language' => 'fr-FR', 'page' => 1]);
-        if (empty($results['results'])) {
-            error_log("Aucun film trouvé dans les films les mieux notés.");
-            return [];
-        }
-
-        return $this->hydrateAll($results['results']);
-    }
-
+    /**
+     * @brief Analyse les participants à partir des crédits API
+     * @param array $credits Données des crédits API
+     * @return array Liste des participants
+     */
     private function parseParticipants(array $credits): array
     {
         $participants = [];
@@ -130,7 +112,7 @@ class OADao
         foreach (['cast', 'crew'] as $key) {
             foreach ($credits[$key] ?? [] as $member) {
                 $participants[] = [
-                    'nom' => $member['name'],
+                    'nom' => $member['name'] ?? 'Inconnu',
                     'role' => $member['character'] ?? $member['job'] ?? 'Non spécifié',
                     'photo' => isset($member['profile_path']) ? $baseImageUrl . $member['profile_path'] : null,
                 ];
@@ -140,39 +122,87 @@ class OADao
         return $participants;
     }
 
+    /**
+     * @brief Récupère le nom du producteur d'une œuvre
+     * @param array $crew Liste des membres de l'équipe (crew) du film
+     * @return string|null Nom du producteur ou null si non trouvé
+     */
     private function getProducer(array $crew): ?string
     {
         foreach ($crew as $member) {
-            if (($member['job'] ?? '') === 'Producer') {
-                return $member['name'];
+            if (
+                isset($member['job']) &&
+                in_array($member['job'], ['Producer', 'Executive Producer', 'producteur'])
+            ) {
+                return $member['name'] ?? 'Inconnu';
             }
         }
-        return null;
+
+        error_log("Aucun producteur trouvé dans l'équipe : " . print_r($crew, true));
+        return 'Non spécifié';
     }
 
-    public function getCommentairesByTMDB(int $idTMDB): array
+
+
+    /**
+     * @brief Hydrate un objet OA avec des données
+     * @param array $data Données API
+     * @return OA|null
+     */
+    private function hydrate(array $data): ?OA
     {
-        try {
-            $pdo = $this->getPdo(); // Assure-toi que cette méthode existe bien dans OADao
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return new OA(
+            $data['id'] ?? null,
+            $data['title'] ?? 'Titre inconnu',
+            $data['vote_average'] ?? 0.0,
+            'Film',
+            $data['overview'] ?? 'Description non disponible',
+            $data['release_date'] ?? 'Date inconnue',
+            $data['original_language'] ?? 'Langue inconnue',
+            $data['runtime'] ?? null,
+            isset($data['genres']) ? array_column($data['genres'], 'name') : [],
+            null,
+            $this->getPosterUrl($data['poster_path'] ?? null),
+            $this->parseParticipants($data['credits'] ?? []),
+            $this->getProducer($data['credits']['crew'] ?? [])
+        );
+    }
 
-            $sql = "SELECT c.contenu, u.pseudo, u.photoProfil 
-                FROM vhs_commentaire c 
-                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur 
-                WHERE c.idTMDB = :idTMDB";
+    /**
+     * @brief Hydrate une liste d'objets OA avec des données
+     * @param array $dataList Liste de données API
+     * @return array Liste d'objets OA
+     */
+    private function hydrateAll(array $dataList): array
+    {
+        $oaList = [];
+        foreach ($dataList as $data) {
+            $oaList[] = $this->hydrate($data);
+        }
+        return $oaList;
+    }
 
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute(['idTMDB' => $idTMDB]);
+    public function find(?int $id): ?OA
+    {
+        $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR']);
+        $credits = $this->makeApiRequest("/movie/$id/credits");
+        $movie['participants'] = $this->parseParticipants($credits);
+        $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log('Erreur lors de la récupération des commentaires : ' . $e->getMessage());
+        return $this->hydrate($movie);
+    }
+
+    /**
+     * @brief Récupère les 10 films les mieux notés
+     * @return array Liste des objets OA
+     */
+    public function findMeilleurNote(): array
+    {
+        $results = $this->makeApiRequest('/movie/top_rated', ['language' => 'fr-FR', 'page' => 1]);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucun film trouvé dans les mieux notés.');
             return [];
         }
-    }
-
-    public function getPdo(): PDO
-    {
-        return $this->getConnection();
+        return $this->hydrateAll($results['results']);
     }
 }
