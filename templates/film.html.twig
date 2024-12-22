@@ -50,9 +50,10 @@
                     </div>
                     
                     <div class="d-flex mt-3">
-                        <button class="btn btn-sm btn-secondary me-2">Ajouter un avis</button>
-                        <button class="btn btn-sm btn-secondary me-2">Ajouter watch list</button>
-                        <button class="btn btn-sm btn-primary">Noter</button>
+                        <a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
+                            Ajouter l'oeuvre à une watchlist
+                        </button>
                     </div>
                 </div>
             </div>
@@ -64,26 +65,25 @@
             </div>
 
             <!-- Casting -->
-            {% if oa.participants is defined and oa.participants|length > 0 %}
-                <div class="mt-4">
-                    <h4 class="fw-bold">Casting</h4>
-                    <div class="row">
-                        {% for participant in oa.participants|slice(0, 12) %}
-                            <div class="col-4 col-md-2 text-center mb-3">
-                                {% if participant.photo %}
-                                    <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
-                                {% endif %}
-                                <p class="mt-2 fw-bold">{{ participant.nom }}</p>
-                                <p class="text-muted small">{{ participant.role }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
+            {% if participants is defined and participants|length > 0 %}
+                <h4 class="fw-bold">Participants</h4>
+                <div class="row">
+                    {% for participant in participants|slice(0, 12) %}
+                        <div class="col-4 col-md-2 text-center mb-3">
+                            {% if participant.photo %}
+                                <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                            {% else %}
+                                <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
+                            {% endif %}
+                            <p class="mt-2 fw-bold">{{ participant.nom }}</p>
+                            <p class="text-muted small">{{ participant.role }}</p>
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
                 <p><em>Aucun participant trouvé pour ce film.</em></p>
             {% endif %}
+
 
             <!-- Section des commentaires -->
             {% if commentaires is defined and commentaires is not empty %}
@@ -125,8 +125,8 @@
             {% endif %}
 
             <!-- Formulaire pour ajouter un commentaire -->
+            <div id="commentaires" class="mt-4">
             {% if utilisateurConnecte %}
-                <p>Connecté en tant que {{ utilisateurConnecte.pseudo }}</p>
                 <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
                     <div class="mb-3">
                         <label for="contenu" class="form-label">Commentaire</label>
@@ -138,6 +138,7 @@
             {% else %}
                 <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>
             {% endif %}
+        </div>
         </div>
     {% else %}
         <p>Le film n'existe pas.</p>

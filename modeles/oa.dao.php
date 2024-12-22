@@ -143,7 +143,6 @@ class OADao
     }
 
 
-
     /**
      * @brief Hydrate un objet OA avec des données
      * @param array $data Données API
@@ -204,5 +203,36 @@ class OADao
             return [];
         }
         return $this->hydrateAll($results['results']);
+    }
+
+    /**
+     * @brief Récupère les participants d'un film via son ID TMDB
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return array Liste des participants (nom, rôle, photo)
+     */
+    public function getParticipantsByFilmId(int $idTMDB): array
+    {
+        // Requête API pour récupérer les crédits du film
+        $credits = $this->makeApiRequest("/movie/$idTMDB/credits", ['language' => 'fr-FR']);
+
+        if (empty($credits)) {
+            error_log("Aucun crédit trouvé pour le film ID : $idTMDB");
+            return [];
+        }
+
+        $participants = [];
+        $baseImageUrl = 'https://image.tmdb.org/t/p/w185';
+
+        foreach (['cast', 'crew'] as $key) {
+            foreach ($credits[$key] ?? [] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'] ?? 'Inconnu',
+                    'role' => $member['character'] ?? $member['job'] ?? 'Non spécifié',
+                    'photo' => isset($member['profile_path']) ? $baseImageUrl . $member['profile_path'] : null,
+                ];
+            }
+        }
+
+        return $participants;
     }
 }

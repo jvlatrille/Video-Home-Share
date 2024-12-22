@@ -68,13 +68,20 @@ class ControllerOA extends Controller
                 return;
             }
 
+            // Récupérer les commentaires du film
             $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
             error_log("Nombre de commentaires : " . count($commentaires));
 
+            // Récupérer les participants du film
+            $participants = $this->managerOa->getParticipantsByFilmId($oa->getIdOa());
+            error_log("Nombre de participants : " . count($participants));
+
+            // Affichage dans la vue
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
                 'oa' => $oa,
-                'commentaires' => $commentaires
+                'commentaires' => $commentaires,
+                'participants' => $participants
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
