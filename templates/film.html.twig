@@ -4,147 +4,141 @@
     <title>{{ oa.nom }}</title>
 
     {% if oa is defined %}
-    <div class="container mt-4" style="background-color: #f4f0d6; padding: 20px; border: 1px solid #c1b494; border-radius: 10px;">
-        <!-- Section principale -->
-        <div class="row">
-            <!-- Affiche du film -->
-            <div class="col-md-4">
-                {% if oa.posterPath %}
-                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: cover;">
-                {% else %}
-                    <p><em>Affiche non disponible</em></p>
-                {% endif %}
-            </div>
-
-            <!-- Détails du film -->
-            <div class="col-md-8">
-                <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
-                <div class="bg-light p-3 rounded">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                            <p><strong>Durée :</strong> {{ oa.duree }} min</p>
-                            <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
-                        </div>
-                        <div>
-                            <p><strong>Producteur :</strong> 
-								{% if oa.producteur %}
-									{{ oa.producteur }}
-								{% else %}
-									<em>Non spécifié</em>
-								{% endif %}
-							</p>
-							
-                        </div>
-                    </div>
-                    <!-- Note du film -->
-                    <p><strong>Note :</strong> 
-                        {% for i in 1..5 %}
-                            {% if i <= (oa.note / 2) %}
-                                <img src="{{'img/noteRemplie.png'}}" alt="Note remplie" width="30" height="30">
-                            {% else %}
-                                <img src="{{'img/noteVide.png'}}" alt="Note vide" width="30" height="30">
-                            {% endif %}
-                        {% endfor %}
-                    </p>
-                </div>
-                <div class="d-flex mt-3">
-                    <button class="btn btn-sm btn-secondary me-2">Ajouter un avis</button>
-                    <button class="btn btn-sm btn-secondary me-2">Ajouter watch list</button>
-                    <button class="btn btn-sm btn-primary">Noter</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Description -->
-        <div class="mt-4 p-3 bg-light rounded">
-            <h4 class="fw-bold">Description</h4>
-            <p>{{ oa.description }}</p>
-        </div>
-
-        <!-- Casting -->
-        {% if oa.participants is defined and oa.participants|length > 0 %}
-        <div class="mt-4">
-            <h4 class="fw-bold">Casting</h4>
+        <div class="container mt-4" style="background-color: #f4f0d6; padding: 20px; border: 1px solid #c1b494; border-radius: 10px;">
+            <!-- Section principale -->
             <div class="row">
-                {% for participant in oa.participants|slice(0, 12) %}
-                <div class="col-4 col-md-2 text-center mb-3">
-                    {% if participant.photo %}
-                        <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                <!-- Affiche du film -->
+                <div class="col-md-4">
+                    {% if oa.posterPath %}
+                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: cover;">
                     {% else %}
-                        <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
+                        <p><em>Affiche non disponible</em></p>
                     {% endif %}
-                    <p class="mt-2 fw-bold">{{ participant.nom }}</p>
-                    <p class="text-muted small">{{ participant.role }}</p>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% else %}
-            <p><em>Aucun participant trouvé pour ce film.</em></p>
-        {% endif %}
 
-
-        <!-- Section des commentaires -->
-{% if commentaires is defined and commentaires is not empty %}
-    <h2>Commentaires</h2>
-    <ul class="list-group mb-4">
-        {% for commentaire in commentaires %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <!-- Photo de profil -->
-                <div class="d-flex align-items-center">
-                    {% if commentaire.photoProfil %}
-                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                            <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
-                        </a>
-                    {% else %}
-                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                            <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
-                        </a>
-                    {% endif %}
-                    <!-- Contenu du commentaire -->
-                    <div>
-                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                            <strong>{{ commentaire.pseudo }}</strong>
-                        </a>
-                        <p>{{ commentaire.contenu }}</p>
+                <!-- Détails du film -->
+                <div class="col-md-8">
+                    <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
+                    <div class="bg-light p-3 rounded">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Durée :</strong> {{ oa.duree }} min</p>
+                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                            </div>
+                            <div>
+                                <p><strong>Producteur :</strong> 
+                                    {% if oa.producteur %}
+                                        {{ oa.producteur }}
+                                    {% else %}
+                                        <em>Non spécifié</em>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Note du film -->
+                        <p><strong>Note :</strong>
+                            {% for i in 1..5 %}
+                                {% if i <= (oa.note / 2) %}
+                                    <img src="{{'img/noteRemplie.png'}}" alt="Note remplie" width="30" height="30">
+                                {% else %}
+                                    <img src="{{'img/noteVide.png'}}" alt="Note vide" width="30" height="30">
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex mt-3">
+                        <button class="btn btn-sm btn-secondary me-2">Ajouter un avis</button>
+                        <button class="btn btn-sm btn-secondary me-2">Ajouter watch list</button>
+                        <button class="btn btn-sm btn-primary">Noter</button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Bouton de suppression si l'utilisateur est connecté ET est l'auteur du commentaire -->
-                {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
-    <div>
-        <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}" 
-           class="btn btn-danger btn-sm"
-           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
-            Supprimer
-        </a>
-    </div>
-{% endif %}
-           </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p><em>Aucun commentaire pour ce film.</em></p>
-{% endif %}
+            <!-- Description -->
+            <div class="mt-4 p-3 bg-light rounded">
+                <h4 class="fw-bold">Description</h4>
+                <p>{{ oa.description }}</p>
+            </div>
 
+            <!-- Casting -->
+            {% if oa.participants is defined and oa.participants|length > 0 %}
+                <div class="mt-4">
+                    <h4 class="fw-bold">Casting</h4>
+                    <div class="row">
+                        {% for participant in oa.participants|slice(0, 12) %}
+                            <div class="col-4 col-md-2 text-center mb-3">
+                                {% if participant.photo %}
+                                    <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
+                                {% endif %}
+                                <p class="mt-2 fw-bold">{{ participant.nom }}</p>
+                                <p class="text-muted small">{{ participant.role }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p><em>Aucun participant trouvé pour ce film.</em></p>
+            {% endif %}
 
-<!-- Formulaire pour ajouter un commentaire -->
-{% if utilisateurConnecte %}
-    <p>Connecté en tant que {{ utilisateurConnecte.pseudo }}</p>
-    <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
-        <div class="mb-3">
-            <label for="contenu" class="form-label">Commentaire</label>
-            <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+            <!-- Section des commentaires -->
+            {% if commentaires is defined and commentaires is not empty %}
+                <h2>Commentaires</h2>
+                <ul class="list-group mb-4">
+                    {% for commentaire in commentaires %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                {% if commentaire.photoProfil %}
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+                                    </a>
+                                {% else %}
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                        <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                                    </a>
+                                {% endif %}
+                                <div>
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                        <strong>{{ commentaire.pseudo }}</strong>
+                                    </a>
+                                    <p>{{ commentaire.contenu }}</p>
+                                </div>
+                            </div>
+                            {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
+                                <div>
+                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                        Supprimer
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p><em>Aucun commentaire pour ce film.</em></p>
+            {% endif %}
+
+            <!-- Formulaire pour ajouter un commentaire -->
+            {% if utilisateurConnecte %}
+                <p>Connecté en tant que {{ utilisateurConnecte.pseudo }}</p>
+                <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
+                    <div class="mb-3">
+                        <label for="contenu" class="form-label">Commentaire</label>
+                        <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" name="film_id" value="{{ oa.idOa }}">
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            {% else %}
+                <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>
+            {% endif %}
         </div>
-        <input type="hidden" name="film_id" value="{{ oa.idOa }}">
-        <button type="submit" class="btn btn-primary">Envoyer</button>
-    </form>
-{% else %}
-    <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>
-{% endif %}
-
-    </div>
     {% else %}
         <p>Le film n'existe pas.</p>
     {% endif %}
