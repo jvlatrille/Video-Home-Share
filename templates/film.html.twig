@@ -121,20 +121,43 @@
         </a>
     </div>
 {% endif %}
+           </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p><em>Aucun commentaire pour ce film.</em></p>
+{% endif %}
 
-<p>ID Commentaire : {{ commentaire.getIdCom }}</p>
-<p>ID Film : {{ oa.idOa }}</p>
 
-
-
-
-
+<!-- Test -->
+{% if commentaires is defined and commentaires is not empty %}
+    <h2>Commentaires</h2>
+    <ul class="list-group mb-4">
+        {% for commentaire in commentaires %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ commentaire.getPseudo }}</strong>
+                    <p>{{ commentaire.getContenu }}</p>
+                    <p>ID Commentaire : {{ commentaire.getIdCom }}</p>
+                    <p>ID Film : {{ oa.getIdOa }}</p>
+                </div>
+                {% if utilisateurConnecte and commentaire.getPseudo == utilisateurConnecte.pseudo %}
+                    <div>
+                        <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.getIdOa }}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                            Supprimer
+                        </a>
+                    </div>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
 {% else %}
     <p><em>Aucun commentaire pour ce film.</em></p>
 {% endif %}
+
+
 
 <!-- Formulaire pour ajouter un commentaire -->
 {% if utilisateurConnecte %}
