@@ -91,7 +91,7 @@ class OADao
      * @param string $size Taille de l'image
      * @return string URL complète du poster
      */
-    private function getPosterUrl(?string $posterPath, string $size = 'w500'): string
+    private function getPosterUrl(?string $posterPath, string $size = 'original'): string
     {
         $baseUrl = 'https://image.tmdb.org/t/p/';
         $defaultImage = 'https://via.placeholder.com/500x750?text=Image+non+disponible';

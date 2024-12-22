@@ -8,13 +8,93 @@
             <!-- Section principale -->
             <div class="row">
                 <!-- Affiche du film -->
-                <div class="col-md-4">
-                    {% if oa.posterPath %}
-                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: cover;">
-                    {% else %}
-                        <p><em>Affiche non disponible</em></p>
-                    {% endif %}
-                </div>
+<div class="col-md-4">
+    {% if oa.posterPath %}
+        <img src="{{ oa.posterPath }}" 
+             alt="Affiche de {{ oa.nom }}" 
+             class="img-fluid rounded mb-3" 
+             style="max-height: 500px; object-fit: cover; cursor: pointer;"
+             data-bs-toggle="modal" 
+             data-bs-target="#afficheModal">
+    {% else %}
+        <p><em>Affiche non disponible</em></p>
+    {% endif %}
+</div>
+<style>
+    /* Animation sur l'affiche */
+.col-md-4 img {
+    transition: transform 0.3s ease-in-out;
+}
+
+.col-md-4 img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+<!-- Modal pour afficher l'affiche en grand -->
+<div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background: transparent; border: none; max-width: 70vw;">
+            <div class="modal-body d-flex align-items-center p-0 position-relative">
+                {% if oa.posterPath %}
+                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
+                {% else %}
+                    <p><em>Affiche non disponible</em></p>
+                {% endif %}
+                <h2 class="position-absolute start-0 top-0 text-white p-3" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
+                <button type="button" class="btn-close position-absolute text-danger top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer" style="font-size: 1.8rem; filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Modal personnalisé pour l'affiche */
+    #afficheModal .modal-dialog {
+        max-width: 70vw;
+        pointer-events: none;
+    }
+    
+    #afficheModal .modal-content {
+        background: transparent;
+        pointer-events: auto;
+        border: none;
+        overflow: hidden;
+    }
+    
+    #afficheModal .modal-body img {
+        max-height: 80vh;
+        width: auto;
+        margin: 0 auto;
+    }
+    
+    /* Titre en haut à gauche */
+    #afficheModal h2 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 1.5rem;
+        padding: 10px 20px;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Croix rouge */
+    #afficheModal .btn-close {
+        font-size: 1.8rem;
+        color: red;
+        filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.8));
+        background: transparent;
+        opacity: 1;
+    }
+    
+    #afficheModal .btn-close:hover {
+        color: darkred;
+    }
+    
+</style>
+
 
                 <!-- Détails du film -->
                 <div class="col-md-8">
