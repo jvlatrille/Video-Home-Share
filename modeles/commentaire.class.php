@@ -5,15 +5,17 @@ class Commentaire
     private ?int $idCom;
     private ?int $idTMDB;
     private ?string $contenu;
+    private ?string $date;
     private ?int $idUtilisateur;
-    private ?string $pseudo; // Pseudo de l'utilisateur
-    private ?string $photoProfil; // Photo de l'utilisateur
+    private ?string $pseudo;
+    private ?string $photoProfil;
 
-    public function __construct(?int $idCom = null, ?int $idTMDB = null, ?string $contenu = null, ?int $idUtilisateur = null, ?string $pseudo = null, ?string $photoProfil = null)
+    public function __construct(?int $idCom = null, ?int $idTMDB = null, ?string $contenu = null, ?string $date = null, ?int $idUtilisateur = null, ?string $pseudo = null, ?string $photoProfil = null)
     {
         $this->idCom = $idCom;
         $this->idTMDB = $idTMDB;
         $this->contenu = $contenu;
+        $this->date = $date;
         $this->idUtilisateur = $idUtilisateur;
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
@@ -47,6 +49,14 @@ class Commentaire
         $this->contenu = $contenu;
     }
 
+    public function getDate(): ?string
+    {
+        return $this->date;
+    }
+    public function setDate(?string $date): void
+    {
+        $this->date = $date;
+    }
     public function getIdUtilisateur(): ?int
     {
         return $this->idUtilisateur;

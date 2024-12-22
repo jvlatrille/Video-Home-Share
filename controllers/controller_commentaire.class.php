@@ -7,9 +7,9 @@ class ControllerCommentaire extends Controller
 {
     public function ajouterCommentaire()
     {
-        // Récupération des données du formulaire
         $idTMDB = $_POST['film_id'] ?? null;
         $contenu = $_POST['contenu'] ?? null;
+
         if (!isset($_SESSION['utilisateur'])) {
             error_log("ERREUR - SESSION utilisateur absente.");
             die("ERREUR : Utilisateur non connecté.");
@@ -18,40 +18,42 @@ class ControllerCommentaire extends Controller
         // Désérialise si nécessaire
         $utilisateur = is_string($_SESSION['utilisateur']) ? unserialize($_SESSION['utilisateur']) : $_SESSION['utilisateur'];
 
-        // Vérifie que la méthode existe
-        if (!method_exists($utilisateur, 'getIdUtilisateur')) {
-            error_log("ERREUR - Méthode getIdUtilisateur introuvable.");
-            die("ERREUR : Impossible d'accéder à l'ID utilisateur.");
+        if (!$idTMDB || !$contenu) {
+            error_log("ERREUR - Champs manquants : idTMDB ou contenu");
+            header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&erreur=1");
+            exit();
         }
 
         $idUtilisateur = $utilisateur->getIdUtilisateur();
 
-
-
-        // Validation des champs
-        if (!$idTMDB || !$contenu) {
-            error_log("Champs manquants : idTMDB ou contenu");
-            header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&erreur=1");
-            exit();
-        }
-
         try {
-            // Connexion à la BD et ajout du commentaire
-            $pdo = $this->getPdo(); // Méthode héritée du contrôleur parent
+            $pdo = $this->getPdo();
             $dao = new CommentaireDAO($pdo);
 
-            $commentaire = new Commentaire(null, $idTMDB, $contenu, $idUtilisateur);
-            $dao->ajouter($commentaire);
+            $commentaire = new Commentaire(
+                null,
+                $idTMDB,
+                $contenu,
+                date('Y-m-d'), // Ajoute la date actuelle
+                $idUtilisateur
+            );
 
-            error_log("Commentaire ajouté avec succès pour le film ID : $idTMDB par utilisateur ID : $idUtilisateur");
-            header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB");
-            exit();
+            if ($dao->ajouter($commentaire)) {
+                error_log("Commentaire ajouté avec succès pour le film ID : $idTMDB par utilisateur ID : $idUtilisateur");
+                header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&succes=1");
+                exit();
+            } else {
+                error_log("ERREUR - Échec de l'ajout du commentaire.");
+                header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&erreur=1");
+                exit();
+            }
         } catch (PDOException $e) {
-            error_log("Erreur PDO : " . $e->getMessage());
+            error_log("ERREUR PDO : " . $e->getMessage());
             header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&erreur=1");
             exit();
         }
     }
+
 
     public function supprimerCommentaire()
     {
