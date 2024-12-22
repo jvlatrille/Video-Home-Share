@@ -2,9 +2,15 @@
 
 {% block content %}
     <title>{{ oa.nom }}</title>
-
+    <style>
+        body {
+            background: url('{{ oa.posterPath }}') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: scroll;
+        }
+    </style>
     {% if oa is defined %}
-        <div class="container mt-4" style="background-color: #f4f0d6; padding: 20px; border: 1px solid #c1b494; border-radius: 10px;">
+        <div class="container mt-4" style="background-color: #f4f0d6; padding: 20px; border: 1px solid #c1b494; border-radius: 10px; opacity: 0.8;">
             <!-- Section principale -->
             <div class="row">
                 <!-- Affiche du film -->
