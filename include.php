@@ -42,8 +42,6 @@ require_once 'modeles/quizz.dao.php';
 require_once 'modeles/question.class.php';
 require_once 'modeles/question.dao.php';
 
-require_once 'modeles/personne.class.php';
-require_once 'modeles/personne.dao.php';
 require_once 'modeles/forum.dao.php';
 require_once 'modeles/forum.class.php';
 require_once 'modeles/notification.class.php';

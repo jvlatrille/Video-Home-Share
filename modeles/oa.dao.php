@@ -49,22 +49,38 @@ class OADao
      * @param array $params Paramètres supplémentaires
      * @return array Réponse API sous forme de tableau associatif
      */
-    private function makeApiRequest(string $endpoint, array $params = []): array
+    /**
+     * @brief Effectue une requête API TMDB
+     * @param string $endpoint L'URL de l'endpoint API
+     * @param array $params Paramètres supplémentaires
+     * @param bool $useAccessToken Utiliser le Token d'accès au lieu de la clé API
+     * @return array Réponse API sous forme de tableau associatif
+     */
+    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false): array
     {
-        $url = $this->apiBaseUrl . $endpoint . '?api_key=' . $this->apiKey;
-        $params['include_image_language'] = 'fr,null';
+        $url = $this->apiBaseUrl . $endpoint;
 
-        foreach ($params as $key => $value) {
-            $url .= "&$key=" . urlencode($value);
+        if ($useAccessToken) {
+            // Pour les requêtes sécurisées avec Access Token
+            $headers = [
+                'Authorization: Bearer ' . $this->accessToken,
+                'Content-Type: application/json',
+            ];
+        } else {
+            // Pour les requêtes publiques avec API Key
+            $params['api_key'] = $this->apiKey;
+            $headers = ['Content-Type: application/json'];
+        }
+
+        // Ajouter les paramètres à l'URL
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
         }
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $this->accessToken,
-            'Content-Type: application/json',
-        ]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($curl);
 
@@ -84,6 +100,7 @@ class OADao
 
         return $decodedResponse ?? [];
     }
+
 
     /**
      * @brief Retourne l'URL complète du poster
@@ -181,15 +198,21 @@ class OADao
         return $oaList;
     }
 
+    /**
+     * @brief Récupère les détails d'un film par son ID
+     * @param int|null $id Identifiant du film
+     * @return OA|null Objet OA hydraté
+     */
     public function find(?int $id): ?OA
     {
-        $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR']);
-        $credits = $this->makeApiRequest("/movie/$id/credits");
+        $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR'], true);
+        $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
         $movie['participants'] = $this->parseParticipants($credits);
         $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
 
         return $this->hydrate($movie);
     }
+
 
     /**
      * @brief Récupère les 10 films les mieux notés
@@ -205,6 +228,7 @@ class OADao
         return $this->hydrateAll($results['results']);
     }
 
+
     /**
      * @brief Récupère les participants d'un film via son ID TMDB
      * @param int $idTMDB Identifiant TMDB du film
@@ -212,27 +236,13 @@ class OADao
      */
     public function getParticipantsByFilmId(int $idTMDB): array
     {
-        // Requête API pour récupérer les crédits du film
-        $credits = $this->makeApiRequest("/movie/$idTMDB/credits", ['language' => 'fr-FR']);
+        $credits = $this->makeApiRequest("/movie/$idTMDB/credits", ['language' => 'fr-FR'], true);
 
         if (empty($credits)) {
             error_log("Aucun crédit trouvé pour le film ID : $idTMDB");
             return [];
         }
 
-        $participants = [];
-        $baseImageUrl = 'https://image.tmdb.org/t/p/w185';
-
-        foreach (['cast', 'crew'] as $key) {
-            foreach ($credits[$key] ?? [] as $member) {
-                $participants[] = [
-                    'nom' => $member['name'] ?? 'Inconnu',
-                    'role' => $member['character'] ?? $member['job'] ?? 'Non spécifié',
-                    'photo' => isset($member['profile_path']) ? $baseImageUrl . $member['profile_path'] : null,
-                ];
-            }
-        }
-
-        return $participants;
+        return $this->parseParticipants($credits);
     }
 }
