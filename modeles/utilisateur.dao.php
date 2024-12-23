@@ -89,6 +89,17 @@ class UtilisateurDao
         return $reussite;
     }
 
+        //Changer mot de passe
+        public function changerMdp(?int $id, ?string $mdp): bool{
+            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                    SET motDePasse = :mdp
+                    WHERE idUtilisateur = :id"; 
+           $pdoStatement = $this->pdo->prepare($sql);
+           $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
+       
+           return $reussite;
+       }
+
     public function updateUserPhoto(int $userId, string $filePath): bool{
         // Requête pour mettre à jour la photo de profil de l'utilisateur
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
