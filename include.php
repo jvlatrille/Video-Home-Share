@@ -21,11 +21,12 @@ require_once 'controllers/controller_index.class.php';
 require_once 'controllers/controller_watchlist.class.php';
 require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
-require_once 'controllers/controller_personne.class.php';
 require_once 'controllers/controller_forum.class.php';
 require_once 'controllers/controller_jeux.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_profil.class.php';
+require_once 'controllers/controller_commentaire.class.php';
+
 require_once 'controllers/controller_newsletter.class.php';
 
 
@@ -40,8 +41,7 @@ require_once 'modeles/quizz.class.php';
 require_once 'modeles/quizz.dao.php';
 require_once 'modeles/question.class.php';
 require_once 'modeles/question.dao.php';
-require_once 'modeles/personne.class.php';
-require_once 'modeles/personne.dao.php';
+
 require_once 'modeles/forum.dao.php';
 require_once 'modeles/forum.class.php';
 require_once 'modeles/notification.class.php';
@@ -50,4 +50,7 @@ require_once 'modeles/jeux.class.php';
 require_once 'modeles/jeux.dao.php';
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
+
+require_once 'modeles/commentaire.class.php';
+require_once 'modeles/commentaire.dao.php';
 require_once 'modeles/validator.class.php';

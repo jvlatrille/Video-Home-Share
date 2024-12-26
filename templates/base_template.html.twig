@@ -74,6 +74,11 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
+    <style>
+        body {
+            background-color: #D5D0AF;
+        }
+    </style>
     <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
     {% block css %} {% endblock %}
     <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
@@ -131,10 +136,10 @@
         </div>
     </header>
 
-
-
     <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
     <main class="flex-grow-1">
+        {# affiche le base_template_film #}
+        {% block content1 %} {% endblock %}
 
         <script type="text/javascript">
             tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';

@@ -15,3 +15,7 @@ WEBSITE_:
   DESCRIPTION: Un site de partage de films
   LANGUAGE: fr
   LOGO: img\LogoPopCorn.png
+
+TMDB_:
+  CLE_KEY:
+  TOKEN_ACCES:

@@ -2,9 +2,9 @@
 
 {% block content2 %}
 
-    {% if utilisateurConnecte is defined %}
-        {% set banniere = utilisateurConnecte.banniereProfil ?? 'turtleTestBanniere.png' %}
-        {% set photo = utilisateurConnecte.photoProfil ?? 'tortueProfil.png' %}
+     {% if utilisateurConnecte is defined %}
+    {% set banniere = 'img/banniere/' ~utilisateurConnecte.banniereProfil ?? 'img/turtleTestBanniere.png' %}
+    {% set photo = 'img/profils/' ~utilisateurConnecte.photoProfil ?? 'img/tortueProfil.png' %}
 
         <div class="image-bg container-fluid"
              style="background-image: url('img/banniere/{{ banniere }}'); 
