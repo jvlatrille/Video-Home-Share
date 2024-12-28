@@ -49,13 +49,6 @@ class OADao
      * @param array $params Paramètres supplémentaires
      * @return array Réponse API sous forme de tableau associatif
      */
-    /**
-     * @brief Effectue une requête API TMDB
-     * @param string $endpoint L'URL de l'endpoint API
-     * @param array $params Paramètres supplémentaires
-     * @param bool $useAccessToken Utiliser le Token d'accès au lieu de la clé API
-     * @return array Réponse API sous forme de tableau associatif
-     */
     private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false): array
     {
         $url = $this->apiBaseUrl . $endpoint;
@@ -72,7 +65,7 @@ class OADao
             $headers = ['Content-Type: application/json'];
         }
 
-        // Ajouter les paramètres à l'URL
+        // Ajouter les paramètres à l'URL même avec AccessToken
         if (!empty($params)) {
             $url .= '?' . http_build_query($params);
         }
@@ -82,24 +75,25 @@ class OADao
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
+        // C'est pas bien mais on le fait TEMPORAIREMENT pour éviter les erreurs de certificat
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         $response = curl_exec($curl);
 
         if (curl_errno($curl)) {
-            error_log('Erreur cURL : ' . curl_error($curl));
-            curl_close($curl);
-            return [];
+            die('Erreur cURL : ' . curl_error($curl));
         }
 
         curl_close($curl);
 
         $decodedResponse = json_decode($response, true);
         if (isset($decodedResponse['status_code'])) {
-            error_log('Erreur API TMDB : ' . $decodedResponse['status_message']);
-            return [];
+            die('Erreur API TMDB : ' . $decodedResponse['status_message']);
         }
 
         return $decodedResponse ?? [];
     }
+
 
 
     /**
