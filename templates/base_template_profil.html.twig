@@ -3,18 +3,18 @@
 {% block content2 %}
 
      {% if utilisateurConnecte is defined %}
-    {% set banniere = 'img/banniere/' ~utilisateurConnecte.banniereProfil ?? 'img/turtleTestBanniere.png' %}
-    {% set photo = 'img/profils/' ~utilisateurConnecte.photoProfil ?? 'img/tortueProfil.png' %}
+    {% set banniere = 'img/banniere/' ~ (utilisateurConnecte.banniereProfil) %}
+    {% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
         <div class="image-bg container-fluid"
-             style="background-image: url('img/banniere/{{ banniere }}'); 
+             style="background-image: url('{{ banniere }}'); 
              background-size: cover;
              background-position: center;
              background-repeat: no-repeat;
              height: 30vh;
              position: relative">
             <div class="rounded-circle" 
-                 style="background-image: url('img/profils/{{ photo }}');
+                 style="background-image: url('{{ photo }}');
                  height: 150px; 
                  width: 150px; 
                  background-size: cover; 
