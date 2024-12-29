@@ -203,7 +203,7 @@ class UtilisateurDao
      * @param string $password Le mot de passe à valider.
      * @return bool true si le mot de passe respecte les critères, false sinon.
      */
-    public function estRobuste(string $password): bool
+    public static function estRobuste(string $password): bool
     {
         $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
 
