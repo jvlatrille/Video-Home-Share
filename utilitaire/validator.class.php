@@ -6,7 +6,7 @@
  * @details Cette classe permet de valider les données des formulaires en fonction des règles de validation définies
  * @version 1.0
  * @date 29/12/2024
- * @author CHIPY Thibault
+ * @author CHIPY Thibault, LEVAL Noah
  */
 class Validator{
     /**
@@ -154,7 +154,69 @@ class Validator{
         return $estValide;
     }
 
-    /**
+    // Verifie la validité du fichier
+    public function validerPhotoProfil(array $photo, array &$messagesErreurs): bool
+    {
+        $valide = true;
+
+        // 1. Champs obligatoires : la photo de profil est facultative
+        if ($photo['error'] === UPLOAD_ERR_NO_FILE) {
+            return true;  // Si aucun fichier n'est envoyé, c'est valide.
+        }
+
+        // 6. Vérification du type et de la taille du fichier
+        $typesAutorises = ['image/jpeg', 'image/png']; // Formats autorisés
+        $tailleMaxAutoriseeEnOctets = 2 * 1024 * 1024; // 2 Mo max
+
+        $typeMimeReel = mime_content_type($photo['tmp_name']); // Obtenir le type MIME réel du fichier
+        if (!in_array($typeMimeReel, $typesAutorises)) {
+            $messagesErreurs[] = "Le fichier doit être au format JPG ou PNG.";
+            $valide = false;
+        }
+
+        if ($photo['size'] > $tailleMaxAutoriseeEnOctets) {
+            $messagesErreurs[] = "Le fichier ne doit pas dépasser 2 Mo.";
+            $valide = false;
+        }
+
+        // Vérification des dimensions du fichier image
+        $dimensions = getimagesize($photo['tmp_name']);
+        if ($dimensions === false) {
+            $messagesErreurs[] = "Le fichier doit être une image valide.";
+            $valide = false;
+        }
+
+        return $valide;
+    }
+
+    // Verifie l'upload de fichier
+    public function validerUploadEtPhoto(array $fichier, array &$messagesErreurs): bool
+    {
+        if (isset($fichier) && $fichier['error'] === UPLOAD_ERR_OK) {
+            // Valider la photo
+            return $this->validerPhotoProfil($fichier, $messagesErreurs);
+        } else {
+            // Gestion des erreurs d'upload
+            switch ($fichier['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $messagesErreurs[] = "Le fichier dépasse la taille maximale autorisée sur le serveur.";
+                    return false;
+                case UPLOAD_ERR_PARTIAL:
+                    $messagesErreurs[] = "Le fichier n'a été que partiellement téléchargé.";
+                    return false;
+                case UPLOAD_ERR_NO_FILE:
+                    $messagesErreurs[] = "Aucun fichier n'a été téléchargé.";
+                    return false;
+                default:
+                    $messagesErreurs[] = "Erreur lors du téléchargement du fichier.";
+                    return false;
+            }
+        }
+    }
+    
+    
+    /** 
      * @brief Obtenir les messages d'erreurs
      * 
      * @return array

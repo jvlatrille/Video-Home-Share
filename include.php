@@ -53,4 +53,6 @@ require_once 'modeles/utilisateur.dao.php';
 
 require_once 'modeles/commentaire.class.php';
 require_once 'modeles/commentaire.dao.php';
-require_once 'modeles/validator.class.php';
+
+//Ajout des utilitaires
+require_once 'utilitaire/validator.class.php';
