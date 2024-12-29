@@ -4,9 +4,9 @@
  * @file validator.class.php 
  * @brief Classe de validation des données des formulaires
  * @details Cette classe permet de valider les données des formulaires en fonction des règles de validation définies
- * @version 1.0
+ * @version 1.5
  * @date 29/12/2024
- * @author CHIPY Thibault, LEVAL Noah
+ * @author LEVAL Noah, CHIPY Thibault
  */
 class Validator{
     /**
@@ -95,6 +95,10 @@ class Validator{
                         $this->messagesErreurs[] = "Le champ $champ doit être une valeur numérique.";
                         $estValide = false;
                     }
+                    elseif($parametre === 'date' && !DateTime::createFromFormat('Y-m-d', $valeur)){
+                        $this->messagesErreurs[] = "Le champ $champ doit être une date valide.";
+                        $estValide = false;
+                    }
                     break;
                 case 'longueur_min':
                     if (strlen($valeur) < $parametre)
@@ -148,6 +152,14 @@ class Validator{
                         $estValide = false;
                     }
                     break;
+                case 'validation_personnalisee':
+                    $validationResultat = $parametre($valeur);
+                    if ($validationResultat !== true) {  // Si la validation échoue
+                        $this->messagesErreurs[] = $validationResultat;  // Ajouter l'erreur
+                        $estValide = false;
+                    }
+                    break;
+                    
             }
         }
 
