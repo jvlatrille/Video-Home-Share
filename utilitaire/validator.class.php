@@ -1,52 +1,64 @@
-<?php
+<?php 
 
-class Validator
-{
-    private array $regles; // Les règles de validation à vérifier
-    private array $messagesErreurs = []; // Les messages d'erreurs
+/**
+ * @file validator.class.php 
+ * @brief Classe de validation des données des formulaires
+ * @details Cette classe permet de valider les données des formulaires en fonction des règles de validation définies
+ * @version 1.5
+ * @date 29/12/2024
+ * @author LEVAL Noah, CHIPY Thibault
+ */
+class Validator{
+    /**
+     * @brief Regles de validation 
+     *
+     * @var array
+     */
+   private array $regles = []; 
 
-    
-    public function __construct(array $regles)
-    {
+   /**
+    * @brief Messages d'erreurs
+    *@var array
+    */
+    private array $messagesErreurs = [];
+
+    /**
+     * @brief Constructeur de la classe Validator 
+     * @param array $regles : règles de validation
+     *
+     * @param array $regles
+     */
+    public function __construct(array $regles){
         $this->regles = $regles;
     }
-    
-    public function getMessagesErreurs(): array
-    {
-        return $this->messagesErreurs;
-    }
 
-    // Gere la validation des champs
-    public function valider(array $donnees): bool
-    {
-        $valide = true;
-        $this->messagesErreurs = []; // Réinitialisation des erreurs à chaque validation
+    /**
+     * @brief Valider les données d'un formulaire avec les règles de validation
+     * @param array $donnees : données du formulaire
+     * @return bool : true si les données sont valides, false sinon
+     */
+    public function valider(array $donnees): bool{
+        $valide=true;
+        $this->messagesErreurs = [];
 
-        foreach ($this->regles as $champ => $reglesChamp)
-        {
-            $valeur = $donnees[$champ] ?? null;
-
-            if (!$this->validerChamp($champ, $valeur, $reglesChamp))
-            {
+        foreach($this->regles as $champ => $regleChamp){
+            $valeur = $donnees[$champ]??null;
+            if(!$this->validerChamp($champ, $valeur, $regleChamp)){
                 $valide = false;
             }
         }
-
-        if($valide === true)
-        {
-            $this->messagesErreurs[] = "Les changements ont été effectués.";
-        }
-        else
-        {
-            $this->messagesErreurs[] = "Veuillez rectifier les erreurs.";
-        }
-
         return $valide;
-    }
+    } 
 
-    // Valide un seul champ
-    private function validerChamp(string $champ, mixed $valeur, array $regles): bool
-    {
+    /**
+     * @brief Valider un champ d'un formulaire
+     * @param string $champ : nom du champ
+     * @param mixed $valeur : valeur du champ
+     * @param array $regleChamp : règles de validation du champ
+     * @return bool : true si le champ est valide, false sinon
+     */
+
+    public function validerChamp(string $champ, $valeur, array $regles): bool{
         $estValide = true;
 
         // 1. Vérification de la règle "obligatoire" avant toute autre validation.
@@ -81,6 +93,10 @@ class Validator
                     elseif ($parametre === 'numeric' && !is_numeric($valeur))
                     {
                         $this->messagesErreurs[] = "Le champ $champ doit être une valeur numérique.";
+                        $estValide = false;
+                    }
+                    elseif($parametre === 'date' && !DateTime::createFromFormat('Y-m-d', $valeur)){
+                        $this->messagesErreurs[] = "Le champ $champ doit être une date valide.";
                         $estValide = false;
                     }
                     break;
@@ -136,6 +152,14 @@ class Validator
                         $estValide = false;
                     }
                     break;
+                case 'validation_personnalisee':
+                    $validationResultat = $parametre($valeur);
+                    if ($validationResultat !== true) {  // Si la validation échoue
+                        $this->messagesErreurs[] = $validationResultat;  // Ajouter l'erreur
+                        $estValide = false;
+                    }
+                    break;
+                    
             }
         }
 
@@ -202,5 +226,35 @@ class Validator
             }
         }
     }
+
+    public static function validerConnexion(array $donneesFormulaire): array
+    {
+        $erreurs = [];
+
+        // Validation de l'email
+        if (empty($donneesFormulaire['mail'])) {
+            $erreurs['mail'] = "Le mail est requis.";
+        } elseif (!filter_var($donneesFormulaire['mail'], FILTER_VALIDATE_EMAIL)) {
+            $erreurs['mail'] = "Le mail n'est pas valide.";
+        }
     
+        // Validation du mot de passe
+        if (empty($donneesFormulaire['mdp'])) {
+            $erreurs['mdp'] = "Le mot de passe est requis.";
+        }
+    
+        return $erreurs;
+    }
+
+    
+    
+    /** 
+     * @brief Obtenir les messages d'erreurs
+     * 
+     * @return array
+     */
+    public function getMessagesErreurs(): array
+    {
+        return $this->messagesErreurs;
+    }
 }

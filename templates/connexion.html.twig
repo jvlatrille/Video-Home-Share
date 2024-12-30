@@ -4,21 +4,31 @@
     {% block content %}
     
        {% if message is defined %}
-    <div class="error">{{ message }}</div>
+    <div class="alert alert-danger">{{ message }}</div>
 {% endif %}
     <form action="index.php?controleur=utilisateur&methode=verifConnexion" method="POST" class="text-center col-12 col-md-6 col-lg-4 mx-auto my-auto p-4">
         <div class="bg-mydark rounded p-4 mb-5">
             <h3 class="mb-3 fw-bold">Connexion</h3>
 
+        {% if erreurs is defined %}
+            <div class="alert alert-danger">
+            <h3>Erreurs :</h3>
+                <ul>
+                    {% for erreur in erreurs %}
+                        <li>{{ erreur }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
             <!-- Champ Email -->
             <div class="form-group mb-3">
-                <label for="email" class="d-block text-start mb-0 ">Mail</label> <!-- Align label à gauche -->
+                <label for="email" class="d-block text-start mb-0 ">Mail</label> 
                 <input type="email" name="mail" id="email" class="form-control" required>
             </div>
 
             <!-- Champ Mot de Passe -->
             <div class="form-group mb-4">
-                <label for="password" class="d-block text-start mb-0">Mot de passe</label> <!-- Align label à gauche -->
+                <label for="password" class="d-block text-start mb-0">Mot de passe</label> 
                 <input type="password" name="mdp" id="mdp" class="form-control" required>
             </div>
 
