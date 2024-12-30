@@ -242,10 +242,22 @@ public function afficherAutreUtilisateur()
      * @return void
      */
     public function verifConnexion(){
-        $mail=isset($_POST['mail'])?$_POST['mail']:null;
-        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
+        // Récupération des données du formulaire
+        $donneesFormulaire = [
+            'mail' => $_POST['mail'] ?? null,
+            'mdp' => $_POST['mdp'] ?? null,
+        ];
+        
+        // Validation des données
+       $erreurs = Validator::validerConnexion($donneesFormulaire);
+        if($erreurs){
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
 
-        // $mail = str_replace(' ', '', $mail); // On enlève les espaces
+        $mail = $donneesFormulaire['mail'];
+        $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
@@ -257,13 +269,12 @@ public function afficherAutreUtilisateur()
             $oaListe = $managerOA->findMeilleurNote();
             $template = $this->getTwig()->load('index.html.twig');
             echo $template->render(['oaListe' => $oaListe]);
-  
-
-        }else{  
+            
+        }
+        else{
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
-     
     }
 
     /**
