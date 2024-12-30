@@ -226,6 +226,26 @@ class Validator{
             }
         }
     }
+
+    public static function validerConnexion(array $donneesFormulaire): array
+    {
+        $erreurs = [];
+
+        // Validation de l'email
+        if (empty($donneesFormulaire['mail'])) {
+            $erreurs['mail'] = "Le mail est requis.";
+        } elseif (!filter_var($donneesFormulaire['mail'], FILTER_VALIDATE_EMAIL)) {
+            $erreurs['mail'] = "Le mail n'est pas valide.";
+        }
+    
+        // Validation du mot de passe
+        if (empty($donneesFormulaire['mdp'])) {
+            $erreurs['mdp'] = "Le mot de passe est requis.";
+        }
+    
+        return $erreurs;
+    }
+
     
     
     /** 
