@@ -91,7 +91,7 @@ class ControllerWatchList extends Controller
             $managerWatchList = new WatchListDao($this->getPdo());
 
             // Récupère toutes les watchlists visibles
-            $watchListListe = $managerWatchList->findAllVisibleWithFilms($utilisateurConnecte->getIdUtilisateur());
+            $watchListListe = $managerWatchList->findAllVisible($utilisateurConnecte->getIdUtilisateur());  
             // Génère la vue
             $template = $this->getTwig()->load('watchlistsCommu.html.twig');
             echo $template->render(['watchListListe' => $watchListListe]);
@@ -100,7 +100,6 @@ class ControllerWatchList extends Controller
     //Fonction pour ajouter une Watchlist
     /**
      * @brief Methode pour ajouter une watchlist à l'utilisateur
-     *@bug La fonction ne fonctionne pas, elle n'insert pas les données dans la base de données
      * @return void
      */
     public function ajouterWatchList()

@@ -7,8 +7,8 @@
  * avec leurs attributs (idWatchlist, titre, genre, description, visible, listeOeuvres) et
  * les méthodes pour les manipuler
  * 
- * @version 1.0
- * @date 13/11/2020
+ * @version 2.0
+ * @date 29/12/2024
 */
 class WatchList{
     //Attributs d'une watchlist
@@ -44,7 +44,14 @@ class WatchList{
      */
     private ?bool $visible;
     /**
-     * @brief Liste des oeuvres de la watchlist 
+     * @brief les id de TMBD des oeuvres de la watchlist
+     *
+     * @var string|null
+     */
+    private ?string $idTMDB;
+
+    /**
+     * @brief Tableau des oeuvres de la watchlist
      *
      * @var array|null
      */
@@ -65,12 +72,13 @@ class WatchList{
      * @param bool|null $visible : visibilité de la watchlist
      * @param array|null $listeOeuvres : liste des oeuvres de la watchlist
      */
-    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?array $listeOeuvres=null, ?int $idUtilisateur=null){
+    public function __construct(?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?string $idTMDB=null, ?array $listeOeuvres=null,?int $idUtilisateur=null){
         $this->idWatchlist = $idWatchList;
         $this->titre = $titre;
         $this->genre = $genre;
         $this->description = $description;
         $this->visible = $visible;
+        $this->idTMDB = $idTMDB;
         $this->listeOeuvres = $listeOeuvres;
         $this->idUtilisateur = $idUtilisateur;
     }
@@ -173,6 +181,25 @@ class WatchList{
     }
 
     /**
+     * @brief Retourne la liste des ID TMDB de la watchlist WatchList
+     *
+     * @return string|null liste des id TMDB de la watchlist
+     */
+    public function getIdTMDB(): ?string{
+        return $this->idTMDB;
+    }
+
+    /**
+     * @brief Modifie la liste des Id TMBD de la watchlist WatchList
+     *
+     * @param string|null $idTMBD : liste des ID TMDB de la watchlist
+     * @return void
+     */
+    public function setIdTMDB(?string $idTMBD): void{
+        $this->idTMDB = $idTMBD;
+    }
+
+    /**
      * @brief Retourne la liste des oeuvres de la watchlist WatchList
      *
      * @return array|null liste des oeuvres de la watchlist
@@ -181,9 +208,10 @@ class WatchList{
         return $this->listeOeuvres;
     }
 
+    
     /**
      * @brief Modifie la liste des oeuvres de la watchlist WatchList
-     *
+     * 
      * @param array|null $listeOeuvres : liste des oeuvres de la watchlist
      * @return void
      */
