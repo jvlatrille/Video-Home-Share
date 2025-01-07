@@ -27,6 +27,13 @@ if (file_exists($configPath)) {
             }
         }
     }
+
+    // Définir les constantes TMDB
+    if (isset($constantes['TMDB_'])) {
+        define('TMDB_API_KEY', $constantes['TMDB_']['API_KEY']);
+        define('TMDB_ACCESS_TOKEN', $constantes['TMDB_']['ACCESS_TOKEN']);
+    }
+    
 } else {
     die('Le fichier config/constantes.yaml est introuvable.');
 }

@@ -1,4 +1,15 @@
-{% extends 'base_template.html.twig' %}
+{% extends 'base_template_profil.html.twig' %}
     {% block title %}Profil -{{ constant('WEBSITE_TITLE')}} {% endblock %}
+{% block content %}
+    {% if utilisateurConnecte is defined %}
+    {{ utilisateurConnecte.pseudo }}
+    {% endif %}
+    
+{% endblock %}
+
+
+
+
+
 
 
