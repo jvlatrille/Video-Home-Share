@@ -136,10 +136,10 @@
 							<div id="{{watchList.idWatchlist}}" class="carousel slide" data-bs-ride="carousel">
 								<div class="carousel-inner">
 										<div class="carousel-item active">
-											<div class="row">
+											<div class="row">										
 												{% for oa in watchList.listeOeuvres %}
 													<div class="col-4">
-														<img src="imagesNathanTest/film1.jpg" class="d-block w-100" alt="Film 1" max-width max-height>
+														<img src="{{oa.posterPath}}" class="d-block w-100" alt="Film 1" max-width max-height>
 														<p>{{oa.nom}}</p>
 													</div>
 													

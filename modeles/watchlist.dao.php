@@ -170,15 +170,7 @@ class WatchListDao {
                 if ($watchlist->getIdTMDB() != null) {
                     $oeuvresDesWatchlists = $this->recupererOeuvresParWatchlist($watchlist->getIdTMDB());
 
-                    foreach ($oeuvresDesWatchlists as $oeuvre) {
-                        $uneOeuvre = $managerOA->find($oeuvre);
-                        if ($uneOeuvre === null) {
-                            error_log("L'œuvre avec l'ID $oeuvre n'a pas été trouvée.");
-                            continue;
-                        }
-                        $oeuvres[] = $uneOeuvre;
-                    }
-                    $watchlist->setListeOeuvres($oeuvres);
+                    $watchlist->setListeOeuvres($oeuvresDesWatchlists);
                 }
             }
         
@@ -323,23 +315,5 @@ class WatchListDao {
         return $oaDao->hydrateAll($resultats);
     }
 
-    //Rajouté par Nathan, permet de renvoyer toutes les informations d'une watchlist avec ses oa.
-    // public function afficherAllOaWatchList(): ?array {
-    //     $sql = "SELECT SELECT * FROM ".PREFIXE_TABLE."oa o 
-    //             JOIN ".PREFIXE_TABLE."constituer c ON o.idOA = c.idOA
-    //             JOIN ".PREFIXE_TABLE."watchlist w ON c.idWatchlist = w.idWatchlist
-    //             WHERE w.idWatchlist = :id";
-        
-    //     $pdoStatement = $this->pdo->prepare($sql);
-    //     $pdoStatement->execute();
-    //     $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
-
-    //     if (!$resultats) {
-    //         return null;
-    //     }
-        
-    //     $oaDao = new OADao($this->pdo);
-    //     return $oaDao->hydrateAll($resultats);
-    // }
 
 }
