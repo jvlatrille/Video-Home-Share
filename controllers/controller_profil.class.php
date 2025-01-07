@@ -70,6 +70,7 @@ class ControllerProfil extends Controller{
         header('Location: index.php?controleur=profil&methode=listerNotif&id=1');
     }
 
+    
     //Fonction pour supprimer toutes les notifications d'une personne
     public function supprimerToutesLesNotifs()
     {
@@ -89,5 +90,40 @@ class ControllerProfil extends Controller{
         
 
     }
+
+    //Fonction pour afficher les informations de A Propos (Afficher tous les messages d'une personne)
+    public function afficherAPropos()
+    {
+        //  // Vérifier si l'idUtilisateur est passé en paramètre dans l'URL
+        // if (!isset($_GET['idUtilisateur']) || empty($_GET['idUtilisateur'])) {
+        //     die("Paramètre idUtilisateur manquant !");
+        // }
+
+        // // Récupérer l'idUtilisateur depuis l'URL
+        // $idUtilisateur = (int) $_GET['idUtilisateur'];
+
+        $idUtilisateur = isset($_GET['idUtilisateur']) ? $_GET['idUtilisateur'] : null;
+
+        // Récupérer tous les messages de cet utilisateur
+        $managerMessage = new MessageDAO($this->getPdo());
+        $messagesListe = $managerMessage->chargerAPropos($idUtilisateur);
+
+        // // Récupérer les informations de l'utilisateur (si nécessaire)
+        // $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        // $utilisateur = $managerUtilisateur->find($idUtilisateur);
+
+        // Vérifier si l'utilisateur existe
+        if (!$utilisateur) {
+            die("Utilisateur introuvable !");
+        }
+
+        // Générer la vue avec les informations de l'utilisateur et ses messages
+        $template = $this->getTwig()->load('profilAPropos.html.twig');
+        echo $template->render([
+            'utilisateur' => $utilisateur,  // Les informations de l'utilisateur
+            'messageListe' => $messagesListe  // La liste des messages écrits par l'utilisateur
+        ]);
+    }
+    
     
 }

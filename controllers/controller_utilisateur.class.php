@@ -27,7 +27,7 @@ class ControllerUtilisateur extends Controller
         $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
         // Récupère l'utilisateur
-        $template = $this->getTwig()->load('profil.html.twig');
+        $template = $this->getTwig()->load('profilParamatres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateurConnecte
         ]);
