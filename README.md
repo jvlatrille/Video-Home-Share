@@ -1,6 +1,6 @@
 # Video-Home-Share
 ## Présentation de l'application
-Video Home Share (VHS) est une application web développée dans le cadre d'une SAÉ 3.01 A&amp;D : Développement d’application et Gestion de projet. Cette application web à pour but de réintroduire la convivialité dans le monde du streaming. L'application comporte plusieurs fonctionnalités, comme : des forums pour partager son point de vue sur des thémes précis, des jeux pour régler des débats entre utilisateurs, des pages d'informations précises sur les films et les séries, des quizzs pour tester nos connaissances sur les oeuvres.
+Video Home Share (VHS) est une application web développée dans le cadre d'une SAÉ 3.01 A&amp;D : Développement d’application et Gestion de projet. Cette application web a pour but de réintroduire la convivialité dans le monde du streaming. L'application comporte plusieurs fonctionnalités, comme : des forums pour partager son point de vue sur des thémes précis, des jeux pour régler des débats entre utilisateurs, des pages d'informations précises sur les films et les séries, des quizz pour tester nos connaissances sur les oeuvres.
 
 ## Arborescence
 Le code de notre application est organisé selon le patron de conception MVC : 
@@ -44,7 +44,23 @@ Video-Home-Share/
 
 ## Mettre l'application en place sur votre ordinateur
 Vous devrez procéder à 3 étapes : 
-npm install
-composer install
-importer la BD
-changer le template.yaml
+
+### 1 - Installer les dépendances de npm :
+Entrez la commande ```bash npm install``` dans votre terminal, dans le dossier contenant les fichiers de l'application
+
+### 2 - Installer les dépendances de Composer
+Entrez la commande ```bash composer install``` dans votre terminal, dans le dossier contenant les fichiers de l'application
+
+### 3 - Importer la BD  
+Importez le fichier namrein_pro.sql dans votre gestionnaire de base de données.
+
+### 4 - Modifier le fichier config/template.yaml
+Modifiez le fichier config/templates.yaml selon les indications données dedans.
+
+## Technologies utilisées
+Bootstrap 5.3.3
+HTML, CSS, PHP
+JavaScript
+Twig 3.14
+MySql
+Git
