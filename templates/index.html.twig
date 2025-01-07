@@ -1,7 +1,6 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-	<a href="index.php?controleur=oa&methode=afficherFilm&idOa=372058" class="btn btn-light-custom mx-2">Lien vers YourName (a supprimer plus tard)</a>
 	<title>Bienvenue sur
 		{{ constant("WEBSITE_TITLE") }}</title>
 
@@ -90,27 +89,28 @@
 		</div>
 
 		<!-- Grille d'OA -->
-		<h2 class="text-center mt-5">Découvrez plus d'œuvres</h2>
+		<h2 class="text-center mt-5">A la une</h2>
 		<div class="container mt-4">
-			<div class="row row-cols-1 row-cols-md-3 g-4">
-				{% for oa in oaListe|slice(10) %}
+			<div class="row row-cols-1 row-cols-md-5 g-4">
+				{% for oa in oaListe|slice(10, 20) %}
 					<div class="col">
-						<div class="card h-100">
-							{% if oa.posterPath %}
-								<img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}">
-							{% else %}
-								<div class="card-img-top text-center py-5 bg-light">Affiche non disponible</div>
-							{% endif %}
-							<div class="card-body text-center">
-								<h5 class="card-title">{{ oa.nom }}</h5>
-								<p class="card-text">{{ oa.description|slice(0, 100) }}...</p>
-								<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-sm btn-primary">Voir plus</a>
+						<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+							<div class="card h-100">
+								{% if oa.posterPath %}
+									<img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+								{% else %}
+									<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
+								{% endif %}
+								<div class="card-body text-center">
+									<h6 class="card-title text-truncate">{{ oa.nom }}</h6>
+								</div>
 							</div>
-						</div>
+						</a>
 					</div>
 				{% endfor %}
 			</div>
 		</div>
+
 		<style>
 			.card {
 				border: none;
@@ -121,7 +121,18 @@
 					transform: scale(1.05);
 				}
 			}
+
+			.card-img-top {
+				border-radius: 8px 8px 0 0;
+			}
+
+			.card-title {
+				font-size: 0.9rem;
+				font-weight: bold;
+				margin: 0.5rem 0;
+			}
 		</style>
+        
 
 	{% endif %}
 {% endblock %}
