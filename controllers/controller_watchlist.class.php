@@ -110,13 +110,14 @@ class ControllerWatchList extends Controller
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-            //Recupere les données de la watchlist du formulaire
-            $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
-            $titre = isset($_POST['titre']) ? $_POST['titre'] : (isset($_GET['titre']) ? $_GET['titre'] : null);
-            $genre = isset($_POST['genre']) ? $_POST['genre'] : (isset($_GET['genre']) ? $_GET['genre'] : null);
-            $description = isset($_POST['description']) ? $_POST['description'] : (isset($_GET['description']) ? $_GET['description'] : null);
-            $visible = isset($_POST['visible']) ? $_POST['visible'] : (isset($_GET['visible']) ? $_GET['visible'] : null);
-
+            // Récupère les données de la watchlist depuis le formulaire
+            $idWatchList = $_POST['idWatchList'] ?? null;
+            $titre = $_POST['titre'] ?? $_GET['titre'] ?? null;
+            $genre = $_POST['genre'] ?? $_GET['genre'] ?? null;
+            $description = $_POST['description'] ?? $_GET['description'] ?? null;
+            $visible = $_POST['visible'] ?? $_GET['visible'] ?? null;
+            $idTMDB = $_POST['listeOeuvres'] ?? $_GET['listeOeuvres'] ?? null;
+            $idTMDB = implode(',', $idTMDB);
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
             //Ajoute la watchlist
@@ -127,19 +128,11 @@ class ControllerWatchList extends Controller
             $watchList->setGenre($genre);
             $watchList->setDescription($description);
             $watchList->setVisible($visible);
+            $watchList->setIdTMDB($idTMDB);
             $watchList->setIdUtilisateur($idUtilisateur);
             $managerWatchList->creerWatchlist($watchList);
 
-            //Recupere les oeuvres de la watchlist, pour chaque idOeuvre, on ajoute l'oeuvre à la watchlist
-            $idOas = isset($_POST['listeOeuvres']) ? $_POST['listeOeuvres'] : null;
-
-            if ($idOas !== null) {
-                foreach ($idOas as $idOa) {
-                    $managerWatchList->ajouterOAWatchlist($watchList->getIdWatchlist(), $idOa);
-                }
-            } else {
-                echo "Aucune œuvre sélectionnée.";
-            }
+   
 
 
             //Redirige vers la liste des watchlists

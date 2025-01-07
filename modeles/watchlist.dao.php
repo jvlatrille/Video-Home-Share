@@ -187,8 +187,8 @@ class WatchListDao {
      * @bug la fonction ne créer pas la watchlist 
      */
     public function creerWatchlist(WatchList $watchlist): ?WatchList {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idUtilisateur) 
-                VALUES (:titre, :genre, :description, :visible, :id)"; 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."watchlist (titre, genre, description, visible, idTMDB,idUtilisateur) 
+                VALUES (:titre, :genre, :description, :visible, :idTMDB,:id)"; 
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -197,6 +197,7 @@ class WatchListDao {
                 'genre' => $watchlist->getGenre(),
                 'description' => $watchlist->getDescription(),
                 'visible' => $watchlist->getVisible(),
+                'idTMDB' => $watchlist->getIdTMDB(),
                 'id'=>$watchlist->getIdUtilisateur()
             ]);
 
