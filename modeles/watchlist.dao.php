@@ -95,9 +95,17 @@ class WatchListDao {
             return [];
         }
     
-        // Sépare la chaîne par des virgules et retourne le tableau des identifiants
-        return explode(',', $idTMDB);   
-    }
+        // Crée un tableau d'objet OA à partir de la chaîne données par la Watchlist
+        $oaDao = new OADao($this->pdo);
+        $oeuvres = [];
+        foreach (explode(',', $idTMDB) as $id) {
+            $oeuvre = $oaDao->find((int)$id);
+            if ($oeuvre !== null) {
+            $oeuvres[] = $oeuvre;
+            }
+        }
+        return $oeuvres;
+        }
 
 
     // Fonction pour hydrater une watchlist
