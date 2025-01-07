@@ -5,7 +5,7 @@ Video Home Share (VHS) est une application web développée dans le cadre d'une 
 ## Arborescence
 Le code de notre application est organisé selon le patron de conception MVC : 
 
-Video-Home-Share/
+Video-Home-Share/  
 │  
 ├── .gitignore          # Exclut les fichiers inutiles (vendor, node_modules, fichiers sensibles)  
 ├── composer.json       # Garantit l'installation correcte des dépendances Composer  
