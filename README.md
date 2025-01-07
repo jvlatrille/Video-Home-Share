@@ -5,47 +5,42 @@ Video Home Share (VHS) est une application web développée dans le cadre d'une 
 ## Arborescence
 Le code de notre application est organisé selon le patron de conception MVC : 
 
-Video Home Share:.
-│   .gitignore : permet de ne pas prendre en compte des fichiers trop lourds et innutiles comme vendor ou node_modules, ou encore des fichiers sensibles comme le 
-│   composer.json : garantie l'installation correcte de toutes les dépendances utiles à l'application pour composer.
-│   composer.lock : garantie l'installation correcte de toutes les dépendances utiles à l'application pour composer.
-│   include.php : permet l'inclusion correcte de tout les fichiers selon l'arborescence choisie.
-│   index.php : 
-│   namrein_pro.sql : 
-│   package-lock.json : 
-│   package.json : 
-│   README.md : (donc ce fichier), qui contient une présentation de l'application, de son arborescence, et comment installer le code sur votre ordinateur personnel.
+Video-Home-Share/
 │
-├───config
-│       init.php : fichier qui permet de charger les constantes globales du fichier 
-│       templates.yaml : fichier de template pour les constantes de l'application, à modifier si vous souhaitez utiliser l'application en local.
-│       twig.php : 
+├── .gitignore          # Exclut les fichiers inutiles (vendor, node_modules, fichiers sensibles)
+├── composer.json       # Garantit l'installation correcte des dépendances Composer
+├── composer.lock       # Verrouille les versions des dépendances Composer
+├── include.php         # Inclut correctement les fichiers selon l'arborescence
+├── index.php           # Point d'entrée principal de l'application
+├── namrein_pro.sql     # Structure de la base de données
+├── package-lock.json   # Verrouille les versions des dépendances npm
+├── package.json        # Gestion des dépendances npm
+├── README.md           # Ce fichier
 │
-├───controllers
-│       Contient l'intégralité des controllers *définition*
+├── config/
+│   ├── init.php        # Charge les constantes globales
+│   ├── templates.yaml  # Configuration des templates (à modifier pour une utilisation locale)
+│   ├── twig.php        # Configuration de Twig
 │
-├───css
-│       style.css : fichier pour ajouter des styles spécifiques
-│       styles.css : fichier généré via le custom.scss
-│       styles.css.map : fichier généré via le custom.scss
+├── controllers/        # Contient les contrôleurs de l'application
 │
-├───img
-│   │   Images avec l'arborescence ci dessous
-│   │
-│   ├───banniere/
-│   │
-│   └───profils/
+├── css/
+│   ├── style.css       # Styles CSS spécifiques
+│   ├── styles.css      # Généré depuis custom.scss
+│   ├── styles.css.map  # Carte source CSS
 │
-├───js
-│       Fichier contenant les fichiers de js
-├───modeles
-│       Modeles *déf*
+├── img/
+│   ├── banniere/       # Images pour les bannières
+│   ├── profils/        # Images pour les profils utilisateurs
 │
-├───SCSS
-│       custom.scss
+├── js/                # Fichiers JavaScript
 │
-└───templates
-│       templates *défs*
+├── modeles/           # Modèles de données
+│
+├── SCSS/
+│   ├── custom.scss     # Fichier source SCSS principal
+│
+└── templates/         # Gabarits de rendu Twig
 
 ## Mettre l'application en place sur votre ordinateur
 Vous devrez procéder à 3 étapes : 
