@@ -240,5 +240,22 @@ class OADao
         return $this->parseParticipants($credits);
     }
 
-    
+    /**
+     * @brief Récupère des œuvres aléatoires depuis l'API TMDB
+     * @return array Liste d'objets OA
+     */
+    public function findRandomOeuvres(): array
+    {
+        $randomPage = rand(1, 100); // Choisit une page aléatoire
+        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage]);
+
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune œuvre aléatoire trouvée.');
+            return [];
+        }
+
+        // On sélectionne aléatoirement 10 œuvres de la page récupérée
+        $randomOeuvres = array_slice($results['results'], 0, 10);
+        return $this->hydrateAll($randomOeuvres);
+    }
 }
