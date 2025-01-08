@@ -287,7 +287,20 @@ class WatchListDao {
         }
     }
 
+public function afficherOaWatchlist(int $idWatchlist): ?array {
+    $sql = "SELECT idTMDB FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :idWatchlist";
+    
+    $pdoStatement = $this->pdo->prepare($sql);
+    $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
+    $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
+    if (!$result) {
+        return null;
+    }
+
+    $idTMDB = $result['idTMDB'];
+    return $this->recupererOeuvresParWatchlist($idTMDB);
+}
 
 
 }

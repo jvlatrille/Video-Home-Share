@@ -206,8 +206,18 @@ class ControllerWatchList extends Controller
         $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
         $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : null;
 
-        //Ajoute l'oeuvre à la watchlist
+        //Vérifie si l'oeuvre est déjà dans la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = $managerWatchList->find($idWatchList);
+        $oas = $managerWatchList->afficherOaWatchlist($idWatchList); 
+        foreach ($oas as $oa) {
+            if ($oa->getIdOa() == $idOeuvre) {
+                
+                header('Location: index.php?controleur=watchlist&methode=listerWatchlist&id=' . $idWatchList);
+                return;
+            }
+        }
+        //Ajoute l'oeuvre à la watchlist
         $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
 
         //Redirige vers la liste des watchlists
