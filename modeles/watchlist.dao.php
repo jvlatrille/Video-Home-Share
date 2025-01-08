@@ -239,7 +239,7 @@ class WatchListDao {
      * @return bool true si l'OA a été ajoutée à la Watchlist, false sinon
      */
     public function ajouterOA(int $idWatchlist, int $idOA): bool {
-        $sql = "UPDATE TABLE ".PREFIXE_TABLE."watchlist (idWatchlist, idOA) VALUES (:idWatchlist, :idOA)";
+        $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET idTMDB = CONCAT(idTMDB, ',', :idOA) WHERE idWatchlist = :idWatchlist";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -260,13 +260,28 @@ class WatchListDao {
      * @return bool true si l'OA a été supprimée de la Watchlist, false sinon
      */
     public function supprimerOA(int $idWatchlist, int $idOA): bool {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."constituer WHERE idWatchlist = :idWatchlist AND idOA = :idOA";
+        // Récupère la liste des idOA actuels
+        $sql = "SELECT idTMDB FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :idWatchlist";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $idTMDB = $result['idTMDB'];
+            $idArray = explode(',', $idTMDB);
+            $newIdArray = array_diff($idArray, [$idOA]);
+            $newIdTMDB = implode(',', $newIdArray);
+
+        } else {
+            return false;
+        }
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
-            $pdoStatement->execute(['idWatchlist' => $idWatchlist, 'idOA' => $idOA]);
+            $pdoStatement->execute(['newIdTMDB' => $newIdTMDB, 'idWatchlist' => $idWatchlist]);
             return true;
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             error_log("Erreur lors de la suppression de l'OA de la watchlist : " . $e->getMessage());
             return false;
         }

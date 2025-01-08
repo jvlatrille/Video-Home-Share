@@ -208,10 +208,10 @@ class ControllerWatchList extends Controller
 
         //Ajoute l'oeuvre à la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
-        $managerWatchList->ajouterOAWatchlist($idWatchList, $idOeuvre);
+        $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
 
         //Redirige vers la liste des watchlists
-        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id=' . $idWatchList);
+        header('Location: index.php?controleur=watchlist&methode=listerWatchlist&id=' . $idWatchList);
     }
 
     //Fonction pour supprimer une oeuvre d'une watchlist
