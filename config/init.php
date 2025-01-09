@@ -3,7 +3,7 @@
 use Symfony\Component\Yaml\Yaml;
 
 // Chemin vers le fichier de configuration YAML
-$configPath = __DIR__ . '/templates.yaml';
+$configPath = __DIR__ . '/constantes.yaml';
 
 if (file_exists($configPath)) {
     // Parse le fichier YAML pour obtenir les configurations
@@ -27,6 +27,13 @@ if (file_exists($configPath)) {
             }
         }
     }
+
+    // Définir les constantes TMDB
+    if (isset($constantes['TMDB_'])) {
+        define('TMDB_API_KEY', $constantes['TMDB_']['API_KEY']);
+        define('TMDB_ACCESS_TOKEN', $constantes['TMDB_']['ACCESS_TOKEN']);
+    }
+    
 } else {
     die('Le fichier config/constantes.yaml est introuvable.');
 }

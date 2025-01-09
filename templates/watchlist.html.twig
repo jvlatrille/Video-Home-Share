@@ -2,54 +2,74 @@
 
 {% block content %}
     {% if watchList is not defined %}
-        <p>Aucune WatchList</p>
+        <div class="alert alert-warning" role="alert">
+            Aucune WatchList
+        </div>
     {% else %}
-    <!-- afficher les détail d'une watchlist-->
-    <h1>{{ watchList.titre }}</h1>
-    {% for oa in oas %}
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{{ watchList.titre }}</h1>
+                <div>
+                    <p><strong>Description :</strong> {{ watchList.description }}</p>
+                </div>
+                <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" 
+                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-danger">
+                    Supprimer
+                </a>
+            </div>
+            <div class="row">
+                {% for oa in oas %}
+            
+                    <div class="col-md-4 mb-3">
+                        <div class="card" style="background-color: transparent; border: none;">
+                            <button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#oaModal{{ oa.idOa }}">
+                                <div class="card-body text-center">
+                                    <img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="img-fluid mb-2 rounded" style="width: 50%; height: auto;">
+                                    <h5 class="card-title mt-2">{{ oa.nom }}</h5>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
 
-    <div class="d-flex justify-content-start overflow-auto">
-        <div class="card me-2">
-          <button type="button" data-bs-toggle="modal" data-bs-target="#oaModal{{ oa.idOa }}"  
-            <div class="card-body text-center">
-                <div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
-                <p class="card-text mt-2">{{ oa.nom }}</p>
-            </div></button> 
+                    <div class="modal fade" id="oaModal{{ oa.idOa }}" tabindex="-1" aria-labelledby="oaModalLabel{{ oa.idOa }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="oaModalLabel{{ oa.idOa }}">{{ oa.nom }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Nom :</strong> {{ oa.nom }}</p>
+                                    <p><strong>Description :</strong> {{ oa.description }}</p>
+                                    <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                    <p><strong>Note :</strong>
+                                        {% for i in 1..5 %}
+                                            {% if i <= (oa.note / 2) %}
+                                                <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
+                                            {% else %}
+                                                <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
+                                            {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                    <p><strong>Genres :</strong>
+                                        {% for genre in oa.genres %}
+                                            <span class="badge bg-secondary">{{ genre }}</span>
+                                        {% endfor %}
+                                    <div class="d-flex justify-content-between">
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
+                                        <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            
         </div>
-<div class="modal fade" id="oaModal{{ oa.idOa }}" tabindex="-1" aria-labelledby="oaModalLabel{{ oa.idOa }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="oaModalLabel{{ oa.idOa }}">{{ oa.nom }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Nom : {{ oa.nom }}</p>
-                <p>Description : {{ oa.description }}</p>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
-                <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWathlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    {% endfor %}
-    <!-- A FAIRE : afficher le créateur de la watchlist (utilisateur non créer le 09/11/2024 lors de ce test) et sa date de création (ajouter en bd)-->
-    <p>{{ watchList.description }}</p>
-    <p>{{ watchList.genre }}</p>
-    <p>{{ watchList.visible}}</p>
-
-
-<a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" 
-    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-primary">
-    Supprimer
-</a>
-
-    
     {% endif %}
-
 {% endblock %}

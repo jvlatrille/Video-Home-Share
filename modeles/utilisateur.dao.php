@@ -89,6 +89,17 @@ class UtilisateurDao
         return $reussite;
     }
 
+        //Changer mot de passe
+        public function changerMdp(?int $id, ?string $mdp): bool{
+            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                    SET motDePasse = :mdp
+                    WHERE idUtilisateur = :id"; 
+           $pdoStatement = $this->pdo->prepare($sql);
+           $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
+       
+           return $reussite;
+       }
+
     public function updateUserPhoto(int $userId, string $filePath): bool{
         // Requête pour mettre à jour la photo de profil de l'utilisateur
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
@@ -127,6 +138,21 @@ class UtilisateurDao
         return $utilisateur ? $this->hydrate($utilisateur) : null;
     }
 
+    /**
+     * @brief Rechercher un Utilisateur par son pseudo
+     * @author Jules VINET 
+     * @param string $pseudo
+     * @return Utilisateur|null
+     */
+    public function findByPseudo(?string $pseudo): ?Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE pseudo = :pseudo";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['pseudo' => $pseudo]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetch();
+        return $utilisateur ? $this->hydrate($utilisateur) : null;
+    }
+    
     /**
      * @brief Creer un utilisateur en base de données
      * @author Thibault CHIPY 
@@ -177,7 +203,7 @@ class UtilisateurDao
      * @param string $password Le mot de passe à valider.
      * @return bool true si le mot de passe respecte les critères, false sinon.
      */
-    public function estRobuste(string $password): bool
+    public static function estRobuste(string $password): bool
     {
         $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
 

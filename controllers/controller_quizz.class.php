@@ -116,4 +116,5 @@ class ControllerQuizz extends Controller {
             echo "Erreur lors de la suppression du quizz.";
         }
     }
+    
 }

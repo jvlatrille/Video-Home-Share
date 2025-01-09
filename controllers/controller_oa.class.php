@@ -2,78 +2,130 @@
 
 /**
  * @file controller_oa.class.php
- * @author Thibault CHIPY 
- * @brief Controleur des oeuvres audiovisuelles OA 
- * 
- * @version 1.0
- * @date 11/11/2024
+ * @author Thibault CHIPY, VINET LATRILLE Jules
+ * @brief Contrôleur pour la gestion des œuvres audiovisuelles
+ * @details Ce contrôleur gère l'affichage des œuvres et leurs détails.
+ * @version 2.0
+ * @date 2024-12-22
  */
+
+require_once 'modeles/oa.dao.php';
+require_once 'modeles/commentaire.dao.php';
 
 class ControllerOA extends Controller
 {
+    private OADao $managerOa;
+    private CommentaireDAO $managerCommentaire;
+
     /**
-     * @brief Constructeur de la classe ControllerOA
-     *
-     * @param \Twig\Environment $twig Envrironnement twig
-     * @param \Twig\Loader\FilesystemLoader $loader loader de fichiers twig
+     * @brief Constructeur du contrôleur OA
+     * @param \Twig\Environment $twig Environnement Twig
+     * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
      */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
+        $this->managerOa = new OADao();
+        $this->managerCommentaire = new CommentaireDAO($this->getPdo());
     }
 
-    /////////////////////////////////////////  
-    // La fonction listerFilms sera celle qui sera de base appelée par le controller. Elle permettra d'afficher la liste des 10 films les mieux notés.
-    /////////////////////////////////////////
-
     /**
-     * @brief Methode pour lister les films avec les meilleures notes sur la page d'acceuil
-     * 
-     *@remark cete methode est appelée par defaut par le controller quand on arrive sur la page d'acceuil du site
+     * @brief Affiche les 10 films les mieux notés
      * @return void
      */
-    public function listerFilms()
+    public function listerFilms(): void
     {
-        // Recupere tous les films
-        $managerOA = new OADao($this->getPdo());
-        $oaListe = $managerOA->findMeilleurNote();
-
-        // Generer la vue
-        $template = $this->getTwig()->load('index.html.twig');
-        // var_dump($oaListe);
-        echo $template->render(['oaListe' => $oaListe]);
+        try {
+            $oaListe = $this->managerOa->findMeilleurNote();
+            $template = $this->getTwig()->load('index.html.twig');
+            echo $template->render(['oaListe' => $oaListe]);
+        } catch (Exception $e) {
+            error_log('Erreur lors du listing des films : ' . $e->getMessage());
+            $this->afficherErreur('Impossible d\'afficher la liste des films.');
+        }
     }
 
-    //Fonction pour afficher un film, ajout de la watchlist pour afficher les watchlists de l'utilisateur s'il veut ajouter le film à une watchlist
+
     /**
-     * @brief Methode pour afficher un film
-     *@details Cette methode recupere toutes les WatchLists de l'utilisateur connecté et l'oeuvre audiovisuelle à afficher
-     * @return void 
+     * @brief Affiche les détails d'un film spécifique
+     * @return void
      */
-    public function afficherFilm()
+    public function afficherFilm(): void
     {
-        // Récupérer l'ID du film depuis l'URL
-        $idOa = isset($_GET['idOa']) ? $_GET['idOa'] : null;
+        $idOa = $_GET['idOa'] ?? null;
 
-        // Instancier les DAOs nécessaires
-        $managerOa = new OADao($this->getPdo());
-        $managerWatchList = new WatchListDao($this->getPdo()); // Si tu as besoin d'utiliser les watchlists
+        if (!$this->validerId($idOa)) {
+            $this->afficherErreur('ID du film invalide ou non spécifié.');
+            return;
+        }
 
-        // Récupérer les informations du film
-        $oa = $managerOa->find($idOa);
+        try {
+            $idOa = (int)$idOa;
+            $oa = $this->managerOa->find($idOa);
 
-        // Récupérer les participants associés au film
-        $participants = $managerOa->getParticipantsByFilmId($idOa);
+            if (!$oa) {
+                $this->afficherErreur('Film non trouvé.');
+                return;
+            }
 
-        // Récupérer les watchlists si nécessaire
-        $watchListListe = $managerWatchList->findAll(1); // Pour les tests, idUtilisateur = 1
+            // Récupérer les commentaires du film
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            error_log("Nombre de commentaires : " . count($commentaires));
 
-        // Générer la vue
-        $template = $this->getTwig()->load('film.html.twig');
-        echo $template->render([
-            'oa' => $oa,
-            'participants' => $participants,
-            'watchListListe' => $watchListListe
-        ]);
+            // Récupérer les participants du film
+            $participants = $this->managerOa->getParticipantsByFilmId($oa->getIdOa());
+            error_log("Nombre de participants : " . count($participants));
+
+
+
+            //Recuperer les watchlist de l'utilisateur
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+                $managerWatchList = new WatchListDao($this->getPdo());
+                $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
+                $template = $this->getTwig()->load('film.html.twig');
+                echo $template->render([
+                    'watchListListe' => $watchListListe,
+                    'oa' => $oa,
+                    'commentaires' => $commentaires,
+                    'participants' => $participants
+                ]);
+                return;
+            } 
+
+            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
+            $template = $this->getTwig()->load('film.html.twig');
+            echo $template->render([
+                'oa' => $oa,
+                'commentaires' => $commentaires,
+                'participants' => $participants
+            ]);
+
+        } catch (Exception $e) {
+            error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
+            $this->afficherErreur('Impossible d\'afficher les détails du film.');
+        }
+    }
+
+    /**
+     * @brief Valide un identifiant
+     * @param mixed $id Identifiant à valider
+     * @return bool
+     */
+    private function validerId($id): bool
+    {
+        return is_numeric($id) && (int)$id > 0;
+    }
+
+    /**
+     * @brief Affiche une erreur à l'utilisateur
+     * @param string $message Message d'erreur
+     * @return void
+     */
+    private function afficherErreur(string $message): void
+    {
+        $template = $this->getTwig()->load('erreur.html.twig');
+        echo $template->render(['message' => $message]);
+        exit();
     }
 }

@@ -24,14 +24,29 @@ class ControllerUtilisateur extends Controller
     // Vérifie si un utilisateur est connecté
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
-        // Récupère l'utilisateur
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
-        echo $template->render([
-            'utilisateur' => $utilisateurConnecte
-        ]);
-        return;
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(['utilisateur' => $utilisateurConnecte]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+    }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
+public function afficherAutreUtilisateur()
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+        $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+        $template = $this->getTwig()->load('profilAutre.html.twig');
+        echo $template->render(['utilisateur' => $autreUtilisateur]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
     }
 
     // Sinon, affiche la page de connexion
@@ -222,21 +237,41 @@ class ControllerUtilisateur extends Controller
     /**
      * @brief Vérifie la connexion d'un utilisateur
      * @author Thibault Chipy 
-     * @version 1.0
+     * @version 2.0
      * 
      * @return void
      */
     public function verifConnexion(){
-        $mail=isset($_POST['mail'])?$_POST['mail']:null;
-        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
+        // Récupération des données du formulaire
+        $donneesFormulaire = [
+            'mail' => $_POST['mail'] ?? null,
+            'mdp' => $_POST['mdp'] ?? null,
+        ];
+        
+        // Validation des données
+       $erreurs = Validator::validerConnexion($donneesFormulaire);
+        if($erreurs){
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
 
-        // $mail = str_replace(' ', '', $mail); // On enlève les espaces
-
+        $mail = $donneesFormulaire['mail'];
+        $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            $this->afficherUtilisateur();
-        }else{  
+
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+            
+            $managerOA = new OADao($this->getPdo());
+            $oaListe = $managerOA->findMeilleurNote();
+            $template = $this->getTwig()->load('index.html.twig');
+            echo $template->render(['oaListe' => $oaListe]);
+            
+        }
+        else{
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
@@ -249,76 +284,103 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
 
-// MANQUE LES VERIF DES FORMULAIRES AVEC FONCTION : A FAIRE      
-    public function verifInscription(){
-        $idUtilisateur=isset($_POST['idUtilisateur'])?$_POST['idUtilisateur']:null;
-        $pseudo=isset($_POST['pseudo'])?$_POST['pseudo']:null;
-        $photoProfil=isset($_POST['photoProfil'])?$_POST['photoProfil']:null;
-        $banniereProfil=isset($_POST['banniereProfil'])?$_POST['banniereProfil']:null;
-        $dateNaiss=isset($_POST['dateNaiss'])?$_POST['dateNaiss']:null;
-        $mail=isset($_POST['mail'])?$_POST['mail']:null;
-        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
-        $mdpVerif=isset($_POST['mdpVerif'])?$_POST['mdpVerif']:null;
-        $role=isset($_POST['role'])?$_POST['role']:'utilisateur'; // Role par défaut : utilisateur
-        // $mail = str_replace(' ', '', $mail); // On enlève les espaces
+    public function verifInscription()
+    {
+        // Récupération des données du formulaire
+        $donneesFormulaire = [
+            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
+            'pseudo' => $_POST['pseudo'] ?? null,
+            'photoProfil' => $_POST['photoProfil'] ?? 'default.png', // Image par défaut
+            'banniereProfil' => $_POST['banniereProfil'] ?? "default.png", // Image par défaut
+            'dateNaiss' => $_POST['dateNaiss'] ?? null,
+            'mail' => $_POST['mail'] ?? null,
+            'mdp' => $_POST['mdp'] ?? null,
+            'mdpVerif' => $_POST['mdpVerif'] ?? null,
+            'role' => $_POST['role'] ?? 'utilisateur', // Role par défaut
+        ];
 
-        
-        //Vérifier l'age de l'utilisateur
-        $dateJour = date('Y-m-d');
-        
-        //Comparé la date du jour avec la date de naissance de l'utilisateur
-        $dateNaiss = new DateTime($dateNaiss);
-        $dateJour = new DateTime($dateJour);
-        $age = $dateNaiss->diff($dateJour);
-        $age = $age->format('%y');
+        // Définition des règles de validation
+        $reglesValidation = [
+            'pseudo' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 3,
+                'longueur_max' => 50,
+            ],
+            'dateNaiss' => [
+                'obligatoire' => true,
+                'type' => 'date',
+                'validation_personnalisee' => function ($value) {
+                    $dateNaiss = DateTime::createFromFormat('Y-m-d', $value);
+                    if (!$dateNaiss) {
+                        return 'La date de naissance doit être valide (format YYYY-MM-DD).';
+                    }
+                    $dateJour = new DateTime();
+                    $age = $dateNaiss->diff($dateJour)->y;
+                    return $age >= 13 ? true : 'Vous devez avoir au moins 13 ans pour vous inscrire';
+                },
+            ],
 
-        $verifPassee=true;
+            'mail' => [
+                'obligatoire' => true,
+                'format' => FILTER_VALIDATE_EMAIL,
+            ],
+            'mdp' => [
+                'obligatoire' => true,
+                'validation_personnalisee' => function ($value) {
+                    return UtilisateurDao::estRobuste($value) ? true : 'Le mot de passe n\'est pas assez robuste';
+                },
+            ],
+            'mdpVerif' => [
+                'obligatoire' => true,
+                'validation_personnalisee' => function ($value) use ($donneesFormulaire) {
+                    return $value === $donneesFormulaire['mdp'] ? true : 'Les mots de passe ne correspondent pas';
+                },
+            ],
+        ];
 
-        //Si l'utilisateur a moins de 13 ans
-        if($age < 13){
+        // Validation des données
+        $validator = new Validator($reglesValidation);
+
+        if (!$validator->valider($donneesFormulaire)) {
+            // Récupération des erreurs
+            $erreurs = $validator->getMessagesErreurs();
+            // Rendre la vue avec les erreurs
             $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Vous devez avoir au moins
-            13 ans pour vous inscrire']);
+            echo $template->render(['erreurs' => $erreurs, 'donnees' => $donneesFormulaire]);
+            return;
         }
-        
 
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $utilisateur = $managerUtilisateur->emailExiste($mail);
-        $verifMdp=$managerUtilisateur->estRobuste($mdp);
-        
         // Vérifie si l'email existe déjà
-        if($utilisateur){
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        if ($managerUtilisateur->emailExiste($donneesFormulaire['mail'])) {
             $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'L\'adresse mail est déjà utilisée']);
-            $verifPassee=false;
-            return;
-        }
-        
-        if($mdp != $mdpVerif){
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
-            $verifPassee=false;
-            return;
-        }
-        if(!$verifMdp){
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Le mot de passe n\'est pas assez robuste']);
-            $verifPassee=false;
+            echo $template->render(['message' => 'L\'adresse mail est déjà utilisée', 'donnees' => $donneesFormulaire]);
             return;
         }
 
-        if($verifPassee){
-        $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
-        $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
-        $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
+        // Hachage du mot de passe
+        $donneesFormulaire['mdp'] = password_hash($donneesFormulaire['mdp'], PASSWORD_BCRYPT);
+
+        // Création de l'utilisateur
+        $utilisateur = new Utilisateur(
+            $donneesFormulaire['idUtilisateur'],
+            $donneesFormulaire['pseudo'],
+            $donneesFormulaire['photoProfil'],
+            $donneesFormulaire['banniereProfil'],
+            $donneesFormulaire['mail'],
+            $donneesFormulaire['mdp'],
+            $donneesFormulaire['role']
+        );
+
+        // Sauvegarde dans la base de données
         $managerUtilisateur->creerUtilisateur($utilisateur);
-        }
-        else{
-            $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Erreur lors de l\'inscription']);
-        }
+
+        // Redirection vers la page de connexion
         header('Location: index.php?controleur=utilisateur&methode=connexion');
-        }
+        exit;
+    }
+
 
         /**
          * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
