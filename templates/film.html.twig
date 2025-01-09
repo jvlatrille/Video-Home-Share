@@ -179,11 +179,13 @@
 														</div>
 													</div>
 												{% endfor %}
+												<input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
+											<button type="submit" class="btn btn-primary">Ajouter</button>
 											{% else %}
 												<p>Aucune watchlist trouvée.</p>
+												<p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=creerWatchlist">Créez-en une ici</a>.</p>
 											{% endif %}
-											<input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
-											<button type="submit" class="btn btn-primary">Ajouter</button>
+											
 										</form>
 									</div>
 								</div>
