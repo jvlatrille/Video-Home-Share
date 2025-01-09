@@ -9,7 +9,24 @@ class ControllerIndex extends Controller{
     // Render base template
     public function render()
     {
+
+        $managerOa = new OADao();
+        $oaListe = $managerOa->findMeilleurNote();
         $template = $this->getTwig()->load('index.html.twig');
-        echo $template->render();
+        echo $template->render(['oaListe' => $oaListe]);
+
+    }
+
+    public function rechercherFilm(){
+        $requete=htmlentities($_POST['requete']) ?? null;
+
+        $managerOa = new OADao();
+        $oas = $managerOa->rechercheFilmParNom($requete);
+
+        $template = $this->getTwig()->load('recherche.html.twig');
+        echo $template->render(['oas' => $oas]);
+
+
+
     }
 }

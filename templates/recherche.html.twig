@@ -1,0 +1,25 @@
+{% extends "base_template.html.twig" %}
+
+{% block content1 %}
+    <div class="container">
+        <h1 class="text-center my-5">Résultats de la recherche</h1>
+        <div class="row">
+        {% if oas is not empty %}
+            {% for oa in oas %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none">
+                            <img src="{{ oa.posterPath }}" class="card-img-top" alt="{{ oa.nom }}">
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title text-center text-dark">{{ oa.nom }}</h6>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-center">Aucun résultat</p>
+        {% endif %}
+    </div>
+{% endblock %}
