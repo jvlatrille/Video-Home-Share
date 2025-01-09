@@ -59,16 +59,17 @@ class ControllerWatchList extends Controller
     //Fonction pour afficher une watchlist
     public function afficherWatchList()
     {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-
-        //Recupere la watchlist
+        $id = $_GET['idWatchlist'] ?? null;
+      //Recupere la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
+        
+        
         $watchList = $managerWatchList->find($id);
 
         //Recupere les oeuvres de la watchlist
 
         $oas = $managerWatchList->afficherOaWatchlist($id);
-        
+    
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
 
@@ -133,7 +134,7 @@ class ControllerWatchList extends Controller
             $managerWatchList->creerWatchlist($watchList);
 
    
-
+            //a finir, meettre des suggestions etc 
 
             //Redirige vers la liste des watchlists
             header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
@@ -233,14 +234,14 @@ class ControllerWatchList extends Controller
     public function supprimerOaWatchList()
     {
         //Recupere les données du formulaire
-        $idWatchList = isset($_POST['idWathlist']) ? $_POST['ididWathlist'] : (isset($_GET['idWathlist']) ? $_GET['idWathlist'] : null);
-        $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : (isset($_GET['idOeuvre']) ? $_GET['idOeuvre'] : null);
+        $idWatchList = isset($_GET['idWatchlist']) ? $_GET['idWatchlist'] : null;
+        $idOeuvre = isset($_GET['idOeuvre']) ? $_GET['idOeuvre'] : null;
 
         //Supprime l'oeuvre de la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
         $managerWatchList->supprimerOA($idWatchList, $idOeuvre);
 
         //Redirige vers la liste des watchlists
-        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&id=' . $idWatchList);
+       header('Location: index.php?controleur=watchlist&methode=afficherWatchList&idWatchlist=' . $idWatchList);
     }
 }

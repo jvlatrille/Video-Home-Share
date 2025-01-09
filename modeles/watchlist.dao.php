@@ -265,7 +265,6 @@ class WatchListDao {
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
         $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-
         if ($result) {
             $idTMDB = $result['idTMDB'];
             $idArray = explode(',', $idTMDB);
@@ -275,8 +274,9 @@ class WatchListDao {
         } else {
             return false;
         }
-        
         try {
+            // Met à jour la liste des idOA
+            $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET idTMDB = :newIdTMDB WHERE idWatchlist = :idWatchlist";
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(['newIdTMDB' => $newIdTMDB, 'idWatchlist' => $idWatchlist]);
             return true;
@@ -287,20 +287,20 @@ class WatchListDao {
         }
     }
 
-public function afficherOaWatchlist(int $idWatchlist): ?array {
-    $sql = "SELECT idTMDB FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :idWatchlist";
-    
-    $pdoStatement = $this->pdo->prepare($sql);
-    $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
-    $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+    public function afficherOaWatchlist(int $idWatchlist): ?array {
+        $sql = "SELECT idTMDB FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :idWatchlist";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idWatchlist' => $idWatchlist]);
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result) {
-        return null;
+        if (!$result) {
+            return null;
+        }
+
+        $idTMDB = $result['idTMDB'];
+        return $this->recupererOeuvresParWatchlist($idTMDB);
     }
-
-    $idTMDB = $result['idTMDB'];
-    return $this->recupererOeuvresParWatchlist($idTMDB);
-}
 
 
 }
