@@ -34,7 +34,6 @@
                                 <div class="col-md-6 px-4 text-center">
                                     <h2 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h2>
                                     <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                    <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                                     <p class="text-muted" style="max-width: 500px;">{{ oa.description|slice(0, 200) }}...</p>
                                     <p><strong>Note :</strong>
                                         {% for i in 1..5 %}

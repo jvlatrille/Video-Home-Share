@@ -76,13 +76,31 @@ class ControllerOA extends Controller
             $participants = $this->managerOa->getParticipantsByFilmId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
 
-            // Affichage dans la vue
+
+
+            //Recuperer les watchlist de l'utilisateur
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+                $managerWatchList = new WatchListDao($this->getPdo());
+                $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
+                $template = $this->getTwig()->load('film.html.twig');
+                echo $template->render([
+                    'watchListListe' => $watchListListe,
+                    'oa' => $oa,
+                    'commentaires' => $commentaires,
+                    'participants' => $participants
+                ]);
+                return;
+            } 
+
+            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
                 'oa' => $oa,
                 'commentaires' => $commentaires,
                 'participants' => $participants
             ]);
+
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
             $this->afficherErreur('Impossible d\'afficher les détails du film.');

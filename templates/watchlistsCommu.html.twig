@@ -1,72 +1,94 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-    <h1>Toutes les watchlists</h1>
-    {% if watchListListe is empty %}
-        <p>Aucune WatchList</p>
-    {% else %}
-        <div class="container">
-            <div class="row">
-                {% for watchList in watchListListe %}
-                    <div class="col-4">
-                        <div class="card" style="width: 18rem;">
-                            <img src="{{ watchList.image }}" class="card-img-top" alt="{{ watchList.nom }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ watchList.nom }}</h5>
-                                <p class="card-text">{{ watchList.description }}</p>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
-                                    Voir la WatchList
-                                </button>
-                            </div>
+	<h1>Toutes les watchlists</h1>
+	{% if watchListListe is empty %}
+		<p>Aucune WatchList</p>
+	{% else %}
+		<div class="container">
+			<div class="row">
+				{% for watchList in watchListListe %}
+					<div class="col-4">
+						<div class="card" style="width: 18rem;">
+							<img src="{{ watchList.image }}" class="card-img-top" alt="{{ watchList.nom }}">
+							<div class="card-body">
+								<h5 class="card-title">{{ watchList.nom }}</h5>
+								<p class="card-text">{{ watchList.description }}</p>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
+									Voir la WatchList
+								</button>
+							</div>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="watchListModal{{ watchList.idWatchList }}" tabindex="-1" aria-labelledby="watchListModalLabel{{ watchList.idWatchList }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="watchListModalLabel{{ watchList.idWatchList }}">{{ watchList.nom }}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><strong>Description :</strong> {{ watchList.description }}</p>
-                                            <p><strong>Genre :</strong> {{ watchList.genre }}</p>
-                                            <p><strong>Visible :</strong> {{ watchList.visible ? 'Oui' : 'Non' }}</p>
-                                            
-                                            <h6>Films associés :</h6>
-                                            <ul>
-                                            {% if watchList.listeOeuvres is not empty %}
-                                                {% for oa in watchList.listeOeuvres %}
-                                                    <li>{{ oa.nom }} - Note : {{ oa.note }}/10 - {{ oa.duree }} min</li>
-                                                {% endfor %}
-                                            {% else %}
-                                                <li>Aucun film associé</li>
-                                            {% endif %}
-                                            </ul>
-                                            
-                                            <!-- Formulaire d'enregistrement de la watchlist avec les films associés -->
-                                            <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
-                                                <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
-                                                <input type="hidden" name="titre" value="{{ watchList.titre }}">
-                                                <input type="hidden" name="genre" value="{{ watchList.genre }}">
-                                                <input type="hidden" name="description" value="{{ watchList.description }}">
-                                                <input type="hidden" name="visible" value="{{ watchList.visible }}">
-                                                {% for oa in watchList.listeOeuvres %}
-                                                    <input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}"> <!-- ca marche pas -->
-                                                {% endfor %}
-                                                
-                                                <button type="submit" class="btn btn-danger">Enregistrer cette watchlist</button>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
+							<!-- Modal -->
+							<div class="modal fade" id="watchListModal{{ watchList.idWatchList }}" tabindex="-1" aria-labelledby="watchListModalLabel{{ watchList.idWatchList }}" aria-hidden="true">
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="watchListModalLabel{{ watchList.idWatchList }}">{{ watchList.nom }}</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<p>
+												<strong>Titre :</strong>
+												{{ watchList.titre }}</p>
+
+											<p>
+												<strong>Description :</strong>
+												{{ watchList.description }}</p>
+											<p>
+												<strong>Genre :</strong>
+												{{ watchList.genre }}</p>
+											<p>
+												<strong>Visible :</strong>
+												{{ watchList.visible ? 'Oui' : 'Non' }}</p>
+
+											<h6>Films associés :</h6>
+											<ul>
+												{% if watchList.listeOeuvres is not empty %}
+
+													{% for oa in watchList.listeOeuvres %}
+														<li>
+															<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOA }}">
+																<img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" style="width: 50px; height: auto; margin-right: 10px;">
+															</a>
+															{{ oa.nom }}
+															- Note :
+															{{ oa.note }}/10 -
+															{{ oa.duree }}
+															min
+														</li>
+													{% endfor %}
+												{% else %}
+													<li>Aucun film associé</li>
+												{% endif %}
+											</ul>
+
+											<!-- Formulaire d'enregistrement de la watchlist avec les films associés -->
+											<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+												<input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
+												<input type="hidden" name="titre" value="{{ watchList.titre }}">
+												<input type="hidden" name="genre" value="{{ watchList.genre }}">
+												<input type="hidden" name="description" value="{{ watchList.description }}">
+												<input type="hidden" name="visible" value="{{ watchList.visible }}">
+												{% for oa in watchList.listeOeuvres %}
+													<input
+													type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}">
+												<!-- ca marche pas -->
+												{% endfor %}
+
+												<button type="submit" class="btn btn-danger">Enregistrer cette watchlist</button>
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
 {% endblock %}
