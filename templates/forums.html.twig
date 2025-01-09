@@ -1,6 +1,8 @@
 {% extends 'base_template.html.twig' %}
 {% block content %}
-    <h1>Liste des forums</h1>
+    <div class="text-center mb4">
+        <h1>Liste des forums</h1>
+    </div>
     <!-- Bouton pour ouvrir la pop-up -->
 	<div class="container text-center my-4">
 		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createForumModal">
@@ -52,7 +54,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ forumList.nom }}</h5>
 						<p class="card-text">{{ forumList.description }}</p>
-                        <a href="index.php?controleur=forum&methode=afficherForum&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>            
+                        <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>            
                     </div>
                 </div>
             {% endfor %}

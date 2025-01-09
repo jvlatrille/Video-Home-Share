@@ -203,7 +203,6 @@ class OADao
         $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
         $movie['participants'] = $this->parseParticipants($credits);
         $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
-
         return $this->hydrate($movie);
     }
 

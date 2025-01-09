@@ -23,6 +23,7 @@ require_once 'controllers/controller_quizz.class.php';
 require_once 'controllers/controller_question.class.php';
 require_once 'controllers/controller_forum.class.php';
 require_once 'controllers/controller_jeux.class.php';
+require_once 'controllers/controller_message.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_profil.class.php';
 require_once 'controllers/controller_commentaire.class.php';
@@ -51,8 +52,12 @@ require_once 'modeles/jeux.dao.php';
 require_once 'modeles/utilisateur.class.php';
 require_once 'modeles/utilisateur.dao.php';
 
+require_once 'modeles/message.class.php';
+require_once 'modeles/message.dao.php';
+
 require_once 'modeles/commentaire.class.php';
 require_once 'modeles/commentaire.dao.php';
 
 //Ajout des utilitaires
 require_once 'utilitaire/validator.class.php';
+
