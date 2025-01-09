@@ -244,4 +244,4 @@ class ControllerWatchList extends Controller
         //Redirige vers la liste des watchlists
        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&idWatchlist=' . $idWatchList);
     }
-}
+   }
