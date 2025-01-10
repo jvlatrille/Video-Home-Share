@@ -110,11 +110,10 @@ class ControllerQuestion extends Controller {
     
         $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
         $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
-    
         // Si l'ID du quizz est manquant
-        if (!$idQuizz) {
-            die("L'identifiant du quizz est requis !");
-        }
+            if (!$idQuizz) {
+                die("L'identifiant du quizz est requis !");
+            }
     
         $managerQuestion = new QuestionDao($this->getPdo());
     
@@ -143,7 +142,6 @@ class ControllerQuestion extends Controller {
                 $mauvaiseReponse3
             );
     
-            var_dump($question); // Affiche les données reçues
             // Ajout de la question
             if (!$managerQuestion->add($question)) {
                 // Si l'ajout échoue, afficher une erreur
@@ -152,7 +150,7 @@ class ControllerQuestion extends Controller {
         }
     
         // Redirection après l'ajout des questions
-        header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
+        // header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
         exit;
     }
     

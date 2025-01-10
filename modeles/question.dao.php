@@ -140,8 +140,6 @@ class QuestionDao {
                     (contenu, numero, nvDifficulte, bonneReponse, cheminImage, mauvaiseReponse1, mauvaiseReponse2, mauvaiseReponse3) 
                 VALUES 
                     (:contenu, :numero, :nvDifficulte, :bonneReponse, :cheminImage, :mauvaiseReponse1, :mauvaiseReponse2, :mauvaiseReponse3)";
-    
-                    var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
     
         return $stmt->execute([

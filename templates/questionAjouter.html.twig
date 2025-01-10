@@ -1,0 +1,68 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-4">
+        <h1>Ajouter les questions pour le Quizz</h1>
+    </div>
+
+    <form action="index.php?controleur=question&methode=saveQuestions" method="POST">
+        <input type="hidden" name="idQuizz" value="{{ idQuizz }}">
+
+        {% for i in range(1, nbQuestion) %}
+    <div class="card mb-3">
+        <div class="card-body" id="question-{{ i }}">
+            <h5 class="card-title">Question {{ i }}</h5>
+            
+            <input type="hidden" name="questions[{{ i }}][numero]" value="{{ i }}"> <!-- Ajout du numéro de la question -->
+
+            <div class="mb-3">
+                <label for="contenu_{{ i }}" class="form-label">Contenu de la question</label>
+                <input type="text" class="form-control" id="contenu_{{ i }}" name="questions[{{ i }}][contenu]" placeholder="Entrez le contenu de la question" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="bonneReponse_{{ i }}" class="form-label">Bonne réponse</label>
+                <input type="text" class="form-control" id="bonneReponse_{{ i }}" name="questions[{{ i }}][bonneReponse]" placeholder="Entrez la bonne réponse" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="mauvaiseReponse1_{{ i }}" class="form-label">Mauvaise réponse 1</label>
+                <input type="text" class="form-control" id="mauvaiseReponse1_{{ i }}" name="questions[{{ i }}][mauvaiseReponse1]" placeholder="Entrez une mauvaise réponse" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="mauvaiseReponse2_{{ i }}" class="form-label">Mauvaise réponse 2</label>
+                <input type="text" class="form-control" id="mauvaiseReponse2_{{ i }}" name="questions[{{ i }}][mauvaiseReponse2]" placeholder="Entrez une mauvaise réponse" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="mauvaiseReponse3_{{ i }}" class="form-label">Mauvaise réponse 3</label>
+                <input type="text" class="form-control" id="mauvaiseReponse3_{{ i }}" name="questions[{{ i }}][mauvaiseReponse3]" placeholder="Entrez une mauvaise réponse" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="difficulte_{{ i }}" class="form-label">Niveau de difficulté</label>
+                <select class="form-control" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
+                    <option value="Facile">Facile</option>
+                    <option value="Moyen">Moyen</option>
+                    <option value="Difficile">Difficile</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="cheminImage_{{ i }}" class="form-label">Chemin de l'image (optionnel)</label>
+                <input type="text" class="form-control" id="cheminImage_{{ i }}" name="questions[{{ i }}][cheminImage]" placeholder="Entrez le chemin de l'image si nécessaire">
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success mb-4">Enregistrer les questions</button>
+            <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-secondary mb-4">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
