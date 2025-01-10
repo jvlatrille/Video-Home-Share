@@ -3,85 +3,17 @@
 {% block content %}
     <title>{{ oa.nom }}</title>
     <style>
-        /* Fond avec l'affiche */
+        /* Fond avec l'affiche (en css parce que j'ai pas réussi avec bootstrap) */
         body {
             background: url('{{ oa.posterPath }}') no-repeat center center fixed;
             background-size: cover;
             background-attachment: scroll;
         }
-
-        /* Opacité spécifique au conteneur principal */
-        #film-container {
-            background-color: rgba(244, 240, 214, 0.8); /* Légère opacité */
-            padding: 20px;
-            border: 1px solid #c1b494;
-            border-radius: 10px;
-        }
-
-        /* Contenu interne opaque */
-        #film-container > * {
-            opacity: 1;
-        }
-
-        /* Animation sur l'affiche */
-        .col-md-4 img {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .col-md-4 img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Modal personnalisé */
-        #afficheModal .modal-dialog {
-            max-width: 70vw;
-            pointer-events: none;
-        }
-
-        #afficheModal .modal-content {
-            background: transparent;
-            pointer-events: auto;
-            border: none;
-            overflow: hidden;
-        }
-
-        #afficheModal .modal-body img {
-            max-height: 80vh;
-            width: auto;
-            margin: 0 auto;
-        }
-
-        /* Titre en haut à gauche */
-        #afficheModal h2 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            font-size: 1.5rem;
-            padding: 10px 20px;
-            color: #fff;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-        }
-
-        /* Croix rouge */
-        #afficheModal .btn-close {
-            font-size: 1.8rem;
-            color: red;
-            filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.8));
-            background: transparent;
-            opacity: 1;
-        }
-
-        #afficheModal .btn-close:hover {
-            color: darkred;
-        }
     </style>
 
     {% if oa is defined %}
-        <div id="film-container" class="container mt-4">
-            <!-- Section principale -->
+        <div id="film-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
             <div class="row">
-                <!-- Affiche du film -->
                 <div class="col-md-4">
                     {% if oa.posterPath %}
                         <img src="{{ oa.posterPath }}" 
@@ -95,24 +27,22 @@
                     {% endif %}
                 </div>
 
-                <!-- Modal pour afficher l'affiche en grand -->
                 <div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
+                        <div class="modal-content bg-transparent border-0">
                             <div class="modal-body d-flex align-items-center p-0 position-relative">
                                 {% if oa.posterPath %}
-                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
+                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;">
                                 {% else %}
                                     <p><em>Affiche non disponible</em></p>
                                 {% endif %}
-                                <h2 class="position-absolute start-0 top-0 text-white p-3" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
+                                <h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
                                 <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Détails du film -->
                 <div class="col-md-8">
                     <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
                     <div class="bg-light p-3 rounded">
@@ -132,7 +62,6 @@
                                 </p>
                             </div>
                         </div>
-                        <!-- Note du film -->
                         <p><strong>Note :</strong>
                             {% for i in 1..5 %}
                                 {% if i <= (oa.note / 2) %}
@@ -153,13 +82,11 @@
                 </div>
             </div>
 
-            <!-- Description -->
             <div class="mt-4 p-3 bg-light rounded">
                 <h4 class="fw-bold">Description</h4>
                 <p>{{ oa.description }}</p>
             </div>
 
-            <!-- Casting -->
             {% if participants is defined and participants|length > 0 %}
                 <h4 class="fw-bold">Participants</h4>
                 <div class="row">
@@ -179,8 +106,6 @@
                 <p><em>Aucun participant trouvé pour ce film.</em></p>
             {% endif %}
 
-
-            <!-- Section des commentaires -->
             {% if commentaires is defined and commentaires is not empty %}
                 <h2>Commentaires</h2>
                 <ul class="list-group mb-4">
@@ -219,7 +144,6 @@
                 <p><em>Aucun commentaire pour ce film.</em></p>
             {% endif %}
 
-            <!-- Formulaire pour ajouter un commentaire -->
             <div id="commentaires" class="mt-4">
             {% if utilisateurConnecte %}
                 <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
