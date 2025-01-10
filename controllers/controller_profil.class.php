@@ -310,6 +310,11 @@ class ControllerProfil extends Controller
         }
     }
     
+
+
+
+
+
     //Fonction pour afficher toutes les notif d'une personne 
     public function listerNotif()
     {
@@ -377,7 +382,6 @@ class ControllerProfil extends Controller
         //Redirige vers la liste des notifications
         header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
     }
-
 }
     //Fonction pour supprimer toutes les notifications d'une personne
     public function supprimerToutesLesNotifs()
@@ -385,7 +389,7 @@ class ControllerProfil extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            //Recupere l'id de la notification
+            //Recupere l'id de l'utilisateur'
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
             
             //Supprime la notification
@@ -398,6 +402,29 @@ class ControllerProfil extends Controller
             //Redirige vers la liste des notifications
             header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
         }
-
     }
+
+
+    //Fonction pour afficher les informations de A Propos
+    public function afficherAPropos()
+    {        
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            //Recupere l'id de l'utilisateur'
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+
+            // Récupère les messages postés par l'utilisateur
+            $managerMessage = new MessageDao($this->getPdo());
+            $messageListe = $managerMessage->chargerAPropos($idUtilisateur);
+
+            // Génère la vue 
+            $template = $this->getTwig()->load('profilAPropos.html.twig');
+            echo $template->render(['messageListe' => $messageListe,'utilisateur' => $utilisateurConnecte]);
+
+        }
+        
+    }
+    
 }

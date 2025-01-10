@@ -18,7 +18,7 @@ class NotificationDao{
     }
 
     //Méthode pour récupérer TOUTES les notifications d'une personne
-    public function findAll(?int $idUtilisateur): ?array {
+    public function findAll(?string $idUtilisateur): ?array {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur ORDER BY dateNotif DESC";
 
         $pdoStatement = $this->pdo->prepare($sql);
@@ -35,7 +35,7 @@ class NotificationDao{
 
     //Méthode pour récupérer UNE notification d'un utilisateur
     public function findNotif(?int $idNotif): ?Notification {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif; UPDATE ".PREFIXE_TABLE."notification SET vu = 1 WHERE idNotif = :idNotif";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idNotif' => $idNotif]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -65,21 +65,7 @@ class NotificationDao{
             }
     }
 
-    // public function supprimerSelection()
-    // {
-    //     if (isset($_POST['notifications']) && !empty($_POST['notifications'])) {
-    //         $notificationsToDelete = $_POST['notifications']; // Un tableau contenant les IDs des notifications sélectionnées
-
-    //         $managerNotif = new NotificationDao($this->getPdo());
-
-    //         foreach ($notificationsToDelete as $idNotif) {
-    //             $managerNotif->supprimerUneNotification((int)$idNotif, 1); // Utilisation de l'ID utilisateur par défaut (1) pour les tests
-    //         }
-    //     }
-    // }
-
-
-    // //Méthode pour qu'un utilisateur supprime toutes ses notifications
+    // Méthode pour qu'un utilisateur supprime toutes ses notifications
     public function supprimerToutesLesNotifs(?int $idUtilisateur) {
         $sql = "DELETE FROM ".PREFIXE_TABLE."notification WHERE idUtilisateur = :idUtilisateur";
             
@@ -92,6 +78,7 @@ class NotificationDao{
                 return false;
             }      
     }
+    
 
     public function hydrate($tableauAssoc) : ?Notification{
         $notif=new Notification();

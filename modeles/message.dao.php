@@ -63,5 +63,30 @@ public function incrementDislike(int $idMessage): void
     $query->execute(['idMessage' => $idMessage]);
 }
 
+
+
+public function chargerAPropos(?int $idUtilisateur): ?array
+    {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idUtilisateur = :idUtilisateur";
+
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
+            $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+            $resultats = $pdoStatement->fetchAll();
+
+            if (empty($resultats)) {
+                return null; // Aucun message trouvé
+            }
+
+            return $resultats;
+
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
+            return null;
+        }
+    }
+
+
 }
 ?>
