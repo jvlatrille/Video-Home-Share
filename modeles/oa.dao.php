@@ -238,4 +238,20 @@ class OADao
 
         return $this->parseParticipants($credits);
     }
+
+    /**
+     * @brief Recherche des films par titre
+     * @param string $query Requête de recherche
+     * @return array Liste des objets OA
+     * 
+     */
+    public function rechercheFilmParNom(string $query): array{
+        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR']);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucun film trouvé pour la recherche : ' . $query);
+            return [];
+        }
+        return $this->hydrateAll($results['results']);
+    }
+
 }
