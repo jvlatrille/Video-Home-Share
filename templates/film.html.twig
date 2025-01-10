@@ -1,15 +1,18 @@
 {% extends 'base_template.html.twig' %}
 
+{% block css %} 
+<style>
+    /* Fond avec l'affiche (en css parce que j'ai pas réussi avec bootstrap) */
+    body {
+        background: url('{{ oa.posterPath }}') no-repeat center center fixed;
+        background-size: cover;
+        background-attachment: scroll;
+    }
+</style>
+
+{% endblock %}
 {% block content %}
     <title>{{ oa.nom }}</title>
-    <style>
-        /* Fond avec l'affiche (en css parce que j'ai pas réussi avec bootstrap) */
-        body {
-            background: url('{{ oa.posterPath }}') no-repeat center center fixed;
-            background-size: cover;
-            background-attachment: scroll;
-        }
-    </style>
 
     {% if oa is defined %}
         <div id="film-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">

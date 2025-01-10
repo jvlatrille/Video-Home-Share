@@ -1,216 +1,105 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<title>Bienvenue sur
-	{{ constant("WEBSITE_TITLE") }}</title>
+<title>Bienvenue sur {{ constant("WEBSITE_TITLE") }}</title>
 
 {% if oaListe is empty %}
-	<p class="text-center mt-5">Aucun film disponible pour le moment.</p>
+    <p class="text-center mt-5">Aucun film disponible pour le moment.</p>
 {% else %}
-	<h2 class="text-center mt-5">Films les mieux notés</h2>
-	<div
-		id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+    <h2 class="text-center mt-5">Films les mieux notés</h2>
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for i in 0..(oaListe|slice(0, 10)|length - 1) %}
+                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{ i }}" {% if i == 0 %} class="active" {% endif %} aria-label="Slide {{ i + 1 }}"></button>
+            {% endfor %}
+        </div>
 
-		<!-- Indicateurs -->
-		<div class="carousel-indicators">
-			{% for i in 0..(oaListe|slice(0, 10)|length - 1) %}
-				<button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{ i }}" {% if i == 0 %} class="active" {% endif %} aria-label="Slide {{ i + 1 }}"></button>
-			{% endfor %}
-		</div>
+        <div class="carousel-inner">
+            {% for oa in oaListe|slice(0, 10) %}
+                <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+                    <div class="container py-4">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-md-4 text-center">
+                                {% if oa.posterPath %}
+                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                                {% else %}
+                                    <p><em>Affiche non disponible</em></p>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ oa.nom }}</h2>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                                <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
+                                <p><strong>Note :</strong>
+                                    {% for i in 1..5 %}
+                                        <img src="{{ i <= (oa.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30">
+                                    {% endfor %}
+                                </p>
+                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-		<!-- Contenu du carrousel -->
-		<div class="carousel-inner">
-			{% for oa in oaListe|slice(0, 10) %}
-				<div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
-					<div class="container py-4">
-						<div
-							class="row align-items-center justify-content-center">
-							<!-- Affiche du film -->
-							<div class="col-md-4 text-center">
-								{% if oa.posterPath %}
-									<img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
-								{% else %}
-									<p>
-										<em>Affiche non disponible</em>
-									</p>
-								{% endif %}
-							</div>
-							<!-- Détails du film -->
-							<div class="col-md-6 px-4 text-center">
-								<h2 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h2>
-								<p>
-									<strong>Date de sortie :</strong>
-									{{ oa.dateSortie }}</p>
-								<p>
-									<strong>Genre :</strong>
-									{{ oa.genres|join(', ') }}</p>
-								<p class="text-muted" style="max-width: 500px;">{{ oa.description|slice(0, 200) }}...</p>
-								<p>
-									<strong>Note :</strong>
-									{% for i in 1..5 %}
-										{% if i <= (oa.note / 2) %}
-											<img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
-										{% else %}
-											<img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
-										{% endif %}
-									{% endfor %}
-								</p>
-								<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn mt-2" style="background-color: #b12a2a; color: #fff;">Voir plus</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			{% endfor %}
-		</div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+        </button>
+    </div>
 
-		<!-- Contrôles du carrousel -->
-		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-			<span class="visually-hidden">Précédent</span>
-		</button>
-		<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-			<span class="carousel-control-next-icon" aria-hidden="true"></span>
-			<span class="visually-hidden">Suivant</span>
-		</button>
-		<style>
-			.carousel-control-prev-icon,
-			.carousel-control-next-icon {
-				filter: invert(1);
-			}
-			.carousel-indicators {
-				bottom: -30px;
-			}
-			.carousel-indicators [data-bs-target] {
-				background-color: black;
-				width: 12px;
-				height: 12px;
-				border-radius: 50%;
-			}
-		</style>
-	</div>
+    <h2 class="text-center mt-5">À la une</h2>
+    <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for oa in oaListe|slice(10, 20) %}
+                <div class="col">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            {% if oa.posterPath %}
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h6 class="card-title text-truncate">{{ oa.nom }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
-	<!-- Grille d'OA -->
-	<h2 class="text-center mt-5">A la une</h2>
-	<div class="container mt-4">
-		<div class="row row-cols-1 row-cols-md-5 g-4">
-			{% for oa in oaListe|slice(10, 20) %}
-				<div class="col">
-					<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
-						<div class="card h-100">
-							{% if oa.posterPath %}
-								<img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
-							{% else %}
-								<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
-							{% endif %}
-							<div class="card-body text-center">
-								<h6 class="card-title text-truncate">{{ oa.nom }}</h6>
-							</div>
-						</div>
-					</a>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
+    <h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
+    <div id="decouvrirOaContainer" class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for oa in oaListe|slice(20, 30) %}
+                <div class="col">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            {% if oa.posterPath %}
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h6 class="card-title text-truncate">{{ oa.nom }}</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
-	<style>
-		.card {
-			border: none;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-			transition: transform 0.2s;
-
-			&:hover {
-				transform: scale(1.05);
-			}
-		}
-
-		.card-img-top {
-			border-radius: 8px 8px 0 0;
-		}
-
-		.card-title {
-			font-size: 0.9rem;
-			font-weight: bold;
-			margin: 0.5rem 0;
-		}
-	</style>
-
-	<!-- Découvrir plus d'œuvres -->
-	<h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
-	<div id="decouvrirOaContainer" class="container mt-4">
-		<div class="row row-cols-1 row-cols-md-5 g-4">
-			{% for oa in oaListe|slice(20, 30) %}
-				<div class="col">
-					<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
-						<div class="card h-100">
-							{% if oa.posterPath %}
-								<img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
-							{% else %}
-								<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
-							{% endif %}
-							<div class="card-body text-center">
-								<h6 class="card-title text-truncate">{{ oa.nom }}</h6>
-							</div>
-						</div>
-					</a>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
-
-	<!-- Bouton "Encore !" -->
-	<div class="text-center mt-4">
-		<button id="loadRandomBtn" class="btn btn-primary">Encore !</button>
-	</div>
-	<script>
-		document.getElementById('loadRandomBtn').addEventListener('click', function() {
-		        fetch('index.php?controleur=oa&methode=decouvrirPlus')
-		            .then(response => response.json())
-		            .then(data => {
-		                const container = document.querySelector('#decouvrirOaContainer .row');
-		                if (data.length === 0 || data.error) {
-		                    document.getElementById('loadRandomBtn').style.display = 'none';
-		                } else {
-		                    container.innerHTML = ''; // On vide le conteneur avant d'ajouter les nouveaux films
-		                    data.forEach(oa => {
-		                        container.innerHTML += `
-		                            <div class="col">
-		                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa=${oa.idOa}" class="text-decoration-none">
-		                                    <div class="card h-100">
-		                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
-		                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-		                                        <div class="card-body text-center">
-		                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
-		                                        </div>
-		                                    </div>
-		                                </a>
-		                            </div>
-		                        `;
-		                    });
-		                }
-		            })
-		            .catch(error => console.error('Erreur :', error));
-		    });
-		</script>
-		<style>
-		#loadRandomBtn {
-		    margin-top: 20px;
-		    font-size: 1.1rem;
-		    font-weight: bold;
-		    padding: 10px 20px;
-		}
-		
-		#decouvrirOaContainer .card {
-		    border: none;
-		    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		    transition: transform 0.2s;
-		
-		    &:hover {
-		        transform: scale(1.05);
-		    }
-		}
-		
-		</style>
-		
-		
-			{% endif %}
-		{% endblock %}
+    <div class="text-center mt-4">
+        <button id="loadRandomBtn" class="btn btn-primary">Encore !</button>
+    </div>
+{% endif %}
+{% endblock %}
