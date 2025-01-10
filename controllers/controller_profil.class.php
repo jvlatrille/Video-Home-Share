@@ -389,7 +389,7 @@ class ControllerProfil extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            //Recupere l'id de la notification
+            //Recupere l'id de l'utilisateur'
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
             
             //Supprime la notification
@@ -405,27 +405,26 @@ class ControllerProfil extends Controller
     }
 
 
-    //Fonction pour afficher les informations de A Propos (Afficher tous les messages d'une personne)
+    //Fonction pour afficher les informations de A Propos
     public function afficherAPropos()
     {        
-        // Récupère l'ID utilisateur
-        $idUtilisateur = isset($_GET['idUtilisateur']) ? $_GET['idUtilisateur'] : null;
-
-        // Récupère les informations de l'utilisateur
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $utilisateur = $managerUtilisateur->find($idUtilisateur); 
-
-        // Récupère les messages postés par cet utilisateur
-        $managerNotification = new NotificationDao($this->getPdo());
-        $messages = $managerNotification->chargerAPropos($idUtilisateur);
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            //Recupere l'id de l'utilisateur'
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
 
-        // Charge la vue Twig
-        $template = $this->getTwig()->load('profilAPropos.html.twig');
-        echo $template->render([
-            'messageListe' => $messages,
-            'utilisateur' => $utilisateur
-        ]);
+            // Récupère les messages postés par l'utilisateur
+            $managerMessage = new MessageDao($this->getPdo());
+            $messageListe = $managerMessage->chargerAPropos($idUtilisateur);
+
+            // Génère la vue 
+            $template = $this->getTwig()->load('profilAPropos.html.twig');
+            echo $template->render(['messageListe' => $messageListe,'utilisateur' => $utilisateurConnecte]);
+
+        }
+        
     }
     
 }

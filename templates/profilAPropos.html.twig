@@ -9,9 +9,9 @@
 {% block content %}    
     <!-- Titre de la partie notification -->
     <div class="container mt-2">
-        <h1>A propos</h1>
+        <h1>A propos de {{ utilisateur.pseudo }}</h1>
     </div>
-
+    
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
         <p class="text-center">Aucun message posté.</p>
