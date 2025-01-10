@@ -246,7 +246,7 @@ class OADao
      */
     public function findRandomOeuvres(): array
     {
-        $randomPage = rand(1, 100); // Choisit une page aléatoire
+        $randomPage = rand(1, 100);
         $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage]);
 
         if (!isset($results['results']) || empty($results['results'])) {
@@ -254,8 +254,12 @@ class OADao
             return [];
         }
 
-        // On sélectionne aléatoirement 10 œuvres de la page récupérée
-        $randomOeuvres = array_slice($results['results'], 0, 10);
-        return $this->hydrateAll($randomOeuvres);
+        return array_map(function ($data) {
+            return [
+                'idOa' => $data['id'] ?? null,
+                'nom' => $data['title'] ?? 'Titre inconnu',
+                'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+            ];
+        }, array_slice($results['results'], 0, 10));
     }
 }

@@ -37,8 +37,9 @@ class ControllerOA extends Controller
     {
         try {
             $oaListe = $this->managerOa->findMeilleurNote();
+            $oaRandomListe = $this->managerOa->findRandomOeuvres();
             $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render(['oaListe' => $oaListe]);
+            echo $template->render(['oaListe' => $oaListe, 'oaRandomListe' => $oaRandomListe]);
         } catch (Exception $e) {
             error_log('Erreur lors du listing des films : ' . $e->getMessage());
             die('Impossible d\'afficher la liste des films.');
