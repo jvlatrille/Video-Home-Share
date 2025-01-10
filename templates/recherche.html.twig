@@ -2,7 +2,7 @@
 
 {% block content1 %}
     <div class="container">
-        <h1 class="text-center my-5">Résultats de la recherche</h1>
+        <h1 class="text-center my-5">Résultats de la recherche pour : {{requete}} </h1>
         <div class="row">
         {% if oas is not empty %}
             {% for oa in oas %}

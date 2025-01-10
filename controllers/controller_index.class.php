@@ -40,7 +40,7 @@ class ControllerIndex extends Controller{
         $oas = $managerOa->rechercheFilmParNom($requete);
 
         $template = $this->getTwig()->load('recherche.html.twig');
-        echo $template->render(['oas' => $oas]);
+        echo $template->render(['oas' => $oas, 'requete' => $requete]);
 
 
 
