@@ -37,11 +37,12 @@ class ControllerOA extends Controller
     {
         try {
             $oaListe = $this->managerOa->findMeilleurNote();
+            $oaRandomListe = $this->managerOa->findRandomOeuvres();
             $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render(['oaListe' => $oaListe]);
+            echo $template->render(['oaListe' => $oaListe, 'oaRandomListe' => $oaRandomListe]);
         } catch (Exception $e) {
             error_log('Erreur lors du listing des films : ' . $e->getMessage());
-            $this->afficherErreur('Impossible d\'afficher la liste des films.');
+            die('Impossible d\'afficher la liste des films.');
         }
     }
 
@@ -55,8 +56,7 @@ class ControllerOA extends Controller
         $idOa = $_GET['idOa'] ?? null;
 
         if (!$this->validerId($idOa)) {
-            $this->afficherErreur('ID du film invalide ou non spécifié.');
-            return;
+            die('ID du film invalide ou non spécifié.');
         }
 
         try {
@@ -64,8 +64,7 @@ class ControllerOA extends Controller
             $oa = $this->managerOa->find($idOa);
 
             if (!$oa) {
-                $this->afficherErreur('Film non trouvé.');
-                return;
+                die('Film non trouvé.');
             }
 
             // Récupérer les commentaires du film
@@ -103,7 +102,7 @@ class ControllerOA extends Controller
 
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
-            $this->afficherErreur('Impossible d\'afficher les détails du film.');
+            die('Impossible d\'afficher les détails du film.');
         }
     }
 
@@ -118,14 +117,20 @@ class ControllerOA extends Controller
     }
 
     /**
-     * @brief Affiche une erreur à l'utilisateur
-     * @param string $message Message d'erreur
+     * @brief Récupère des œuvres aléatoires
      * @return void
      */
-    private function afficherErreur(string $message): void
+    public function decouvrirPlus(): void
     {
-        $template = $this->getTwig()->load('erreur.html.twig');
-        echo $template->render(['message' => $message]);
-        exit();
+        try {
+            $oaListe = $this->managerOa->findRandomOeuvres();
+            header('Content-Type: application/json');
+            echo json_encode($oaListe);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des œuvres aléatoires : ' . $e->getMessage());
+            echo json_encode(['error' => 'Impossible de charger des œuvres aléatoires']);
+            exit;
+        }
     }
 }
