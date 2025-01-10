@@ -98,19 +98,18 @@
             </div>
         
             <!-- Barre de recherche -->
-            <form class="d-flex justify-content-center" style="flex-grow: 1;">
-                <input class="form-control" type="search" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+            <form class="d-flex justify-content-center" style="flex-grow: 1;" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
+                <input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+              
             </form>
             {% if utilisateurConnecte is null %}
-            <!-- Boutons Connexion et Langue -->
+            <!-- Bouton Connexion/Déconnexion -->
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
-                <button class="btn btn-custom" type="button">FR</button>
             </div>
             {% else %}
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
-                <button class="btn btn-custom" type="button">FR</button>
             </div>
             {% endif %}
 
@@ -120,7 +119,6 @@
         <div class="collapse" id="menuBar">
             <div class="container py-2 d-flex justify-content-center">
                 <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2">Forum</a>
-
 
                 <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
 

@@ -203,7 +203,6 @@ class OADao
         $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
         $movie['participants'] = $this->parseParticipants($credits);
         $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
-
         return $this->hydrate($movie);
     }
 
@@ -262,4 +261,20 @@ class OADao
             ];
         }, array_slice($results['results'], 0, 10));
     }
+    
+    /**
+     * @brief Recherche des films par titre
+     * @param string $query Requête de recherche
+     * @return array Liste des objets OA
+     * 
+     */
+    public function rechercheFilmParNom(string $query): array{
+        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR']);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucun film trouvé pour la recherche : ' . $query);
+            return [];
+        }
+        return $this->hydrateAll($results['results']);
+    }
+
 }
