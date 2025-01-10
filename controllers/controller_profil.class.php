@@ -310,6 +310,11 @@ class ControllerProfil extends Controller
         }
     }
     
+
+
+
+
+
     //Fonction pour afficher toutes les notif d'une personne 
     public function listerNotif()
     {
@@ -397,42 +402,30 @@ class ControllerProfil extends Controller
             //Redirige vers la liste des notifications
             header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
         }
-
     }
+
 
     //Fonction pour afficher les informations de A Propos (Afficher tous les messages d'une personne)
     public function afficherAPropos()
-    {
-        //  // Vérifier si l'idUtilisateur est passé en paramètre dans l'URL
-        // if (!isset($_GET['idUtilisateur']) || empty($_GET['idUtilisateur'])) {
-        //     die("Paramètre idUtilisateur manquant !");
-        // }
-
-        // // Récupérer l'idUtilisateur depuis l'URL
-        // $idUtilisateur = (int) $_GET['idUtilisateur'];
-
+    {        
+        // Récupère l'ID utilisateur
         $idUtilisateur = isset($_GET['idUtilisateur']) ? $_GET['idUtilisateur'] : null;
 
-        // Récupérer tous les messages de cet utilisateur
-        $managerMessage = new MessageDAO($this->getPdo());
-        $messagesListe = $managerMessage->chargerAPropos($idUtilisateur);
+        // Récupère les informations de l'utilisateur
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $utilisateur = $managerUtilisateur->find($idUtilisateur); 
 
-        // // Récupérer les informations de l'utilisateur (si nécessaire)
-        // $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        // $utilisateur = $managerUtilisateur->find($idUtilisateur);
+        // Récupère les messages postés par cet utilisateur
+        $managerNotification = new NotificationDao($this->getPdo());
+        $messages = $managerNotification->chargerAPropos($idUtilisateur);
 
-        // Vérifier si l'utilisateur existe
-        if (!$utilisateur) {
-            die("Utilisateur introuvable !");
-        }
 
-        // Générer la vue avec les informations de l'utilisateur et ses messages
+        // Charge la vue Twig
         $template = $this->getTwig()->load('profilAPropos.html.twig');
         echo $template->render([
-            'utilisateur' => $utilisateur,  // Les informations de l'utilisateur
-            'messageListe' => $messagesListe  // La liste des messages écrits par l'utilisateur
+            'messageListe' => $messages,
+            'utilisateur' => $utilisateur
         ]);
     }
-    
     
 }

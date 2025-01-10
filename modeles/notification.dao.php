@@ -35,7 +35,7 @@ class NotificationDao{
 
     //Méthode pour récupérer UNE notification d'un utilisateur
     public function findNotif(?int $idNotif): ?Notification {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif";
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif; UPDATE ".PREFIXE_TABLE."notification SET vu = 1 WHERE idNotif = :idNotif";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idNotif' => $idNotif]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -79,23 +79,52 @@ class NotificationDao{
             }      
     }
 
-    // Méthode pour afficher tous les messages poster par un utilisateur
-    public function chargerAPropos(?int $idUtilisateur)
-    {
-        //Méthode pour récupérer tout les messages d'un forum
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idForum = :idForum";
 
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('idForum' => $idForum));    
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);   
-        if (!$resultats) {
-            // Si aucun résultat n'est trouvé
-            var_dump("Pas d'autres messages trouvés");
+    // // Méthode pour afficher tous les messages poster par un utilisateur
+    // public function chargerAPropos(?int $idUtilisateur)
+    // {
+    //     //Méthode pour récupérer tout les messages d'un forum
+    //     $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idForum = :idForum";
+
+    //     $pdoStatement = $this->pdo->prepare($sql);
+    //     $pdoStatement->execute(array('idForum' => $idForum));    
+    //     $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+    //     $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);   
+    //     if (!$resultats) {
+    //         // Si aucun résultat n'est trouvé
+    //         var_dump("Pas d'autres messages trouvés");
+    //         return null;
+    //     }
+    //     $dataMessage =$this->hydrateAll($resultats);
+    //     return $dataMessage;
+    // }
+
+    // Méthode pour récupérer tous les messages envoyés par un utilisateur
+    public function chargerAPropos(?int $idUtilisateur): ?array
+    {
+        $sql = "SELECT m.idMessage, m.contenu, m.dateMessage, f.nomForum 
+                FROM ".PREFIXE_TABLE."message m
+                 INNER JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum
+                WHERE m.idUtilisateur = :idUtilisateur
+                ORDER BY m.dateMessage DESC";
+
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
+            $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+            $resultats = $pdoStatement->fetchAll();
+
+            if (!$resultats) {
+                return null; // Aucun message trouvé
+            }
+
+            // Retourne les messages sous forme de tableaux associatifs
+            return $resultats;
+
+        } catch (Exception $e) {
+            error_log("Erreur lors du chargement des messages de l'utilisateur : " . $e->getMessage());
             return null;
         }
-        $dataMessage =$this->hydrateAll($resultats);
-        return $dataMessage;
     }
 
     

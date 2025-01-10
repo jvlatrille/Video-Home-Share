@@ -12,9 +12,9 @@
         <h1>Mes notifications</h1>
     </div>
 
- <!-- Bouton pour supprimer -->
-    {% if notifListe is not empty %}
-
+     {% if notifListe is empty %}
+        <p class="text-center">Aucune notification.</p>
+    {% else %}
         {% set count = 0 %}
         {% for notifs in notifListe %}
             {% set count = count + 1 %}
@@ -59,8 +59,11 @@
                                                 <div>
                                                     <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}
                                                 </div>
-                                                <a href="index.php?controleur=profil&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">Voir la notification</a>
+                                                <a href="index.php?controleur=profil&methode=afficherNotif&idNotif={{notifs.idNotif}}" class="btn btn-primary">
+                                                    Voir la notification
+                                                </a>
                                                 
+                                                 <!-- Bouton pour supprimer -->
                                                 <div class="ms-3">
                                                     <button type="button" class="btn btn-primary me-3" onclick="window.location.href='index.php?controleur=profil&methode=supprimerUneNotif&idNotif={{ notifs.idNotif }}'">Supprimer</button>  
                                                 </div>

@@ -12,19 +12,15 @@
         <h1>A propos</h1>
     </div>
 
-
-    {% block content %}
-    <!-- Titre principal de la page -->
-    <h1>{{forum.nom}}</h1>
-
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
-        <p class="text-center">Aucun message poster.</p>
+        <p class="text-center">Aucun message posté.</p>
     {% else %}
         <div class="container">
             {% for message in messageListe %}
                 <div class="card mb-4">
                     <div class="card-body">
+                        <p>{{forum.nom}}</p>
                         <p>{{ message.contenu }}</p>
                     </div>
 
@@ -32,11 +28,11 @@
                         <div>
                             <form method="POST" action="index.php?controleur=message&methode=like">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <p>👍 {{ message.nbLikes }}</p>
+                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLikes }}</button>
                             </form>
                             <form method="POST" action="index.php?controleur=message&methode=dislike">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <p>👎 {{ message.nbDislikes }}</p>
+                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
                             </form>
                         </div>
                     </div>
@@ -44,5 +40,4 @@
             {% endfor %}
         </div>
     {% endif %}
-
 {% endblock %}
