@@ -58,6 +58,8 @@ require_once 'modeles/message.dao.php';
 require_once 'modeles/commentaire.class.php';
 require_once 'modeles/commentaire.dao.php';
 
+require_once 'modeles/admin.dao.php';
+
 //Ajout des utilitaires
 require_once 'utilitaire/validator.class.php';
 

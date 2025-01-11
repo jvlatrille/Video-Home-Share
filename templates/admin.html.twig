@@ -32,31 +32,69 @@
             </div>
         </div>
     
-        <!-- Gestion des utilisateurs -->
-        <h2 class="mt-5">Gestion des Utilisateurs</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                        <a href="/admin/user/edit/{{ user.id }}" class="btn btn-sm btn-warning">Modifier</a>
-                        <a href="/admin/user/delete/{{ user.id }}" class="btn btn-sm btn-danger">Supprimer</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <h2>Gestion des Utilisateurs</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Pseudo</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in utilisateurListe %}
+        <tr>
+            <td>{{ user.getIdUtilisateur }}</td>
+            <td>{{ user.getPseudo }}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#adminModal{{ user.getIdUtilisateur }}">Administrer</button>
+            </td>
+        </tr>
+
+        <!-- Modal de modification -->
+        <div class="modal fade" id="adminModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="adminModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modifier {{ user.getPseudo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
+                            <div class="mb-3">
+                                <label>Pseudo</label>
+                                <input type="text" name="pseudo" class="form-control" value="{{ user.getPseudo }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Email</label>
+                                <input type="email" name="adressMail" class="form-control" value="{{ user.getAdressMail }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Mot de passe</label>
+                                <input type="password" name="motDePasse" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label>Rôle</label>
+                                <select name="role" class="form-control">
+                                    <option value="admin" {% if user.getRole == 'admin' %}selected{% endif %}>Admin</option>
+                                    <option value="user" {% if user.getRole == 'user' %}selected{% endif %}>User</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Sauvegarder</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </tbody>
+</table>
+
+
     
         <!-- Gestion des oeuvres -->
         <h2 class="mt-5">Gestion des Oeuvres</h2>
