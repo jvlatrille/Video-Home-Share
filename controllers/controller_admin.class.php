@@ -11,16 +11,18 @@ class ControllerAdmin extends Controller
     }
 
     public function render()
-    {
-        $this->verifierAdmin();
+{
+    $this->verifierAdmin();
 
-        $utilisateurListe = $this->adminDao->getAllUtilisateurs();
+    $utilisateurListe = $this->adminDao->getAllUtilisateurs();
 
-        // ✅ Utilisation de la méthode getTwig() au lieu de $this->twig
-        echo $this->getTwig()->render('admin.html.twig', [
-            'utilisateurListe' => $utilisateurListe
-        ]);
-    }
+    // Correction de l'appel Twig
+    echo $this->getTwig()->render('admin.html.twig', [
+        'utilisateurListe' => $utilisateurListe
+    ]);
+}
+
+
 
     private function verifierAdmin()
     {

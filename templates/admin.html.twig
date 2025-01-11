@@ -1,127 +1,38 @@
 {% extends 'base_template.html.twig' %}
-    {% block title %}Administrateur - {{ constant('WEBSITE_TITLE')}} {% endblock %}
 
-    {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Tableau de bord Admin</h1>
-        <div class="row">
-            <!-- Statistiques -->
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-header">Utilisateurs</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre total : {{ userCount }}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
-                    <div class="card-header">Oeuvres Audiovisuelles</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre total : {{ workCount }}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-warning mb-3">
-                    <div class="card-header">Commentaires</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Nombre total : {{ commentCount }}</h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <h2>Gestion des Utilisateurs</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Pseudo</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in utilisateurListe %}
-        <tr>
-            <td>{{ user.getIdUtilisateur }}</td>
-            <td>{{ user.getPseudo }}</td>
-            <td>
-                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#adminModal{{ user.getIdUtilisateur }}">Administrer</button>
-            </td>
-        </tr>
+{% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
-        <!-- Modal de modification -->
-        <div class="modal fade" id="adminModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="adminModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Modifier {{ user.getPseudo }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
-                            <div class="mb-3">
-                                <label>Pseudo</label>
-                                <input type="text" name="pseudo" class="form-control" value="{{ user.getPseudo }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Email</label>
-                                <input type="email" name="adressMail" class="form-control" value="{{ user.getAdressMail }}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Mot de passe</label>
-                                <input type="password" name="motDePasse" class="form-control" required>
-                            </div>
-                            <div class="mb-3">
-                                <label>Rôle</label>
-                                <select name="role" class="form-control">
-                                    <option value="admin" {% if user.getRole == 'admin' %}selected{% endif %}>Admin</option>
-                                    <option value="user" {% if user.getRole == 'user' %}selected{% endif %}>User</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Sauvegarder</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </tbody>
-</table>
+{% block content %}
+    <h2>Gestion des Utilisateurs</h2>
 
-
-    
-        <!-- Gestion des oeuvres -->
-        <h2 class="mt-5">Gestion des Oeuvres</h2>
-        <a href="/admin/work/add" class="btn btn-success mb-3">Ajouter une Oeuvre</a>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Titre</th>
-                    <th>Catégorie</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for work in works %}
-                <tr>
-                    <td>{{ work.id }}</td>
-                    <td>{{ work.title }}</td>
-                    <td>{{ work.category }}</td>
-                    <td>
-                        <a href="/admin/work/edit/{{ work.id }}" class="btn btn-sm btn-warning">Modifier</a>
-                        <a href="/admin/work/delete/{{ work.id }}" class="btn btn-sm btn-danger">Supprimer</a>
-                    </td>
-                </tr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if utilisateurListe is not empty %}
+                {% for user in utilisateurListe %}
+                    <tr>
+                        <td>{{ user.getIdUtilisateur }}</td>
+                        <td>{{ user.getPseudo }}</td>
+                        <td>{{ user.getAdressMail }}</td>
+                        <td>{{ user.getRole }}</td>
+                        <td>
+                            <a href="index.php?controleur=profil&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-info btn-sm">Voir Profil</a>
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endblock %}
-    
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun utilisateur trouvé.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

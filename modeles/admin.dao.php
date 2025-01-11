@@ -19,8 +19,14 @@ class AdminDao
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $utilisateurs = $stmt->fetchAll();
 
+        // ✅ Vérifie si des utilisateurs sont récupérés
+        if (!$utilisateurs) {
+            return [];
+        }
+
         return $this->hydrateAll($utilisateurs);
     }
+
 
     /**
      * Permet à un administrateur de modifier toutes les informations d'un utilisateur
