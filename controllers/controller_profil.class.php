@@ -115,12 +115,9 @@ class ControllerProfil extends Controller
         
             // Mise à jour de la session avec les nouvelles données
             $_SESSION['utilisateur'] = serialize($utilisateur);
-            // Chargement et rendu du template
-            $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateur,
-                'message' => $messages
-            ]);
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            exit();
+
         }
     }
 
@@ -170,7 +167,7 @@ class ControllerProfil extends Controller
             // Mise à jour de la session avec les nouvelles données
             $_SESSION['utilisateur'] = serialize($utilisateur);
         
-     header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+         header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
     
