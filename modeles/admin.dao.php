@@ -10,6 +10,19 @@ class AdminDao
     }
 
     /**
+     * Récupère tous les utilisateurs et les hydrate en objets Utilisateur
+     */
+    public function getAllUtilisateurs(): array
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
+        $stmt = $this->pdo->query($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateurs = $stmt->fetchAll();
+
+        return $this->hydrateAll($utilisateurs);
+    }
+
+    /**
      * Permet à un administrateur de modifier toutes les informations d'un utilisateur
      */
     public function adminModifierUtilisateur(
@@ -40,5 +53,33 @@ class AdminDao
             'role' => $role,
             'idUtilisateur' => $idUtilisateur
         ]);
+    }
+
+    /**
+     * Hydrate un tableau d'utilisateurs en objets Utilisateur
+     */
+    private function hydrateAll(array $donnees): array
+    {
+        $utilisateurs = [];
+        foreach ($donnees as $donnee) {
+            $utilisateurs[] = $this->hydrate($donnee);
+        }
+        return $utilisateurs;
+    }
+
+    /**
+     * Hydrate une seule entrée en objet Utilisateur
+     */
+    private function hydrate(array $donnee): Utilisateur
+    {
+        $utilisateur = new Utilisateur();
+        $utilisateur->setIdUtilisateur($donnee['idUtilisateur']);
+        $utilisateur->setPseudo($donnee['pseudo']);
+        $utilisateur->setPhotoProfil($donnee['photoProfil']);
+        $utilisateur->setBanniereProfil($donnee['banniereProfil']);
+        $utilisateur->setAdressMail($donnee['adressMail']);
+        $utilisateur->setMotDePasse($donnee['motDePasse']);
+        $utilisateur->setRole($donnee['role']);
+        return $utilisateur;
     }
 }

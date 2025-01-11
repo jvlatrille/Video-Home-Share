@@ -1,12 +1,5 @@
 <?php
-/**
- * @file controller_admin.class.php
- * @author VINET LATRILLE Jules
- * @brief Contrôleur pour la gestion des utilisateurs administrateurs
- * @details Ce contrôleur gère l'affichage et la gestion des utilisateurs administrateurs.
- * @version 1.0
- * @date 2025-01-11
- */
+
 class ControllerAdmin extends Controller
 {
     private AdminDao $adminDao;
@@ -17,49 +10,23 @@ class ControllerAdmin extends Controller
         $this->adminDao = new AdminDao($this->getPdo());
     }
 
-    public function adminModifierUtilisateur()
+    public function render()
     {
         $this->verifierAdmin();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $idUtilisateur = $_POST['idUtilisateur'] ?? null;
-            $pseudo = $_POST['pseudo'] ?? '';
-            $photoProfil = $_POST['photoProfil'] ?? 'default.png';
-            $banniereProfil = $_POST['banniereProfil'] ?? 'default.png';
-            $adressMail = $_POST['adressMail'] ?? '';
-            $motDePasse = $_POST['motDePasse'] ?? '';
-            $role = $_POST['role'] ?? 'user';
+        $utilisateurListe = $this->adminDao->getAllUtilisateurs();
 
-            // Validation des données
-            $reglesValidation = [
-                'pseudo' => ['obligatoire' => true, 'type' => 'string', 'longueur_min' => 3],
-                'adressMail' => ['obligatoire' => true, 'format' => FILTER_VALIDATE_EMAIL],
-                'motDePasse' => ['obligatoire' => true, 'longueur_min' => 8],
-                'role' => ['obligatoire' => true, 'type' => 'string']
-            ];
-
-            $validator = new Validator($reglesValidation);
-
-            if ($validator->valider($_POST)) {
-                $this->adminDao->adminModifierUtilisateur(
-                    $idUtilisateur,
-                    $pseudo,
-                    $photoProfil,
-                    $banniereProfil,
-                    $adressMail,
-                    $motDePasse,
-                    $role
-                );
-            }
-
-            header('Location: index.php?controleur=admin&methode=render');
-            exit();
-        }
+        // ✅ Utilisation de la méthode getTwig() au lieu de $this->twig
+        echo $this->getTwig()->render('admin.html.twig', [
+            'utilisateurListe' => $utilisateurListe
+        ]);
     }
 
     private function verifierAdmin()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         if (!isset($_SESSION['utilisateur'])) {
             header('Location: index.php?controleur=utilisateur&methode=connexion');
