@@ -167,7 +167,33 @@
                 <a href="#" class="footer-link mx-2">A propos</a>
                 <a href="#" class="footer-link mx-2">Contact</a>
                 <a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
+                <a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
             </div>
+
+            <!-- PopUp pour l'accord TMDB -->
+<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="img/logoTMDB.png" alt="TMDB Logo" width="30" height="30" class="me-2">
+                <h5 class="modal-title" id="tmdbModalLabel">Accord d'utilisation TMDB</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    The Movie Database (TMDB) est une base de données en ligne sur le cinéma mondial et la télévision. L'accès aux informations publiques est gratuit. :contentReference[oaicite:0]{index=0}
+                </p>
+                <p>
+                    L'utilisation de TMDB est soumise à des conditions d'utilisation spécifiques. En utilisant les données de TMDB, vous acceptez de respecter leurs conditions d'utilisation, disponibles sur leur site officiel. :contentReference[oaicite:1]{index=1}
+                </p>
+                <p>
+                    Pour plus de détails, veuillez consulter les <a href="https://www.themoviedb.org/terms-of-use" target="_blank">Conditions d'utilisation de TMDB</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             <!-- Icônes des réseaux sociaux -->
             <div class="footer-social mb-2">
@@ -186,6 +212,6 @@
         </div>
     </footer>
 
-    {% block script %} {% endblock %}
+    {% block script %} <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script> {% endblock %}
 </body>
 </html>
