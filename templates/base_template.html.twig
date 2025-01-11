@@ -130,7 +130,7 @@
 
                 <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
 
-                <a href="index.php?controleur=profil&methode=afficherFormulaire&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
+                <a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
                 
 
             </div>
@@ -170,7 +170,38 @@
                 <a href="#" class="footer-link mx-2">A propos</a>
                 <a href="#" class="footer-link mx-2">Contact</a>
                 <a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
+                <a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
             </div>
+
+            <!-- PopUp pour l'accord TMDB -->
+<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <img src="img/logoTMDB.png" alt="TMDB Logo" width="50" height="50" class="me-3">
+                <h4 class="modal-title fw-bold text-dark" id="tmdbModalLabel">Accord d'utilisation TMDB</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body text-dark">
+                <p>
+                    The Movie Database (TMDB) est une base de données en ligne regroupant des milliers de données sur des oeuvres audiovisuelles. L'accès aux informations est publiques et gratuite sous certaines conditions grâce à une API.
+                </p>
+                <p>
+                    L'utilisation de TMDB est soumise à des conditions d'utilisation spécifiques. En utilisant les données de TMDB, nous acceptons de respecter leurs conditions d'utilisation, disponibles sur leur site officiel.
+                </p>
+                <p>
+                    Pour plus de détails, voici un lien vers les <a href="https://www.themoviedb.org/terms-of-use" target="_blank" class="text-primary fw-bold">Conditions d'utilisation de TMDB</a>.
+                </p>
+                <h5>Utilisation de TMDB dans notre projet</h5>
+                <p>
+                    Nos données des œuvres sont récupérées grâce à l’API de TMDB. L'API est limitée dans le nombre de requêtes quotidiennes (100 000, ce qui est largement assez pour notre usage). Nous avons le droit de l’utiliser dans un cadre non commercial (notre application ne générant pas de revenu, nous sommes dans la légalité), et il faut absolument créditer TMDB sur notre projet (ce qui est fait aussi). TMDB permet d’utiliser les affiches des œuvres dans un cadre strictement non commercial grâce à un accord implicite entre TMDB et les détenteurs des droits des affiches. Les seules conditions sont de bien mentionner TMDB, et de ne pas altérer les affiches.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
             <!-- Icônes des réseaux sociaux -->
             <div class="footer-social mb-2">
@@ -189,6 +220,6 @@
         </div>
     </footer>
 
-    {% block script %} {% endblock %}
+    {% block script %} <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script> {% endblock %}
 </body>
 </html>
