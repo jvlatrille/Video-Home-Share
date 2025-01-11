@@ -10,7 +10,7 @@ class AdminDao
     }
 
     /**
-     * Récupère tous les utilisateurs et les hydrate en objets Utilisateur
+     * Récupère tous les utilisateurs
      */
     public function getAllUtilisateurs(): array
     {
@@ -19,17 +19,24 @@ class AdminDao
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $utilisateurs = $stmt->fetchAll();
 
-        // ✅ Vérifie si des utilisateurs sont récupérés
-        if (!$utilisateurs) {
-            return [];
-        }
-
         return $this->hydrateAll($utilisateurs);
     }
 
+    /**
+     * Récupère un utilisateur par son ID
+     */
+    public function getUtilisateurById(int $idUtilisateur): ?Utilisateur
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idUtilisateur' => $idUtilisateur]);
+        $donnee = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $donnee ? $this->hydrate($donnee) : null;
+    }
 
     /**
-     * Permet à un administrateur de modifier toutes les informations d'un utilisateur
+     * Met à jour un utilisateur dans la base de données
      */
     public function adminModifierUtilisateur(
         int $idUtilisateur,
@@ -37,7 +44,7 @@ class AdminDao
         string $photoProfil,
         string $banniereProfil,
         string $adressMail,
-        string $motDePasse,
+        ?string $motDePasse,
         string $role
     ): bool {
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
@@ -45,25 +52,33 @@ class AdminDao
                     photoProfil = :photoProfil, 
                     banniereProfil = :banniereProfil, 
                     adressMail = :adressMail, 
-                    motDePasse = :motDePasse, 
-                    role = :role 
-                WHERE idUtilisateur = :idUtilisateur";
+                    role = :role";
+
+        // Ajouter la modification du mot de passe seulement si nécessaire
+        if ($motDePasse !== null) {
+            $sql .= ", motDePasse = :motDePasse";
+        }
+
+        $sql .= " WHERE idUtilisateur = :idUtilisateur";
 
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
+
+        $params = [
             'pseudo' => $pseudo,
             'photoProfil' => $photoProfil,
             'banniereProfil' => $banniereProfil,
             'adressMail' => $adressMail,
-            'motDePasse' => password_hash($motDePasse, PASSWORD_BCRYPT),
             'role' => $role,
             'idUtilisateur' => $idUtilisateur
-        ]);
+        ];
+
+        if ($motDePasse !== null) {
+            $params['motDePasse'] = $motDePasse;
+        }
+
+        return $stmt->execute($params);
     }
 
-    /**
-     * Hydrate un tableau d'utilisateurs en objets Utilisateur
-     */
     private function hydrateAll(array $donnees): array
     {
         $utilisateurs = [];
@@ -73,9 +88,6 @@ class AdminDao
         return $utilisateurs;
     }
 
-    /**
-     * Hydrate une seule entrée en objet Utilisateur
-     */
     private function hydrate(array $donnee): Utilisateur
     {
         $utilisateur = new Utilisateur();
@@ -87,5 +99,15 @@ class AdminDao
         $utilisateur->setMotDePasse($donnee['motDePasse']);
         $utilisateur->setRole($donnee['role']);
         return $utilisateur;
+    }
+
+    /**
+     * Supprime un utilisateur par son ID
+     */
+    public function supprimerUtilisateur(int $idUtilisateur): bool
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['idUtilisateur' => $idUtilisateur]);
     }
 }

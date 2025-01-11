@@ -2,37 +2,156 @@
 
 {% block title %}Administration - {{ constant('WEBSITE_TITLE') }}{% endblock %}
 
-{% block content %}
-    <h2>Gestion des Utilisateurs</h2>
+{% block css %}
+    {{ parent() }}
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+{% endblock %}
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Pseudo</th>
-                <th>Email</th>
-                <th>Rôle</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if utilisateurListe is not empty %}
-                {% for user in utilisateurListe %}
-                    <tr>
-                        <td>{{ user.getIdUtilisateur }}</td>
-                        <td>{{ user.getPseudo }}</td>
-                        <td>{{ user.getAdressMail }}</td>
-                        <td>{{ user.getRole }}</td>
-                        <td>
-                            <a href="index.php?controleur=profil&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-info btn-sm">Voir Profil</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Gestion des Utilisateurs</h1>
+
+    <div class="table-responsive">
+        <table id="utilisateurTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
+            <thead class="table-dark">
                 <tr>
-                    <td colspan="5" class="text-center">Aucun utilisateur trouvé.</td>
+                    <th>Photo</th>
+                    <th>#</th>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th class="text-center">Actions</th>
                 </tr>
-            {% endif %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% if utilisateurListe is not empty %}
+                    {% for user in utilisateurListe %}
+                        <tr>
+                            <td>
+                                <img src="{{'img/profils/' ~ user.getPhotoProfil }}" alt="Photo de {{ user.getPseudo }}" width="50" height="50" class="rounded-circle mx-auto d-block">
+                            </td>
+                            <td>{{ user.getIdUtilisateur }}</td>
+                            <td>{{ user.getPseudo }}</td>
+                            <td>{{ user.getAdressMail }}</td>
+                            <td>
+                                {% if user.getRole == 'admin' %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Utilisateur</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1">
+                                    <i class="fas fa-user"></i> Profil
+                                </a>
+                                <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                    <i class="fas fa-trash-alt"></i> Supprimer
+                                </button>
+                            </td>
+                        </tr>
+
+                        {# Modal de modification de l'utilisateur #}
+                        <div class="modal fade" id="editUserModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST" enctype="multipart/form-data">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
+                                                    <input type="text" class="form-control" id="pseudo{{ user.getIdUtilisateur }}" name="pseudo" value="{{ user.getPseudo }}" required>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="email{{ user.getIdUtilisateur }}" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="email{{ user.getIdUtilisateur }}" name="adressMail" value="{{ user.getAdressMail }}" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="motDePasse{{ user.getIdUtilisateur }}" class="form-label">Mot de passe</label>
+                                                    <input type="password" class="form-control" id="motDePasse{{ user.getIdUtilisateur }}" name="motDePasse" placeholder="Laisser vide pour ne pas changer">
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
+                                                    <select class="form-select" id="role{{ user.getIdUtilisateur }}" name="role">
+                                                        <option value="user" {% if user.getRole == 'user' %}selected{% endif %}>Utilisateur</option>
+                                                        <option value="admin" {% if user.getRole == 'admin' %}selected{% endif %}>Admin</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
+                                                    <input type="file" class="form-control" id="photoProfil{{ user.getIdUtilisateur }}" name="photoProfil">
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
+                                                    <input type="file" class="form-control" id="banniereProfil{{ user.getIdUtilisateur }}" name="banniereProfil">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Aucun utilisateur trouvé.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(userId) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible !")) {
+            window.location.href = "index.php?controleur=admin&methode=supprimerUtilisateur&id=" + userId;
+        }
+    }
+</script>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <!-- DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#utilisateurTable').DataTable({
+                responsive: true,
+                pageLength: 5,
+                language: {
+                    search: "🔍 Rechercher :",
+                    lengthMenu: "Afficher _MENU_ utilisateurs",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
+                    zeroRecords: "Aucun utilisateur trouvé"
+                }
+            });
+        });
+    </script>
 {% endblock %}
