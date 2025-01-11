@@ -103,16 +103,19 @@
               
             </form>
             {% if utilisateurConnecte is null %}
-            <!-- Bouton Connexion/Déconnexion -->
+            <!-- Bouton Connexion/Déconnexion et Admin -->
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
             </div>
             {% else %}
+            
             <div class="me-3">
+                {% if utilisateurConnecte.getRole == 'admin' %}
+                    <a href="index.php?controleur=admin&methode=render" class="btn btn-custom me-2">Administration</a>
+                {% endif %}
                 <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
             </div>
             {% endif %}
-
         </nav>
 
         <!-- Menu déroulant sous le bouton "Menu" -->

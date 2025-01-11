@@ -1,2 +1,89 @@
 {% extends 'base_template.html.twig' %}
     {% block title %}Administrateur - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+
+    {% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Tableau de bord Admin</h1>
+        <div class="row">
+            <!-- Statistiques -->
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Utilisateurs</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Nombre total : {{ userCount }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Oeuvres Audiovisuelles</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Nombre total : {{ workCount }}</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header">Commentaires</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Nombre total : {{ commentCount }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Gestion des utilisateurs -->
+        <h2 class="mt-5">Gestion des Utilisateurs</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <a href="/admin/user/edit/{{ user.id }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <a href="/admin/user/delete/{{ user.id }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+        <!-- Gestion des oeuvres -->
+        <h2 class="mt-5">Gestion des Oeuvres</h2>
+        <a href="/admin/work/add" class="btn btn-success mb-3">Ajouter une Oeuvre</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for work in works %}
+                <tr>
+                    <td>{{ work.id }}</td>
+                    <td>{{ work.title }}</td>
+                    <td>{{ work.category }}</td>
+                    <td>
+                        <a href="/admin/work/edit/{{ work.id }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <a href="/admin/work/delete/{{ work.id }}" class="btn btn-sm btn-danger">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}
+    
