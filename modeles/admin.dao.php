@@ -1,16 +1,29 @@
 <?php
 
+/**
+ * @file admin.dao.php
+ * @author VINET LATRILLE Jules
+ * @brief Gère les opérations d'administration liées aux utilisateurs dans la base de données (pour l'instant).
+ * @version 1.0
+ * @date 2025-01-11
+ */
 class AdminDao
 {
+    /** @var PDO|null $pdo Connexion à la base de données. */
     private ?PDO $pdo;
 
+    /**
+     * @brief Constructeur de la classe AdminDao.
+     * @param PDO|null $pdo Instance PDO pour la connexion à la base de données.
+     */
     public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
 
     /**
-     * Récupère tous les utilisateurs
+     * @brief Récupère tous les utilisateurs de la base de données.
+     * @return Utilisateur[] Tableau d'objets Utilisateur.
      */
     public function getAllUtilisateurs(): array
     {
@@ -23,7 +36,9 @@ class AdminDao
     }
 
     /**
-     * Récupère un utilisateur par son ID
+     * @brief Récupère un utilisateur par son ID.
+     * @param int $idUtilisateur ID de l'utilisateur.
+     * @return Utilisateur|null L'utilisateur correspondant ou null s'il n'existe pas.
      */
     public function getUtilisateurById(int $idUtilisateur): ?Utilisateur
     {
@@ -36,7 +51,16 @@ class AdminDao
     }
 
     /**
-     * Met à jour un utilisateur dans la base de données
+     * @brief Met à jour les informations d'un utilisateur.
+     *
+     * @param int $idUtilisateur ID de l'utilisateur.
+     * @param string $pseudo Nouveau pseudo.
+     * @param string $photoProfil Nouveau chemin de la photo de profil.
+     * @param string $banniereProfil Nouveau chemin de la bannière de profil.
+     * @param string $adressMail Nouvelle adresse mail.
+     * @param string|null $motDePasse Nouveau mot de passe (null si inchangé).
+     * @param string $role Nouveau rôle de l'utilisateur.
+     * @return bool Retourne true si la mise à jour a réussi, sinon false.
      */
     public function adminModifierUtilisateur(
         int $idUtilisateur,
@@ -54,7 +78,6 @@ class AdminDao
                     adressMail = :adressMail, 
                     role = :role";
 
-        // Ajouter la modification du mot de passe seulement si nécessaire
         if ($motDePasse !== null) {
             $sql .= ", motDePasse = :motDePasse";
         }
@@ -79,6 +102,23 @@ class AdminDao
         return $stmt->execute($params);
     }
 
+    /**
+     * @brief Supprime un utilisateur par son ID.
+     * @param int $idUtilisateur ID de l'utilisateur à supprimer.
+     * @return bool Retourne true si la suppression a réussi, sinon false.
+     */
+    public function supprimerUtilisateur(int $idUtilisateur): bool
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute(['idUtilisateur' => $idUtilisateur]);
+    }
+
+    /**
+     * @brief Hydrate un tableau de données en objets Utilisateur.
+     * @param array $donnees Données récupérées depuis la base.
+     * @return Utilisateur[] Tableau d'objets Utilisateur.
+     */
     private function hydrateAll(array $donnees): array
     {
         $utilisateurs = [];
@@ -88,6 +128,11 @@ class AdminDao
         return $utilisateurs;
     }
 
+    /**
+     * @brief Hydrate un tableau en un objet Utilisateur.
+     * @param array $donnee Données de l'utilisateur.
+     * @return Utilisateur Objet Utilisateur hydraté.
+     */
     private function hydrate(array $donnee): Utilisateur
     {
         $utilisateur = new Utilisateur();
@@ -99,15 +144,5 @@ class AdminDao
         $utilisateur->setMotDePasse($donnee['motDePasse']);
         $utilisateur->setRole($donnee['role']);
         return $utilisateur;
-    }
-
-    /**
-     * Supprime un utilisateur par son ID
-     */
-    public function supprimerUtilisateur(int $idUtilisateur): bool
-    {
-        $sql = "DELETE FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute(['idUtilisateur' => $idUtilisateur]);
     }
 }

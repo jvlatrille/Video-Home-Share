@@ -1,15 +1,31 @@
 <?php
 
+/**
+ * @file controller_admin.class.php
+ * @author VINET LATRILLE Jules
+ * @brief Gère les opérations d'administration liées aux utilisateurs dans la base de données.
+ * @version 1.0
+ * @date 2025-01-11
+ */
 class ControllerAdmin extends Controller
 {
+    /** @var AdminDao $adminDao Instance de la classe AdminDao pour la gestion des utilisateurs. */
     private AdminDao $adminDao;
 
+    /**
+     * @brief Constructeur du contrôleur d'administration.
+     * @param \Twig\Environment $twig Moteur de templates Twig.
+     * @param \Twig\Loader\FilesystemLoader $loader Chargeur de templates Twig.
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
         $this->adminDao = new AdminDao($this->getPdo());
     }
 
+    /**
+     * @brief Affiche la page d'administration avec la liste des utilisateurs.
+     */
     public function render()
     {
         $this->verifierAdmin();
@@ -20,6 +36,11 @@ class ControllerAdmin extends Controller
         ]);
     }
 
+    /**
+     * @brief Permet à l'administrateur de modifier les informations d'un utilisateur.
+     *
+     * Cette méthode met à jour les données d'un utilisateur et gère l'upload des images.
+     */
     public function adminModifierUtilisateur()
     {
         $this->verifierAdmin();
@@ -31,7 +52,6 @@ class ControllerAdmin extends Controller
             $motDePasse = $_POST['motDePasse'];
             $role = $_POST['role'];
 
-            // Récupérer les informations actuelles de l'utilisateur
             $utilisateurActuel = $this->adminDao->getUtilisateurById($idUtilisateur);
 
             if (!$utilisateurActuel) {
@@ -39,14 +59,14 @@ class ControllerAdmin extends Controller
                 exit();
             }
 
-            // Upload des images avec le bon format : id_pseudo.extension
+            // Upload des images avec le format id_pseudo.extension
             $photoProfil = $this->uploadImage('photoProfil', $utilisateurActuel->getPhotoProfil(), $idUtilisateur, $pseudo, 'profil');
             $banniereProfil = $this->uploadImage('banniereProfil', $utilisateurActuel->getBanniereProfil(), $idUtilisateur, $pseudo, 'banniere');
 
-            // Si le mot de passe est vide, on ne le modifie pas
+            // Hash du mot de passe si fourni
             $motDePasseFinal = !empty($motDePasse) ? password_hash($motDePasse, PASSWORD_BCRYPT) : null;
 
-            // Mise à jour des données dans la BD
+            // Mise à jour des données
             $resultat = $this->adminDao->adminModifierUtilisateur(
                 $idUtilisateur,
                 $pseudo,
@@ -66,41 +86,47 @@ class ControllerAdmin extends Controller
         }
     }
 
+    /**
+     * @brief Gère l'upload d'une image de profil ou de bannière.
+     * 
+     * @param string $inputName Nom de l'input du formulaire.
+     * @param string $default Valeur par défaut si aucun fichier n'est uploadé.
+     * @param int $idUtilisateur ID de l'utilisateur.
+     * @param string $pseudo Pseudo de l'utilisateur.
+     * @param string $type Type d'image ('profil' ou 'banniere').
+     * @return string Nom du fichier uploadé ou la valeur par défaut.
+     */
     private function uploadImage($inputName, $default, $idUtilisateur, $pseudo, $type = 'profil')
     {
-        // Dossier de destination selon le type
         $targetDir = $type === 'banniere' ? 'img/banniere/' : 'img/profils/';
 
         if (isset($_FILES[$inputName]) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
-            // Extension du fichier
             $fileType = pathinfo($_FILES[$inputName]['name'], PATHINFO_EXTENSION);
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
             if (in_array(strtolower($fileType), $allowedTypes)) {
-                // Nettoyer le pseudo
                 $pseudoNettoye = preg_replace('/[^a-zA-Z0-9_-]/', '', strtolower($pseudo));
-
-                // Nouveau nom : id_pseudo.extension
                 $fileName = $idUtilisateur . '_' . $pseudoNettoye . '.' . $fileType;
                 $targetFilePath = $targetDir . $fileName;
 
-                // Supprimer l'ancienne image si elle existe
                 if (file_exists($targetFilePath)) {
                     unlink($targetFilePath);
                 }
 
-                // Déplacer la nouvelle image
                 if (move_uploaded_file($_FILES[$inputName]['tmp_name'], $targetFilePath)) {
                     return $fileName;
                 }
             }
         }
 
-        // Retourner l'ancienne image si aucun upload n'a été fait
         return $default;
     }
 
-
+    /**
+     * @brief Vérifie si l'utilisateur connecté est un administrateur.
+     *
+     * Redirige vers la page de connexion si l'utilisateur n'est pas admin.
+     */
     private function verifierAdmin()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -119,6 +145,11 @@ class ControllerAdmin extends Controller
         }
     }
 
+    /**
+     * @brief Supprime un utilisateur de la base de données.
+     *
+     * @details Vérifie l'existence de l'utilisateur avant de le supprimer.
+     */
     public function supprimerUtilisateur()
     {
         $this->verifierAdmin();
@@ -126,7 +157,6 @@ class ControllerAdmin extends Controller
         if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             $idUtilisateur = (int)$_GET['id'];
 
-            // Vérifier si l'utilisateur existe avant suppression
             $utilisateur = $this->adminDao->getUtilisateurById($idUtilisateur);
             if ($utilisateur) {
                 $resultat = $this->adminDao->supprimerUtilisateur($idUtilisateur);
