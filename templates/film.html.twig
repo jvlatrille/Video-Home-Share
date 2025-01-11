@@ -1,16 +1,18 @@
 {% extends 'base_template.html.twig' %}
 
 {% block css %} 
-<style>
-    /* Fond avec l'affiche (en css parce que j'ai pas réussi avec bootstrap) */
-    body {
-        background: url('{{ oa.posterPath }}') no-repeat center center fixed;
-        background-size: cover;
-        background-attachment: scroll;
-    }
-</style>
-
+    {% if oa is defined and oa is not null %}
+    <style>
+        /* Fond avec l'affiche */
+        body {
+            background: url('{{ oa.posterPath }}') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: scroll;
+        }
+    </style>
+    {% endif %}
 {% endblock %}
+
 {% block content %}
     <title>{{ oa.nom }}</title>
 
@@ -165,3 +167,4 @@
     {% else %}
         <p>Le film n'existe pas.</p>
     {% endif %}
+{% endblock %}
