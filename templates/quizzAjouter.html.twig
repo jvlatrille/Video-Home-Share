@@ -1,0 +1,41 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center mb-4">
+        <h1>Ajouter un nouveau Quizz</h1>
+    </div>
+
+    <!-- Formulaire pour ajouter un quizz -->
+    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom du Quizz</label>
+            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom du quizz" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="theme" class="form-label">Thème</label>
+            <input type="text" class="form-control" id="theme" name="theme" placeholder="Entrez le thème du quizz" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="nbQuestion" class="form-label">Nombre de questions</label>
+            <input type="number" class="form-control" id="nbQuestion" name="nbQuestion" min="1" placeholder="Entrez le nombre de questions" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="difficulte" class="form-label">Difficulté</label>
+            <select class="form-select" id="difficulte" name="difficulte" required>
+                <option value="1">Facile</option>
+                <option value="2">Moyenne</option>
+                <option value="3">Difficile</option>
+            </select>
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success">Ajouter le Quizz</button>
+            <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

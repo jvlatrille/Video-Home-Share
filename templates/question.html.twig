@@ -1,0 +1,109 @@
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+    <div class="container py-5">
+        <!-- Illustration -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-md-8">
+                <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
+                    {% if question.getCheminImage() %}
+                        <img src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    {% else %}
+                        <span class="text-secondary">Aucune image disponible</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Question -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-md-8">
+                <div class="text-center bg-danger text-white py-2 rounded">
+                    <h4>{{ question.getContenu() }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- difficulté -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-12 col-md-8 text-center">
+                <p class="text-primary">Difficulté :
+                    <strong>{{ question.getNvDifficulte() }}</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Réponses -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8">
+                <div class="row">
+                    {% for reponse in reponses %}
+                        <div class="col-6 mb-3">
+                            <button class="btn btn-light w-100 py-2 border border-primary response-button" data-correct="{{ reponse == question.getBonneReponse() ? 'true' : 'false' }}">
+                                {{ reponse }}
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Affichage du score -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-12 col-md-8 text-center">
+                <p class="text-info">Score actuel : <strong>{{ score }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    {% block javascripts %}
+        <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.response-button');
+    const idQuizz = {{ idQuizz }};
+    const nextNumero = {{ question.numero + 1 }};
+    const isLastQuestion = {{ isLastQuestion ? 'true' : 'false' }};
+
+    let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
+
+    // Si on est à la première question, on réinitialise le score à 0
+    if (nextNumero - 1 === 1) {
+        score = 0;
+        sessionStorage.setItem('score', score);
+    }
+
+    // Afficher le score actuel dans le DOM
+    document.querySelector('.text-info').innerHTML = `Score actuel : <strong>${score}</strong>`;
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (button.getAttribute('data-correct') === 'true') {
+                button.classList.add('bg-success', 'text-white');
+                score++; // Incrémente le score
+            } else {
+                button.classList.add('bg-danger', 'text-white');
+            }
+
+            // Ajoute la classe à la bonne réponse
+            const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
+            correctButton.classList.add('bg-success', 'text-white');
+
+            // Sauvegarde le score dans sessionStorage
+            sessionStorage.setItem('score', score);
+
+            // Redirection après 3 secondes
+            setTimeout(() => {
+                    // Sinon, redirige vers la question suivante
+                    window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
+            }, 3000);
+        });
+    });
+});
+
+
+
+</script>
+    {% endblock %}
+{% endblock %}
