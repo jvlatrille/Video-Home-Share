@@ -78,11 +78,12 @@ class ControllerProfil extends Controller
             $messages = $validator->getMessagesErreurs();
             $utilisateur = $managerUtilisateur->find($id);
 
-            $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateur,
-                'message' => $messages
-            ]);
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            exit();
+        
         }  
     }  
      
@@ -112,6 +113,8 @@ class ControllerProfil extends Controller
             $messages = $validator->getMessagesErreurs();
             $utilisateur = $managerUtilisateur->find($id);
         
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
             // Chargement et rendu du template
             $template = $this->getTwig()->load('profilParametres.html.twig');
             echo $template->render([
@@ -164,14 +167,10 @@ class ControllerProfil extends Controller
             } else {
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
         
-            // Chargement et rendu du template
-            $utilisateur = $managerUtilisateur->find($_POST['utilisateurId']);
-            $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateur,
-                'messages' => $messages
-            ]);
+     header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
     
@@ -220,13 +219,11 @@ class ControllerProfil extends Controller
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
         
-            // Chargement et rendu du template
-            $utilisateur = $managerUtilisateur->find($_POST['utilisateurId']);
-            $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateur,
-                'messages' => $messages
-            ]);
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+
         }
     }
 
@@ -305,8 +302,10 @@ class ControllerProfil extends Controller
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $managerUtilisateur->changerMdp($utilisateurConnecte->getIdUtilisateur(), $mdpHash);
 
-            $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render([]);
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+
         }
     }
     
