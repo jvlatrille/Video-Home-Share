@@ -39,13 +39,14 @@ class ControllerAdmin extends Controller
                 exit();
             }
 
-            // Si le champ est vide, on conserve l'ancienne valeur
-            $photoProfil = $this->uploadImage('photoProfil', $utilisateurActuel->getPhotoProfil());
-            $banniereProfil = $this->uploadImage('banniereProfil', $utilisateurActuel->getBanniereProfil());
+            // Upload des images avec le bon format : id_pseudo.extension
+            $photoProfil = $this->uploadImage('photoProfil', $utilisateurActuel->getPhotoProfil(), $idUtilisateur, $pseudo, 'profil');
+            $banniereProfil = $this->uploadImage('banniereProfil', $utilisateurActuel->getBanniereProfil(), $idUtilisateur, $pseudo, 'banniere');
 
             // Si le mot de passe est vide, on ne le modifie pas
             $motDePasseFinal = !empty($motDePasse) ? password_hash($motDePasse, PASSWORD_BCRYPT) : null;
 
+            // Mise à jour des données dans la BD
             $resultat = $this->adminDao->adminModifierUtilisateur(
                 $idUtilisateur,
                 $pseudo,
@@ -65,6 +66,41 @@ class ControllerAdmin extends Controller
         }
     }
 
+    private function uploadImage($inputName, $default, $idUtilisateur, $pseudo, $type = 'profil')
+    {
+        // Dossier de destination selon le type
+        $targetDir = $type === 'banniere' ? 'img/banniere/' : 'img/profils/';
+
+        if (isset($_FILES[$inputName]) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
+            // Extension du fichier
+            $fileType = pathinfo($_FILES[$inputName]['name'], PATHINFO_EXTENSION);
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array(strtolower($fileType), $allowedTypes)) {
+                // Nettoyer le pseudo
+                $pseudoNettoye = preg_replace('/[^a-zA-Z0-9_-]/', '', strtolower($pseudo));
+
+                // Nouveau nom : id_pseudo.extension
+                $fileName = $idUtilisateur . '_' . $pseudoNettoye . '.' . $fileType;
+                $targetFilePath = $targetDir . $fileName;
+
+                // Supprimer l'ancienne image si elle existe
+                if (file_exists($targetFilePath)) {
+                    unlink($targetFilePath);
+                }
+
+                // Déplacer la nouvelle image
+                if (move_uploaded_file($_FILES[$inputName]['tmp_name'], $targetFilePath)) {
+                    return $fileName;
+                }
+            }
+        }
+
+        // Retourner l'ancienne image si aucun upload n'a été fait
+        return $default;
+    }
+
+
     private function verifierAdmin()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -81,26 +117,6 @@ class ControllerAdmin extends Controller
             header('Location: index.php');
             exit();
         }
-    }
-
-    private function uploadImage($inputName, $default)
-    {
-        if (isset($_FILES[$inputName]) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
-            $targetDir = 'img/profils/';
-            $fileName = uniqid() . '_' . basename($_FILES[$inputName]['name']);
-            $targetFilePath = $targetDir . $fileName;
-
-            // Vérifie le type d'image
-            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-            if (in_array(strtolower($fileType), $allowedTypes)) {
-                move_uploaded_file($_FILES[$inputName]['tmp_name'], $targetFilePath);
-                return $fileName;
-            }
-        }
-
-        return $default;
     }
 
     public function supprimerUtilisateur()
