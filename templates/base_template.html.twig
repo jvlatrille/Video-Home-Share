@@ -1,6 +1,71 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 <head>
+    <script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
+
+    <script type="text/javascript">
+        tarteaucitron.init({
+            "privacyUrl": "", /* Privacy policy url */
+            "bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
+
+            "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+            "cookieName": "tarteaucitron", /* Cookie name */
+
+            "orientation": "middle", /* Banner position (top - bottom) */
+        
+            "groupServices": false, /* Group services by category */
+            "showDetailsOnClick": true, /* Click to expand the description */
+            "serviceDefaultState": "wait", /* Default state (true - wait - false) */
+                            
+            "showAlertSmall": false, /* Show the small banner on bottom right */
+            "cookieslist": false, /* Show the cookie list */
+                            
+            "closePopup": false, /* Show a close X on the banner */
+
+            "showIcon": true, /* Show cookie icon to manage cookies */
+            //"iconSrc": "", /* Optionnal: URL or base64 encoded image */
+            "iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
+
+            "adblocker": false, /* Show a Warning if an adblocker is detected */
+                            
+            "DenyAllCta" : true, /* Show the deny all button */
+            "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
+            "highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+            "alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
+                            
+            "handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+
+            "removeCredit": false, /* Remove credit link */
+            "moreInfoLink": true, /* Show more info link */
+
+            "useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+            "useExternalJs": false, /* If false, the tarteaucitron.js file will be loaded */
+
+            //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
+                            
+            "readmoreLink": "", /* Change the default readmore link */
+
+            "mandatory": true, /* Show a message about mandatory cookies */
+            "mandatoryCta": true, /* Show the disabled accept button when mandatory on */
+
+            //"customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
+            
+            "googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
+            
+            "partnersList": false /* Show the number of partners on the popup/middle banner */
+        });
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    {# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-TJGCV8L5XE');
+    </script> #}
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
@@ -9,6 +74,12 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
+    <style>
+        body {
+            background-color: #D5D0AF;
+        }
+    </style>
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
     {% block css %} {% endblock %}
     <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
 </head>
@@ -27,34 +98,36 @@
             </div>
         
             <!-- Barre de recherche -->
-            <form class="d-flex justify-content-center" style="flex-grow: 1;">
-                <input class="form-control" type="search" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+            <form class="d-flex justify-content-center" style="flex-grow: 1;" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
+                <input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+              
             </form>
-        
-            <!-- Boutons Connexion et Langue -->
+            {% if utilisateurConnecte is null %}
+            <!-- Bouton Connexion/Déconnexion -->
             <div class="me-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
-                <button class="btn btn-custom" type="button">FR</button>
             </div>
+            {% else %}
+            <div class="me-3">
+                <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
+            </div>
+            {% endif %}
+
         </nav>
-        
+
         <!-- Menu déroulant sous le bouton "Menu" -->
         <div class="collapse" id="menuBar">
             <div class="container py-2 d-flex justify-content-center">
                 <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2">Forum</a>
 
-
                 <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
 
-                <a href="index.php?controleur=watchlist&methode=listerWatchList&id=1" class="btn btn-light-custom mx-2">WatchList</a>
-                <!-- normelement c'est la var session id de l'user  -->
+                <a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">WatchList</a>
 
 
                 <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
 
-                <a href="index.php?controleur=utilisateur&methode=AllUtilisateurs" class="btn btn-light-custom mx-2">utilisateur</a> <!-- utilisateur A SUPPRIMER-->
-
-                <a href="index.php?controleur=testNotif&methode=listerNotif&id=1" class="btn btn-light-custom mx-2">Profil</a>
+                <a href="index.php?controleur=profil&methode=afficherFormulaire&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
                 
 
             </div>
@@ -63,6 +136,25 @@
 
     <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
     <main class="flex-grow-1">
+        {# affiche le base_template_film #}
+        {% block content1 %} {% endblock %}
+
+        <script type="text/javascript">
+            tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';
+            // tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
+            tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
+            (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
+        </script>
+
+        <script type="text/javascript">
+            tarteaucitron.user.sharethisPublisher = 'publisher';
+            (tarteaucitron.job = tarteaucitron.job || []).push('sharethis');
+        </script>
+
+        {# affiche le base_template_profil #}
+        {% block content2 %}
+        {% endblock %}
+        
         {% block content %}
         {% endblock %}
     </main>
@@ -71,28 +163,60 @@
         <div class="container">
             <!-- Liens de Navigation -->
             <div class="footer-nav mb-3">
-                <a href="#" class="footer-link mx-2">Home</a>
-                <a href="#" class="footer-link mx-2">Experience</a>
-                <a href="#" class="footer-link mx-2">News</a>
-                <a href="#" class="footer-link mx-2">About us</a>
-                <a href="#" class="footer-link mx-2">Jobs</a>
+                <a href="#" class="footer-link mx-2">Accueil</a>
+                <a href="#" class="footer-link mx-2">A propos</a>
                 <a href="#" class="footer-link mx-2">Contact</a>
+                <a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
+                <a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
             </div>
+
+            <!-- PopUp pour l'accord TMDB -->
+<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <img src="img/logoTMDB.png" alt="TMDB Logo" width="50" height="50" class="me-3">
+                <h4 class="modal-title fw-bold text-dark" id="tmdbModalLabel">Accord d'utilisation TMDB</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body text-dark">
+                <p>
+                    The Movie Database (TMDB) est une base de données en ligne regroupant des milliers de données sur des oeuvres audiovisuelles. L'accès aux informations est publiques et gratuite sous certaines conditions grâce à une API.
+                </p>
+                <p>
+                    L'utilisation de TMDB est soumise à des conditions d'utilisation spécifiques. En utilisant les données de TMDB, nous acceptons de respecter leurs conditions d'utilisation, disponibles sur leur site officiel.
+                </p>
+                <p>
+                    Pour plus de détails, voici un lien vers les <a href="https://www.themoviedb.org/terms-of-use" target="_blank" class="text-primary fw-bold">Conditions d'utilisation de TMDB</a>.
+                </p>
+                <h5>Utilisation de TMDB dans notre projet</h5>
+                <p>
+                    Nos données des œuvres sont récupérées grâce à l’API de TMDB. L'API est limitée dans le nombre de requêtes quotidiennes (100 000, ce qui est largement assez pour notre usage). Nous avons le droit de l’utiliser dans un cadre non commercial (notre application ne générant pas de revenu, nous sommes dans la légalité), et il faut absolument créditer TMDB sur notre projet (ce qui est fait aussi). TMDB permet d’utiliser les affiches des œuvres dans un cadre strictement non commercial grâce à un accord implicite entre TMDB et les détenteurs des droits des affiches. Les seules conditions sont de bien mentionner TMDB, et de ne pas altérer les affiches.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
             <!-- Icônes des réseaux sociaux -->
             <div class="footer-social mb-2">
-                <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
+                <div class="sharethis-inline-share-buttons"></div>
+                {# <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
                 <a href="#"><i class="fab fa-twitter mx-2"></i></a>
-                <a href="#"><i class="fab fa-youtube mx-2"></i></a>
+                <a href="#"><i class="fab fa-youtube mx-2"></i></a> #}
             </div>
 
+            <span class="tacSharethis"></span>
+            
             <!-- Copyright -->
             <div class="footer-copyright">
-                © Copyright 2019 - Lift Media
+                © Copyright 2024 - IUT de Bayonne et du Pays Basque - BUT2 Groupe 8
             </div>
         </div>
     </footer>
 
-    {% block script %} {% endblock %}
+    {% block script %} <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script> {% endblock %}
 </body>
 </html>

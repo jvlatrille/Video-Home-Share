@@ -1,218 +1,280 @@
-<?php 
+<?php
 
 /**
  * @file oa.dao.php
- * @author Thibault CHIPY
- * @brief Classe OADao pour accéder à la base de données
- * @details Cette classe permet de gérer les oeuvres audiovisuelles en base de données 
- * 
- * @version 1.0
- * @date 13/11/2020
+ * @author Thibault CHIPY, VINET LATRILLE Jules
+ * @brief Classe OADao pour gérer les accès aux données des œuvres audiovisuelles
+ * @details Cette classe combine les appels API TMDB et les accès à la base de données pour les œuvres audiovisuelles.
+ * @version 2.0
+ * @date 2024-12-22
  */
 
-class OADao{
+require_once 'oa.class.php';
+
+class OADao
+{
+    /** @brief URL de base de l'API TMDB */
+    private string $apiBaseUrl = 'https://api.themoviedb.org/3';
+
+    /** @brief Clé API TMDB */
+    private string $apiKey = TMDB_CLE_KEY;
+
+    /** @brief Token d'accès API TMDB */
+    private string $accessToken = TMDB_TOKEN_ACCES;
 
     /**
-     * @brief instance de PDO
-     *
-     * @var PDO|null
+     * @brief Établit une connexion PDO avec la base de données
+     * @return PDO Instance PDO
      */
-    private ?PDO $pdo;
+    private function getConnection(): PDO
+    {
+        static $pdo = null;
 
-    /**
-     * @brief Constructeur de la classe OADao
-     * @param PDO $pdo : instance de PDO
-     */
-    public function __construct(PDO $pdo){
-        $this->pdo = $pdo;
-    }
+        if ($pdo === null) {
+            try {
+                $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                error_log('Erreur PDO : ' . $e->getMessage());
+                throw $e;
+            }
+        }
 
-
-    //Getters et setters
-
-    /**
-     * @brief Retourne l'instance de PDO
-     *
-     * @return PDO|null
-     */
-    public function getPdo(): ?PDO{
-        return $this->pdo;
-    }
-
-    /**
-     * @brief Modifie l'instance de PDO
-     *
-     * @param PDO|null $pdo : instance de PDO
-     * @return void
-     */
-    public function setPdo(?PDO $pdo): void{
-        $this->pdo = $pdo;
+        return $pdo;
     }
 
     /**
-     * @brief Fonction pour recupérer une oeuvre audiovisuelle avec son identifiant
-     *
-     * @param integer|null $id Identifiant de l'OA
-     * @return OA|null L'OA correspondant à l'identifiant ou null si non trouvé
+     * @brief Effectue une requête API TMDB
+     * @param string $endpoint L'URL de l'endpoint API
+     * @param array $params Paramètres supplémentaires
+     * @return array Réponse API sous forme de tableau associatif
      */
-    public function find(?int $id): ?OA {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."oa WHERE idOA = :id";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(array('id' => $id));
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $oaData = $pdoStatement->fetch();   
-        return $oaData ? $this->hydrate($oaData) : null;
+    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false): array
+    {
+        $url = $this->apiBaseUrl . $endpoint;
+
+        if ($useAccessToken) {
+            // Pour les requêtes sécurisées avec Access Token
+            $headers = [
+                'Authorization: Bearer ' . $this->accessToken,
+                'Content-Type: application/json',
+            ];
+        } else {
+            // Pour les requêtes publiques avec API Key
+            $params['api_key'] = $this->apiKey;
+            $headers = ['Content-Type: application/json'];
+        }
+
+        // Ajouter les paramètres à l'URL même avec AccessToken
+        if (!empty($params)) {
+            $url .= '?' . http_build_query($params);
+        }
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        // C'est pas bien mais on le fait TEMPORAIREMENT pour éviter les erreurs de certificat
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        $response = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            die('Erreur cURL : ' . curl_error($curl));
+        }
+
+        curl_close($curl);
+
+        $decodedResponse = json_decode($response, true);
+        if (isset($decodedResponse['status_code'])) {
+            die('Erreur API TMDB : ' . $decodedResponse['status_message']);
+        }
+
+        return $decodedResponse ?? [];
+    }
+
+
+
+    /**
+     * @brief Retourne l'URL complète du poster
+     * @param string|null $posterPath Chemin de l'image
+     * @param string $size Taille de l'image
+     * @return string URL complète du poster
+     */
+    private function getPosterUrl(?string $posterPath, string $size = 'original'): string
+    {
+        $baseUrl = 'https://image.tmdb.org/t/p/';
+        $defaultImage = 'https://via.placeholder.com/500x750?text=Image+non+disponible';
+
+        return $posterPath ? $baseUrl . $size . $posterPath : $defaultImage;
+    }
+
+    /**
+     * @brief Analyse les participants à partir des crédits API
+     * @param array $credits Données des crédits API
+     * @return array Liste des participants
+     */
+    private function parseParticipants(array $credits): array
+    {
+        $participants = [];
+        $baseImageUrl = 'https://image.tmdb.org/t/p/w185';
+
+        foreach (['cast', 'crew'] as $key) {
+            foreach ($credits[$key] ?? [] as $member) {
+                $participants[] = [
+                    'nom' => $member['name'] ?? 'Inconnu',
+                    'role' => $member['character'] ?? $member['job'] ?? 'Non spécifié',
+                    'photo' => isset($member['profile_path']) ? $baseImageUrl . $member['profile_path'] : null,
+                ];
+            }
+        }
+
+        return $participants;
+    }
+
+    /**
+     * @brief Récupère le nom du producteur d'une œuvre
+     * @param array $crew Liste des membres de l'équipe (crew) du film
+     * @return string|null Nom du producteur ou null si non trouvé
+     */
+    private function getProducer(array $crew): ?string
+    {
+        foreach ($crew as $member) {
+            if (
+                isset($member['job']) &&
+                in_array($member['job'], ['Producer', 'Executive Producer', 'producteur'])
+            ) {
+                return $member['name'] ?? 'Inconnu';
+            }
+        }
+
+        error_log("Aucun producteur trouvé dans l'équipe : " . print_r($crew, true));
+        return 'Non spécifié';
+    }
+
+
+    /**
+     * @brief Hydrate un objet OA avec des données
+     * @param array $data Données API
+     * @return OA|null
+     */
+    private function hydrate(array $data): ?OA
+    {
+        return new OA(
+            $data['id'] ?? null,
+            $data['title'] ?? 'Titre inconnu',
+            $data['vote_average'] ?? 0.0,
+            'Film',
+            $data['overview'] ?? 'Description non disponible',
+            $data['release_date'] ?? 'Date inconnue',
+            $data['original_language'] ?? 'Langue inconnue',
+            $data['runtime'] ?? null,
+            isset($data['genres']) ? array_column($data['genres'], 'name') : [],
+            null,
+            $this->getPosterUrl($data['poster_path'] ?? null),
+            $this->parseParticipants($data['credits'] ?? []),
+            $this->getProducer($data['credits']['crew'] ?? [])
+        );
+    }
+
+    /**
+     * @brief Hydrate une liste d'objets OA avec des données
+     * @param array $dataList Liste de données API
+     * @return array Liste d'objets OA
+     */
+    private function hydrateAll(array $dataList): array
+    {
+        $oaList = [];
+        foreach ($dataList as $data) {
+            $oaList[] = $this->hydrate($data);
+        }
+        return $oaList;
+    }
+
+    /**
+     * @brief Récupère les détails d'un film par son ID
+     * @param int|null $id Identifiant du film
+     * @return OA|null Objet OA hydraté
+     */
+    public function find(?int $id): ?OA
+    {
+        $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR'], true);
+        $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
+        $movie['participants'] = $this->parseParticipants($credits);
+        $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
+        return $this->hydrate($movie);
+    }
+
+
+    /**
+     * @brief Récupère les 10 films les mieux notés
+     * @return array Liste des objets OA
+     */
+    public function findMeilleurNote(): array
+    {
+        $results = $this->makeApiRequest('/movie/top_rated', ['language' => 'fr-FR', 'page' => 1]);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucun film trouvé dans les mieux notés.');
+            return [];
+        }
+        return $this->hydrateAll($results['results']);
+    }
+
+
+    /**
+     * @brief Récupère les participants d'un film via son ID TMDB
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return array Liste des participants (nom, rôle, photo)
+     */
+    public function getParticipantsByFilmId(int $idTMDB): array
+    {
+        $credits = $this->makeApiRequest("/movie/$idTMDB/credits", ['language' => 'fr-FR'], true);
+
+        if (empty($credits)) {
+            error_log("Aucun crédit trouvé pour le film ID : $idTMDB");
+            return [];
+        }
+
+        return $this->parseParticipants($credits);
+    }
+
+    /**
+     * @brief Récupère des œuvres aléatoires depuis l'API TMDB
+     * @return array Liste d'objets OA
+     */
+    public function findRandomOeuvres(): array
+    {
+        $randomPage = rand(1, 100);
+        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage]);
+
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune œuvre aléatoire trouvée.');
+            return [];
+        }
+
+        return array_map(function ($data) {
+            return [
+                'idOa' => $data['id'] ?? null,
+                'nom' => $data['title'] ?? 'Titre inconnu',
+                'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+            ];
+        }, array_slice($results['results'], 0, 10));
     }
     
     /**
-     * @brief Fonction pour récupérer les genres d'une oeuvre audiovisuelle OA
+     * @brief Recherche des films par titre
+     * @param string $query Requête de recherche
+     * @return array Liste des objets OA
      * 
-     * @param integer $idOA Identifiant de l'oeuvre audiovisuelle OA
-     * @return array|null Tableau de genres ou null si non trouvé
      */
-    private function getTagsByOA(int $idOA): array {
-        $sql = "SELECT t.nom
-            FROM ".PREFIXE_TABLE."tag t
-            JOIN ".PREFIXE_TABLE."posseder p ON p.idTag = t.idTag
-            WHERE p.idOA = :idOA
-        ";
-        
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['idOA' => $idOA]);
-        
-        $tags = [];
-        while ($row = $pdoStatement->fetch(PDO::FETCH_ASSOC)) {
-            $tags[] = $row['nom'];
+    public function rechercheFilmParNom(string $query): array{
+        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR']);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucun film trouvé pour la recherche : ' . $query);
+            return [];
         }
-        
-        return $tags;
+        return $this->hydrateAll($results['results']);
     }
 
-    /**
-     * @brief Fonction pour récupérer la collection d'une oeuvre audiovisuelle OA
-     * 
-     * @param int $idOa Identifiant de l'oeuvre audiovisuelle OA
-     * @return Collection|null Collection de l'oeuvre audiovisuelle OA ou null si non trouvé
-     */
-
-     private function getCollectionByOA(int $idOA): ?string {
-        $sql = "
-            SELECT c.nom
-            FROM vhs_collection c
-            JOIN vhs_fairepartie f ON f.idCollection = c.idCollection
-            WHERE f.idOA = :idOA
-        ";
-
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['idOA' => $idOA]);
-        
-        $collection = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        return $collection ? $collection['nom'] : null;
-    }
-    
-    //Fonction pour afficher sur la page d'acceuil les 10 OA les mieux notées
-    /**
-     * @brief Fonction pour recupérer les 10 oeuvres audiovisuelles les mieux notées
-     *
-     * @return array|null Tableau d'OA ou null si non trouvé
-     */
-    public function findMeilleurNote(): ?array {
-        $sql = "SELECT distinct o.idOA,o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree
-         FROM ".PREFIXE_TABLE."oa o 
-         JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
-         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag   
-         ORDER BY o.note DESC LIMIT 5";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute();
-        $topOas = [];
-        while ($row = $pdoStatement->fetch(PDO::FETCH_ASSOC)) {
-            // Hydrate un objet OA
-            $oa = $this->hydrate($row);
-            
-            // Ajoute les tags et collections
-            $oa->setGenres($this->getTagsByOA($oa->getIdOA()));
-            $oa->setCollection($this->getCollectionByOA($oa->getIdOA()));
-
-            $topOas[] = $oa;
-        }
-        
-        return $topOas;
-        
-    }
-
-    /*
-    "SELECT o.nom,o.note,o.type,o.description,o.dateSortie,o.vo,o.duree,
-                        t.nom,c.nom,c.type
-         FROM ".PREFIXE_TABLE."oa o 
-         JOIN ".PREFIXE_TABLE."posseder p ON o.idOA=p.idOA
-         JOIN ".PREFIXE_TABLE."tag t ON p.idTag=t.idTag
-         JOIN ".PREFIXE_TABLE."fairepartie f ON o.idOA=f.idOA
-         JOIN ".PREFIXE_TABLE."collection c ON f.idCollection=c.idCollection         
-         ORDER BY o.note DESC LIMIT 10";
-    */
-
-    //Méthode pour récupérer toutes les oeuvres audiovisuelles
-    /**
-     * @brief Fonction pour recupérer toutes les oeuvres audiovisuelles
-     *
-     * @return array|null Tableau d'OA ou null si non trouvé
-     */
-    public function findAll() {
-        
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "oa limit 10";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);  
-
-        $resultats = $pdoStatement->fetchAll();
-
-        // Appelle hydrateAll pour transformer tous les enregistrements en objets OA
-        return $this->hydrateAll($resultats);
-    }
-    /**
-     * @brief Fonction pour hydrater un tableau associatif en objet OA
-     *
-     * @param array $tableauAssoc Tableau associatif contenant les données d'une OA 
-     * @return OA|null L'objet OA ou null
-     */
-    public function hydrate(array $tableauAssoc) : ?OA{
-        $oa=new OA();
-        $oa->setIdOa($tableauAssoc['idOA']);
-        $oa->setNom($tableauAssoc['nom']);
-        $oa->setNote($tableauAssoc['note']);
-        $oa->setType($tableauAssoc['type']);
-        $oa->setDescription($tableauAssoc['description']);
-        $oa->setDateSortie($tableauAssoc['dateSortie']);
-        $oa->setVo($tableauAssoc['vo']);
-        $oa->setDuree($tableauAssoc['duree']);
-        return $oa;
-    }
-
-    /**
-     * @brief Fonction pour hydrater un tableau de tableaux associatifs en tableau d'objets OA
-     *
-     * @param array $resultats Tableau de tableaux associatifs contenant les données de plusieurs OA
-     * @return array|null Tableau d'objets OA ou null
-     */
-    public function hydrateAll(array $resultats): ?array {
-        $oaListe = [];
-        foreach ($resultats as $row) {
-            $oaListe[] = $this->hydrate($row);
-        }
-        
-        return $oaListe;
-    }   
-
-    public function getParticipantsByFilmId(int $idOA): array {
-        $sql = "SELECT p.nom, p.prenom, c.role, c.rang
-                FROM vhs_personne p
-                JOIN vhs_collaborer c ON p.idPersonne = c.idPersonne
-                WHERE c.idOA = :idOA
-                LIMIT 10";
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['idOA' => $idOA]);
-        
-        return $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
 }

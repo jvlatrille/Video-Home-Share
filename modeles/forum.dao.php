@@ -58,10 +58,24 @@ class forumDAO{
         return $forumListe;
     }
 
+    public function find(int $idForum): ?Forum {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."forum WHERE idForum = :idForum";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idForum' => $idForum]);
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if (!$resultat) {
+            return null;
+        }
+        
+        return $this->hydrate($resultat);
+    }
+
     //Fonction pour creer un forum
     public function creerForum(Forum $forum): ?Forum {
         $sql = "INSERT INTO ".PREFIXE_TABLE."forum (id, nom, description, theme, idUtilisateur) 
-                VALUES (:titre, :genre, :description, :visible, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+                VALUES (:id, :nom, :description, :theme, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -70,7 +84,7 @@ class forumDAO{
                 'nom' => $forum->getNom(),
                 'description' => $forum->getDescription(),
                 'theme' => $forum->getTheme(),
-                //'idUtilisateur' => $watchlist->getIdUtilisateur()
+                'idUtilisateur' => $forum->getIdUtilisateur()
             ));
             
             $forum->setIdForum($this->pdo->lastInsertId());

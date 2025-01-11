@@ -69,7 +69,7 @@ class UtilisateurDao
 
     //Changer un pseudo
     public function changerPseudo(?int $id, ?string $newPseudo): bool{
-        $sql = "UPDATE vhs_utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
                 SET pseudo = :pseudo
                 WHERE idUtilisateur = :id"; 
         $pdoStatement = $this->pdo->prepare($sql);
@@ -78,20 +78,53 @@ class UtilisateurDao
         return $reussite;
     }
 
-        //Changer un pseudo
-        public function changerMail(?int $id, ?string $newMail): bool{
-            $sql = "UPDATE vhs_utilisateur
-                    SET adressMail = :mail
-                    WHERE idUtilisateur = :id"; 
-            $pdoStatement = $this->pdo->prepare($sql);
-            $reussite = $pdoStatement->execute(['mail' => $newMail, 'id' => $id]);
+    //Changer un pseudo
+    public function changerMail(?int $id, ?string $newMail): bool{
+         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                 SET adressMail = :mail
+                 WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['mail' => $newMail, 'id' => $id]);
     
-            return $reussite;
-        }
+        return $reussite;
+    }
+
+        //Changer mot de passe
+        public function changerMdp(?int $id, ?string $mdp): bool{
+            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                    SET motDePasse = :mdp
+                    WHERE idUtilisateur = :id"; 
+           $pdoStatement = $this->pdo->prepare($sql);
+           $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
+       
+           return $reussite;
+       }
+
+    public function updateUserPhoto(int $userId, string $filePath): bool{
+        // Requête pour mettre à jour la photo de profil de l'utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET photoProfil = :photoProfil 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute(['photoProfil' => $filePath, 'id' => $userId]);
+
+        return $result;
+    }
+
+    public function updateUserBanniere(int $userId, string $filePath): bool{
+        // Requête pour mettre à jour la photo de profil de l'utilisateur
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET banniereProfil = :banniere 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute(['banniere' => $filePath, 'id' => $userId]);
+
+        return $result;
+    }
 
 
     /**
-     * @brief Recherche un Utilisateur par son adresse mail
+     * @brief Creer un Utilisateur par son adresse mail
      * @author Thibault CHIPY
      * @param string $mail
      * @return Utilisateur|null
@@ -106,12 +139,27 @@ class UtilisateurDao
     }
 
     /**
+     * @brief Rechercher un Utilisateur par son pseudo
+     * @author Jules VINET 
+     * @param string $pseudo
+     * @return Utilisateur|null
+     */
+    public function findByPseudo(?string $pseudo): ?Utilisateur {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE pseudo = :pseudo";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['pseudo' => $pseudo]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $utilisateur = $pdoStatement->fetch();
+        return $utilisateur ? $this->hydrate($utilisateur) : null;
+    }
+    
+    /**
      * @brief Creer un utilisateur en base de données
      * @author Thibault CHIPY 
      * @param Utilisateur $utilisateur
      * @return bool
      */
-    public function creeUtilisateur(?Utilisateur $utilisateur): ?bool {
+    public function creerUtilisateur(?Utilisateur $utilisateur): ?bool {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) 
                 VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role)";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -124,5 +172,42 @@ class UtilisateurDao
             'role' => $utilisateur->getRole()
         ]);
         return $reussite;
+    }
+
+    /**
+     * @brief Vérifier si un utilisateur existe en base de données avec son adresse mail
+     * @author Thibault CHIPY 
+     * 
+     * @param email de l'Utilisateur 
+     * @return bool true si l'email existe, false sinon.
+     */
+
+     public function emailExiste(string $mail):bool{
+        $sql="SELECT COUNT(adressMail) FROM vhs_utilisateur WHERE adressMail = :mail";
+        $sqlStatement = $this->pdo->prepare($sql);
+        $sqlStatement->execute(['mail' => $mail]);
+        return $sqlStatement->fetchColumn() > 0;
+     }
+
+
+     /**
+     * Vérifie si un mot de passe est robuste.
+     *
+     * Critères de robustesse :
+     * - Longueur minimale de 8 caractères.
+     * - Contient au moins une lettre majuscule (A-Z).
+     * - Contient au moins une lettre minuscule (a-z).
+     * - Contient au moins un chiffre (0-9).
+     * - Contient au moins un caractère spécial (@$!%*?&).
+     *
+     * @param string $password Le mot de passe à valider.
+     * @return bool true si le mot de passe respecte les critères, false sinon.
+     */
+    public static function estRobuste(string $password): bool
+    {
+        $regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
+
+        // La fonction preg_match retourne 1 si une correspondance est trouvée.
+        return preg_match($regex, $password) === 1;
     }
 }

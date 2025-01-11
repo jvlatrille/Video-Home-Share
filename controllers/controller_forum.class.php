@@ -19,25 +19,6 @@ class ControllerForum extends Controller
         echo $template->render(['forumListe' => $forumsListe]);
     }
 
-    //Fonction pour afficher un forum
-    public function afficherForum()
-    {
-        $id = isset($_GET['idForum']) ? $_GET['idForum'] : null;
-        
-        //Recupere le forum
-        $managerForum=New forumDAO($this->getPdo());
-        $forumList=$managerForum->find($id);
-        
-        //Recupere les noms des forums
-        $noms = $managerForum->afficherNomForum($idForum);
-        
-        //Generer la vue
-        $template = $this->getTwig()->load('unForum.html.twig');
-        
-        echo $template->render(['forum'=>$forumList, 'noms'=>$noms]);
-
-    }
-
     public function ajouterForum()
     {
         //Recupere les données du formulaire

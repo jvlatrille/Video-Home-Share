@@ -19,24 +19,50 @@ class ControllerUtilisateur extends Controller
         echo $template->render(['utilisateurListe' => $utilisateurListe]);
     }
 
-    // Afficher un seul utilisateur
     public function afficherUtilisateur()
-    {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        // Récupère l'utilisateur
-        $managerUtilisateur = new UtilisateurDAO($this->getPdo());
-        $utilisateur = $managerUtilisateur->find($id);
-
-        // Génère la vue
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
-        echo $template->render(['utilisateur' => $utilisateur]);
+        $template = $this->getTwig()->load('profil.html.twig');
+        echo $template->render(['utilisateur' => $utilisateurConnecte]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
     }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
+public function afficherAutreUtilisateur()
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+        $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+        $template = $this->getTwig()->load('profilAutre.html.twig');
+        echo $template->render(['utilisateur' => $autreUtilisateur]);
+        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+    }
+
+    // Sinon, affiche la page de connexion
+    $template = $this->getTwig()->load('connexion.html.twig');
+    echo $template->render();
+}
+
 
     // Changer de pseudo
     public function changerPseudo() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
+            $id = $utilisateurConnecte->getIdUtilisateur();
+            $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
     
         if (!$id || !$newPseudo) {
             throw new Exception('Informations manquantes : ID ou pseudo.');
@@ -48,13 +74,13 @@ class ControllerUtilisateur extends Controller
         $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
         $utilisateur = $managerUtilisateur->find($id);
     
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
+        $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
             'message' => $message
         ]);
     }    
-    
+}
     // Changer de Mail
     public function changerMail() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
@@ -70,12 +96,120 @@ class ControllerUtilisateur extends Controller
         $message = $reussite ? "Le mail a été changé avec succès." : "Erreur lors du changement de mail.";
         $utilisateur = $managerUtilisateur->find($id);
     
-        $template = $this->getTwig()->load('utilisateur_detail.html.twig');
+        $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
             'message' => $message
         ]);
     }
+
+    public function changerPhotoProfil()
+    {
+        // Vérifier si un fichier a été envoyé
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+
+            // Récupérer l'ID de l'utilisateur depuis la requête
+            $userId = $_POST['userId'];
+
+            // Récupérer les informations du fichier téléchargé
+            $fileTmpName = $_FILES['photo']['tmp_name'];
+            $fileName = basename($_FILES['photo']['name']);
+
+            // Définir le dossier cible où l'image sera enregistrée
+            $targetDir = "img/profils/"; // Dossier relatif à l'arborescence de votre projet
+            $targetFile = $targetDir . $fileName;
+            
+            // Vérifier que l'extension du fichier est autorisée
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            if (!in_array($fileExtension, $allowedExtensions)) {
+                echo json_encode(["success" => false, "message" => "Extension de fichier non autorisée."]);
+                return;
+            }
+
+            // Déplacer le fichier téléchargé vers le dossier de destination
+            if (move_uploaded_file($fileTmpName, $targetFile)) {
+                // Appeler la méthode pour mettre à jour la photo de profil dans la base de données
+                $managerUtilisateur = new UtilisateurDao($this->getPdo());
+                $updateSuccess = $managerUtilisateur->updateUserPhoto($userId, $fileName);
+
+                if ($updateSuccess) {
+                    $message = "La photo de profil a été changée avec succès.";
+                } else {
+                    $message = "Erreur lors du changement de photo de profil.";
+                }
+
+                // Récupérer l'utilisateur mis à jour pour l'afficher dans le template
+                $utilisateur = $managerUtilisateur->find($userId);
+
+                // Charger et rendre le template Twig
+                $template = $this->getTwig()->load('profilParametres.html.twig');
+                echo $template->render([
+                    'utilisateur' => $utilisateur,
+                    'message' => $message
+                ]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de la photo."]);
+            }
+        } else {
+            echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
+        }
+    }
+
+    public function changerBanniere()
+    {
+        // Vérifier si un fichier a été téléchargé
+        if (isset($_FILES['banniere']) && $_FILES['banniere']['error'] == 0) {
+            $userId = $_POST['userId'];
+
+            // Récupérer les informations du fichier téléchargé
+            $fileTmpName = $_FILES['banniere']['tmp_name'];
+            $fileName = basename($_FILES['banniere']['name']);
+
+            // Définir le dossier de destination
+            $targetDir = "img/banniere/"; // Le dossier des bannières
+            $targetFile = $targetDir . $fileName;
+
+            // Vérifier l'extension du fichier
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            if (!in_array($fileExtension, $allowedExtensions)) {
+                echo json_encode(["success" => false, "message" => "Extension de fichier non autorisée."]);
+                return;
+            }
+
+            // Déplacer le fichier téléchargé
+            if (move_uploaded_file($fileTmpName, $targetFile)) {
+                // Appeler la méthode pour mettre à jour la bannière dans la base de données
+                $managerUtilisateur = new UtilisateurDao($this->getPdo());
+                $updateSuccess = $managerUtilisateur->updateUserBanniere($userId, $fileName);
+
+                if ($updateSuccess) {
+                    $message = "La bannière a été changée avec succès.";
+                } else {
+                    $message = "Erreur lors du changement de la bannière.";
+                }
+
+                // Récupérer l'utilisateur mis à jour pour l'afficher
+                $utilisateur = $managerUtilisateur->find($userId);
+
+                // Charger et rendre le template
+                $template = $this->getTwig()->load('profilParametres.html.twig');
+                echo $template->render([
+                    'utilisateur' => $utilisateur,
+                    'message' => $message
+                ]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Erreur lors de l'upload de la bannière."]);
+            }
+        } else {
+            echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
+        }
+    }
+ 
+
     
     /**
      * @brief Affiche le formulaire de connexion d'un utilisateur
@@ -103,30 +237,43 @@ class ControllerUtilisateur extends Controller
     /**
      * @brief Vérifie la connexion d'un utilisateur
      * @author Thibault Chipy 
-     * @version 1.0
+     * @version 2.0
      * 
      * @return void
      */
     public function verifConnexion(){
-        $mail=isset($_POST['mail'])?$_POST['mail']:null;
-        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
+        // Récupération des données du formulaire
+        $donneesFormulaire = [
+            'mail' => $_POST['mail'] ?? null,
+            'mdp' => $_POST['mdp'] ?? null,
+        ];
+        
+        // Validation des données
+       $erreurs = Validator::validerConnexion($donneesFormulaire);
+        if($erreurs){
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
 
-        $mail = str_replace(' ', '', $mail); // On enlève les espaces
-
+        $mail = $donneesFormulaire['mail'];
+        $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
-
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-            $_SESSION['idUtilisateur'] = $utilisateur->getIdUtilisateur();
-            $_SESSION['pseudo'] = $utilisateur->getPseudo();
-            $_SESSION['role'] = $utilisateur->getRole();
-            $_SESSION['mail'] = $utilisateur->getAdressMail();
-            session_start();
 
-            header('Location: index.php');
-        }else{
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
+            
+            $managerOA = new OADao($this->getPdo());
+            $oaListe = $managerOA->findMeilleurNote();
+            $template = $this->getTwig()->load('index.html.twig');
+            echo $template->render(['oaListe' => $oaListe]);
+            
+        }
+        else{
             $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render();
+            echo $template->render(['message' => 'Identifiants incorrects']);
         }
     }
 
@@ -137,37 +284,112 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
 
-// MANQUE LES VERIF DES FORMULAIRES AVEC FONCTION : A FAIRE      
-    public function verifInscription(){
-        $idUtilisateur=isset($_POST['idUtilisateur'])?$_POST['idUtilisateur']:null;
-        $pseudo=isset($_POST['pseudo'])?$_POST['pseudo']:null;
-        $photoProfil=isset($_POST['photoProfil'])?$_POST['photoProfil']:null;
-        $banniereProfil=isset($_POST['banniereProfil'])?$_POST['banniereProfil']:null;
-        $mail=isset($_POST['mail'])?$_POST['mail']:null;
-        $mdp=isset($_POST['mdp'])?$_POST['mdp']:null;
-        $mdpVerif=isset($_POST['mdpVerif'])?$_POST['mdpVerif']:null;
-        $role=isset($_POST['role'])?$_POST['role']:'utilisateur'; // Role par défaut : utilisateur
-        $mail = str_replace(' ', '', $mail); // On enlève les espaces
+    public function verifInscription()
+    {
+        // Récupération des données du formulaire
+        $donneesFormulaire = [
+            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
+            'pseudo' => $_POST['pseudo'] ?? null,
+            'photoProfil' => $_POST['photoProfil'] ?? 'default.png', // Image par défaut
+            'banniereProfil' => $_POST['banniereProfil'] ?? "default.png", // Image par défaut
+            'dateNaiss' => $_POST['dateNaiss'] ?? null,
+            'mail' => $_POST['mail'] ?? null,
+            'mdp' => $_POST['mdp'] ?? null,
+            'mdpVerif' => $_POST['mdpVerif'] ?? null,
+            'role' => $_POST['role'] ?? 'utilisateur', // Role par défaut
+        ];
 
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $utilisateur = $managerUtilisateur->findByMail($mail);
+        // Définition des règles de validation
+        $reglesValidation = [
+            'pseudo' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 3,
+                'longueur_max' => 50,
+            ],
+            'dateNaiss' => [
+                'obligatoire' => true,
+                'type' => 'date',
+                'validation_personnalisee' => function ($value) {
+                    $dateNaiss = DateTime::createFromFormat('Y-m-d', $value);
+                    if (!$dateNaiss) {
+                        return 'La date de naissance doit être valide (format YYYY-MM-DD).';
+                    }
+                    $dateJour = new DateTime();
+                    $age = $dateNaiss->diff($dateJour)->y;
+                    return $age >= 13 ? true : 'Vous devez avoir au moins 13 ans pour vous inscrire';
+                },
+            ],
 
-        if($utilisateur){
+            'mail' => [
+                'obligatoire' => true,
+                'format' => FILTER_VALIDATE_EMAIL,
+            ],
+            'mdp' => [
+                'obligatoire' => true,
+                'validation_personnalisee' => function ($value) {
+                    return UtilisateurDao::estRobuste($value) ? true : 'Le mot de passe n\'est pas assez robuste';
+                },
+            ],
+            'mdpVerif' => [
+                'obligatoire' => true,
+                'validation_personnalisee' => function ($value) use ($donneesFormulaire) {
+                    return $value === $donneesFormulaire['mdp'] ? true : 'Les mots de passe ne correspondent pas';
+                },
+            ],
+        ];
+
+        // Validation des données
+        $validator = new Validator($reglesValidation);
+
+        if (!$validator->valider($donneesFormulaire)) {
+            // Récupération des erreurs
+            $erreurs = $validator->getMessagesErreurs();
+            // Rendre la vue avec les erreurs
             $template = $this->getTwig()->load('inscription.html.twig');
-            echo $template->render(['message' => 'Mail déjà utilisé']);
-        }else{
-            if($mdp != $mdpVerif){
-                $template = $this->getTwig()->load('inscription.html.twig');
-                echo $template->render(['message' => 'Les mots de passe ne correspondent pas']);
-            }
-
-            $mdp = password_hash($mdp, PASSWORD_BCRYPT); // On hash le mot de passe avec BCRYPT
-            $utilisateur = new Utilisateur($idUtilisateur,$pseudo, $photoProfil, $banniereProfil, $mail, $mdp, $role); // Role par défaut : utilisateur
-            $utilisateur->setIdUtilisateur($this->getPdo()->lastInsertId());
-            $managerUtilisateur->creeUtilisateur($utilisateur);
-
-
-            header('Location: index.php?controler=utilisateur&methode=verifConnexion');
+            echo $template->render(['erreurs' => $erreurs, 'donnees' => $donneesFormulaire]);
+            return;
         }
+
+        // Vérifie si l'email existe déjà
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        if ($managerUtilisateur->emailExiste($donneesFormulaire['mail'])) {
+            $template = $this->getTwig()->load('inscription.html.twig');
+            echo $template->render(['message' => 'L\'adresse mail est déjà utilisée', 'donnees' => $donneesFormulaire]);
+            return;
+        }
+
+        // Hachage du mot de passe
+        $donneesFormulaire['mdp'] = password_hash($donneesFormulaire['mdp'], PASSWORD_BCRYPT);
+
+        // Création de l'utilisateur
+        $utilisateur = new Utilisateur(
+            $donneesFormulaire['idUtilisateur'],
+            $donneesFormulaire['pseudo'],
+            $donneesFormulaire['photoProfil'],
+            $donneesFormulaire['banniereProfil'],
+            $donneesFormulaire['mail'],
+            $donneesFormulaire['mdp'],
+            $donneesFormulaire['role']
+        );
+
+        // Sauvegarde dans la base de données
+        $managerUtilisateur->creerUtilisateur($utilisateur);
+
+        // Redirection vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        exit;
     }
+
+
+        /**
+         * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
+         * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
+         * 
+         * @return void
+         */
+        public function deconnexion(){
+            session_destroy();
+            header('Location: index.php');
+        }
 }

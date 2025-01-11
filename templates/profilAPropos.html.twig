@@ -1,2 +1,43 @@
-{% extends 'base_template.html.twig' %}
-    {% block title %}Profil : A Propos - {{ constant('WEBSITE_TITLE')}} {% endblock %}
+{% extends 'base_template_profil.html.twig' %}   
+    
+{% block title %}
+    A Propos - {{ constant('WEBSITE_TITLE')}} 
+{% endblock %}
+    
+
+
+{% block content %}    
+    <!-- Titre de la partie notification -->
+    <div class="container mt-2">
+        <h1>A propos de {{ utilisateur.pseudo }}</h1>
+    </div>
+    
+    <!-- Affichage des messages -->
+    {% if messageListe is empty %}
+        <p class="text-center">Aucun message posté.</p>
+    {% else %}
+        <div class="container">
+            {% for message in messageListe %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p>{{forum.nom}}</p>
+                        <p>{{ message.contenu }}</p>
+                    </div>
+
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <form method="POST" action="index.php?controleur=message&methode=like">
+                                <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
+                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLikes }}</button>
+                            </form>
+                            <form method="POST" action="index.php?controleur=message&methode=dislike">
+                                <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
+                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
