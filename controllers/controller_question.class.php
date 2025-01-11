@@ -50,21 +50,20 @@ class ControllerQuestion extends Controller {
             exit;
         }
     
-        // Initialiser le score pour la première question
-        if ($numero === 1) {
-            $_SESSION['score'] = 0;
-        }
+        // // Initialiser le score pour la première question
+        // if ($numero === 1) {
+        //     $_SESSION['score'] = 0;
+        // }
         
-        // Récupérer la question courante
-        $managerQuestion = new QuestionDao($this->getPdo());
-        $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+        // // Récupérer la question courante
+        // $managerQuestion = new QuestionDao($this->getPdo());
+        // $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
     
-        if (!$question) {
-            // Si aucune question n'est trouvée, afficher le score final
-            header("Location: index.php?controleur=question&methode=afficherScore&idQuizz=$idQuizz");
-            exit;
-        }
-        
+        // if (!$question) {
+        //     // Si aucune question n'est trouvée, afficher le score final
+        //     header("Location: index.php?controleur=question&methode=afficherScore&idQuizz=$idQuizz");
+        //     exit;
+        // }
 
 
     // Fonction pour ajouter une question à un quizz
