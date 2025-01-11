@@ -246,7 +246,7 @@ class OADao
     public function findRandomOeuvres(): array
     {
         $randomPage = rand(1, 100);
-        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage]);
+        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage,'include_adult' => 'false']);
 
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune œuvre aléatoire trouvée.');
