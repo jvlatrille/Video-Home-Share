@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @file controller_profil.class.php
+ * @author Despré-Hildevert Léa
+ * @brief Controleur des 3 pages qui composent la page de profil
+ * 
+ * @version 2.0
+ * @date 14/11/2024
+ */
+
 class ControllerProfil extends Controller
 {
     private array $reglesValidation;
@@ -310,7 +319,12 @@ class ControllerProfil extends Controller
 
 
 
-
+    
+    /**
+     * @brief Affiche toutes les notifications de l'utilisateur connecté sur la page notification
+     *
+     * @return void
+     */
     //Fonction pour afficher toutes les notif d'une personne 
     public function listerNotif()
     {
@@ -334,6 +348,12 @@ class ControllerProfil extends Controller
     
     }
 
+    
+    /**
+     * @brief Affiche une notification 
+     *
+     * @return void
+     */
     //Fonction pour afficher une notification
     public function afficherNotif()
     {
@@ -357,6 +377,11 @@ class ControllerProfil extends Controller
     }
 
     
+    /**
+     * @brief Supprime une notification de l'utilisateur connecté
+     *
+     * @return void
+     */
     //Fonction pour supprimer une notification
     public function supprimerUneNotif()
     {
@@ -379,6 +404,12 @@ class ControllerProfil extends Controller
         header('Location: index.php?controleur=profil&methode=listerNotif&id='.$idUtilisateur.'');
     }
 }
+
+    /**
+     * @brief Supprime toutes les notifications de l'utilisateur connecté
+     *
+     * @return void
+     */
     //Fonction pour supprimer toutes les notifications d'une personne
     public function supprimerToutesLesNotifs()
     {
@@ -400,6 +431,12 @@ class ControllerProfil extends Controller
         }
     }
 
+
+    /**
+     * @brief Affiche les messages postés par l'utilisateur connecté sur la page APropos
+     *
+     * @return void
+     */
 
     //Fonction pour afficher les informations de A Propos
     public function afficherAPropos()
