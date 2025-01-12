@@ -1,16 +1,56 @@
 <?php
 
+/**
+ * @file utilisateur.class.php
+ * @author LEVAL Noah
+ * @brief Classe Utilisateur pour pouvoir instancier des utilisateurs
+ * @version 1.0
+ * @date 
+ */
+
 class Utilisateur
 {
     //attribut
+    /**
+    * @brief Identifiant unique de l'utilisateur
+    */
     private ?int $idUtilisateur;
+    /**
+    * @brief pseudonyme de l'utilisateur
+    */
     private ?string $pseudo;
+    /**
+    * @brief chemin d'accee de la photo de profil de l'utilisateur
+    */
     private ?string $photoProfil;
+    /**
+    * @brief chemin d'accee de la banniere de l'utilisateur
+    */
     private ?string $banniereProfil;
+    /**
+    * @brief adresse mail de l'utilisateur
+    */
     private ?string $adressMail;
+    /**
+    * @brief mot de passe hacher de l'utilisateur
+    */
     private ?string $motDePasse;
+    /**
+    * @brief role de l'utilisateur
+    */
     private ?string $role;
 
+    /**
+     * @brief Constructeur de la classe Utilisateur
+     * @param int|null $idUtilisateur Identifiant unique de l'utilisateur
+     * @param string|null $pseudo pseudonyme de l'utilisateur
+     * @param string|null $photoProfil chemin d'accee de la photo de profil de l'utilisateur
+     * @param string|null $banniereProfil chemin d'accee de la banniere de l'utilisateur
+     * @param string|null $adressMail adresse mail de l'utilisateur
+     * @param string|null $motDePasse mot de passe hacher de l'utilisateur
+     * @param string|null $role role de l'utilisateur
+     * @return void
+     */
     // Constructeur de la classe Personne
     public function __construct(?int $idUtilisateur = null, 
                                 ?string $pseudo = null, 
@@ -30,7 +70,9 @@ class Utilisateur
     }
 
     /**
-     * Get the value of idUtilisateur
+     * @brief Getteur de l'dentifiant unique de l'utilisateur
+     *
+     * @return ?int
      */
     public function getIdUtilisateur(): ?int
     {
@@ -38,7 +80,9 @@ class Utilisateur
     }
 
     /**
-     * Set the value of idUtilisateur
+     * @brief Setteur de l'identifiant unique de l'utilisateur
+     * @param int idUtilisateur
+     * @return void
      */
     public function setIdUtilisateur(?int $idUtilisateur): void
     {
@@ -46,15 +90,19 @@ class Utilisateur
     }
 
     /**
-     * Get the value of pseudo
+     * @brief Getteur du pseudonyme de l'utilisateur
+     *
+     * @return ?string
      */
     public function getPseudo(): ?string
     {
         return $this->pseudo;
     }
 
-    /**
-     * Set the value of pseudo
+     /**
+     * @brief Setteur du pseudonyme de l'utilisateur
+     * @param string pseudo
+     * @return void
      */
     public function setPseudo(?string $pseudo): void
     {
@@ -62,15 +110,19 @@ class Utilisateur
     }
 
     /**
-     * Get the value of photoProfil
+     * @brief Getteur du chemin d'accee de la photo de profil de l'utilisateur
+     *
+     * @return ?string
      */
     public function getPhotoProfil(): ?string
     {
         return $this->photoProfil;
     }
 
-    /**
-     * Set the value of photoProfil
+     /**
+     * @brief Setteur du chemin d'accee de la photo de profil de l'utilisateur
+     * @param string photoProfil
+     * @return void
      */
     public function setPhotoProfil(?string $photoProfil): void
     {
@@ -78,7 +130,9 @@ class Utilisateur
     }
 
     /**
-     * Get the value of banniereProfil
+     * @brief Getteur du chemin d'accee de la banniere de l'utilisateur
+     *
+     * @return ?string
      */
     public function getBanniereProfil(): ?string
     {
@@ -86,7 +140,9 @@ class Utilisateur
     }
 
     /**
-     * Set the value of banniereProfil
+     * @brief Setteur du chemin d'accee de la banniere de l'utilisateur
+     * @param string banniereProfil
+     * @return void
      */
     public function setBanniereProfil(?string $banniereProfil): void
     {
@@ -94,7 +150,9 @@ class Utilisateur
     }
 
     /**
-     * Get the value of adressMail
+     * @brief Getteur de l'adresse mail de l'utilisateur
+     *
+     * @return ?string
      */
     public function getAdressMail(): ?string
     {
@@ -102,7 +160,9 @@ class Utilisateur
     }
 
     /**
-     * Set the value of adressMail
+     * @brief Setteur de l'adresse mail de l'utilisateur
+     * @param string adressMail
+     * @return void
      */
     public function setAdressMail(?string $adressMail): void
     {
@@ -110,7 +170,9 @@ class Utilisateur
     }
 
     /**
-     * Get the value of motDePasse
+     * @brief Getteur du mot de passe hacher de l'utilisateur
+     *
+     * @return ?string
      */
     public function getMotDePasse(): ?string
     {
@@ -118,7 +180,9 @@ class Utilisateur
     }
 
     /**
-     * Set the value of motDePasse
+     * @brief Setteur du mot de passe hacher de l'utilisateur
+     * @param string motDePasse
+     * @return void
      */
     public function setMotDePasse(?string $motDePasse): void
     {
@@ -126,7 +190,9 @@ class Utilisateur
     }
 
     /**
-     * Get the value of role
+     * @brief Getteur du role de l'utilisateur
+     *
+     * @return ?string
      */
     public function getRole(): ?string
     {
@@ -134,7 +200,9 @@ class Utilisateur
     }
 
     /**
-     * Set the value of role
+     * @brief Setteur du role de l'utilisateur
+     * @param string role
+     * @return void
      */
     public function setRole(?string $role): void
     {
