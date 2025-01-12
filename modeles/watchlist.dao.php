@@ -287,6 +287,12 @@ class WatchListDao {
         }
     }
 
+    /**
+     * @brief Fonction pour afficher les oeuvres d'une Watchlist
+     *
+     * @param integer $idWatchlist
+     * @return array|null la liste des oeuvres de la Watchlist ou null si non trouvée
+     */
     public function afficherOaWatchlist(int $idWatchlist): ?array {
         $sql = "SELECT idTMDB FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :idWatchlist";
         

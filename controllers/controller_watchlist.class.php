@@ -38,11 +38,17 @@ class ControllerWatchList extends Controller
             $managerWatchList = new WatchListDao($this->getPdo());
             $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
 
+            //Recuperer des OA pour les suggestions
+            $managerOa = new OaDao($this->getPdo());
+            $oas = $managerOa->findRandomOeuvres();
+
+
             // Generer la vue
             $template = $this->getTwig()->load('watchlists.html.twig');
 
             echo $template->render([
                 'watchListListe' => $watchListListe,
+                'oas' => $oas
             ]);
             } 
         else {
@@ -113,11 +119,11 @@ class ControllerWatchList extends Controller
 
             // Récupère les données de la watchlist depuis le formulaire
             $idWatchList = $_POST['idWatchList'] ?? null;
-            $titre = $_POST['titre'] ?? $_GET['titre'] ?? null;
-            $genre = $_POST['genre'] ?? $_GET['genre'] ?? null;
-            $description = $_POST['description'] ?? $_GET['description'] ?? null;
-            $visible = $_POST['visible'] ?? $_GET['visible'] ?? null;
-            $idTMDB = $_POST['listeOeuvres'] ?? $_GET['listeOeuvres'] ?? null;
+            $titre = $_POST['titre'] ? : null;
+            $genre = $_POST['genre'] ?: null;
+            $description = $_POST['description'] ?: null;
+            $visible = $_POST['visible'] ?: null;
+            $idTMDB = json_decode($_POST['listeOeuvres'], true);
             $idTMDB = implode(',', $idTMDB);
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
@@ -133,8 +139,6 @@ class ControllerWatchList extends Controller
             $watchList->setIdUtilisateur($idUtilisateur);
             $managerWatchList->creerWatchlist($watchList);
 
-   
-            //a finir, meettre des suggestions etc 
 
             //Redirige vers la liste des watchlists
             header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
