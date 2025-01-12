@@ -1,0 +1,100 @@
+:root {
+    --beige-clair: #D5D0AF;
+    --gris-fonce: #333333;
+    --marron-fonce: #73422B;
+    --rouge-fonce: #A2140A;
+    --bleu-doux: #4B99BD;
+    --blanc: #FFFFFF;
+    --gris-clair: #F5F5F5;
+}
+
+body {
+    background-color: var(--beige-clair);
+    color: var(--gris-fonce);
+    font-family: Arial, sans-serif;
+}
+
+#top {
+    background-color: var(--beige-clair);
+    color: var(--marron-fonce);
+    border-bottom: 2px solid var(--rouge-fonce);
+}
+
+a {
+    color: var(--rouge-fonce);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--bleu-doux);
+    text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--marron-fonce);
+    font-weight: bold;
+}
+
+.tab {
+    background-color: var(--marron-fonce);
+    color: var(--rouge-fonce);
+}
+
+.tab a {
+    color: var(--rouge-fonce);
+}
+
+.tab a:hover {
+    color: var(--beige-clair);
+}
+
+td#projectalign {
+    background-color: var(--beige-clair);
+    color: var(--gris-fonce);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+div.contents {
+    background-color: var(--blanc);
+    color: var(--gris-fonce);
+    padding: 15px;
+    border-radius: 5px;
+}
+
+div.fragment {
+    background-color: var(--gris-clair);
+    border: 1px solid var(--marron-fonce);
+    border-radius: 5px;
+    padding: 10px;
+    color: var(--gris-fonce);
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background-color: var(--blanc);
+}
+
+th, td {
+    border: 1px solid var(--marron-fonce);
+    padding: 8px;
+    color: var(--gris-fonce);
+}
+
+th {
+    background-color: var(--marron-fonce);
+    color: var(--rouge-fonce);
+}
+
+.navbar-dropdown a:hover {
+    color: var(--bleu-doux);
+}
+
+#footer {
+    background-color: var(--marron-fonce);
+    color: var(--beige-clair);
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+}
