@@ -28,6 +28,8 @@ Video-Home-Share/
 │   ├── style.css       # Styles CSS spécifiques  
 │   ├── styles.css      # Généré depuis custom.scss  
 │   ├── styles.css.map  # Carte source CSS  
+│ 
+├── docs/  # Fichier contenant la documentation de notre application disponible à l'adresse 
 │  
 ├── img/  
 │   ├── banniere/       # Images pour les bannières  
