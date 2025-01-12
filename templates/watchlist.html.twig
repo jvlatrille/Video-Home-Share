@@ -19,7 +19,11 @@
             </div>
             <div class="row">
                 {% for oa in oas %}
-            
+            {% if erreurs is defined  %}
+                <div class="alert alert-danger" role="alert">
+                    {{ erreurs|join('<br>') }}
+                </div>
+            {% endif %}
                     <div class="col-md-4 mb-3">
                         <div class="card" style="background-color: transparent; border: none;">
                             <button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#oaModal{{ oa.idOa }}">
