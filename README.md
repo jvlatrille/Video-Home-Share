@@ -54,7 +54,7 @@ Entrez la commande ```bash npm install``` dans votre terminal, dans le dossier c
 Entrez la commande ```bash composer install``` dans votre terminal, dans le dossier contenant les fichiers de l'application
 
 ### 3 - Importer la BD  
-*Si vous êtes sur Lakartxela, vous pouvez passer cette étape)*
+*Si vous êtes sur Lakartxela, vous pouvez passer cette étape).*  
 Importez le fichier namrein_pro.sql dans votre gestionnaire de base de données.
 
 ### 4 - Modifier le fichier config/template.yaml
