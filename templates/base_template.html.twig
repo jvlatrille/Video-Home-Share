@@ -85,7 +85,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header class="header-bg text-light header-sm container-fluid">
-        <nav class="navbar container-fluid d-flex justify-content-between align-items-center">
+        <nav class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
             <!-- Logo et bouton Menu -->
             <div class="d-flex align-items-center">
                 <a class="navbar-brand d-flex align-items-center" href="index.php">
@@ -98,41 +98,31 @@
             </div>
         
             <!-- Barre de recherche -->
-            <form class="d-flex justify-content-center" style="flex-grow: 1;" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
+            <form class="d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
                 <input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
-              
             </form>
-            {% if utilisateurConnecte is null %}
-            <!-- Bouton Connexion/Déconnexion et Admin -->
-            <div class="me-3">
-                <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
-            </div>
-            {% else %}
             
-            <div class="me-3">
-                {% if utilisateurConnecte.getRole == 'admin' %}
-                    <a href="index.php?controleur=admin&methode=render" class="btn btn-custom me-2">Administration</a>
+            <!-- Bouton Connexion/Déconnexion et Admin -->
+            <div class="me-3 mt-2 mt-md-0">
+                {% if utilisateurConnecte is null %}
+                    <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
+                {% else %}
+                    {% if utilisateurConnecte.getRole == 'admin' %}
+                        <a href="index.php?controleur=admin&methode=render" class="btn btn-custom me-2">Administration</a>
+                    {% endif %}
+                    <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
                 {% endif %}
-                <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
             </div>
-            {% endif %}
         </nav>
 
         <!-- Menu déroulant sous le bouton "Menu" -->
         <div class="collapse" id="menuBar">
-            <div class="container py-2 d-flex justify-content-center">
-                <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2">Forum</a>
-
-                <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
-
-                <a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">WatchList</a>
-
-
-                <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
-
-                <a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
-                
-
+            <div class="container py-2 d-flex justify-content-center flex-wrap">
+                <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
+                <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
+                <a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
+                <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
+                <a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">Profil</a>
             </div>
         </div>
     </header>
