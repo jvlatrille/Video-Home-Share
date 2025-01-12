@@ -1,0 +1,464 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Video Home Share: Référence de la classe WatchListDao</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="LogoPopCornDOC.png"/></td>
+  <td id="projectalign">
+   <div id="projectname">Video Home Share<span id="projectnumber">&#160;1</span>
+   </div>
+   <div id="projectbrief">Video Home Share (VHS) est une application web qui vise à réintroduire la convivialité dans le monde du streaming. Celle-ci est axée sur les films et séries, tout en offrant davantage de contenu. L’application est le mélange d’un forum et d’une plateforme de jeu et d’échange ludique, offrant une expérience utilisateur unique. Sur VHS, les utilisateurs ont la possibilité de partager leur avis sur des thématiques qu’ils choisissent, discuter entre eux dans des forums, commenter des œuvres et lister celles qui nous reste à regarder, tester leurs connaissances grâce à des quizz, ou régler des conflits grâce à des mini-jeux.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche',false);
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){ initResizable(false); });
+/* @license-end */
+</script>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Fonctions membres publiques</a>  </div>
+  <div class="headertitle"><div class="title">Référence de la classe WatchListDao</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Fonctions membres publiques</h2></td></tr>
+<tr class="memitem:a1af66732d88f0cf13159e9a0475fcbf3" id="r_a1af66732d88f0cf13159e9a0475fcbf3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1af66732d88f0cf13159e9a0475fcbf3">__construct</a> (PDO $pdo=null)</td></tr>
+<tr class="memdesc:a1af66732d88f0cf13159e9a0475fcbf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructeur de la classe <a class="el" href="class_watch_list_dao.html">WatchListDao</a>.  <br /></td></tr>
+<tr class="separator:a1af66732d88f0cf13159e9a0475fcbf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ba50cbde423b0b17031ea550a599ae8" id="r_a1ba50cbde423b0b17031ea550a599ae8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ba50cbde423b0b17031ea550a599ae8">find</a> (int $id)</td></tr>
+<tr class="memdesc:a1ba50cbde423b0b17031ea550a599ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour récupérer une Watchlist avec son identifiant.  <br /></td></tr>
+<tr class="separator:a1ba50cbde423b0b17031ea550a599ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a508d831b0dc0eff128927dd44df1d26f" id="r_a508d831b0dc0eff128927dd44df1d26f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a508d831b0dc0eff128927dd44df1d26f">findAll</a> (int $idUtilisateur)</td></tr>
+<tr class="memdesc:a508d831b0dc0eff128927dd44df1d26f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour récupérer toutes les watchlists d'un utilisateur.  <br /></td></tr>
+<tr class="separator:a508d831b0dc0eff128927dd44df1d26f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb37dd97336b28f228a249c549a2cdd3" id="r_aeb37dd97336b28f228a249c549a2cdd3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb37dd97336b28f228a249c549a2cdd3">recupererOeuvresParWatchlist</a> (string $idTMDB)</td></tr>
+<tr class="memdesc:aeb37dd97336b28f228a249c549a2cdd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour récupérer les oeuvres d'une Watchlist.  <br /></td></tr>
+<tr class="separator:aeb37dd97336b28f228a249c549a2cdd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ffd29b37acdf3a126f9d79d63f1e04e" id="r_a4ffd29b37acdf3a126f9d79d63f1e04e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ffd29b37acdf3a126f9d79d63f1e04e">hydrate</a> (array $data)</td></tr>
+<tr class="memdesc:a4ffd29b37acdf3a126f9d79d63f1e04e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour hydrater une Watchlist.  <br /></td></tr>
+<tr class="separator:a4ffd29b37acdf3a126f9d79d63f1e04e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2851146be85ac9bc471c7e7fd9210b89" id="r_a2851146be85ac9bc471c7e7fd9210b89"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2851146be85ac9bc471c7e7fd9210b89">hydrateAll</a> (array $resultats)</td></tr>
+<tr class="memdesc:a2851146be85ac9bc471c7e7fd9210b89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour hydrater plusieurs Watchlists.  <br /></td></tr>
+<tr class="separator:a2851146be85ac9bc471c7e7fd9210b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afaf3760bb131882722dbe08833b75666" id="r_afaf3760bb131882722dbe08833b75666"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afaf3760bb131882722dbe08833b75666">findAllVisible</a> (int $idUtilisateur)</td></tr>
+<tr class="memdesc:afaf3760bb131882722dbe08833b75666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour récupérer toutes les Watchlists visibles n'appartenant pas à l'utilisateur.  <br /></td></tr>
+<tr class="separator:afaf3760bb131882722dbe08833b75666"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18f9254790269020e5b51f59491cfa2f" id="r_a18f9254790269020e5b51f59491cfa2f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18f9254790269020e5b51f59491cfa2f">creerWatchlist</a> (<a class="el" href="class_watch_list.html">WatchList</a> $watchlist)</td></tr>
+<tr class="memdesc:a18f9254790269020e5b51f59491cfa2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour créer une Watchlist.  <br /></td></tr>
+<tr class="separator:a18f9254790269020e5b51f59491cfa2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a2cee12fb6c907a4eebec8e173d1dfb" id="r_a5a2cee12fb6c907a4eebec8e173d1dfb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a2cee12fb6c907a4eebec8e173d1dfb">supprimerUneWatchlist</a> (int $id, int $idUtilisateur)</td></tr>
+<tr class="memdesc:a5a2cee12fb6c907a4eebec8e173d1dfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour supprimer une Watchlist.  <br /></td></tr>
+<tr class="separator:a5a2cee12fb6c907a4eebec8e173d1dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16fe52e4ff786bba9ddf5cdbab3e7e78" id="r_a16fe52e4ff786bba9ddf5cdbab3e7e78"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16fe52e4ff786bba9ddf5cdbab3e7e78">ajouterOA</a> (int $idWatchlist, int $idOA)</td></tr>
+<tr class="memdesc:a16fe52e4ff786bba9ddf5cdbab3e7e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour ajouter une <a class="el" href="class_o_a.html">OA</a> à une Watchlist.  <br /></td></tr>
+<tr class="separator:a16fe52e4ff786bba9ddf5cdbab3e7e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae515fa3a10be62f399a0fb4c27b085e7" id="r_ae515fa3a10be62f399a0fb4c27b085e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae515fa3a10be62f399a0fb4c27b085e7">supprimerOA</a> (int $idWatchlist, int $idOA)</td></tr>
+<tr class="memdesc:ae515fa3a10be62f399a0fb4c27b085e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fonction pour supprimer une <a class="el" href="class_o_a.html">OA</a> d'une Watchlist.  <br /></td></tr>
+<tr class="separator:ae515fa3a10be62f399a0fb4c27b085e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1c19255173b2520f36efe599f1e0467" id="r_ac1c19255173b2520f36efe599f1e0467"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1c19255173b2520f36efe599f1e0467">afficherOaWatchlist</a> (int $idWatchlist)</td></tr>
+<tr class="separator:ac1c19255173b2520f36efe599f1e0467"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des constructeurs et destructeur</h2>
+<a id="a1af66732d88f0cf13159e9a0475fcbf3" name="a1af66732d88f0cf13159e9a0475fcbf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1af66732d88f0cf13159e9a0475fcbf3">&#9670;&#160;</a></span>__construct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype">PDO</td>          <td class="paramname"><span class="paramname"><em>$pdo</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructeur de la classe <a class="el" href="class_watch_list_dao.html">WatchListDao</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">PDO</td><td class="paramname">$pdo</td><td>: instance de PDO </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Documentation des fonctions membres</h2>
+<a id="ac1c19255173b2520f36efe599f1e0467" name="ac1c19255173b2520f36efe599f1e0467"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1c19255173b2520f36efe599f1e0467">&#9670;&#160;</a></span>afficherOaWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">afficherOaWatchlist </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idWatchlist</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a16fe52e4ff786bba9ddf5cdbab3e7e78" name="a16fe52e4ff786bba9ddf5cdbab3e7e78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16fe52e4ff786bba9ddf5cdbab3e7e78">&#9670;&#160;</a></span>ajouterOA()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ajouterOA </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idWatchlist</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idOA</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour ajouter une <a class="el" href="class_o_a.html">OA</a> à une Watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$idWatchlist</td><td>identifiant de la Watchlist </td></tr>
+    <tr><td class="paramtype">integer</td><td class="paramname">$idOA</td><td>identifiant de l'<a class="el" href="class_o_a.html">OA</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>bool true si l'<a class="el" href="class_o_a.html">OA</a> a été ajoutée à la Watchlist, false sinon </dd></dl>
+
+</div>
+</div>
+<a id="a18f9254790269020e5b51f59491cfa2f" name="a18f9254790269020e5b51f59491cfa2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18f9254790269020e5b51f59491cfa2f">&#9670;&#160;</a></span>creerWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">creerWatchlist </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_watch_list.html">WatchList</a></td>          <td class="paramname"><span class="paramname"><em>$watchlist</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour créer une Watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_watch_list.html">WatchList</a></td><td class="paramname">$watchlist</td><td>la Watchlist à créer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>WatchList|null la Watchlist créée ou null si erreur </dd></dl>
+<dl class="bug"><dt><b><a class="el" href="bug.html#_bug000001">Bogue</a></b></dt><dd>la fonction ne créer pas la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="a1ba50cbde423b0b17031ea550a599ae8" name="a1ba50cbde423b0b17031ea550a599ae8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ba50cbde423b0b17031ea550a599ae8">&#9670;&#160;</a></span>find()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">find </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour récupérer une Watchlist avec son identifiant. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$id</td><td>identifiant de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>WatchList|null la Watchlist correspondant à l'identifiant ou null si non trouvée </dd></dl>
+
+</div>
+</div>
+<a id="a508d831b0dc0eff128927dd44df1d26f" name="a508d831b0dc0eff128927dd44df1d26f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a508d831b0dc0eff128927dd44df1d26f">&#9670;&#160;</a></span>findAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">findAll </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idUtilisateur</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour récupérer toutes les watchlists d'un utilisateur. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$idUtilisateur</td><td>identifiant de l'utilisateur </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>array|null la liste des watchlists de l'utilisateur ou null si non trouvée </dd></dl>
+
+</div>
+</div>
+<a id="afaf3760bb131882722dbe08833b75666" name="afaf3760bb131882722dbe08833b75666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaf3760bb131882722dbe08833b75666">&#9670;&#160;</a></span>findAllVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">findAllVisible </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idUtilisateur</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour récupérer toutes les Watchlists visibles n'appartenant pas à l'utilisateur. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$idUtilisateur</td><td>identifiant de l'utilisateur </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>array|null la liste des Watchlists visibles n'appartenant pas à l'utilisateur ou null si non trouvée </dd></dl>
+
+</div>
+</div>
+<a id="a4ffd29b37acdf3a126f9d79d63f1e04e" name="a4ffd29b37acdf3a126f9d79d63f1e04e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ffd29b37acdf3a126f9d79d63f1e04e">&#9670;&#160;</a></span>hydrate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">hydrate </td>
+          <td>(</td>
+          <td class="paramtype">array</td>          <td class="paramname"><span class="paramname"><em>$data</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour hydrater une Watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$data</td><td>tableau associatif contenant les données de la Watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd><a class="el" href="class_watch_list.html">WatchList</a> la Watchlist hydratée sans les films </dd></dl>
+
+</div>
+</div>
+<a id="a2851146be85ac9bc471c7e7fd9210b89" name="a2851146be85ac9bc471c7e7fd9210b89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2851146be85ac9bc471c7e7fd9210b89">&#9670;&#160;</a></span>hydrateAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">hydrateAll </td>
+          <td>(</td>
+          <td class="paramtype">array</td>          <td class="paramname"><span class="paramname"><em>$resultats</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour hydrater plusieurs Watchlists. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array</td><td class="paramname">$resultats</td><td>tableau de tableaux associatifs contenant les données de plusieurs Watchlists </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>array la liste des Watchlists hydratées sans les films </dd></dl>
+
+</div>
+</div>
+<a id="aeb37dd97336b28f228a249c549a2cdd3" name="aeb37dd97336b28f228a249c549a2cdd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb37dd97336b28f228a249c549a2cdd3">&#9670;&#160;</a></span>recupererOeuvresParWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">recupererOeuvresParWatchlist </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>$idTMDB</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour récupérer les oeuvres d'une Watchlist. </p>
+<p>Cette fonction permet de récupérer les oeuvres d'une Watchlist en séparant la chaîne IDTMDB des virgules pour extraire les identifiants des oeuvres</p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$idWatchlist</td><td>identifiant de la Watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>array la liste des oeuvres de la Watchlist </dd></dl>
+
+</div>
+</div>
+<a id="ae515fa3a10be62f399a0fb4c27b085e7" name="ae515fa3a10be62f399a0fb4c27b085e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae515fa3a10be62f399a0fb4c27b085e7">&#9670;&#160;</a></span>supprimerOA()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">supprimerOA </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idWatchlist</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idOA</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour supprimer une <a class="el" href="class_o_a.html">OA</a> d'une Watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$idWatchlist</td><td>identifiant de la Watchlist </td></tr>
+    <tr><td class="paramtype">integer</td><td class="paramname">$idOA</td><td>identifiant de l'<a class="el" href="class_o_a.html">OA</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>bool true si l'<a class="el" href="class_o_a.html">OA</a> a été supprimée de la Watchlist, false sinon </dd></dl>
+
+</div>
+</div>
+<a id="a5a2cee12fb6c907a4eebec8e173d1dfb" name="a5a2cee12fb6c907a4eebec8e173d1dfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a2cee12fb6c907a4eebec8e173d1dfb">&#9670;&#160;</a></span>supprimerUneWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">supprimerUneWatchlist </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>$idUtilisateur</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fonction pour supprimer une Watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer</td><td class="paramname">$id</td><td>identifiant de la Watchlist </td></tr>
+    <tr><td class="paramtype">integer</td><td class="paramname">$idUtilisateur</td><td>identifiant de l'utilisateur </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>bool true si la Watchlist a été supprimée, false sinon </dd></dl>
+
+</div>
+</div>
+<hr/>La documentation de cette classe a été générée à partir du fichier suivant :<ul>
+<li>modeles/<a class="el" href="watchlist_8dao_8php.html">watchlist.dao.php</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Généré par&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
