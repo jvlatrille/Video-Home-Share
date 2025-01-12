@@ -116,14 +116,57 @@ class ControllerWatchList extends Controller
     
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $donnees = [
+                'idWatchList' => $_POST['idWatchList'] ?? null,
+                'titre' => $_POST['titre'] ?? null,
+                'genre' => $_POST['genre'] ?? null,
+                'description' => $_POST['description'] ?? null,
+                'visible' => $_POST['visible'] ?? null,
+                'listeOeuvres' => json_decode($_POST['listeOeuvres'], true) ?? null,
+            ];
+            $regles = [
+                'titre' => [
+                    'obligatoire' => true,
+                     'type' => 'string',
+                    'longueur_min' => 1,
+                    'longueur_max' => 255,
+                ],
+                'genre' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 1,
+                    'longueur_max' => 255,
+                ],
+                'description' => [
+                    'obligatoire' => true,
+                    'type' => 'string',
+                    'longueur_min' => 1,
+                    'longueur_max' => 255,
+                ],
+                'visible' => [
+                    'obligatoire' => true,
+                    'type' => 'int',
+                    'longueur_min' => 0,
+                    'longueur_max' => 1,
+                ],
+            ];
+                    
+            $validation = new Validator($regles);
+
+            if(!$validation->valider($donnees)){
+                $erreurs = $validation->getMessagesErreurs();
+                $template = $this->getTwig()->load('watchlists.html.twig');
+                echo $template->render(['erreurs' => $erreurs]);
+                return;
+            }
 
             // Récupère les données de la watchlist depuis le formulaire
-            $idWatchList = $_POST['idWatchList'] ?? null;
-            $titre = $_POST['titre'] ? : null;
-            $genre = $_POST['genre'] ?: null;
-            $description = $_POST['description'] ?: null;
-            $visible = $_POST['visible'] ?: null;
-            $idTMDB = json_decode($_POST['listeOeuvres'], true);
+            $idWatchList = $donnees['idWatchList'] ?: null;
+            $titre = $donnees['titre'] ?: null;
+            $genre = $donnees['genre'] ?: null;
+            $description = $donnees['description'] ?: null;
+            $visible = $donnees['visible'] ?: null;
+            $idTMDB = $donnees['listeOeuvres'];
             $idTMDB = implode(',', $idTMDB);
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
@@ -208,8 +251,37 @@ class ControllerWatchList extends Controller
     public function ajouterOaWatchList()
     {
         //Recupere les données du formulaire
-        $idWatchList = isset($_POST['idWatchList']) ? $_POST['idWatchList'] : null;
-        $idOeuvre = isset($_POST['idOeuvre']) ? $_POST['idOeuvre'] : null;
+        $donnees = [
+            'idWatchList' => $_POST['idWatchList'] ?? null,
+            'idOeuvre' => $_POST['idOeuvre'] ?? null,
+        ];
+
+        $regles = [
+            'idWatchList' => [
+                'obligatoire' => true,
+                'type' => 'int',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+            'idOeuvre' => [
+                'obligatoire' => true,
+                'type' => 'int',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+        ];
+
+        $validation = new Validator($regles);
+
+        if(!$validation->valider($donnees)){
+            $erreurs = $validation->getMessagesErreurs();
+            $template = $this->getTwig()->load('watchlists.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
+
+        $idWatchList = $donnees['idWatchList'];
+        $idOeuvre = $donnees['idOeuvre'];
 
         //Vérifie si l'oeuvre est déjà dans la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
