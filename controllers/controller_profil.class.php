@@ -14,7 +14,7 @@ class ControllerProfil extends Controller
     private array $reglesValidation;
 
     /**
-     * @brief Constructeur du controler de profils et des régles de validation des formulaires
+     * @brief Constructeur du controler de profil et des régles de validation des formulaires
      * @param \Twig\Environment $twig Environnement Twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
      */
