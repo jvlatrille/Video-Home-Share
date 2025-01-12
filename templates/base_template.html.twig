@@ -61,13 +61,13 @@
 
 		<!-- Google tag (gtag.js) -->
 		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-				    <script>
-				        window.dataLayer = window.dataLayer || [];
-				        function gtag(){dataLayer.push(arguments);}
-				        gtag('js', new Date());
-				
-				        gtag('config', 'G-TJGCV8L5XE');
-				    </script> #}
+								    <script>
+								        window.dataLayer = window.dataLayer || [];
+								        function gtag(){dataLayer.push(arguments);}
+								        gtag('js', new Date());
+								
+								        gtag('config', 'G-TJGCV8L5XE');
+								    </script> #}
 
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -167,7 +167,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 				<div class="footer-nav mb-3">
 					<a href="#" class="footer-link mx-2">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
-					<a href="#" class="footer-link mx-2">Contact</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
 				</div>
@@ -216,15 +216,15 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 									pour enrichir notre contenu.</p>
 								<h6>Crédits :</h6>
 								<ul>
-                                    <li>AMREIN Nathan - TP4</li>
-                                    <li>BAROS Arthur - TP3</li>
-                                    <li>CHIPY Thibault - TP4</li>
-                                    <li>DESPRE-HILDEVERT Léa - TP4</li>
-                                    <li>DIZY Lukas - TP3 (alternant)</li>
-                                    <li>LEVAL Noah - TP4</li>
-                                    <li>NOVION Tatiana - TP4 (alternante)</li>
-                                    <li>PIGEON Aymeric - TP 4</li>
-                                    <li>VINET LATRILLE Jules - TP4</li>
+									<li>AMREIN Nathan - TP4</li>
+									<li>BAROS Arthur - TP3</li>
+									<li>CHIPY Thibault - TP4</li>
+									<li>DESPRE-HILDEVERT Léa - TP4</li>
+									<li>DIZY Lukas - TP3 (alternant)</li>
+									<li>LEVAL Noah - TP4</li>
+									<li>NOVION Tatiana - TP4 (alternante)</li>
+									<li>PIGEON Aymeric - TP 4</li>
+									<li>VINET LATRILLE Jules - TP4</li>
 								</ul>
 								<p>Pour toute question, contactez-nous via la section
 									<strong>Contact</strong>.</p>
@@ -232,7 +232,68 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 						</div>
 					</div>
 				</div>
-
+				<!-- Modal Contact -->
+				<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<h5 class="modal-title fw-bold text-dark" id="contactModalLabel">Nous contacter</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark">
+								<p>Pour toute question ou suggestion, vous pouvez nous contacter :</p>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <strong>AMREIN Nathan</strong>
+                                        -
+                                        <a href="mailto:namrein@iutbayonne.univ-pau.fr" class="text-primary">namrein@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>BAROS Arthur</strong>
+                                        -
+                                        <a href="mailto:abaros@iutbayonne.univ-pau.fr" class="text-primary">abaros@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>CHIPY Thibault</strong>
+                                        -
+                                        <a href="mailto:tchipy@iutbayonne.univ-pau.fr" class="text-primary">tchipy@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>DESPRE-HILDEVERT Léa</strong>
+                                        -
+                                        <a href="mailto:ldhildevert@iutbayonne.univ-pau.fr" class="text-primary">ldhildevert@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>DIZY Lukas</strong>
+                                        -
+                                        <a href="mailto:ldizy@iutbayonne.univ-pau.fr" class="text-primary">ldizy@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>LEVAL Noah</strong>
+                                        -
+                                        <a href="mailto:noah.leval@etud.univ-pau.fr" class="text-primary">noah.leval@etud.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>NOVION Tatiana</strong>
+                                        -
+                                        <a href="mailto:tnovion@iutbayonne.univ-pau.fr" class="text-primary">tnovion@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>PIGEON Aymeric</strong>
+                                        -
+                                        <a href="mailto:apigeon001@iutbayonne.univ-pau.fr" class="text-primary">apigeon001@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>VINET LATRILLE Jules</strong>
+                                        -
+                                        <a href="mailto:jvlatrille@iutbayonne.univ-pau.fr" class="text-primary">jvlatrille@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                </ul>
+								<p>Nous vous répondrons dans les plus brefs délais !</p>
+							</div>
+						</div>
+					</div>
+				</div>
 
 				<div class="footer-social mb-2">
 					<div class="sharethis-inline-share-buttons"></div>
