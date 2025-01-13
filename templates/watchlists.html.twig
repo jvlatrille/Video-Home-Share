@@ -3,7 +3,7 @@
 {% block content %}
 	<div class="container">
 		<div class="row">
-			<h1 class="col-3">Vos watchlist</h1>
+			<h1 class="col-3">Mes watchlist</h1>
 			<!-- Bouton pour ouvrir la pop-up -->
 			<div class="col mt-2">
 				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWatchlistModal">
@@ -12,9 +12,15 @@
 			</div>
 		</div>
 
-
-
-		
+		{% if erreurs is defined and erreurs|length > 0 %}
+			<div class="alert alert-danger">
+				<ul>
+					{% for error in erreurs %}
+						<li>{{ error }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
 
 		<!-- Modal de création de watchlist -->
 		<div class="modal fade" id="createWatchlistModal" tabindex="-1" aria-labelledby="createWatchlistModalLabel" aria-hidden="true">
@@ -43,44 +49,72 @@
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
 								<select class="form-select" id="watchlistVisibility" name="visible">
-									<option value="public">Publique</option>
-									<option value="private">Privée</option>
+									<option value="1" {{ watchlist.visible|default('1') == '1' ? 'selected' : '' }}>Publique</option>
+									<option value="0" {{ watchlist.visible|default('0') == '0' ? 'selected' : '' }}>Privée</option>
+								</select>
+
+							</div>
+
+							<div class="mb-3">
+								<label for="watchlistSuggestions" class="form-label">Suggestions :</label>
+								<select class="form-select" id="watchlistSuggestions" name="suggestions" onchange="ajouterWatchlist(this)">
+									{% for oa in oas %}
+										<option value="{{ oa.idOa }}" data-poster-path="{{ oa.posterPath }}">{{ oa.nom }}</option>
+									{% endfor %}
 								</select>
 							</div>
 
-							<!-- Champ de recherche pour ajouter des titres -->
-							<div class="input-group mb-3">
-								<input type="text" class="form-control" placeholder="Ajouter des titres" aria-label="Ajouter des titres" aria-describedby="search-button">
-								<button class="btn btn-outline-secondary" type="button" id="search-button">
-									<i class="bi bi-search"></i>
-									<!-- Icône de recherche (nécessite Bootstrap Icons) -->
-								</button>
-							</div>
+							<div id="selectedItemsContainer" class="mt-3"></div>
 
-							<!-- Suggestions de titres -->
-							<div class="mb-3">
-								<label class="form-label">Suggestions :</label>
-								<div class="d-flex justify-content-start overflow-auto">
-									<div class="card me-2" style="width: 100px;">
-										<div class="card-body text-center">
-											<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
-											<p class="card-text mt-2">Titre 1</p>
-										</div>
-									</div>
-									<div class="card me-2" style="width: 100px;">
-										<div class="card-body text-center">
-											<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
-											<p class="card-text mt-2">Titre 2</p>
-										</div>
-									</div>
-									<div class="card me-2" style="width: 100px;">
-										<div class="card-body text-center">
-											<div class="placeholder-image" style="width: 100%; height: 100px; background-color: #ccc;"></div>
-											<p class="card-text mt-2">Titre 3</p>
-										</div>
-									</div>
-								</div>
-							</div>
+							<!-- Hidden input to store selected IDs -->
+							<input type="hidden" id="selectedIds" name="listeOeuvres" value="">
+
+							<script>
+								let listeOeuvres = [];
+
+function ajouterWatchlist(select) {
+const selectedId = select.value;
+if (! listeOeuvres.includes(selectedId)) {
+listeOeuvres.push(selectedId);
+updateSelectedIds();
+
+const selectedOption = select.options[select.selectedIndex];
+const selectedText = selectedOption.text;
+const selectedImage = selectedOption.getAttribute('data-poster-path');
+
+const selectedItem = document.createElement('div');
+selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
+selectedItem.id = 'item-' + selectedId;
+selectedItem.innerHTML = `
+											<span class="d-flex align-items-center">
+												<img src="${selectedImage}" alt="${selectedText}" class="me-2" style="width: 50px; height: auto;">
+												${selectedText}
+											</span>
+											<button type="button" class="btn-close" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}')"></button>
+										`;
+
+document.getElementById('selectedItemsContainer').appendChild(selectedItem);
+}
+}
+
+function supprimerDeWatchlist(id) {
+const index = listeOeuvres.indexOf(id);
+if (index > -1) {
+listeOeuvres.splice(index, 1);
+updateSelectedIds();
+
+const item = document.getElementById('item-' + id);
+if (item) {
+item.remove();
+}
+}
+}
+
+function updateSelectedIds() {
+document.getElementById('selectedIds').value = JSON.stringify(listeOeuvres);
+}
+							</script>
+
 
 							<!-- Bouton de soumission -->
 							<div class="text-center">
@@ -93,70 +127,66 @@
 		</div>
 
 
-
-
 		<!-- Liste des watchlists de l'utilisateur -->
-		
-			{% if watchListListe is defined %}
-				
-				{% for watchList in watchListListe %}
-				
+
+		{% if watchListListe is defined %}
+
+			{% for watchList in watchListListe %}
+
 				<div class="container text-center mt-2">
 					<div class="row">
 						<div class="col text-start">
-							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}"><h2>{{watchList.titre}}</h2></a>
+							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}">
+								<h2>{{watchList.titre}}</h2>
+							</a>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col">
-							<button class="bg-primary mt-5" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="prev">
-								<span class="carousel-control-prev-icon align-middle" aria-hidden="true"></span>
+						<div class="col-2 d-flex align-items-center justify-content-center">
+							<button class="bg-primary" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 								<span class="visually-hidden">Précédent</span>
 							</button>
 						</div>
-						<div class="col">
+						<div class="col-8">
 							<div id="{{watchList.idWatchlist}}" class="carousel slide" data-bs-ride="carousel">
 								<div class="carousel-inner">
-										<div class="carousel-item active">
-											<div class="row">										
-												{% for oa in watchList.listeOeuvres %}
-													<div class="col-4">
-														<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{oa.idOa}}"><img src="{{oa.posterPath}}" class="d-block w-100" alt="Film 1" max-width max-height></a>
-														<p>{{oa.nom}}</p>
-													</div>
-													
-													{% if loop.index % 3 == 0 %}
-														</div>
-														</div>
-														<div class="carousel-item">
-														<div class="row">
-													{% endif %}
+									<div class="carousel-item active">
+										<div class="row">
+											{% for oa in watchList.listeOeuvres %}
+												<div class="col-12 col-md-4">
+													<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{oa.idOa}}"><img src="{{oa.posterPath}}" class="d-block w-100" alt="{{oa.nom}}"></a>
+													<p>{{oa.nom}}</p>
+												</div>
 
-												{% endfor %}
+												{% if loop.index % 3 == 0 %}
+												</div>
 											</div>
+											<div class="carousel-item">
+												<div class="row">
+												{% endif %}
+
+											{% endfor %}
 										</div>
+									</div>
 								</div>
 							</div>
 						</div>
-						<div class="col">
-							<button class="bg-primary mt-5" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="next">
-								<span class="carousel-control-next-icon align-middle" aria-hidden="true"></span>
+						<div class="col-2 d-flex align-items-center justify-content-center">
+							<button class="bg-primary" type="button" data-bs-target="#{{watchList.idWatchlist}}" data-bs-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
 								<span class="visually-hidden">Suivant</span>
 							</button>
 						</div>
 					</div>
 				</div>
-				{% endfor %}
+			{% endfor %}
 
-				
-				
-				<div class="text-center mt-4">
-					<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
-				</div>
-			{% endif %}
-		</div>
 
+			<div class="text-center mt-4">
+				<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
+			</div>
+		{% endif %}
 	</div>
 
-
-{% endblock %}
+</div>{% endblock %}

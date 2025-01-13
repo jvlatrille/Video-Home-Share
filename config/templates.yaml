@@ -2,13 +2,13 @@
 
 # Connexion à la base de donnée
 DB_:
-  HOST: # Adresse de la BD
-  NAME: # Le nom de la BD
-  USER: # Le nom de l'utilisateur pour la BD
-  PASS:  # Son mot de passe
+  HOST: lakartxela.iutbayonne.univ-pau.fr
+  NAME: namrein_pro
+  USER:
+  PASS:
 PREFIXE_TABLE: vhs_
 
-# Constante de la partie vue (à ne pas modifier)
+# Constante de la partie vue
 WEBSITE_:
   TITLE: VHS - Video Home Share
   VERSION: 1.0
@@ -16,7 +16,6 @@ WEBSITE_:
   LANGUAGE: fr
   LOGO: img\LogoPopCorn.png
 
-# API TMDB (a ne pas modifier)
 TMDB_:
-  CLE_KEY: # Clé d'API TMDB
-  TOKEN_ACCES: # Token d'accès TMDB
+  CLE_KEY:
+  TOKEN_ACCES:

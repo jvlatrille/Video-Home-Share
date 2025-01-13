@@ -99,8 +99,9 @@
 </div>
 
 
+
     <div class="text-center mt-4">
-        <button id="loadRandomBtn" class="btn btn-primary">Encore !</button>
+        <button id="loadRandomBtn" class="btn btn-primary">Découvrir toujours plus !</button>
     </div>
 	<br><br>
 {% endif %}
@@ -109,40 +110,46 @@
 
 {% block script %} 
 <script>
-    document.getElementById('loadRandomBtn').addEventListener('click', function () {
-        fetch('index.php?controleur=oa&methode=decouvrirPlus')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.querySelector('#decouvrirOaContainer .row');
+    document.addEventListener('DOMContentLoaded', function () {
+    const loadRandomBtn = document.getElementById('loadRandomBtn');
 
-                if (data.length === 0 || data.error) {
-                    console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
-                    alert('Impossible de charger de nouvelles œuvres.');
-                    return;
-                }
+    if (loadRandomBtn) {
+        loadRandomBtn.addEventListener('click', function () {
+            fetch('index.php?controleur=oa&methode=decouvrirPlus')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.querySelector('#decouvrirOaContainer .row');
 
-                container.innerHTML = '';  // Vider l'ancien contenu
+                    if (data.length === 0 || data.error) {
+                        console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
+                        alert('Impossible de charger de nouvelles œuvres.');
+                        return;
+                    }
 
-                data.forEach(oa => {
-                    container.innerHTML += `
-                        <div class="col">
-                            <a href="index.php?controleur=oa&methode=afficherFilm&idOa=${oa.idOa}" class="text-decoration-none">
-                                <div class="card h-100 shadow-sm">
-                                    ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">` 
-                                    : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-                                    <div class="card-body text-center">
-                                        <h6 class="card-title text-truncate">${oa.nom}</h6>
+                    // ⚠️ SUPPRIMÉ : container.innerHTML = '';  (On ne vide plus le conteneur)
+
+                    data.forEach(oa => {
+                        container.innerHTML += `
+                            <div class="col">
+                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa=${oa.idOa}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
+                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                    `;
+                                </a>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des œuvres :', error);
+                    alert('Erreur de connexion avec le serveur.');
                 });
-            })
-            .catch(error => {
-                console.error('Erreur lors du chargement des œuvres :', error);
-                alert('Erreur de connexion avec le serveur.');
-            });
-    });
+        });
+    }
+});
 </script>
 {% endblock %}

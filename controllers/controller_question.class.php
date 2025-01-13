@@ -49,6 +49,7 @@ class ControllerQuestion extends Controller {
             exit;
         }
     
+
         // Initialiser le score pour la première question
         if ($numero === 1) {
             $_SESSION['score'] = 0;

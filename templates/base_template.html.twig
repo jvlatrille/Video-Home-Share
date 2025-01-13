@@ -1,222 +1,314 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
-<head>
-    <script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
+	<head>
+		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 
-    <script type="text/javascript">
-        tarteaucitron.init({
-            "privacyUrl": "", /* Privacy policy url */
-            "bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
+		<script type="text/javascript">
+			tarteaucitron.init({
+"privacyUrl": "", /* Privacy policy url */
+"bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
 
-            "hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
-            "cookieName": "tarteaucitron", /* Cookie name */
+"hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+"cookieName": "tarteaucitron", /* Cookie name */
 
-            "orientation": "middle", /* Banner position (top - bottom) */
-        
-            "groupServices": false, /* Group services by category */
-            "showDetailsOnClick": true, /* Click to expand the description */
-            "serviceDefaultState": "wait", /* Default state (true - wait - false) */
-                            
-            "showAlertSmall": false, /* Show the small banner on bottom right */
-            "cookieslist": false, /* Show the cookie list */
-                            
-            "closePopup": false, /* Show a close X on the banner */
+"orientation": "middle", /* Banner position (top - bottom) */
 
-            "showIcon": true, /* Show cookie icon to manage cookies */
-            //"iconSrc": "", /* Optionnal: URL or base64 encoded image */
-            "iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
+"groupServices": false, /* Group services by category */
+"showDetailsOnClick": true, /* Click to expand the description */
+"serviceDefaultState": "wait", /* Default state (true - wait - false) */
 
-            "adblocker": false, /* Show a Warning if an adblocker is detected */
-                            
-            "DenyAllCta" : true, /* Show the deny all button */
-            "AcceptAllCta" : true, /* Show the accept all button when highPrivacy on */
-            "highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
-            "alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
-                            
-            "handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+"showAlertSmall": false, /* Show the small banner on bottom right */
+"cookieslist": false, /* Show the cookie list */
 
-            "removeCredit": false, /* Remove credit link */
-            "moreInfoLink": true, /* Show more info link */
+"closePopup": false, /* Show a close X on the banner */
 
-            "useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
-            "useExternalJs": false, /* If false, the tarteaucitron.js file will be loaded */
+"showIcon": true,
+/* Show cookie icon to manage cookies */
+// "iconSrc": "", /* Optionnal: URL or base64 encoded image */
+"iconPosition": "BottomRight", /* BottomRight, BottomLeft, TopRight and TopLeft */
 
-            //"cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
-                            
-            "readmoreLink": "", /* Change the default readmore link */
+"adblocker": false, /* Show a Warning if an adblocker is detected */
 
-            "mandatory": true, /* Show a message about mandatory cookies */
-            "mandatoryCta": true, /* Show the disabled accept button when mandatory on */
+"DenyAllCta": true, /* Show the deny all button */
+"AcceptAllCta": true, /* Show the accept all button when highPrivacy on */
+"highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+"alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
 
-            //"customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
-            
-            "googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
-            
-            "partnersList": false /* Show the number of partners on the popup/middle banner */
-        });
-    </script>
+"handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
 
-    <!-- Google tag (gtag.js) -->
-    {# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+"removeCredit": false, /* Remove credit link */
+"moreInfoLink": true, /* Show more info link */
 
-        gtag('config', 'G-TJGCV8L5XE');
-    </script> #}
+"useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+"useExternalJs": false,
+/* If false, the tarteaucitron.js file will be loaded */
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
-    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
-    <style>
-        body {
-            background-color: #D5D0AF;
-        }
-    </style>
-    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
-    {% block css %} {% endblock %}
-    <title>{% block title %} {{ constant('WEBSITE_TITLE') }}{% endblock %}</title>
-</head>
-<body class="d-flex flex-column min-vh-100">
-    <header class="header-bg text-light header-sm container-fluid">
-        <nav class="navbar container-fluid d-flex justify-content-between align-items-center">
-            <!-- Logo et bouton Menu -->
-            <div class="d-flex align-items-center">
-                <a class="navbar-brand d-flex align-items-center" href="index.php">
-                    <img src="img/LogoPopCorn.png" alt="Logo" width="80" height="80" class="me-2">
-                    VHS
-                </a>
-                <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
-                    Menu
-                </button>
-            </div>
-        
-            <!-- Barre de recherche -->
-            <form class="d-flex justify-content-center" style="flex-grow: 1;" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
-                <input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
-              
-            </form>
-            {% if utilisateurConnecte is null %}
-            <!-- Bouton Connexion/Déconnexion -->
-            <div class="me-3">
-                <a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
-            </div>
-            {% else %}
-            <div class="me-3">
-                <a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
-            </div>
-            {% endif %}
+// "cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
 
-        </nav>
+"readmoreLink": "", /* Change the default readmore link */
 
-        <!-- Menu déroulant sous le bouton "Menu" -->
-        <div class="collapse" id="menuBar">
-            <div class="container py-2 d-flex justify-content-center">
-                <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2">Forum</a>
+"mandatory": true, /* Show a message about mandatory cookies */
+"mandatoryCta": true,
+/* Show the disabled accept button when mandatory on */
 
-                <a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2">Jeux</a>
+// "customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
 
-                <a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">WatchList</a>
+"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
 
+"partnersList": false /* Show the number of partners on the popup/middle banner */
+});
+		</script>
 
-                <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2">Quizz</a>
+		<!-- Google tag (gtag.js) -->
+		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
+								    <script>
+								        window.dataLayer = window.dataLayer || [];
+								        function gtag(){dataLayer.push(arguments);}
+								        gtag('js', new Date());
+								
+								        gtag('config', 'G-TJGCV8L5XE');
+								    </script> #}
 
-                <a href="index.php?controleur=profil&methode=afficherFormulaire&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2">Profil</a>
-                
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
+		<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
+		<style>
+			body {
+				background-color: #D5D0AF;
+			}
+		</style>
+		<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
+		{% block css %}{% endblock %}
+		<title>
+			{% block title %}
+				{{ constant('WEBSITE_TITLE') }}
+			{% endblock %}
+		</title>
+	</head>
+	<body class="d-flex flex-column min-vh-100">
+		<header class="header-bg text-light header-sm container-fluid">
+			<nav
+				class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
+				<!-- Logo et bouton Menu -->
+				<div class="d-flex align-items-center">
+					<a class="navbar-brand d-flex align-items-center" href="index.php">
+						<img src="img/LogoPopCorn.png" alt="Logo" width="80" height="80" class="me-2">
+						VHS
+					</a>
+					<button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
+						Menu
+					</button>
+				</div>
 
-            </div>
-        </div>
-    </header>
+				<!-- Barre de recherche -->
+				<form class="d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
+					<input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+				</form>
 
-    <!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
-    <main class="flex-grow-1">
-        {# affiche le base_template_film #}
-        {% block content1 %} {% endblock %}
+				<!-- Bouton Connexion/Déconnexion et Admin -->
+				<div class="me-3 mt-2 mt-md-0">
+					{% if utilisateurConnecte is null %}
+						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom me-2">Connexion</a>
+					{% else %}
+						{% if utilisateurConnecte.getRole == 'admin' %}
+							<a href="index.php?controleur=admin&methode=render" class="btn btn-custom me-2">Administration</a>
+						{% endif %}
+						<a href="index.php?controleur=utilisateur&methode=deconnexion" class="btn btn-custom me-2">Deconnexion</a>
+					{% endif %}
+				</div>
+			</nav>
 
-        <script type="text/javascript">
-            tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';
-            // tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
-            tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
-            (tarteaucitron.job = tarteaucitron.job || []).push('gtag');
-        </script>
+			<!-- Menu déroulant sous le bouton "Menu" -->
+			<div class="collapse" id="menuBar">
+				<div class="container py-2 d-flex justify-content-center flex-wrap">
+					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
+					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
+					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
+					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
+					<a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">Profil</a>
+				</div>
+			</div>
+		</header>
 
-        <script type="text/javascript">
-            tarteaucitron.user.sharethisPublisher = 'publisher';
-            (tarteaucitron.job = tarteaucitron.job || []).push('sharethis');
-        </script>
+		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
+		<main
+			class="flex-grow-1">
+			{# affiche le base_template_film #}
+			{% block content1 %}{% endblock %}
 
-        {# affiche le base_template_profil #}
-        {% block content2 %}
-        {% endblock %}
-        
-        {% block content %}
-        {% endblock %}
-    </main>
+			<script type="text/javascript">
+				tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';
+// tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
+tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
+};
+(tarteaucitron.job = tarteaucitron.job || []).push('gtag');
+			</script>
 
-    <footer class="footer-bg text-center text-light py-3 mt-auto">
-        <div class="container">
-            <!-- Liens de Navigation -->
-            <div class="footer-nav mb-3">
-                <a href="#" class="footer-link mx-2">Accueil</a>
-                <a href="#" class="footer-link mx-2">A propos</a>
-                <a href="#" class="footer-link mx-2">Contact</a>
-                <a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
-                <a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
-            </div>
+			<script type="text/javascript">
+				tarteaucitron.user.sharethisPublisher = 'publisher';
+(tarteaucitron.job = tarteaucitron.job || []).push('sharethis');
+			</script>
 
-            <!-- PopUp pour l'accord TMDB -->
-<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-light">
-                <img src="img/logoTMDB.png" alt="TMDB Logo" width="50" height="50" class="me-3">
-                <h4 class="modal-title fw-bold text-dark" id="tmdbModalLabel">Accord d'utilisation TMDB</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
-            <div class="modal-body text-dark">
-                <p>
-                    The Movie Database (TMDB) est une base de données en ligne regroupant des milliers de données sur des oeuvres audiovisuelles. L'accès aux informations est publiques et gratuite sous certaines conditions grâce à une API.
-                </p>
-                <p>
-                    L'utilisation de TMDB est soumise à des conditions d'utilisation spécifiques. En utilisant les données de TMDB, nous acceptons de respecter leurs conditions d'utilisation, disponibles sur leur site officiel.
-                </p>
-                <p>
-                    Pour plus de détails, voici un lien vers les <a href="https://www.themoviedb.org/terms-of-use" target="_blank" class="text-primary fw-bold">Conditions d'utilisation de TMDB</a>.
-                </p>
-                <h5>Utilisation de TMDB dans notre projet</h5>
-                <p>
-                    Nos données des œuvres sont récupérées grâce à l’API de TMDB. L'API est limitée dans le nombre de requêtes quotidiennes (100 000, ce qui est largement assez pour notre usage). Nous avons le droit de l’utiliser dans un cadre non commercial (notre application ne générant pas de revenu, nous sommes dans la légalité), et il faut absolument créditer TMDB sur notre projet (ce qui est fait aussi). TMDB permet d’utiliser les affiches des œuvres dans un cadre strictement non commercial grâce à un accord implicite entre TMDB et les détenteurs des droits des affiches. Les seules conditions sont de bien mentionner TMDB, et de ne pas altérer les affiches.
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+			{# affiche le base_template_profil #}
+			{% block content2 %}{% endblock %}
 
+			{% block content %}{% endblock %}
+		</main>
 
+		<footer class="footer-bg text-center text-light py-3 mt-auto">
+			<div
+				class="container">
+				<!-- Liens de Navigation -->
+				<div class="footer-nav mb-3">
+                    <a href="index.php" class="footer-link mx-2">Accueil</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
+					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
+				</div>
+				<!-- PopUp pour l'accord TMDB -->
+				<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<img src="img/logoTMDB.png" alt="TMDB Logo" width="50" height="50" class="me-3">
+								<h4 class="modal-title fw-bold text-dark" id="tmdbModalLabel">Accord d'utilisation TMDB</h4>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark">
+								<p>
+									The Movie Database (TMDB) est une base de données en ligne regroupant des milliers de données sur des oeuvres audiovisuelles. L'accès aux informations est publiques et gratuite sous certaines conditions grâce à une API.
+								</p>
+								<p>
+									L'utilisation de TMDB est soumise à des conditions d'utilisation spécifiques. En utilisant les données de TMDB, nous acceptons de respecter leurs conditions d'utilisation, disponibles sur leur site officiel.
+								</p>
+								<p>
+									Pour plus de détails, voici un lien vers les
+									<a href="https://www.themoviedb.org/terms-of-use" target="_blank" class="text-primary fw-bold">Conditions d'utilisation de TMDB</a>.
+								</p>
+								<h5>Utilisation de TMDB dans notre projet</h5>
+								<p>
+									Nos données des œuvres sont récupérées grâce à l’API de TMDB. L'API est limitée dans le nombre de requêtes quotidiennes (100 000, ce qui est largement assez pour notre usage). Nous avons le droit de l’utiliser dans un cadre non commercial (notre application ne générant pas de revenu, nous sommes dans la légalité), et il faut absolument créditer TMDB sur notre projet (ce qui est fait aussi). TMDB permet d’utiliser les affiches des œuvres dans un cadre strictement non commercial grâce à un accord implicite entre TMDB et les détenteurs des droits des affiches. Les seules conditions sont de bien mentionner TMDB, et de ne pas altérer les affiches.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Modal À propos -->
+				<div class="modal fade" id="aproposModal" tabindex="-1" aria-labelledby="aproposModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<h5 class="modal-title fw-bold text-dark" id="aproposModalLabel">À propos</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark">
+								<p>Bienvenue sur
+									<strong>VHS</strong>, votre plateforme dédiée aux œuvres audiovisuelles.</p>
+								<p>Ce projet a été réalisé dans le cadre du BUT Informatique à l'IUT de Bayonne et du Pays Basque.</p>
+								<p>Nous utilisons l'API de
+									<a href="https://www.themoviedb.org/" target="_blank" class="text-primary fw-bold">TMDB</a>
+									pour enrichir notre contenu.</p>
+								<h6>Crédits :</h6>
+								<ul>
+									<li>AMREIN Nathan - TP4</li>
+									<li>BAROS Arthur - TP3</li>
+									<li>CHIPY Thibault - TP4</li>
+									<li>DESPRE-HILDEVERT Léa - TP4</li>
+									<li>DIZY Lukas - TP3 (alternant)</li>
+									<li>LEVAL Noah - TP4</li>
+									<li>NOVION Tatiana - TP4 (alternante)</li>
+									<li>PIGEON Aymeric - TP 4</li>
+									<li>VINET LATRILLE Jules - TP4</li>
+								</ul>
+								<p>Pour toute question, contactez-nous via la section
+									<strong>Contact</strong>.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Modal Contact -->
+				<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<h5 class="modal-title fw-bold text-dark" id="contactModalLabel">Nous contacter</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark">
+								<p>Pour toute question ou suggestion, vous pouvez nous contacter :</p>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <strong>AMREIN Nathan</strong>
+                                        -
+                                        <a href="mailto:namrein@iutbayonne.univ-pau.fr" class="text-primary">namrein@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>BAROS Arthur</strong>
+                                        -
+                                        <a href="mailto:abaros@iutbayonne.univ-pau.fr" class="text-primary">abaros@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>CHIPY Thibault</strong>
+                                        -
+                                        <a href="mailto:tchipy@iutbayonne.univ-pau.fr" class="text-primary">tchipy@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>DESPRE-HILDEVERT Léa</strong>
+                                        -
+                                        <a href="mailto:ldhildevert@iutbayonne.univ-pau.fr" class="text-primary">ldhildevert@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>DIZY Lukas</strong>
+                                        -
+                                        <a href="mailto:ldizy@iutbayonne.univ-pau.fr" class="text-primary">ldizy@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>LEVAL Noah</strong>
+                                        -
+                                        <a href="mailto:noah.leval@etud.univ-pau.fr" class="text-primary">noah.leval@etud.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>NOVION Tatiana</strong>
+                                        -
+                                        <a href="mailto:tnovion@iutbayonne.univ-pau.fr" class="text-primary">tnovion@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>PIGEON Aymeric</strong>
+                                        -
+                                        <a href="mailto:apigeon001@iutbayonne.univ-pau.fr" class="text-primary">apigeon001@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                    <li>
+                                        <strong>VINET LATRILLE Jules</strong>
+                                        -
+                                        <a href="mailto:jvlatrille@iutbayonne.univ-pau.fr" class="text-primary">jvlatrille@iutbayonne.univ-pau.fr</a>
+                                    </li>
+                                </ul>
+								<p>Nous vous répondrons dans les plus brefs délais !</p>
+							</div>
+						</div>
+					</div>
+				</div>
 
-            <!-- Icônes des réseaux sociaux -->
-            <div class="footer-social mb-2">
-                <div class="sharethis-inline-share-buttons"></div>
-                {# <a href="#"><i class="fab fa-facebook-f mx-2"></i></a>
-                <a href="#"><i class="fab fa-twitter mx-2"></i></a>
-                <a href="#"><i class="fab fa-youtube mx-2"></i></a> #}
-            </div>
+				<div class="footer-social mb-2">
+					<div class="sharethis-inline-share-buttons"></div>
+				</div>
 
-            <span class="tacSharethis"></span>
-            
-            <!-- Copyright -->
-            <div class="footer-copyright">
-                © Copyright 2024 - IUT de Bayonne et du Pays Basque - BUT2 Groupe 8
-            </div>
-        </div>
-    </footer>
+				<span class="tacSharethis"></span>
 
-    {% block script %} <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script> {% endblock %}
-</body>
+				<div class="footer-copyright">
+					© Copyright 2024 - IUT de Bayonne et du Pays Basque - BUT2 Groupe 8
+				</div>
+			</div>
+		</footer>
+
+		{% block script %}
+			<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+		{% endblock %}
+	</body>
 </html>

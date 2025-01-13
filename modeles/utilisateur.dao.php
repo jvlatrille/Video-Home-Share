@@ -1,31 +1,54 @@
 <?php
 
+/**
+ * @file utilisateur.dao.php
+ * @author LEVAL Noah
+ * @brief Classe UtilisateurDao pour accéder aux notifications en base de données
+ * @version 1.0
+ * @date 
+ */
+
 class UtilisateurDao
 {
+    /**
+     * @brief Instance PDO pour l'accès à la base de données
+     */
     private ?PDO $pdo;
 
+     /**
+     * @brief Constructeur de la classe UtilisateurDao
+     * @param PDO $pdo Instance PDO pour la base de données
+     */
     public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
 
     /**
-     * Get the value of pdo
+     * @brief Getteur du pseudonyme de l'utilisateur
+     *
+     * @return ?PDO
      */
     public function getPdo(): ?PDO
     {
         return $this->pdo;
     }
 
-    /**
-     * Set the value of pdo
+     /**
+     * @brief Setteur du pseudonyme de l'utilisateur
+     * @param PDO pdo
+     * @return void
      */
     public function setPdo(?PDO $pdo): void
     {
         $this->pdo = $pdo;
     }
 
-    // Récupérer un utilisateur par ID
+    /**
+     * @brief Récupère un utilisateur spécifique par son identifiant
+     * @param int|null $id Identifiant de l'utilisateur
+     * @return Utilisateur|null Objet Utilisateur hydraté ou null si non trouvé
+     */
     public function find(?int $id): ?Utilisateur {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -35,7 +58,10 @@ class UtilisateurDao
         return $utilisateur ? $this->hydrate($utilisateur) : null;
     }
 
-    // Récupérer toutes les utilisateurs
+    /**
+     * @brief Récupère tous les utilisateurs
+     * @return array Tableau d'objets Utilisateur
+     */
     public function findAll(): array {
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
@@ -45,7 +71,11 @@ class UtilisateurDao
         return $this->hydrateAll($utilisateur);
     }
 
-    // Hydrate un utilisateur à partir d'un tableau associatif
+    /**
+     * @brief Hydrate un objet Utilisateur à partir d'un tableau associatif
+     * @param array $tableauAssoc Données utilisateur sous forme de tableau associatif
+     * @return Utilisateur|null Objet Utilisateur hydraté ou null si échec
+     */
     private function hydrate(array $tableauAssoc): ?Utilisateur {
         $utilisateur = new Utilisateur();
         $utilisateur->setIdUtilisateur($tableauAssoc['idUtilisateur']);
@@ -58,7 +88,11 @@ class UtilisateurDao
         return $utilisateur;
     }
 
-    // Hydrate une liste d'utilisateur
+    /**
+     * @brief Hydrate une liste d'objets Utilisateur
+     * @param array $resul Liste des utilisateurs sous forme de tableaux associatifs
+     * @return array Liste des objets Utilisateur hydratés
+     */
     private function hydrateAll(array $resul): array {
         $utilisateurListe = [];
         foreach ($resul as $ligne) {
@@ -67,7 +101,12 @@ class UtilisateurDao
         return $utilisateurListe;
     }
 
-    //Changer un pseudo
+    /**
+     * @brief Change le pseudo d'un utilisateur
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $newPseudo Nouveau pseudo à attribuer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
     public function changerPseudo(?int $id, ?string $newPseudo): bool{
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
                 SET pseudo = :pseudo
@@ -78,7 +117,12 @@ class UtilisateurDao
         return $reussite;
     }
 
-    //Changer un pseudo
+    /**
+     * @brief Change l'adresse email d'un utilisateur
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $newMail Nouvelle adresse email à attribuer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
     public function changerMail(?int $id, ?string $newMail): bool{
          $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
                  SET adressMail = :mail
@@ -89,17 +133,28 @@ class UtilisateurDao
         return $reussite;
     }
 
-        //Changer mot de passe
-        public function changerMdp(?int $id, ?string $mdp): bool{
-            $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
-                    SET motDePasse = :mdp
-                    WHERE idUtilisateur = :id"; 
-           $pdoStatement = $this->pdo->prepare($sql);
-           $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
+    /**
+     * @brief Change le mot de passe d'un utilisateur
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $mdp Nouveau mot de passe à attribuer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function changerMdp(?int $id, ?string $mdp): bool{
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                SET motDePasse = :mdp
+                WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
        
-           return $reussite;
-       }
+        return $reussite;
+    }
 
+    /**
+     * @brief Met à jour la photo de profil d'un utilisateur
+     * @param int $userId Identifiant de l'utilisateur
+     * @param string $filePath Chemin du fichier de la nouvelle photo de profil
+     * @return bool Retourne true en cas de succès, false sinon
+     */
     public function updateUserPhoto(int $userId, string $filePath): bool{
         // Requête pour mettre à jour la photo de profil de l'utilisateur
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
@@ -111,6 +166,12 @@ class UtilisateurDao
         return $result;
     }
 
+    /**
+     * @brief Met à jour la bannière de profil d'un utilisateur
+     * @param int $userId Identifiant de l'utilisateur
+     * @param string $filePath Chemin du fichier de la nouvelle bannière
+     * @return bool Retourne true en cas de succès, false sinon
+     */
     public function updateUserBanniere(int $userId, string $filePath): bool{
         // Requête pour mettre à jour la photo de profil de l'utilisateur
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 

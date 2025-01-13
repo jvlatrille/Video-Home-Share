@@ -39,12 +39,16 @@ class ControllerOA extends Controller
             $oaListe = $this->managerOa->findMeilleurNote();
             $oaRandomListe = $this->managerOa->findRandomOeuvres();
             $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render(['oaListe' => $oaListe, 'oaRandomListe' => $oaRandomListe]);
+            echo $template->render([
+                'oaListe' => $oaListe,
+                'oaRandomListe' => $oaRandomListe
+            ]);
         } catch (Exception $e) {
             error_log('Erreur lors du listing des films : ' . $e->getMessage());
             die('Impossible d\'afficher la liste des films.');
         }
     }
+
 
 
     /**
@@ -90,7 +94,7 @@ class ControllerOA extends Controller
                     'participants' => $participants
                 ]);
                 return;
-            } 
+            }
 
             // Affichage dans la vue normale si l'utilisateur n'est pas connecté
             $template = $this->getTwig()->load('film.html.twig');
@@ -99,7 +103,6 @@ class ControllerOA extends Controller
                 'commentaires' => $commentaires,
                 'participants' => $participants
             ]);
-
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
             die('Impossible d\'afficher les détails du film.');

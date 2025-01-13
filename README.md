@@ -28,6 +28,8 @@ Video-Home-Share/
 │   ├── style.css       # Styles CSS spécifiques  
 │   ├── styles.css      # Généré depuis custom.scss  
 │   ├── styles.css.map  # Carte source CSS  
+│ 
+├── docs/  # Fichier contenant la documentation de notre application disponible à l'adresse : https://jvlatrille.github.io/Video-Home-Share/
 │  
 ├── img/  
 │   ├── banniere/       # Images pour les bannières  
@@ -43,7 +45,7 @@ Video-Home-Share/
 └── templates/         # Gabarits de rendu Twig  
 
 ## Mettre l'application en place sur votre ordinateur
-Vous devrez procéder à 3 étapes : 
+Vous devrez procéder à 4 étapes : 
 
 ### 1 - Installer les dépendances de npm :
 Entrez la commande ```bash npm install``` dans votre terminal, dans le dossier contenant les fichiers de l'application
@@ -52,6 +54,7 @@ Entrez la commande ```bash npm install``` dans votre terminal, dans le dossier c
 Entrez la commande ```bash composer install``` dans votre terminal, dans le dossier contenant les fichiers de l'application
 
 ### 3 - Importer la BD  
+*Si vous êtes sur Lakartxela, vous pouvez passer cette étape).*  
 Importez le fichier namrein_pro.sql dans votre gestionnaire de base de données.
 
 ### 4 - Modifier le fichier config/template.yaml

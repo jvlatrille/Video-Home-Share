@@ -9,7 +9,7 @@
 {% block content %}    
     <!-- Titre de la partie notification -->
     <div class="container mt-2">
-        <h1>A propos de {{ utilisateur.pseudo }}</h1>
+        <h1>Vos messages </h1>
     </div>
     
     <!-- Affichage des messages -->
@@ -20,7 +20,7 @@
             {% for message in messageListe %}
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p>{{forum.nom}}</p>
+                        <p>{{ forum.nom }}</p>
                         <p>{{ message.contenu }}</p>
                     </div>
 
