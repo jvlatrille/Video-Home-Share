@@ -5,11 +5,12 @@
 {% endblock %}
     
 
+{% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
 {% block content %}    
     <!-- Titre de la partie notification -->
     <div class="container mt-2">
-        <h1>Vos messages </h1>
+        <h1>Vos messages </h1><br>
     </div>
     
     <!-- Affichage des messages -->
@@ -18,21 +19,34 @@
     {% else %}
         <div class="container">
             {% for message in messageListe %}
+            <h5><strong>Dans le forum : {{ message.nom }}</strong></h5>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p>{{ forum.nom }}</p>
-                        <p>{{ message.contenu }}</p>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle" 
+                                    style="background-image: url('{{ photo }}');
+                                    height: 70px;
+                                    width: 70px;
+                                    background-size: cover;
+                                    background-position: center;
+                                    border: 4px solid #fff;">
+                                </div>
+       
+                                <div class="ml-3 ">
+                                    <p>{{ message.contenu }}</p>
+                                </div>
+                            </div>
                     </div>
 
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div>
                             <form method="POST" action="index.php?controleur=message&methode=like">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLikes }}</button>
+                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLike }}</button>
                             </form>
                             <form method="POST" action="index.php?controleur=message&methode=dislike">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
+                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislike }}</button>
                             </form>
                         </div>
                     </div>

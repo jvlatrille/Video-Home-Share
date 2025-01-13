@@ -69,6 +69,7 @@ public function chargerAPropos(?int $idUtilisateur): ?array
     {
         $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
 
+        
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
@@ -81,6 +82,7 @@ public function chargerAPropos(?int $idUtilisateur): ?array
 
             return $resultats;
 
+           
         } catch (Exception $e) {
             error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
             return null;
