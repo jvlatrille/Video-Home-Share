@@ -457,6 +457,10 @@ class ControllerProfil extends Controller
             echo $template->render(['messageListe' => $messageListe,'utilisateur' => $utilisateurConnecte]);
 
         }
+
+        // Sinon, affiche la page de connexion
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
         
     }
     
