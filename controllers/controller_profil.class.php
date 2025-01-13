@@ -2,9 +2,9 @@
 
 /**
  * @file controller_profil.class.php
- * @author Despré-Hildevert Léa
+ * @author Despré-Hildevert Léa, Léval Noah
  * @brief Controleur des 3 pages qui composent la page de profil
- * 
+ * @remark Pages Notification et APropos faites par Léa et page Paramètres faite par Noah
  * @version 2.0
  * @date 14/11/2024
  */

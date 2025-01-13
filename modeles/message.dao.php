@@ -67,7 +67,7 @@ public function incrementDislike(int $idMessage): void
 
 public function chargerAPropos(?int $idUtilisateur): ?array
     {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idUtilisateur = :idUtilisateur";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
 
         try {
             $pdoStatement = $this->pdo->prepare($sql);
