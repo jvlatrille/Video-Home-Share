@@ -30,8 +30,22 @@ class ControllerMessage extends Controller
             'messageListe' => $messagesListe,
             'forum' => $forum]);
     }
+
+    public function ajouterMessage()
+    {
+        //Recupere les données du formulaire
+        $contenu = isset($_POST['contenu']) ? $_POST['contenu'] : (isset($_GET['contenu']) ? $_GET['contenu'] : null);
+        $managerMessage = new MessageDao($this->getPdo());
+        $message = new Message();
+        $message->setContenu($contenu);
+        $managerForum->creerMessage($message);
+        
+        //Redirige vers la liste des forums
+        header('Location: index.php?controleur=message&methode=listerMessage');
+    }
+
     public function like()
-{
+    {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
         $idMessage = (int)$_POST['idMessage'];
 
@@ -43,10 +57,10 @@ class ControllerMessage extends Controller
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
-}
+    }
 
 public function dislike()
-{
+    {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
         $idMessage = (int)$_POST['idMessage'];
 
@@ -58,7 +72,7 @@ public function dislike()
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
-}
+    }
 
 }
 ?>

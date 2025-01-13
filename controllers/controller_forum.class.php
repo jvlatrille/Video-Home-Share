@@ -25,7 +25,7 @@ class ControllerForum extends Controller
         $nom = isset($_POST['nom']) ? $_POST['nom'] : (isset($_GET['nom']) ? $_GET['nom'] : null);
         $description = isset($_POST['description']) ? $_POST['description'] : (isset($_GET['description']) ? $_GET['description'] : null);
         $theme = isset($_POST['theme']) ? $_POST['theme'] : (isset($_GET['theme']) ? $_GET['theme'] : null);
-        //Ajoute la watchlist
+        //Ajoute le forum
         $managerForum = new ForumDao($this->getPdo());
         $forum = new Forum();
         $forum->setNom($nom);
