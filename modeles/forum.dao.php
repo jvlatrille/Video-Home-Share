@@ -74,13 +74,12 @@ class forumDAO{
 
     //Fonction pour creer un forum
     public function creerForum(Forum $forum): ?Forum {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."forum (id, nom, description, theme, idUtilisateur) 
-                VALUES (:id, :nom, :description, :theme, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+        $sql = "INSERT INTO ".PREFIXE_TABLE."forum (nom, description, theme, idUtilisateur) 
+                VALUES (:nom, :description, :theme, :idUtilisateur)";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(array(
-                'id' => $forum->getIdForum(),
                 'nom' => $forum->getNom(),
                 'description' => $forum->getDescription(),
                 'theme' => $forum->getTheme(),

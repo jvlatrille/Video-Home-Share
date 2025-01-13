@@ -10,6 +10,8 @@ class ControllerForum extends Controller
     // Afficher tous les forums
     public function listerForum()
     {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         // Récupère tous les forums
         $managerForum = new ForumDAO($this->getPdo());
         $forumsListe = $managerForum->findAll();
@@ -18,23 +20,55 @@ class ControllerForum extends Controller
         $template = $this->getTwig()->load('forums.html.twig');
         echo $template->render(['forumListe' => $forumsListe]);
     }
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
+    }
+    //Fonction pour afficher un forum
+    public function afficherForum()
+    {
+        $id = isset($_GET['idForum']) ? $_GET['idForum'] : null;
+        
+        //Recupere le forum
+        $managerForum=New forumDAO($this->getPdo());
+        $forumList=$managerForum->find($id);
+        
+        //Recupere les noms des forums
+        $noms = $managerForum->afficherNomForum($idForum);
+        
+        //Generer la vue
+        $template = $this->getTwig()->load('forum_detail.html.twig');
+        
+        echo $template->render(['forum'=>$forumList, 'noms'=>$noms]);
+
+    }
 
     public function ajouterForum()
     {
-        //Recupere les données du formulaire
-        $nom = isset($_POST['nom']) ? $_POST['nom'] : (isset($_GET['nom']) ? $_GET['nom'] : null);
-        $description = isset($_POST['description']) ? $_POST['description'] : (isset($_GET['description']) ? $_GET['description'] : null);
-        $theme = isset($_POST['theme']) ? $_POST['theme'] : (isset($_GET['theme']) ? $_GET['theme'] : null);
-        //Ajoute le forum
-        $managerForum = new ForumDao($this->getPdo());
-        $forum = new Forum();
-        $forum->setNom($nom);
-        $forum->setTheme($theme);
-        $forum->setDescription($description);
-        $managerForum->creerForum($forum);
-        
-        //Redirige vers la liste des forums
-        header('Location: index.php?controleur=forum&methode=listerForum');
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+            // Récupère les données du forum depuis le formulaire
+            $idForum = $_POST['id'] ?? null;
+            $nom = $_POST['nom'] ?? $_GET['nom'] ?? null;
+            $description = $_POST['description'] ?? $_GET['description'] ?? null;
+            $theme = $_POST['theme'] ?? $_GET['theme'] ?? null;
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            //Ajoute la watchlist
+            $managerForum = new ForumDao($this->getPdo());
+            $forum = new Forum();
+            $forum->setIdForum($idForum);
+            $forum->setNom($nom);
+            $forum->setDescription($description);
+            $forum->setTheme($theme);
+            $forum->setIdUtilisateur($idUtilisateur);
+            $managerForum->creerForum($forum);
+
+            //Redirige vers la liste des forums
+            header('Location: index.php?controleur=forum&methode=listerForum');
+        }
     }
 
 }
