@@ -49,8 +49,8 @@
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
 								<select class="form-select" id="watchlistVisibility" name="visible">
-									<option value="1">Publique</option>
-									<option value="0">Privée</option>
+									<option value="1" {{ watchlist.visible|default('1') == '1' ? 'selected' : '' }}>Publique</option>
+									<option value="0" {{ watchlist.visible|default('0') == '0' ? 'selected' : '' }}>Privée</option>
 								</select>
 
 							</div>

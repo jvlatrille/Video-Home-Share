@@ -144,12 +144,6 @@ class ControllerWatchList extends Controller
                     'longueur_min' => 1,
                     'longueur_max' => 255,
                 ],
-                'visible' => [
-                    'obligatoire' => true,
-                    'type' => 'int',
-                    'longueur_min' => 0,
-                    'longueur_max' => 1,
-                ],
             ];
                     
             $validation = new Validator($regles);
@@ -160,7 +154,6 @@ class ControllerWatchList extends Controller
                 echo $template->render(['erreurs' => $erreurs]);
                 return;
             }
-            var_dump($donnees);
 
             // Récupère les données de la watchlist depuis le formulaire
             $idWatchList = $donnees['idWatchList'] ?? null;
