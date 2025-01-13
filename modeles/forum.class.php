@@ -5,13 +5,15 @@
     private ?string $nom;
     private ?string $description;
     private ?string $theme;
+    private ?int $idUtilisateur;
     
     //Constructeur de la classe Forum
-    public function __construct(?int $idForum=null, ?string $nom=null, ?string $description=null, ?string $theme=null){
+    public function __construct(?int $idForum=null, ?string $nom=null, ?string $description=null, ?string $theme=null, ?int $idUtilisateur=null){
         $this->idForum = $idForum;
         $this->nom = $nom;
         $this->description = $description;
         $this->theme = $theme;
+        $this->idUtilisateur = $idUtilisateur;
     }
 
     //Getters et setters de la classe Forum
@@ -46,6 +48,14 @@
 
     public function setTheme(?string $theme): void{
         $this->theme = $theme;
+    }
+
+    public function getIdUtilisateur(): ?int{
+        return $this->idUtilisateur;
+    }
+
+    public function setIdUtilisateur(?int $idUtilisateur): void{
+        $this->idUtilisateur = $idUtilisateur;
     }
 
     }

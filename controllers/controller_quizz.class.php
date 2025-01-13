@@ -35,32 +35,30 @@ class ControllerQuizz extends Controller {
     // Fonction pour ajouter un nouveau quizz
     public function ajouterQuizz() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupère les données du formulaire
             $nom = $_POST['nom'] ?? '';
             $theme = $_POST['theme'] ?? '';
-            $nbQuestion = $_POST['nbQuestion'] ?? 0;
+            $nbQuestion = $_POST['nbQuestion'] ?? 1;
             $difficulte = $_POST['difficulte'] ?? 1;
-            $meilleurJ = $_POST['meilleurJ'] ?? null;
-            
-            // Crée un nouvel objet Quizz
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $meilleurJ);
-
-            // Ajoute le quizz à la base de données
+        
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte);
+        
             $managerQuizz = new QuizzDao($this->getPdo());
-            if ($managerQuizz->add($quizz)) {
-                // Redirige vers la liste des quizz
-                header('Location: index.php?controller=quizz&action=listerQuizz');
+            $idQuizz = $managerQuizz->add($quizz);
+        
+            if ($idQuizz) {
+                // Rediriger avec l'ID du quizz et son nombre de questions
+                header('Location: index.php?controleur=question&methode=ajouterQuestions&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
                 exit;
             } else {
-                // Erreur d'ajout
                 echo "Erreur lors de l'ajout du quizz.";
             }
         }
-
-        // Générer la vue
+        
         $template = $this->getTwig()->load('quizzAjouter.html.twig');
         echo $template->render();
     }
+    
+    
 
     // Fonction pour modifier un quizz
     public function modifierQuizz() {

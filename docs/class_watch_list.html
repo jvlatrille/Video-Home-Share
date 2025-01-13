@@ -1,0 +1,651 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.13.2"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Video Home Share: Référence de la classe WatchList</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="custom.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="LogoPopCornDOC.png"/></td>
+  <td id="projectalign">
+   <div id="projectname">Video Home Share<span id="projectnumber">&#160;1</span>
+   </div>
+   <div id="projectbrief">Video Home Share (VHS) est une application web qui vise à réintroduire la convivialité dans le monde du streaming. Celle-ci est axée sur les films et séries, tout en offrant davantage de contenu. L’application est le mélange d’un forum et d’une plateforme de jeu et d’échange ludique, offrant une expérience utilisateur unique. Sur VHS, les utilisateurs ont la possibilité de partager leur avis sur des thématiques qu’ils choisissent, discuter entre eux dans des forums, commenter des œuvres et lister celles qui nous reste à regarder, tester leurs connaissances grâce à des quizz, ou régler des conflits grâce à des mini-jeux.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Généré par Doxygen 1.13.2 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() { codefold.init(0); });
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Recherche',false);
+  $(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function(){ initResizable(false); });
+/* @license-end */
+</script>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Chargement...</div>
+<div class="SRStatus" id="Searching">Recherche...</div>
+<div class="SRStatus" id="NoMatches">Aucune correspondance</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Fonctions membres publiques</a>  </div>
+  <div class="headertitle"><div class="title">Référence de la classe WatchList</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Fonctions membres publiques</h2></td></tr>
+<tr class="memitem:aa5d99b2b0620eb5d798c3ed3ed8644c8" id="r_aa5d99b2b0620eb5d798c3ed3ed8644c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5d99b2b0620eb5d798c3ed3ed8644c8">__construct</a> (?int $idWatchList=null, ?string $titre=null, ?string $genre=null, ?string $description=null, ?bool $visible=null, ?string $idTMDB=null, ?array $listeOeuvres=null,?int $idUtilisateur=null)</td></tr>
+<tr class="memdesc:aa5d99b2b0620eb5d798c3ed3ed8644c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructeur de la classe <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:aa5d99b2b0620eb5d798c3ed3ed8644c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77ac499110bb8c31c02897b4400599bb" id="r_a77ac499110bb8c31c02897b4400599bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77ac499110bb8c31c02897b4400599bb">getIdWatchlist</a> ()</td></tr>
+<tr class="memdesc:a77ac499110bb8c31c02897b4400599bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne l'id de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a77ac499110bb8c31c02897b4400599bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e13c5b508447efe345cb239037288d7" id="r_a8e13c5b508447efe345cb239037288d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e13c5b508447efe345cb239037288d7">setIdWatchlist</a> (?int $idWatchList)</td></tr>
+<tr class="memdesc:a8e13c5b508447efe345cb239037288d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie l'id de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a8e13c5b508447efe345cb239037288d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11c380e71778af9871c5bd84b2f50eae" id="r_a11c380e71778af9871c5bd84b2f50eae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11c380e71778af9871c5bd84b2f50eae">getTitre</a> ()</td></tr>
+<tr class="memdesc:a11c380e71778af9871c5bd84b2f50eae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne le titre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a11c380e71778af9871c5bd84b2f50eae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73e581cd03bafca92c1031efde76db69" id="r_a73e581cd03bafca92c1031efde76db69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73e581cd03bafca92c1031efde76db69">setTitre</a> (?string $titre)</td></tr>
+<tr class="memdesc:a73e581cd03bafca92c1031efde76db69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie le titre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a73e581cd03bafca92c1031efde76db69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc6f217756d49edbac6975e1f69485d5" id="r_adc6f217756d49edbac6975e1f69485d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc6f217756d49edbac6975e1f69485d5">getGenre</a> ()</td></tr>
+<tr class="memdesc:adc6f217756d49edbac6975e1f69485d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne le genre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:adc6f217756d49edbac6975e1f69485d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae40967cdf0ef222f96384950b9b23fa3" id="r_ae40967cdf0ef222f96384950b9b23fa3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae40967cdf0ef222f96384950b9b23fa3">setGenre</a> (?string $genre)</td></tr>
+<tr class="memdesc:ae40967cdf0ef222f96384950b9b23fa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie le genre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:ae40967cdf0ef222f96384950b9b23fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e7bb35c71bf1824456ceb944cb7a845" id="r_a2e7bb35c71bf1824456ceb944cb7a845"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e7bb35c71bf1824456ceb944cb7a845">getDescription</a> ()</td></tr>
+<tr class="memdesc:a2e7bb35c71bf1824456ceb944cb7a845"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne la description de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a2e7bb35c71bf1824456ceb944cb7a845"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acee77db44e361e2773e2734033f2a1c5" id="r_acee77db44e361e2773e2734033f2a1c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acee77db44e361e2773e2734033f2a1c5">setDescription</a> (?string $description)</td></tr>
+<tr class="memdesc:acee77db44e361e2773e2734033f2a1c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie la description de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:acee77db44e361e2773e2734033f2a1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd9abdc6ad9261029511c06c651571a3" id="r_afd9abdc6ad9261029511c06c651571a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd9abdc6ad9261029511c06c651571a3">getVisible</a> ()</td></tr>
+<tr class="memdesc:afd9abdc6ad9261029511c06c651571a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne la visibilité de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:afd9abdc6ad9261029511c06c651571a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad070122a307b2d8b2191cfd824014785" id="r_ad070122a307b2d8b2191cfd824014785"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad070122a307b2d8b2191cfd824014785">setVisible</a> (?bool $visible)</td></tr>
+<tr class="memdesc:ad070122a307b2d8b2191cfd824014785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie la visibilité de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:ad070122a307b2d8b2191cfd824014785"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe26820d1be54ac7e1aa825fb457b0b5" id="r_afe26820d1be54ac7e1aa825fb457b0b5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe26820d1be54ac7e1aa825fb457b0b5">getIdTMDB</a> ()</td></tr>
+<tr class="memdesc:afe26820d1be54ac7e1aa825fb457b0b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne la liste des ID TMDB de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:afe26820d1be54ac7e1aa825fb457b0b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1269ecd52313bf1af923707e20c805e" id="r_aa1269ecd52313bf1af923707e20c805e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1269ecd52313bf1af923707e20c805e">setIdTMDB</a> (?string $idTMBD)</td></tr>
+<tr class="memdesc:aa1269ecd52313bf1af923707e20c805e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie la liste des Id TMBD de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:aa1269ecd52313bf1af923707e20c805e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22f4d8b856cdb1eb6e179a32d65bff0b" id="r_a22f4d8b856cdb1eb6e179a32d65bff0b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22f4d8b856cdb1eb6e179a32d65bff0b">getListeOeuvres</a> ()</td></tr>
+<tr class="memdesc:a22f4d8b856cdb1eb6e179a32d65bff0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne la liste des oeuvres de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a22f4d8b856cdb1eb6e179a32d65bff0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d85e75030f6601f424889fa388bccd4" id="r_a1d85e75030f6601f424889fa388bccd4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d85e75030f6601f424889fa388bccd4">setListeOeuvres</a> (?array $listeOeuvres)</td></tr>
+<tr class="memdesc:a1d85e75030f6601f424889fa388bccd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie la liste des oeuvres de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>.  <br /></td></tr>
+<tr class="separator:a1d85e75030f6601f424889fa388bccd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8250dbe0ee53797f3246eaa23459a009" id="r_a8250dbe0ee53797f3246eaa23459a009"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8250dbe0ee53797f3246eaa23459a009">addOeuvre</a> (<a class="el" href="class_o_a.html">OA</a> $oa)</td></tr>
+<tr class="memdesc:a8250dbe0ee53797f3246eaa23459a009"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ajoute une oeuvre à la liste des oeuvres de la watchlist.  <br /></td></tr>
+<tr class="separator:a8250dbe0ee53797f3246eaa23459a009"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aaeefff1a5a9fe502439faee5e3c327" id="r_a0aaeefff1a5a9fe502439faee5e3c327"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0aaeefff1a5a9fe502439faee5e3c327">removeOeuvre</a> (<a class="el" href="class_o_a.html">OA</a> $oa)</td></tr>
+<tr class="memdesc:a0aaeefff1a5a9fe502439faee5e3c327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supprime une oeuvre de la liste des oeuvres de la watchlist.  <br /></td></tr>
+<tr class="separator:a0aaeefff1a5a9fe502439faee5e3c327"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0023af5dd0919e1cfd37d6735e434077" id="r_a0023af5dd0919e1cfd37d6735e434077"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0023af5dd0919e1cfd37d6735e434077">getIdUtilisateur</a> ()</td></tr>
+<tr class="memdesc:a0023af5dd0919e1cfd37d6735e434077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retourne l'id de l'utilisateur qui a créé la watchlist.  <br /></td></tr>
+<tr class="separator:a0023af5dd0919e1cfd37d6735e434077"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b8e0fb6c8a8f83ad967ec39216d903b" id="r_a6b8e0fb6c8a8f83ad967ec39216d903b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b8e0fb6c8a8f83ad967ec39216d903b">setIdUtilisateur</a> (?int $idUtilisateur)</td></tr>
+<tr class="memdesc:a6b8e0fb6c8a8f83ad967ec39216d903b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Modifie l'id de l'utilisateur qui a créé la watchlist.  <br /></td></tr>
+<tr class="separator:a6b8e0fb6c8a8f83ad967ec39216d903b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Documentation des constructeurs et destructeur</h2>
+<a id="aa5d99b2b0620eb5d798c3ed3ed8644c8" name="aa5d99b2b0620eb5d798c3ed3ed8644c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5d99b2b0620eb5d798c3ed3ed8644c8">&#9670;&#160;</a></span>__construct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">__construct </td>
+          <td>(</td>
+          <td class="paramtype">?int</td>          <td class="paramname"><span class="paramname"><em>$idWatchList</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$titre</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$genre</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$description</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?bool</td>          <td class="paramname"><span class="paramname"><em>$visible</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$idTMDB</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?array</td>          <td class="paramname"><span class="paramname"><em>$listeOeuvres</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">?int</td>          <td class="paramname"><span class="paramname"><em>$idUtilisateur</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructeur de la classe <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer&#160;|&#160;null</td><td class="paramname">$idWatchList</td><td>: identifiant de la watchlist </td></tr>
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$titre</td><td>: titre de la watchlist </td></tr>
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$genre</td><td>: genre de la watchlist </td></tr>
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$description</td><td>: description de la watchlist </td></tr>
+    <tr><td class="paramtype">bool&#160;|&#160;null</td><td class="paramname">$visible</td><td>: visibilité de la watchlist </td></tr>
+    <tr><td class="paramtype">array&#160;|&#160;null</td><td class="paramname">$listeOeuvres</td><td>: liste des oeuvres de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Documentation des fonctions membres</h2>
+<a id="a8250dbe0ee53797f3246eaa23459a009" name="a8250dbe0ee53797f3246eaa23459a009"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8250dbe0ee53797f3246eaa23459a009">&#9670;&#160;</a></span>addOeuvre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">addOeuvre </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_a.html">OA</a></td>          <td class="paramname"><span class="paramname"><em>$oa</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ajoute une oeuvre à la liste des oeuvres de la watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_o_a.html">OA</a></td><td class="paramname">$oa</td><td>: oeuvre audiovisuelle à ajouter </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="a2e7bb35c71bf1824456ceb944cb7a845" name="a2e7bb35c71bf1824456ceb944cb7a845"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e7bb35c71bf1824456ceb944cb7a845">&#9670;&#160;</a></span>getDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getDescription </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne la description de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>string|null description de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="adc6f217756d49edbac6975e1f69485d5" name="adc6f217756d49edbac6975e1f69485d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc6f217756d49edbac6975e1f69485d5">&#9670;&#160;</a></span>getGenre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getGenre </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne le genre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>string|null genre de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="afe26820d1be54ac7e1aa825fb457b0b5" name="afe26820d1be54ac7e1aa825fb457b0b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe26820d1be54ac7e1aa825fb457b0b5">&#9670;&#160;</a></span>getIdTMDB()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getIdTMDB </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne la liste des ID TMDB de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>string|null liste des id TMDB de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="a0023af5dd0919e1cfd37d6735e434077" name="a0023af5dd0919e1cfd37d6735e434077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0023af5dd0919e1cfd37d6735e434077">&#9670;&#160;</a></span>getIdUtilisateur()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getIdUtilisateur </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne l'id de l'utilisateur qui a créé la watchlist. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>int|null id de l'utilisateur </dd></dl>
+
+</div>
+</div>
+<a id="a77ac499110bb8c31c02897b4400599bb" name="a77ac499110bb8c31c02897b4400599bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77ac499110bb8c31c02897b4400599bb">&#9670;&#160;</a></span>getIdWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getIdWatchlist </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne l'id de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>integer|null identifiant de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="a22f4d8b856cdb1eb6e179a32d65bff0b" name="a22f4d8b856cdb1eb6e179a32d65bff0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22f4d8b856cdb1eb6e179a32d65bff0b">&#9670;&#160;</a></span>getListeOeuvres()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getListeOeuvres </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne la liste des oeuvres de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>array|null liste des oeuvres de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="a11c380e71778af9871c5bd84b2f50eae" name="a11c380e71778af9871c5bd84b2f50eae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11c380e71778af9871c5bd84b2f50eae">&#9670;&#160;</a></span>getTitre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getTitre </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne le titre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>string|null titre de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="afd9abdc6ad9261029511c06c651571a3" name="afd9abdc6ad9261029511c06c651571a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd9abdc6ad9261029511c06c651571a3">&#9670;&#160;</a></span>getVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">getVisible </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retourne la visibilité de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="section return"><dt>Renvoie</dt><dd>bool|null visibilité de la watchlist </dd></dl>
+
+</div>
+</div>
+<a id="a0aaeefff1a5a9fe502439faee5e3c327" name="a0aaeefff1a5a9fe502439faee5e3c327"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0aaeefff1a5a9fe502439faee5e3c327">&#9670;&#160;</a></span>removeOeuvre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">removeOeuvre </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_o_a.html">OA</a></td>          <td class="paramname"><span class="paramname"><em>$oa</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Supprime une oeuvre de la liste des oeuvres de la watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype"><a class="el" href="class_o_a.html">OA</a></td><td class="paramname">$oa</td><td>: oeuvre audiovisuelle à supprimer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="acee77db44e361e2773e2734033f2a1c5" name="acee77db44e361e2773e2734033f2a1c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acee77db44e361e2773e2734033f2a1c5">&#9670;&#160;</a></span>setDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setDescription </td>
+          <td>(</td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$description</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie la description de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$description</td><td>: description de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="ae40967cdf0ef222f96384950b9b23fa3" name="ae40967cdf0ef222f96384950b9b23fa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae40967cdf0ef222f96384950b9b23fa3">&#9670;&#160;</a></span>setGenre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setGenre </td>
+          <td>(</td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$genre</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie le genre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$genre</td><td>: genre de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="aa1269ecd52313bf1af923707e20c805e" name="aa1269ecd52313bf1af923707e20c805e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1269ecd52313bf1af923707e20c805e">&#9670;&#160;</a></span>setIdTMDB()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setIdTMDB </td>
+          <td>(</td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$idTMBD</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie la liste des Id TMBD de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$idTMBD</td><td>: liste des ID TMDB de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="a6b8e0fb6c8a8f83ad967ec39216d903b" name="a6b8e0fb6c8a8f83ad967ec39216d903b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b8e0fb6c8a8f83ad967ec39216d903b">&#9670;&#160;</a></span>setIdUtilisateur()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setIdUtilisateur </td>
+          <td>(</td>
+          <td class="paramtype">?int</td>          <td class="paramname"><span class="paramname"><em>$idUtilisateur</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie l'id de l'utilisateur qui a créé la watchlist. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">int&#160;|&#160;null</td><td class="paramname">$idUtilisateur</td><td>: id de l'utilisateur </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="a8e13c5b508447efe345cb239037288d7" name="a8e13c5b508447efe345cb239037288d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e13c5b508447efe345cb239037288d7">&#9670;&#160;</a></span>setIdWatchlist()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setIdWatchlist </td>
+          <td>(</td>
+          <td class="paramtype">?int</td>          <td class="paramname"><span class="paramname"><em>$idWatchList</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie l'id de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">integer&#160;|&#160;null</td><td class="paramname">$idWatchList</td><td>: identifiant de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="a1d85e75030f6601f424889fa388bccd4" name="a1d85e75030f6601f424889fa388bccd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d85e75030f6601f424889fa388bccd4">&#9670;&#160;</a></span>setListeOeuvres()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setListeOeuvres </td>
+          <td>(</td>
+          <td class="paramtype">?array</td>          <td class="paramname"><span class="paramname"><em>$listeOeuvres</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie la liste des oeuvres de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">array&#160;|&#160;null</td><td class="paramname">$listeOeuvres</td><td>: liste des oeuvres de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="a73e581cd03bafca92c1031efde76db69" name="a73e581cd03bafca92c1031efde76db69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73e581cd03bafca92c1031efde76db69">&#9670;&#160;</a></span>setTitre()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setTitre </td>
+          <td>(</td>
+          <td class="paramtype">?string</td>          <td class="paramname"><span class="paramname"><em>$titre</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie le titre de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">string&#160;|&#160;null</td><td class="paramname">$titre</td><td>: titre de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="ad070122a307b2d8b2191cfd824014785" name="ad070122a307b2d8b2191cfd824014785"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad070122a307b2d8b2191cfd824014785">&#9670;&#160;</a></span>setVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">setVisible </td>
+          <td>(</td>
+          <td class="paramtype">?bool</td>          <td class="paramname"><span class="paramname"><em>$visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Modifie la visibilité de la watchlist <a class="el" href="class_watch_list.html">WatchList</a>. </p>
+<dl class="params"><dt>Paramètres</dt><dd>
+  <table class="params">
+    <tr><td class="paramtype">bool&#160;|&#160;null</td><td class="paramname">$visible</td><td>: visibilité de la watchlist </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Renvoie</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<hr/>La documentation de cette classe a été générée à partir du fichier suivant :<ul>
+<li>modeles/<a class="el" href="watchlist_8class_8php.html">watchlist.class.php</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Généré par&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.13.2
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

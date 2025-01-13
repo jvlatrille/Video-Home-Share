@@ -58,4 +58,25 @@ class QuizzDao {
         }
         return $quizzListe;
     }
+    public function add(Quizz $quizz): int|false {
+        try {
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte) 
+                 VALUES (:nom, :theme, :nbQuestion, :difficulte)"
+            );
+            $stmt->execute([
+                ':nom' => $quizz->getNom(),
+                ':theme' => $quizz->getTheme(),
+                ':nbQuestion' => $quizz->getNbQuestion(),
+                ':difficulte' => $quizz->getDifficulte()
+            ]);
+
+            // Retourner l'ID généré après l'insertion
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            error_log("Erreur lors de l'ajout du quizz : " . $e->getMessage());
+            return false;
+        }
+    }
 }
+

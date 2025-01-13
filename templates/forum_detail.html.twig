@@ -3,6 +3,35 @@
     <!-- Titre principal de la page -->
     <h1>{{forum.nom}}</h1>
 
+    <div class="container text-center my-4">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMessageModal">
+			Ajouter un message
+		</button>
+	</div>
+
+    <!-- Modal d'ajout de message -->
+    <div class="modal fade" id="createMessagemodal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Formulaire de création de forum -->
+                    <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage">
+                        <!-- Contenu du message-->
+                        <div class="mb-3">
+                            <label for="messageContenu" class="form-label">Message : </label>
+                            <input type="text" class="form-control" id="messageContenu" name="contenu" required>
+                        </div>
+
+                        <!-- Bouton de soumission -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">Ajouter un nouveau message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
         <p class="text-center">Aucun message à afficher pour ce forum.</p>

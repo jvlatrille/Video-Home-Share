@@ -26,8 +26,14 @@
                  border: 4px solid #fff;">
             </div>
         </div>
-    {% endif %}
 
+
+      <div class="container mt-3">
+          <h2>{{ utilisateurConnecte.pseudo }}</h2>
+      </div>
+  
+
+   
     <div class="d-flex justify-content-around p-3 bg-light border-bottom">
         <a href="index.php?controleur=profil&methode=afficherAPropos&id=1" 
            class="btn mx-2" 
@@ -39,6 +45,7 @@
            class="btn mx-2" 
            style="background-color: #AA8463; color: black;">Notifications</a>
     </div>
+    {% endif %}
 
 
     {% endblock %} 

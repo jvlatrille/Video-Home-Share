@@ -1,0 +1,49 @@
+{% extends "base_template.html.twig" %}
+
+{% block content %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 text-center">
+                <h2 class="mb-4">Résultats du Quizz</h2>
+
+                <div class="bg-light p-4 rounded">
+                    <h3 class="text mb-3">Votre Score : <strong id="score-display">0</strong></h3>
+
+                    <p id="feedback-message"></p>
+
+                    <div class="mt-4">
+                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-secondary" class="btn btn-primary">Rejouer</a>
+                        <a href="index.php" class="btn btn-secondary">Retour à l'accueil</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% block javascripts %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Récupération du score depuis sessionStorage
+                let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
+
+                // Mise à jour de l'affichage du score dans le DOM
+                const scoreElement = document.getElementById('score-display');
+                if (scoreElement) {
+                    scoreElement.textContent = score; // Affichage du score
+                }
+
+                // Gérer l'affichage du message de feedback en fonction du score
+                const feedbackMessage = document.getElementById('feedback-message');
+                if (score === 0) {
+                    feedbackMessage.innerHTML = '<p class="text-danger">Oups, vous n\'avez pas trouvé de bonnes réponses. Essayez à nouveau !</p>';
+                } else if (score <= 3) {
+                    feedbackMessage.innerHTML = '<p class="text-danger">Pas mal, mais il y a encore du travail à faire. Continuez à vous entraîner !</p>';
+                } else if (score <= 6) {
+                    feedbackMessage.innerHTML = '<p class="text-success">Bien joué ! Vous avez presque tout bon !</p>';
+                } else {
+                    feedbackMessage.innerHTML = '<p class="text-success">Félicitations, vous avez réussi le quizz avec un excellent score !</p>';
+                }
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

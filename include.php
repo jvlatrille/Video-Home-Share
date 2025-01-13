@@ -27,8 +27,8 @@ require_once 'controllers/controller_message.class.php';
 require_once 'controllers/controller_utilisateur.class.php';
 require_once 'controllers/controller_profil.class.php';
 require_once 'controllers/controller_commentaire.class.php';
-
 require_once 'controllers/controller_newsletter.class.php';
+require_once 'controllers/controller_admin.class.php';
 
 
 
@@ -57,6 +57,8 @@ require_once 'modeles/message.dao.php';
 
 require_once 'modeles/commentaire.class.php';
 require_once 'modeles/commentaire.dao.php';
+
+require_once 'modeles/admin.dao.php';
 
 //Ajout des utilitaires
 require_once 'utilitaire/validator.class.php';
