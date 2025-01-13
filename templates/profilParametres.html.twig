@@ -71,9 +71,10 @@
 
             <!-- Changer mot de passe -->
             <div class="mb-4">
-                <label class="form-label d-block">Changer de Mot de Passe :</label>
-                <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                <button type="submit" class="btn btn-primary w-100">Changer Mot de Passe</button>
+                <form action="index.php?controleur=profil&methode=pageChangerMDP" method="POST" class="d-flex align-items-center">
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary w-100">Changer Mot de Passe</button>
+                </form>
             </div>
 
 
