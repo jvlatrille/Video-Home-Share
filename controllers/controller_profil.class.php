@@ -13,6 +13,11 @@ class ControllerProfil extends Controller
 {
     private array $reglesValidation;
 
+    /**
+     * @brief Constructeur du controler de profil et des régles de validation des formulaires
+     * @param \Twig\Environment $twig Environnement Twig
+     * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
@@ -34,17 +39,31 @@ class ControllerProfil extends Controller
         ];
     }
 
+    /**
+     * @brief Getteur des régles de validation des formulaires
+     *
+     * @return ?array
+     */
     public function get_regles(): ?array
     {
         return $this->reglesValidation;
     }
 
+    /**
+     * @brief Setteur des régles de validation des formulaires
+     * @param array regle
+     * @return void
+     */
     public function set_regles(array $regle): void
     {
         $this->reglesValidation = regle;
     }
 
-
+    /**
+     * @brief Affiche la page de paramétre du profil
+     *
+     * @return void
+     */
     public function afficherFormulaire()
     {
         // Vérifie si un utilisateur est connecté
@@ -61,8 +80,11 @@ class ControllerProfil extends Controller
         echo $template->render();
     }
 
-
-    // Changer de pseudo
+    /**
+     * @brief Change le pseudonyme de l'utilisateur
+     *
+     * @return void
+     */
     public function changerPseudo() {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -96,8 +118,11 @@ class ControllerProfil extends Controller
         }  
     }  
      
-    
-    // Changer de Mail
+    /**
+     * @brief Change le mail de l'utilisateur
+     *
+     * @return void
+     */
     public function changerMail() { 
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -130,6 +155,11 @@ class ControllerProfil extends Controller
         }
     }
 
+    /**
+     * @brief Change la photo de profil de l'utilisateur
+     *
+     * @return void
+     */
     public function changerPhotoProfil()
     {
         if (isset($_SESSION['utilisateur'])) {
@@ -180,7 +210,11 @@ class ControllerProfil extends Controller
         }
     }
     
-
+    /**
+     * @brief Change la banniere de l'utilisateur
+     *
+     * @return void
+     */
     public function changerBanniere()
     {
         if (isset($_SESSION['utilisateur'])) {
@@ -233,7 +267,11 @@ class ControllerProfil extends Controller
         }
     }
 
-    //Fonction pour afficher la page de changement de mot de passe
+    /**
+     * @brief Affiche la page dédié au changement de mot de passe
+     *
+     * @return void
+     */
     public function pageChangerMDP()
     {
         if (isset($_SESSION['utilisateur'])) {
@@ -245,7 +283,11 @@ class ControllerProfil extends Controller
         }
     }
 
-    //Fonction pour vérifier le mot de passe
+    /**
+     * @brief Vérifie que l'utilisateur à bien rentrer son mot de passe avant de pouvoir le changer
+     *
+     * @return void
+     */
     public function verifierMDP()
     {
         if (isset($_SESSION['utilisateur'])) {
@@ -274,7 +316,11 @@ class ControllerProfil extends Controller
         }
     }
 
-    //Fonction pour changer de mot de passe
+    /**
+     * @brief Change le mot de passe de l'utilisateur aprés modification
+     *
+     * @return void
+     */
     public function changerMdp()
     {
         if (isset($_SESSION['utilisateur'])) {
