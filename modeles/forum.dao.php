@@ -75,7 +75,7 @@ class forumDAO{
     //Fonction pour creer un forum
     public function creerForum(Forum $forum): ?Forum {
         $sql = "INSERT INTO ".PREFIXE_TABLE."forum (id, nom, description, theme, idUtilisateur) 
-                VALUES (:id, :nom, :description, :theme, 1)"; //1 pour les tests, normalement $_SESSION['idUtilisateur']
+                VALUES (:id, :nom, :description, :theme, :idUtilisateur)";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);

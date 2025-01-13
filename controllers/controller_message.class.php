@@ -33,15 +33,22 @@ class ControllerMessage extends Controller
 
     public function ajouterMessage()
     {
+        //Recuperer l'id forum
+        $idForum = $_GET['idForum'];
         //Recupere les données du formulaire
         $contenu = isset($_POST['contenu']) ? $_POST['contenu'] : (isset($_GET['contenu']) ? $_GET['contenu'] : null);
         $managerMessage = new MessageDao($this->getPdo());
         $message = new Message();
         $message->setContenu($contenu);
-        $managerForum->creerMessage($message);
+        $message->setIdForum($idForum);
+        $message->setNbLikes(0);
+        $message->setNbDislikes(0);
+        $message->setIdUtilisateur(1);
+        $managerMessage->creerMessage($message);
+        var_dump($message);
         
         //Redirige vers la liste des forums
-        header('Location: index.php?controleur=message&methode=listerMessage');
+        header('Location: index.php?controleur=message&methode=listerMessage&idForum=' .$idForum. '');
     }
 
     public function like()

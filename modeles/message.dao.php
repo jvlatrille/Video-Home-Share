@@ -49,6 +49,33 @@ class messageDAO{
         $message->setIdUtilisateur($tableauAssoc['idUtilisateur']);
         return $message;
     }
+
+    //Fonction pour creer un forum
+    public function creerMessage(Message $message): ?Message {
+        $sql = "INSERT INTO ".PREFIXE_TABLE."message (id, contenu, nbLike, nbDislike, idUtilisateur, idForum) 
+                VALUES (:id, :contenu, :nbLike, :nbDislike, :idUtilisateur, :idForum)"; 
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array(
+                'id' => $message->getIdMessage(),
+                'contenu' => $message->getContenu(),
+                'nbLike' => $message->getNbLikes(),
+                'nbDislike' => $message->getNbDislikes(),
+                'idUtilisateur' => $message->getIdUtilisateur(),
+                'idForum' => $message->getIdForum()
+            ));
+            
+            $message->setIdMessage($this->pdo->lastInsertId());
+            return $message;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la création du message : " . $e->getMessage());
+            return null;
+        }
+    }
+
+
     public function incrementLike(int $idMessage): void
 {
     $sql = "UPDATE ".PREFIXE_TABLE."message SET nbLike = nbLike + 1 WHERE idMessage = :idMessage";
