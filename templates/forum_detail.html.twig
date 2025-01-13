@@ -9,16 +9,16 @@
 		</button>
 	</div>
 
-    <!-- Modal d'ajout de message -->
-    <div class="modal fade" id="createMessagemodal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
+    <!-- Modal de création de forum -->
+    <div class="modal fade" id="createMessageModal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
                     <!-- Formulaire de création de forum -->
                     <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage">
-                        <!-- Contenu du message-->
+                        <!-- Contenu du message -->
                         <div class="mb-3">
-                            <label for="messageContenu" class="form-label">Message : </label>
+                            <label for="messageContenu" id ='message' class="form-label">Message : </label>
                             <input type="text" class="form-control" id="messageContenu" name="contenu" required>
                         </div>
 
@@ -31,6 +31,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
