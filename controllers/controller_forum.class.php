@@ -10,6 +10,8 @@ class ControllerForum extends Controller
     // Afficher tous les forums
     public function listerForum()
     {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         // Récupère tous les forums
         $managerForum = new ForumDAO($this->getPdo());
         $forumsListe = $managerForum->findAll();
@@ -18,7 +20,11 @@ class ControllerForum extends Controller
         $template = $this->getTwig()->load('forums.html.twig');
         echo $template->render(['forumListe' => $forumsListe]);
     }
-
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
+    }
     //Fonction pour afficher un forum
     public function afficherForum()
     {

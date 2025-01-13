@@ -28,11 +28,11 @@
                         <div>
                             <form method="POST" action="index.php?controleur=message&methode=like">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLikes }}</button>
+                                <button type="submit" class="btn btn-success btn-sm">👍 {{ message.nbLike }}</button>
                             </form>
                             <form method="POST" action="index.php?controleur=message&methode=dislike">
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
-                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
+                                <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislike }}</button>
                             </form>
                         </div>
                     </div>

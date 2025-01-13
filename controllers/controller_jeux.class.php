@@ -28,6 +28,8 @@ class ControllerJeux extends Controller{
 	 */
 	public function listeTableau()
     {
+		if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 		// Récupérer la liste des jeux
 		$managerJeux = new JeuxDao($this->getPdo());
 		$tableau = $managerJeux->findAll();
@@ -39,6 +41,11 @@ class ControllerJeux extends Controller{
 		echo $template->render(array(
 			'jeux' => $tableau
 		));
+	}
+	else {
+		// Redirige vers la page de connexion
+		header('Location: index.php?controleur=utilisateur&methode=connexion');
+}
 	}
 
 	/**
