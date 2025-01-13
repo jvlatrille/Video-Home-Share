@@ -7,6 +7,8 @@ class ControllerQuizz extends Controller {
 
     // Fonction pour lister tous les quizz
     public function listerQuizz() {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         // Récupère tous les quizz
         $managerQuizz = new QuizzDao($this->getPdo());
         $quizzListe = $managerQuizz->findAll();
@@ -16,7 +18,11 @@ class ControllerQuizz extends Controller {
         
         echo $template->render(['quizzListe' => $quizzListe]);
     }
-    
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
+}
 
     // Fonction pour afficher un quizz spécifique
     public function afficherQuizz() {
