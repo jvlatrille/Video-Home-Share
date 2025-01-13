@@ -11,8 +11,6 @@
 
 class ControllerProfil extends Controller
 {
-    private array $reglesValidation;
-
     /**
      * @brief Constructeur du controler de profil et des régles de validation des formulaires
      * @param \Twig\Environment $twig Environnement Twig
@@ -21,43 +19,27 @@ class ControllerProfil extends Controller
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
-        $this->reglesValidation = [
-            'pseudo' => [
-                'obligatoire' => false,
-                'type' => 'string',
-                'longueur_min' => 5,
-                'longueur_max' => 40,
-                'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
-            ],
-            'mail' => [
-                'obligatoire' => false,
-                'type' => 'string',
-                'longueur_min' => 5,
-                'longueur_max' => 255,
-                'format' => FILTER_VALIDATE_EMAIL
-            ],
-        ];
     }
 
-    /**
-     * @brief Getteur des régles de validation des formulaires
-     *
-     * @return ?array
-     */
-    public function get_regles(): ?array
-    {
-        return $this->reglesValidation;
-    }
-
-    /**
-     * @brief Setteur des régles de validation des formulaires
-     * @param array regle
-     * @return void
-     */
-    public function set_regles(array $regle): void
-    {
-        $this->reglesValidation = regle;
-    }
+    // public function creer_regles(): void
+    // {
+    //     $this->reglesValidation = [
+    //         'pseudo' => [
+    //             'obligatoire' => false,
+    //             'type' => 'string',
+    //             'longueur_min' => 5,
+    //             'longueur_max' => 40,
+    //             'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
+    //         ],
+    //         'mail' => [
+    //             'obligatoire' => false,
+    //             'type' => 'string',
+    //             'longueur_min' => 5,
+    //             'longueur_max' => 255,
+    //             'format' => FILTER_VALIDATE_EMAIL
+    //         ],
+    //     ];
+    // }
 
     /**
      * @brief Affiche la page de paramétre du profil
@@ -87,6 +69,17 @@ class ControllerProfil extends Controller
      */
     public function changerPseudo() {
         if (isset($_SESSION['utilisateur'])) {
+            
+            $regles = [
+                'pseudo' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 5,
+                'longueur_max' => 40,
+                'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
+                ]
+            ];
+
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
@@ -95,7 +88,7 @@ class ControllerProfil extends Controller
             $donnees = ["pseudo" => $newPseudo];
 
             // Vérification des données reçues
-            $validator = new Validator($this->get_regles());
+            $validator = new Validator($regles);
             $valides = $validator->valider($donnees);
         
             // Interaction avec le DAO pour mettre à jour le pseudo
@@ -125,6 +118,15 @@ class ControllerProfil extends Controller
      */
     public function changerMail() { 
         if (isset($_SESSION['utilisateur'])) {
+            $regles = [
+                'mail' => [
+                    'obligatoire' => false,
+                    'type' => 'string',
+                    'longueur_min' => 5,
+                    'longueur_max' => 255,
+                    'format' => FILTER_VALIDATE_EMAIL
+                ],
+            ];
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
@@ -133,7 +135,7 @@ class ControllerProfil extends Controller
             $donnees = ["mail" => $newMail];
 
             // Vérification des données reçues
-            $validator = new Validator($this->get_regles());
+            $validator = new Validator($regles);
             $valides = $validator->valider($donnees);
         
             // Interaction avec le DAO pour mettre à jour le pseudo
@@ -163,6 +165,8 @@ class ControllerProfil extends Controller
     public function changerPhotoProfil()
     {
         if (isset($_SESSION['utilisateur'])) {
+            $regles = [];
+
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
@@ -173,7 +177,7 @@ class ControllerProfil extends Controller
             // Vérifier si un fichier a été envoyé
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
                 // Valider le fichier photo
-                $validator = new Validator($this->get_regles());
+                $validator = new Validator($regles);
                 $photoValide = $validator->validerUploadEtPhoto($_FILES['photo'], $messages);
                 
                 // Si la photo est valide
@@ -203,10 +207,13 @@ class ControllerProfil extends Controller
             } else {
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
-            // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
+
+            $utilisateur = $managerUtilisateur->find($userId);
         
-         header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+        
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
     
@@ -218,6 +225,8 @@ class ControllerProfil extends Controller
     public function changerBanniere()
     {
         if (isset($_SESSION['utilisateur'])) {
+            $regles = [];
+
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
@@ -228,7 +237,7 @@ class ControllerProfil extends Controller
             // Vérifier si un fichier a été envoyé
             if (isset($_FILES['banniere']) && $_FILES['banniere']['error'] == 0) {
                 // Valider le fichier photo
-                $validator = new Validator($this->get_regles());
+                $validator = new Validator($regles);
                 $photoValide = $validator->validerUploadEtPhoto($_FILES['banniere'], $messages);
                 
                 // Si la photo est valide
@@ -258,12 +267,13 @@ class ControllerProfil extends Controller
             } else {
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
+
+            $utilisateur = $managerUtilisateur->find($userId);
         
             // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
+            $_SESSION['utilisateur'] = serialize($utilisateur);
 
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
-
         }
     }
 
