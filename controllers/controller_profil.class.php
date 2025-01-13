@@ -174,7 +174,7 @@ class ControllerProfil extends Controller
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
             // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateur);
+            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
         
          header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
@@ -226,7 +226,7 @@ class ControllerProfil extends Controller
             }
         
             // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateur);
+            $_SESSION['utilisateur'] = serialize($utilisateurConnecte);
 
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
 
@@ -457,11 +457,11 @@ class ControllerProfil extends Controller
             echo $template->render(['messageListe' => $messageListe,'utilisateur' => $utilisateurConnecte]);
 
         }
-
-        // Sinon, affiche la page de connexion
-        $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render();
-        
+        else {
+            // Sinon, affiche la page de connexion
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render();
+        }
     }
     
 }
