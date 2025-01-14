@@ -1,24 +1,25 @@
 {% extends 'base_template.html.twig' %}
 
-{% block content2 %} 
+{% block content2 %}
 
-{% if utilisateur is defined %}
-{% set banniere = 'img/banniere/' ~ utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
-{% set photo = 'img/profils/' ~ utilisateur.photoProfil ?? 'img/tortueProfil.png' %}
+	{% if utilisateur is defined %}
+		{% set banniere = 'img/banniere/' ~ utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
+		{% set photo = 'img/profils/' ~ utilisateur.photoProfil ?? 'img/tortueProfil.png' %}
 
-<div class="container-fluid p-0">
-    <div class="position-relative" style="height: 30vh;">
-        <img src="{{ banniere }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
-        <div class="position-absolute top-50 start-20 translate-middle-y ms-5">
-            <img src="{{ photo }}" class="rounded-circle border border-white" style="height: 150px; width: 150px; object-fit: cover;">
-        </div>
-    </div>
-</div>
+		<div class="container-fluid p-0">
+			<div class="position-relative" style="height: 30vh;">
+				<img src="{{ banniere }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
+				<div class="position-absolute top-50 start-20 translate-middle-y ms-5">
+					<img src="{{ photo }}" class="rounded-circle border border-white" style="height: 150px; width: 150px; object-fit: cover;">
+				</div>
+			</div>
+		</div>
 
-<div class="text-center mt-3">
-    <h2>{{ utilisateur.pseudo }}</h2>
-    <p class="text-muted">Grade : {{ utilisateur.role | capitalize }}</p>
-</div>
+		<div class="text-center mt-3">
+			<h2>{{ utilisateur.pseudo }}</h2>
+			<p class="text-muted">Grade :
+				{{ utilisateur.role | capitalize }}</p>
+		</div>
 
-{% endif %}
+	{% endif %}
 {% endblock %}
