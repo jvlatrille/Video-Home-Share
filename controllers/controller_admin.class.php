@@ -46,6 +46,8 @@ class ControllerAdmin extends Controller
         $this->verifierAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            ob_start();  // ➡️ Mise en tampon pour éviter les erreurs de header
+
             $idUtilisateur = $_POST['idUtilisateur'];
             $pseudo = $_POST['pseudo'];
             $adressMail = $_POST['adressMail'];
@@ -56,17 +58,15 @@ class ControllerAdmin extends Controller
 
             if (!$utilisateurActuel) {
                 header('Location: index.php?controleur=admin&methode=render&error=user_not_found');
+                ob_end_flush();
                 exit();
             }
 
-            // Upload des images avec le format id_pseudo.extension
             $photoProfil = $this->uploadImage('photoProfil', $utilisateurActuel->getPhotoProfil(), $idUtilisateur, $pseudo, 'profil');
             $banniereProfil = $this->uploadImage('banniereProfil', $utilisateurActuel->getBanniereProfil(), $idUtilisateur, $pseudo, 'banniere');
 
-            // Hash du mot de passe si fourni
             $motDePasseFinal = !empty($motDePasse) ? password_hash($motDePasse, PASSWORD_BCRYPT) : null;
 
-            // Mise à jour des données
             $resultat = $this->adminDao->adminModifierUtilisateur(
                 $idUtilisateur,
                 $pseudo,
@@ -82,9 +82,12 @@ class ControllerAdmin extends Controller
             } else {
                 header('Location: index.php?controleur=admin&methode=render&error=1');
             }
+
+            ob_end_flush();  // ➡️ Fin de la mise en tampon
             exit();
         }
     }
+
 
     /**
      * @brief Gère l'upload d'une image de profil ou de bannière.
@@ -100,6 +103,11 @@ class ControllerAdmin extends Controller
     {
         $targetDir = $type === 'banniere' ? 'img/banniere/' : 'img/profils/';
 
+        // Vérifie si le dossier existe, sinon le crée
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
         if (isset($_FILES[$inputName]) && $_FILES[$inputName]['error'] === UPLOAD_ERR_OK) {
             $fileType = pathinfo($_FILES[$inputName]['name'], PATHINFO_EXTENSION);
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
@@ -109,18 +117,24 @@ class ControllerAdmin extends Controller
                 $fileName = $idUtilisateur . '_' . $pseudoNettoye . '.' . $fileType;
                 $targetFilePath = $targetDir . $fileName;
 
+                // Supprime l'ancienne image si elle existe
                 if (file_exists($targetFilePath)) {
                     unlink($targetFilePath);
                 }
 
+                // Déplace le fichier et vérifie si ça fonctionne
                 if (move_uploaded_file($_FILES[$inputName]['tmp_name'], $targetFilePath)) {
                     return $fileName;
+                } else {
+                    error_log("Erreur lors du déplacement du fichier : " . $_FILES[$inputName]['error']);
                 }
             }
         }
 
         return $default;
     }
+
+
 
     /**
      * @brief Vérifie si l'utilisateur connecté est un administrateur.
@@ -155,7 +169,7 @@ class ControllerAdmin extends Controller
         $this->verifierAdmin();
 
         if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-            $idUtilisateur = (int)$_GET['id'];
+            $idUtilisateur = (int) $_GET['id'];
 
             $utilisateur = $this->adminDao->getUtilisateurById($idUtilisateur);
             if ($utilisateur) {
