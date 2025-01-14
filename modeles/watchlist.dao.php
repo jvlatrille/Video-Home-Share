@@ -49,6 +49,31 @@ class WatchListDao {
         return $this->hydrate($resultat);
     }
 
+    /**
+     * @brief Fonction pour récupérer une Watchlist avec son identifiant et les films associés
+     * @details Cette fonction permet de récupérer une Watchlist avec son identifiant et les films associés
+     *
+     * @param integer $id identifiant de la watchlist à récupérer
+     * @return array|null la Watchlist correspondant à l'identifiant ou null si non trouvée avec les films associés
+     */
+    public function findWithFilms(int $id): ?WatchList {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if (!$resultat) {
+            return null;
+        }
+        
+        $watchlist = $this->hydrate($resultat);
+        $oeuvres = $this->recupererOeuvresParWatchlist($watchlist->getIdTMDB());
+        $watchlist->setListeOeuvres($oeuvres);
+        
+        return $watchlist;
+    }
+    
     // Fonction pour afficher toutes les watchlists d'un utilisateur
     /**
      * @brief Fonction pour récupérer toutes les watchlists d'un utilisateur
@@ -150,7 +175,7 @@ class WatchListDao {
      * @param integer $idUtilisateur identifiant de l'utilisateur
      * @return array|null la liste des Watchlists visibles n'appartenant pas à l'utilisateur ou null si non trouvée
      */
-    public function findAllVisible(int $idUtilisateur): ?array {
+    public function findAllVisibleWithFilm(int $idUtilisateur): ?array {
             $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist WHERE visible = 1 AND idUtilisateur != :id";
         
             $pdoStatement = $this->pdo->prepare($sql);
@@ -229,6 +254,32 @@ class WatchListDao {
             return false;
         }
     }
+
+    /**
+     * @brief Fonction pour modifier une Watchlist
+     * @details Cette fonction permet de modifier une Watchlist en mettant à jour les données de la Watchlist
+     * 
+     * @param WatchList $Watchlist la Watchlist à modifier
+     * @return bool true si la Watchlist a été modifiée, false sinon
+     */
+        public function modifierWatchlist(WatchList $watchlist): bool {
+            $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET titre = :titre, genre = :genre, description = :description, visible = :visible WHERE idWatchlist = :idWatchlist";
+            
+            try {
+                $pdoStatement = $this->pdo->prepare($sql);
+                $pdoStatement->execute([
+                    'titre' => $watchlist->getTitre(),
+                    'genre' => $watchlist->getGenre(),
+                    'description' => $watchlist->getDescription(),
+                    'visible' => $watchlist->getVisible(),
+                    'idWatchlist' => $watchlist->getIdWatchlist()
+                ]);
+                return true;
+            } catch (Exception $e) {
+                error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
+                return false;
+            }
+        }
 
     // Fonction pour ajouter une OA à une watchlist
     /**
