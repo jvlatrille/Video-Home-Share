@@ -1,79 +1,203 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-    {% if watchList is not defined %}
-        <div class="alert alert-warning" role="alert">
-            Aucune WatchList
-        </div>
-    {% else %}
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>{{ watchList.titre }}</h1>
-                <div>
-                    <p><strong>Description :</strong> {{ watchList.description }}</p>
-                </div>
-                <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" 
-                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-danger">
-                    Supprimer
-                </a>
-            </div>
-            <div class="row">
-                {% for oa in oas %}
-            {% if erreurs is defined  %}
-                <div class="alert alert-danger" role="alert">
-                    {{ erreurs|join('<br>') }}
-                </div>
-            {% endif %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card" style="background-color: transparent; border: none;">
-                            <button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#oaModal{{ oa.idOa }}">
-                                <div class="card-body text-center">
-                                    <img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="img-fluid mb-2 rounded" style="width: 50%; height: auto;">
-                                    <h5 class="card-title mt-2">{{ oa.nom }}</h5>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
+	{% if erreurs is defined %}
+		<div class="alert alert-danger" role="alert">
+			{{ erreurs|join('<br>') }}
+		</div>
+	{% endif %}
 
-                    <div class="modal fade" id="oaModal{{ oa.idOa }}" tabindex="-1" aria-labelledby="oaModalLabel{{ oa.idOa }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="oaModalLabel{{ oa.idOa }}">{{ oa.nom }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p><strong>Nom :</strong> {{ oa.nom }}</p>
-                                    <p><strong>Description :</strong> {{ oa.description }}</p>
-                                    <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                    <p><strong>Note :</strong>
-                                        {% for i in 1..5 %}
-                                            {% if i <= (oa.note / 2) %}
-                                                <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
-                                            {% else %}
-                                                <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
-                                            {% endif %}
-                                        {% endfor %}
-                                    </p>
-                                    <p><strong>Genres :</strong>
-                                        {% for genre in oa.genres %}
-                                            <span class="badge bg-secondary">{{ genre }}</span>
-                                        {% endfor %}
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
-                                        <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+	{% if watchList is not defined %}
+		<div class="alert alert-warning" role="alert">
+			Aucune WatchList
+		</div>
+	{% else %}
+		<div class="container mt-4">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h1>{{ watchList.titre }}</h1>
+				<div>
+					<p>
+						<strong>Description :</strong>
+						{{ watchList.description }}</p>
+				</div>
+				{% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
+					<a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-danger">
+						Supprimer
+					</a>
+				{% endif %}
+			</div>
+			<div class="row">
+				{% for oa in watchList.listeOeuvres %}
+					<div class="col-md-4 mb-3">
+						<div class="card" style="background-color: transparent; border: none;">
+							<button type="button" class="btn btn-link p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#oaModal{{ oa.idOa }}">
+								<div class="card-body text-center">
+									<img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="img-fluid mb-2 rounded" style="width: 50%; height: auto;">
+									<h5 class="card-title mt-2">{{ oa.nom }}</h5>
+								</div>
+							</button>
+						</div>
+					</div>
 
-            
-        </div>
-    {% endif %}
-{% endblock %}
+					<div class="modal fade" id="oaModal{{ oa.idOa }}" tabindex="-1" aria-labelledby="oaModalLabel{{ oa.idOa }}" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="oaModalLabel{{ oa.idOa }}">{{ oa.nom }}</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<p>
+										<strong>Nom :</strong>
+										{{ oa.nom }}</p>
+									<p>
+										<strong>Description :</strong>
+										{{ oa.description }}</p>
+									<p>
+										<strong>Date de sortie :</strong>
+										{{ oa.dateSortie }}</p>
+									<p>
+										<strong>Note :</strong>
+										{% for i in 1..5 %}
+											{% if i <= (oa.note / 2) %}
+												<img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
+											{% else %}
+												<img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
+											{% endif %}
+										{% endfor %}
+									</p>
+									<p>
+										<strong>Genres :</strong>
+										{% for genre in oa.genres %}
+											<span class="badge bg-secondary">{{ genre }}</span>
+										{% endfor %}
+									</p>
+									<div class="d-flex justify-content-between mt-3">
+										<button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
+										{% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
+											<button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
+										{% endif %}
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
+		<div class="d-flex align-items-center mb-4">
+			<button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#shareModal">
+				Partager la WatchList
+			</button>
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editWatchlistModal">
+				Modifier la WatchList
+			</button>
+		</div>
+{% else %}
+
+	<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+		<input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
+		<input type="hidden" name="titre" value="{{ watchList.titre }}">
+		<input type="hidden" name="genre" value="{{ watchList.genre }}">
+		<input type="hidden" name="description" value="{{ watchList.description }}">
+		<input type="hidden" name="visible" value="{{ watchList.visible }}">
+		{% for oa in watchList.listeOeuvres %}
+			<input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}">
+		{% endfor %}
+		<button type="submit" class="btn btn-primary">
+			<i class="bi bi-save"></i>
+			Enregistrer cette WatchList</button>
+	</form>
+{% endif %}
+
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="shareModalLabel">Partager la WatchList</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p>Copiez le lien ci-dessous pour partager votre WatchList :</p>
+				<div class="input-group">
+					<input type="text" class="form-control" value="http://localhost/SAE/Video-Home-Share/index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{ watchList.idWatchList }}" id="shareLink" readonly>
+					<button class="btn btn-outline-secondary" type="button" onclick="copierWatchlist()">Copier</button>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
+	<div class="modal fade" id="editWatchlistModal" tabindex="-1" aria-labelledby="editWatchlistModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editWatchlistModalLabel">Modifier la WatchList</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>
+						<strong>Titre actuel :</strong>
+						{{ watchList.titre }}</p>
+					<p>
+						<strong>Description actuelle :</strong>
+						{{ watchList.description }}</p>
+					<p>
+						<strong>Visibilité actuelle :</strong>
+						{{ watchList.visible == '1' ? 'Publique' : 'Privée' }}</p>
+					<p>
+						<strong>Genre le :</strong>
+						{{ watchList.genre }}</p>
+					<form action="index.php?controleur=watchlist&methode=modifierWatchList&id={{ watchList.idWatchList }}" method="post">
+						<div class="mb-3">
+							<label for="titre" class="form-label">Titre</label>
+							<input type="text" class="form-control" id="titre" name="titre" value="{{ watchList.titre }}" required>
+						</div>
+						<div class="mb-3">
+							<label for="description" class="form-label">Description</label>
+							<textarea class="form-control" id="description" name="description" rows="3" required>{{ watchList.description }}</textarea>
+						</div>
+						<div class="mb-3">
+							<label for="genre" class="form-label">Genre</label>
+							<input type="text" class="form-control" id="genre" name="genre" value="{{ watchList.genre }}">
+						</div>
+						<div class="mb-3">
+							<label for="visible" class="form-label">Visibilité</label>
+							<select class="form-select" id="visible" name="visible" required>
+								<option value="1" {{ watchList.visible == '1' ? 'selected' : '' }}>Publique</option>
+								<option value="0" {{ watchList.visible == '0' ? 'selected' : '' }}>Privée</option>
+							</select>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+							<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+{% block scripts %}
+	<script>
+		function copierWatchlist() {
+var copyText = document.getElementById("shareLink").value;
+navigator.clipboard.writeText(copyText).then(() => {
+alert("Lien copié : " + copyText);
+}).catch(err => {
+alert("Échec de la copie : " + err);
+});
+}
+	</script>
+{% endblock %}{% endblock %}
