@@ -5,11 +5,12 @@
 {% endblock %}
     
 
+{% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
 {% block content %}    
     <!-- Titre de la partie notification -->
     <div class="container mt-2">
-        <h1>Vos messages </h1>
+        <h1>Vos messages </h1><br>
     </div>
     
     <!-- Affichage des messages -->
@@ -18,10 +19,23 @@
     {% else %}
         <div class="container">
             {% for message in messageListe %}
+            <h5><strong>Dans le forum : {{ message.nom }}</strong></h5>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p>{{ forum.nom }}</p>
-                        <p>{{ message.contenu }}</p>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle" 
+                                    style="background-image: url('{{ photo }}');
+                                    height: 70px;
+                                    width: 70px;
+                                    background-size: cover;
+                                    background-position: center;
+                                    border: 4px solid #fff;">
+                                </div>
+       
+                                <div class="ml-3 ">
+                                    <p>{{ message.contenu }}</p>
+                                </div>
+                            </div>
                     </div>
 
                     <div class="card-footer d-flex justify-content-between align-items-center">

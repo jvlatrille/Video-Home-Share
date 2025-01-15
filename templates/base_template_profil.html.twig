@@ -2,50 +2,31 @@
 
 {% block content2 %}
 
-     {% if utilisateurConnecte is defined %}
-    {% set banniere = 'img/banniere/' ~ (utilisateurConnecte.banniereProfil) %}
-    {% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
+	{% if utilisateurConnecte is defined %}
+		{% set banniere = 'img/banniere/' ~ (utilisateurConnecte.banniereProfil) %}
+		{% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
-        <div class="image-bg container-fluid"
-             style="background-image: url('{{ banniere }}'); 
-             background-size: cover;
-             background-position: center;
-             background-repeat: no-repeat;
-             height: 30vh;
-             position: relative">
-            <div class="rounded-circle" 
-                 style="background-image: url('{{ photo }}');
-                 height: 150px; 
-                 width: 150px; 
-                 background-size: cover; 
-                 background-position: center;
-                 position: absolute;
-                 top: 50%;
-                 left: 8%;
-                 transform: translateY(-50%);
-                 border: 4px solid #fff;">
-            </div>
-        </div>
+		<div class="container-fluid p-0">
+			<div class="position-relative" style="height: 30vh;">
+				<img src="{{ banniere }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
+				<div class="position-absolute top-50 start-20 translate-middle-y ms-5">
+					<img src="{{ photo }}" class="rounded-circle border border-white" style="height: 150px; width: 150px; object-fit: cover;">
+				</div>
+			</div>
+		</div>
 
 
-      <div class="container mt-3">
-          <h2>{{ utilisateurConnecte.pseudo }}</h2>
-      </div>
-  
-
-   
-    <div class="d-flex justify-content-around p-3 bg-light border-bottom">
-        <a href="index.php?controleur=profil&methode=afficherAPropos&id=1" 
-           class="btn mx-2" 
-           style="background-color: #AA8463; color: black;">A propos</a>
-        <a href="index.php?controleur=profil&methode=afficherFormulaire" 
-           class="btn mx-2" 
-           style="background-color: #AA8463; color: black;">Paramètres</a>
-        <a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" 
-           class="btn mx-2" 
-           style="background-color: #AA8463; color: black;">Notifications</a>
-    </div>
-    {% endif %}
+		<div class="container mt-3">
+			<h2>{{ utilisateurConnecte.pseudo }}</h2>
+		</div>
 
 
-    {% endblock %} 
+		<div class="d-flex justify-content-around p-3 bg-light border-bottom">
+			<a href="index.php?controleur=profil&methode=afficherAPropos&id=1" class="btn mx-2" style="background-color: #AA8463; color: black;">A propos</a>
+			<a href="index.php?controleur=profil&methode=afficherFormulaire" class="btn mx-2" style="background-color: #AA8463; color: black;">Paramètres</a>
+			<a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" class="btn mx-2" style="background-color: #AA8463; color: black;">Notifications</a>
+		</div>
+	{% endif %}
+
+
+{% endblock %}
