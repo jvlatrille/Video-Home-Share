@@ -5,4 +5,4 @@
 /config/constantes.yaml
 
 # Variables d'environnement pour le backup de la BD
-/config/.env
+config/.env
