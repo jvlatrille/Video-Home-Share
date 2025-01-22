@@ -48,10 +48,18 @@
 							</div>
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
-								<select class="form-select" id="watchlistVisibility" name="visible">
-									<option value="1" {{ watchlist.visible|default('1') == '1' ? 'selected' : '' }}>Publique</option>
-									<option value="0" {{ watchlist.visible|default('0') == '0' ? 'selected' : '' }}>Privée</option>
-								</select>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">
+										Publique
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPrivate" value="0">
+									<label class="form-check-label" for="visibilityPrivate">
+										Privée
+									</label>
+								</div>
 
 							</div>
 

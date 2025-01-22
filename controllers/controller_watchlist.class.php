@@ -72,8 +72,6 @@ class ControllerWatchList extends Controller
         
         $watchList = $managerWatchList->findWithFilms($id);
 
-        
-    
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
 
@@ -119,7 +117,7 @@ class ControllerWatchList extends Controller
                 'titre' => $_POST['titre'] ?? null,
                 'genre' => $_POST['genre'] ?? null,
                 'description' => $_POST['description'] ?? null,
-                'visible' => $_POST['visible'] ?? null,
+                'visible' => $_POST['visible'] ?? '0', 
                 'listeOeuvres' => is_string($_POST['listeOeuvres']) ? json_decode($_POST['listeOeuvres'], true) : $_POST['listeOeuvres'],
 
             ];
@@ -142,6 +140,10 @@ class ControllerWatchList extends Controller
                     'longueur_min' => 1,
                     'longueur_max' => 255,
                 ],
+                'visible' => [
+                    'obligatoire' => true,
+                    'type' => 'boolean',]
+
             ];
                     
             $validation = new Validator($regles);
@@ -183,7 +185,7 @@ class ControllerWatchList extends Controller
 
 
             //Redirige vers la liste des watchlists
-            header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
+           header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
         }
     }
 

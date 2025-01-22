@@ -54,7 +54,7 @@ class WatchListDao {
      * @details Cette fonction permet de récupérer une Watchlist avec son identifiant et les films associés
      *
      * @param integer $id identifiant de la watchlist à récupérer
-     * @return array|null la Watchlist correspondant à l'identifiant ou null si non trouvée avec les films associés
+     * @return ?Watchlist la Watchlist correspondant à l'identifiant ou null si non trouvée avec les films associés
      */
     public function findWithFilms(int $id): ?WatchList {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id";
@@ -66,7 +66,12 @@ class WatchListDao {
         if (!$resultat) {
             return null;
         }
-        
+        //Si il y aucune oeuvre dans la watchlist
+        if($resultat['idTMDB'] == null){
+            $watchlist = $this->hydrate($resultat);
+            return $watchlist;
+        }
+
         $watchlist = $this->hydrate($resultat);
         $oeuvres = $this->recupererOeuvresParWatchlist($watchlist->getIdTMDB());
         $watchlist->setListeOeuvres($oeuvres);
