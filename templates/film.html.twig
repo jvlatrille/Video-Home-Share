@@ -67,15 +67,25 @@
                                 </p>
                             </div>
                         </div>
-                        <p><strong>Note :</strong>
-                            {% for i in 1..5 %}
-                                {% if i <= (oa.note / 2) %}
-                                    <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
-                                {% else %}
-                                    <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
-                                {% endif %}
-                            {% endfor %}
-                        </p>
+                        <p><strong>Note :</strong></p>
+<div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
+    {% for i in 1..5 %}
+        <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
+             alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" 
+             width="30" 
+             height="30" 
+             data-value="{{ i }}" 
+             class="star me-1" 
+             style="cursor: pointer;">
+    {% endfor %}
+    <span id="rating-display" class="ms-2 fs-5">{{ oa.note }}</span>
+</div>
+
+
+{% if utilisateurConnecte %}
+    <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
+{% endif %}
+
                     </div>
                     
                     <div class="d-flex mt-3">
