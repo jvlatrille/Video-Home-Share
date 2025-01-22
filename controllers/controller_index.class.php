@@ -34,7 +34,7 @@ class ControllerIndex extends Controller{
      * @return void
      */
     public function rechercherFilm(){
-        $requete=htmlentities($_POST['requete']) ?? null;
+        $requete=htmlspecialchars($_POST['requete']) ?? null;
 
         $managerOa = new OADao();
         $oas = $managerOa->rechercheFilmParNom($requete);
