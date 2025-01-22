@@ -112,6 +112,52 @@ class ControllerProfil extends Controller
     }  
      
     /**
+     * @brief Change le bio de l'utilisateur
+     *
+     * @return void
+     */
+    public function changerBio() { 
+        if (isset($_SESSION['utilisateur'])) {
+            $regles = [
+                'bio' => [
+                    'obligatoire' => false,
+                    'type' => 'string',
+                    'longueur_min' => 0,
+                    'longueur_max' => 255,
+                    'format' => '/^[^\u2028\u2029\u00A0]+$/'
+                ],
+            ];
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
+            $id = $utilisateurConnecte->getIdUtilisateur();
+            $bio = isset($_POST['bio']) ? trim($_POST['bio']) : null;
+            $donnees = ["bio" => $bio];
+
+            // Vérification des données reçues
+            $validator = new Validator($regles);
+            $valides = $validator->valider($donnees);
+        
+            // Interaction avec le DAO pour mettre à jour le pseudo
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            if ($valides)
+            {
+                $reussite = $managerUtilisateur->changerBio($id, $bio);
+            }
+        
+            // Génération d'un message en fonction du succès ou de l'échec
+            $messages = $validator->getMessagesErreurs();
+            $utilisateur = $managerUtilisateur->find($id);
+        
+            // Mise à jour de la session avec les nouvelles données
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            exit();
+
+        }
+    }  
+     
+    /**
      * @brief Change le mail de l'utilisateur
      *
      * @return void

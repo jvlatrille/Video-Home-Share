@@ -150,6 +150,22 @@ class UtilisateurDao
     }
 
     /**
+     * @brief Change la bio d'un utilisateur
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $bio Nouvelle bio à attribuer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function changerBio(?int $id, ?string $bio): bool{
+         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                 SET bio = :bio
+                 WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['bio' => $bio, 'id' => $id]);
+    
+        return $reussite;
+    }
+
+    /**
      * @brief Met à jour la photo de profil d'un utilisateur
      * @param int $userId Identifiant de l'utilisateur
      * @param string $filePath Chemin du fichier de la nouvelle photo de profil
