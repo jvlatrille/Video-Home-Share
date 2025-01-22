@@ -297,6 +297,7 @@ public function afficherAutreUtilisateur()
             'mdp' => $_POST['mdp'] ?? null,
             'mdpVerif' => $_POST['mdpVerif'] ?? null,
             'role' => $_POST['role'] ?? 'utilisateur', // Role par défaut
+            'bio' => $_POST['bio'] ?? NULL,
         ];
 
         // Définition des règles de validation
@@ -370,7 +371,8 @@ public function afficherAutreUtilisateur()
             $donneesFormulaire['banniereProfil'],
             $donneesFormulaire['mail'],
             $donneesFormulaire['mdp'],
-            $donneesFormulaire['role']
+            $donneesFormulaire['role'],
+            $donneesFormulaire['bio']
         );
 
         // Sauvegarde dans la base de données

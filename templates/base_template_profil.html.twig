@@ -2,7 +2,7 @@
 
 {% block content2 %}
 
-     {% if utilisateurConnecte is defined %}
+    {% if utilisateurConnecte is defined %}
     {% set banniere = 'img/banniere/' ~ (utilisateurConnecte.banniereProfil) %}
     {% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
@@ -28,8 +28,14 @@
         </div>
 
 
-      <div class="container mt-3">
+      <div class="container mt-3 my-3">
           <h2>{{ utilisateurConnecte.pseudo }}</h2>
+          {# <h2>{{ utilisateurConnecte.bio }}</h2> #}
+          {% if utilisateurConnecte.bio is not empty %}
+            <h6>{{ utilisateurConnecte.bio }}</h6>
+          {% else %}
+            <h6>Aucune bio .</h6>
+          {% endif %}
       </div>
   
 
