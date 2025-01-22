@@ -124,7 +124,7 @@ class ControllerProfil extends Controller
                     'type' => 'string',
                     'longueur_min' => 0,
                     'longueur_max' => 255,
-                    'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
+                    'format' => '/^[a-zA-ZÀ-ÿ0-9\'\- ]+$/'
                 ],
             ];
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -142,7 +142,7 @@ class ControllerProfil extends Controller
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             if ($valides)
             {
-                $reussite = $managerUtilisateur->changerMail($id, $bio);
+                $reussite = $managerUtilisateur->changerBio($id, $bio);
             }
         
             // Génération d'un message en fonction du succès ou de l'échec
