@@ -51,29 +51,44 @@
         <!-- Affichage du score -->
         <div class="row justify-content-center mt-4">
             <div class="col-12 col-md-8 text-center">
-                <p class="text-info">Score actuel : <strong>{{ score }}</strong></p>
+                <p class="score-info" style="color: red;">Score actuel : <strong>{{ score }} / {{ nbTotalQuestions }}</strong></p>
             </div>
         </div>
     </div>
 
     {% block javascripts %}
         <script>
+            function updateScoreColor(score, totalQuestions) {
+                const scoreElement = document.querySelector('.score-info');
+                const quarterSize = totalQuestions / 4;
+                
+                if (score <= quarterSize) {
+                    scoreElement.style.color = 'red';
+                } else if (score <= quarterSize * 2) {
+                    scoreElement.style.color = 'orange';
+                } else if (score <= quarterSize * 3) {
+                    scoreElement.style.color = 'green';
+                } else {
+                    scoreElement.style.color = '#00c04b';
+                }
+            }
+
 document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('.response-button');
     const idQuizz = {{ idQuizz }};
     const nextNumero = {{ question.numero + 1 }};
     const isLastQuestion = {{ isLastQuestion ? 'true' : 'false' }};
+    const nbQuestions = {{ nbTotalQuestions }};
 
     let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
 
-    // Si on est à la première question, on réinitialise le score à 0
     if (nextNumero - 1 === 1) {
         score = 0;
         sessionStorage.setItem('score', score);
     }
 
-    // Afficher le score actuel dans le DOM
-    document.querySelector('.text-info').innerHTML = `Score actuel : <strong>${score}</strong>`;
+    document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
+    updateScoreColor(score, nbQuestions); // Appel initial pour définir la couleur
 
     buttons.forEach(button => {
         button.addEventListener('click', function () {
@@ -81,27 +96,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (button.getAttribute('data-correct') === 'true') {
                 button.classList.add('bg-success', 'text-white');
-                score++; // Incrémente le score
+                score++;
+                sessionStorage.setItem('score', score);
+                document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
+                updateScoreColor(score, nbQuestions); // Mise à jour de la couleur après changement du score
             } else {
                 button.classList.add('bg-danger', 'text-white');
             }
 
-            // Ajoute la classe à la bonne réponse
             const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
             correctButton.classList.add('bg-success', 'text-white');
 
-            // Sauvegarde le score dans sessionStorage
-            sessionStorage.setItem('score', score);
-
-            // Redirection après 3 secondes
             setTimeout(() => {
-                    // Sinon, redirige vers la question suivante
-                    window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
-            }, 3000);
+                window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
+            }, 1500);
         });
     });
 });
-
 
 
 </script>

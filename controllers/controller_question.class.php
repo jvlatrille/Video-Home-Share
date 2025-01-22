@@ -1,12 +1,15 @@
 <?php
 
-class ControllerQuestion extends Controller {
-    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader) {
+class ControllerQuestion extends Controller
+{
+    public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
+    {
         parent::__construct($twig, $loader);
     }
 
     // Fonction pour lister toutes les questions d'un quizz
-    public function listerQuestion() {
+    public function listerQuestion()
+    {
         $idQuizz = isset($_GET['idQuizz']) ? $_GET['idQuizz'] : null;
 
         // Récupère toutes les questions du quizz
@@ -19,52 +22,53 @@ class ControllerQuestion extends Controller {
     }
 
     // Fonction pour afficher une question spécifique
-    public function afficherQuestion() {
+    public function afficherQuestion()
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-    
+
         $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
         $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
-    
+
         if (!$idQuizz) {
             echo "ID du quizz manquant ou invalide.";
             return;
         }
-    
+
         // Vérifier si une réponse a été soumise
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reponseChoisie'])) {
             $reponseChoisie = $_POST['reponseChoisie'];
-    
+
             // Récupère la question pour comparer la réponse
             $managerQuestion = new QuestionDao($this->getPdo());
             $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
-    
+
             if ($question && $reponseChoisie === $question->getBonneReponse()) {
                 $_SESSION['score']++; // Incrémenter le score
             }
-    
+
             // Redirige vers la question suivante
             header("Location: index.php?controleur=question&methode=afficherQuestion&idQuizz=$idQuizz&numero=" . ($numero + 1));
             exit;
         }
-    
+
 
         // Initialiser le score pour la première question
         if ($numero === 1) {
             $_SESSION['score'] = 0;
         }
-        
+
         // Récupérer la question courante
         $managerQuestion = new QuestionDao($this->getPdo());
         $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
-    
+
         if (!$question) {
             // Si aucune question n'est trouvée, afficher le score final
             header("Location: index.php?controleur=question&methode=afficherScore&idQuizz=$idQuizz");
             exit;
         }
-    
+
         // Mélanger les réponses
         $reponses = [
             $question->getBonneReponse(),
@@ -73,7 +77,10 @@ class ControllerQuestion extends Controller {
             $question->getMauvaiseReponse3()
         ];
         shuffle($reponses);
-    
+
+        $managerQuizz = new QuizzDao($this->getPdo());
+        $quizz = $managerQuizz->find($idQuizz);
+        $nbTotalQuestions = $quizz->getNbQuestion();
         // Générer la vue
         $template = $this->getTwig()->load('question.html.twig');
         echo $template->render([
@@ -81,46 +88,51 @@ class ControllerQuestion extends Controller {
             'reponses' => $reponses,
             'idQuizz' => $idQuizz,
             'numero' => $numero,
-            'score' => $_SESSION['score']
+            'score' => $_SESSION['score'],
+            'nbTotalQuestions' => $nbTotalQuestions  // Ajout de cette ligne
         ]);
     }
 
 
     // Fonction pour ajouter une question à un quizz
-    public function ajouterQuestions() {
+    public function ajouterQuestions()
+    {
         $idQuizz = $_GET['idQuizz'] ?? null; // Récupérer 'idQuizz' de l'URL
         $nbQuestion = $_GET['nbQuestion'] ?? 1; // Récupérer 'nbQuestion' de l'URL
-    
+
         // Vérification si les paramètres existent
         if ($idQuizz === null) {
             die("L'identifiant du quizz est requis !");
         }
-    
+
         // Appeler le template avec les variables nécessaires
         $template = $this->getTwig()->load('questionAjouter.html.twig');
-        echo $template->render([ 'idQuizz' => $idQuizz,
-        'nbQuestion' => $nbQuestion]);
+        echo $template->render([
+            'idQuizz' => $idQuizz,
+            'nbQuestion' => $nbQuestion
+        ]);
     }
-    
-    
-    public function saveQuestions() {
+
+
+    public function saveQuestions()
+    {
         // Vérifie si une session est active
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-    
+
         $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
         $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
         // Si l'ID du quizz est manquant
-            if (!$idQuizz) {
-                die("L'identifiant du quizz est requis !");
-            }
-    
+        if (!$idQuizz) {
+            die("L'identifiant du quizz est requis !");
+        }
+
         $managerQuestion = new QuestionDao($this->getPdo());
-    
+
         foreach ($questionsData as $questionData) {
             // Extraction des données pour chaque question
-    
+
             $contenu = $questionData['contenu'] ?? '';
             $numero = $questionData['numero'] ?? 1;
             $nvDifficulte = $questionData['nvDifficulte'] ?? '';
@@ -129,7 +141,7 @@ class ControllerQuestion extends Controller {
             $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
             $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
             $cheminImage = $questionData['cheminImage'] ?? '';
-    
+
             // Création de l'objet Question
             $question = new question(
                 null, // L'ID sera généré automatiquement par la base de données
@@ -142,24 +154,25 @@ class ControllerQuestion extends Controller {
                 $mauvaiseReponse2,
                 $mauvaiseReponse3
             );
-    
+
             // Ajout de la question
             if (!$managerQuestion->add($question)) {
                 // Si l'ajout échoue, afficher une erreur
                 die("Erreur lors de l'ajout de la question.");
             }
         }
-    
+
         // Redirection après l'ajout des questions
         // header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
         exit;
     }
-    
-    
-    
+
+
+
 
     // Fonction pour modifier une question
-    public function modifierQuestion() {
+    public function modifierQuestion()
+    {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
 
         // Récupère la question
@@ -204,7 +217,8 @@ class ControllerQuestion extends Controller {
     }
 
     // Fonction pour supprimer une question
-    public function supprimerQuestion() {
+    public function supprimerQuestion()
+    {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
 
         // Supprime la question
@@ -218,23 +232,22 @@ class ControllerQuestion extends Controller {
             echo "Erreur lors de la suppression de la question.";
         }
     }
-    public function afficherScore() {
+    public function afficherScore()
+    {
         // Récupère le score de la session
         $score = $_SESSION['score'] ?? 0;
-    
+
         // Récupère l'ID du quizz
         $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
-    
+
         // Générer la vue pour afficher le score
         $template = $this->getTwig()->load('quizzResultat.html.twig');
         echo $template->render([
             'score' => $score,
             'idQuizz' => $idQuizz
         ]);
-    
+
         // Réinitialiser le score pour un futur quizz
         unset($_SESSION['score']);
     }
 }
-
-
