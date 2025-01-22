@@ -124,7 +124,7 @@ class ControllerProfil extends Controller
                     'type' => 'string',
                     'longueur_min' => 0,
                     'longueur_max' => 255,
-                    'format' => '/^[a-zA-ZÀ-ÿ0-9\'\- ]+$/'
+                    'format' => '/^[^\u2028\u2029\u00A0]+$/'
                 ],
             ];
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
