@@ -30,32 +30,6 @@ class ControllerOA extends Controller
     }
 
     /**
-     * @brief Affiche les 10 films les mieux notés
-     * @return void
-     */
-    public function listerFilms(): void
-    {
-        try {
-            $oaListe = $this->managerOa->findMeilleurNote();
-            $oaRandomListe = $this->managerOa->findRandomOeuvres();
-
-            $oaSeriesListe = $this->managerOa->findMeilleurNoteSerie();
-            
-            $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render([
-                'oaListe' => $oaListe,
-                'oaRandomListe' => $oaRandomListe,
-                'oaSeriesListe' => $oaSeriesListe
-            ]);
-        } catch (Exception $e) {
-            error_log('Erreur lors du listing des films : ' . $e->getMessage());
-            die('Impossible d\'afficher la liste des films.');
-        }
-    }
-
-
-
-    /**
      * @brief Affiche les détails d'un film spécifique
      * @return void
      */
@@ -132,6 +106,9 @@ class ControllerOA extends Controller
     {
         try {
             $oaListe = $this->managerOa->findRandomOeuvres();
+            $oaListe = array_merge($oaListe, $this->managerOa->findRandomSeries());
+            shuffle($oaListe);
+            array_splice($oaListe, 20);
             header('Content-Type: application/json');
             echo json_encode($oaListe);
             exit;

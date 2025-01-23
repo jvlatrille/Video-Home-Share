@@ -158,9 +158,6 @@ class OADao
         return $createdBy[0]['name'] ?? null;
     }
 
-
-
-
     /**
      * @brief Hydrate un objet OA avec des données
      * @param array $data Données API
@@ -287,6 +284,31 @@ class OADao
                 'idOa' => $data['id'] ?? null,
                 'nom' => $data['title'] ?? 'Titre inconnu',
                 'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+                'type' => 'Film',
+            ];
+        }, array_slice($results['results'], 0, 10));
+    }
+
+    /**
+     * @brief Récupère des séries aléatoires depuis l'API TMDB
+     * @return array Liste d'objets OA
+     */
+    public function findRandomSeries(): array
+    {
+        $randomPage = rand(1, 100);
+        $results = $this->makeApiRequest('/tv/popular', ['include_adult' => false, 'language' => 'fr-FR', 'page' => $randomPage]);
+        
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune série aléatoire trouvée.');
+            return [];
+        }
+        
+        return array_map(function ($data) {
+            return [
+                'idOa' => $data['id'] ?? null,
+                'nom' => $data['name'] ?? 'Titre inconnu',
+                'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+                'type' => 'TV',
             ];
         }, array_slice($results['results'], 0, 10));
     }

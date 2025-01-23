@@ -14,7 +14,7 @@ class ControllerIndex extends Controller{
     }
 
     /**
-     * @brief Affiche la page d'accueil avec les 10 films les mieux notés
+     * @brief Affiche la page d'accueil avec les 10 films les mieux notés 
      *
      * @return void
      */
@@ -23,6 +23,9 @@ class ControllerIndex extends Controller{
 
         $managerOa = new OADao();
         $oaListe = $managerOa->findMeilleurNote();
+        $oaListe=array_merge($oaListe, $managerOa->findMeilleurNoteSerie());
+        shuffle($oaListe);  
+        $oaListe = array_slice($oaListe, 0, 20);
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render(['oaListe' => $oaListe]);
 
