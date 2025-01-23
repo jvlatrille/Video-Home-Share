@@ -210,6 +210,7 @@ class OA
     {
         return $this->producteur;
     }
+
     public function setProducteur(?string $producteur): void
     {
         $this->producteur = $producteur;
