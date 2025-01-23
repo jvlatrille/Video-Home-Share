@@ -42,7 +42,7 @@ class Utilisateur
     /**
     * @brief bio de l'utilisateur
     */
-    private ?string $bio;
+    private ?string $bio = null;
 
     /**
      * @brief Constructeur de la classe Utilisateur
