@@ -112,19 +112,25 @@ class forumDAO
      * @param int $limit Le nombre maximum de messages à récupérer. Par défaut, 10.
      * @return array Un tableau de tableaux associatifs, chacun contenant les détails du message.
      */
-    public function getTopLikedMessages(int $limit = 10): array
+    public function getTopLikedMessages(int $limit = 6): array
     {
-        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, u.pseudo, f.nom as forumNom, m.idForum
-                FROM " . PREFIXE_TABLE . "message m
-                JOIN " . PREFIXE_TABLE . "utilisateur u ON m.idUtilisateur = u.idUtilisateur
-                JOIN " . PREFIXE_TABLE . "forum f ON m.idForum = f.idForum
-                ORDER BY m.nbLike DESC
-                LIMIT :limit";
+        $sql = "SELECT 
+                m.idMessage, 
+                m.contenu, 
+                m.nbLike, 
+                u.pseudo, 
+                u.photoProfil,
+                f.nom as forumNom, 
+                m.idForum
+            FROM " . PREFIXE_TABLE . "message m
+            JOIN " . PREFIXE_TABLE . "utilisateur u ON m.idUtilisateur = u.idUtilisateur
+            JOIN " . PREFIXE_TABLE . "forum f ON m.idForum = f.idForum
+            ORDER BY m.nbLike DESC
+            LIMIT :limit";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->bindValue(':limit', $limit, PDO::PARAM_INT);
         $pdoStatement->execute();
 
-        $result = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+        return $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 }

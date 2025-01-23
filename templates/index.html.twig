@@ -86,20 +86,45 @@
         </div>
     </div>
 
-    <h2 class="text-center mt-5">Les 10 messages les plus likés</h2>
+    <h2 class="text-center mt-5">Messages les plus likés</h2>
     <div class="container mt-4">
-        <div class="list-group">
-            {% for message in topMessages %}
-                <a href="index.php?controleur=forum&methode=afficherForum&idForum={{ message.idForum }}" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">{{ message.contenu }}</h5>
-                    <p class="mb-1 text-muted">
-                        Publié par {{ message.pseudo }} dans le forum "{{ message.forumNom }}"
-                    </p>
-                    <small class="text-primary">{{ message.nbLike }} likes</small>
-                </a>
+    <table class="table table-bordered table-hover">
+        <tbody>
+            {% for row in topMessages|batch(3, '') %}
+                <tr>
+                    {% for message in row %}
+                        {% if message %}
+                            <td class="align-middle" style="width: 33%; height: 300px;">
+                                <div class="d-flex flex-column align-items-center justify-content-between h-100">
+                                    <!-- Photo de profil -->
+                                    <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
+                                         alt="Photo de profil de {{ message.pseudo }}" 
+                                         class="rounded-circle mb-3" 
+                                         style="width: 80px; height: 80px; object-fit: cover;">
+                                    <h5 class="text-primary fw-bold">{{ message.pseudo }}</h5>
+                                    <p class="text-muted small mb-1">Forum : <strong>{{ message.forumNom }}</strong></p>
+                                    <p class="text-center text-muted flex-grow-1 overflow-auto" 
+                                       style="font-size: 0.9rem; max-height: 80px;">
+                                        "{{ message.contenu}}"
+                                    </p>
+                                    <p class="text-danger small mb-0">
+                                        <i class="fas fa-heart"></i> {{ message.nbLike }} likes
+                                    </p>
+                                    <a href="index.php?controleur=message&methode=listerMessage&idForum={{ message.idForum }}" 
+                                       class="btn btn-outline-primary btn-sm mt-2">Voir le forum</a>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td style="width: 33%; height: 300px;"></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </div>
-    </div>
+        </tbody>
+    </table>
+</div>
+
+
 
 
 
