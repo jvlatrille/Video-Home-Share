@@ -138,11 +138,6 @@ class OADao
      * @param array $crew Liste des membres de l'équipe (crew) du film
      * @return string|null Nom du producteur ou null si non trouvé
      */
-    /**
-     * @brief Récupère le nom d'un producteur principal pour une œuvre
-     * @param array $crew Liste des membres de l'équipe (crew) du film
-     * @return string Nom du producteur ou "Non spécifié" si non trouvé
-     */
     private function getProducer(array $crew): ?string
     {
         foreach ($crew as $member) {
@@ -153,7 +148,15 @@ class OADao
         return null; // Retourne null si aucun producteur trouvé
     }
 
-
+    /**
+     * @brief Récupère le créateur d'une série
+     * @param array $createdBy Liste des créateurs de la série
+     * @return string|null Nom du créateur ou null si non trouvé
+     */
+    private function getCreator(array $createdBy): ?string
+    {
+        return $createdBy[0]['name'] ?? null;
+    }
 
 
 
@@ -178,17 +181,12 @@ class OADao
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
-<<<<<<< HEAD
-            $this->getProducer($data['credits']['crew'] ?? []),
+            $data['producer'] ?? null,
             null,
-            null,
-            $data['producer'] ?? null
-
-        );
-=======
-            $data['producer'] ?? null
+            null
+            
+            
         );        
->>>>>>> main
     }
 
     /**
@@ -308,7 +306,6 @@ class OADao
         return $this->hydrateAll($results['results']);
     }
 
-<<<<<<< HEAD
     //Implementation des séries
 
 /**
@@ -331,26 +328,25 @@ private function hydrateSerie(array $data): ?OA
         null,
         $this->getPosterUrl($data['poster_path'] ?? null),
         $this->parseParticipants($data['credits'] ?? []),
-        $this->getProducer($data['credits']['crew'] ?? []),
+        $data['producteur']=$this->getCreator($data['created_by'] ?? []),
         $data['number_of_seasons'] ?? null,
-        $data['number_of_episodes'] ?? null,
-        $data['producer'] ?? null
+        $data['number_of_episodes'] ?? null
     );
 }
 
-/**
- * @brief Hydrate une liste d'objets OA pour les séries avec des données spécifiques
- * @param array $dataList Liste de données API
- * @return array Liste d'objets OA
- */
-private function hydrateAllSerie(array $dataList): array
-{
-    $oaList = [];
-    foreach ($dataList as $data) {
-        $oaList[] = $this->hydrateSerie($data);
+    /**
+     * @brief Hydrate une liste d'objets OA pour les séries avec des données spécifiques
+     * @param array $dataList Liste de données API
+     * @return array Liste d'objets OA
+     */
+    private function hydrateAllSerie(array $dataList): array
+    {
+        $oaList = [];
+        foreach ($dataList as $data) {
+            $oaList[] = $this->hydrateSerie($data);
+        }
+        return $oaList;
     }
-    return $oaList;
-}
 
     /**
      * @brief Récupère les 10 séries les mieux notées
@@ -381,11 +377,6 @@ private function hydrateAllSerie(array $dataList): array
         $serie['producer'] = $this->getProducer($credits['crew'] ?? []);
         return $this->hydrateSerie($serie);
     }
-
-
-
-
-=======
 
     /**
      * @brief Récupère toutes les notes pour un film
@@ -469,5 +460,4 @@ private function hydrateAllSerie(array $dataList): array
         $note = $stmt->fetchColumn();
         return $note !== false ? (int)$note : null;
     }
->>>>>>> main
 }
