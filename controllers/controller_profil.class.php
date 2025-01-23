@@ -554,9 +554,15 @@ class ControllerProfil extends Controller
             $managerMessage = new MessageDao($this->getPdo());
             $messageListe = $managerMessage->chargerAPropos($idUtilisateur);
 
+
+            // Récupère les commenataires postés par l'utilisateur
+            $managerComm = new CommentaireDao($this->getPdo());
+            $commentaires = $managerComm->chargerComm($idUtilisateur);
+
+
             // Génère la vue 
             $template = $this->getTwig()->load('profilAPropos.html.twig');
-            echo $template->render(['messageListe' => $messageListe,'utilisateur' => $utilisateurConnecte]);
+            echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte]);
 
         }
         else {
@@ -565,5 +571,6 @@ class ControllerProfil extends Controller
             echo $template->render();
         }
     }
-    
+
+  
 }
