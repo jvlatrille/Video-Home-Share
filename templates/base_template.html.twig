@@ -2,7 +2,7 @@
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
-
+		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
 			tarteaucitron.init({
 "privacyUrl": "", /* Privacy policy url */
@@ -74,7 +74,6 @@
 		<link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
 		<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="css/styles.css">
-		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		<meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
 		<style>
@@ -111,29 +110,28 @@
 				</form>
 
 				<!-- Bouton Connexion/Déconnexion et Admin -->
-<div class="me-3 mt-2 mt-md-0">
-    {% if utilisateurConnecte is null %}
-	<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
-    {% else %}
-        <div class="dropdown">
-			<button class="btn btn-custom dropdown-toggle d-flex align-items-center" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="35" height="35" class="rounded-circle me-2">
-                <span class="text">{{ utilisateurConnecte.pseudo }}</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuButton">
-                {% if utilisateurConnecte.getRole == 'admin' %}
-                    <li><a class="dropdown-item text-danger fw-bold" href="index.php?controleur=admin&methode=render">Administration</a></li>
-                {% endif %}
-                <li><a class="dropdown-item text-primary" href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}">Profil</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item text-secondary" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a></li>
-            </ul>
-        </div>
-    {% endif %}
-</div>
-
+				<div class="me-3 mt-2 mt-md-0">
+					{% if utilisateurConnecte is null %}
+					<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
+					{% else %}
+						<div class="dropdown">
+							<button class="btn btn-custom dropdown-toggle d-flex align-items-center" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="35" height="35" class="rounded-circle me-2">
+								<span class="text">{{ utilisateurConnecte.pseudo }}</span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuButton">
+								{% if utilisateurConnecte.getRole == 'admin' %}
+									<li><a class="dropdown-item text-danger fw-bold" href="index.php?controleur=admin&methode=render">Administration</a></li>
+								{% endif %}
+								<li><a class="dropdown-item text-primary" href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}">Profil</a></li>
+								<li>
+									<hr class="dropdown-divider">
+								</li>
+								<li><a class="dropdown-item text-secondary" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a></li>
+							</ul>
+						</div>
+					{% endif %}
+				</div>
 			</nav>
 
 			<!-- Menu déroulant sous le bouton "Menu" -->
@@ -320,7 +318,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 		</footer>
 
 		{% block script %}
-			<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		{% endblock %}
 	</body>
 </html>
