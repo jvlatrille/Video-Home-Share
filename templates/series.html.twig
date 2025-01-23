@@ -1,0 +1,20 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Series{% endblock %}
+
+{% block content %}
+    <h1>Series List</h1>
+    <ul>
+        {% for serie in oaListe %}
+    <li>
+        <strong>{{ serie.nom }}</strong> - Note : {{ serie.note }}
+        {% if serie.posterPath %}
+        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ serie.idOa }}">
+            <img src="{{ serie.posterPath }}" alt="Affiche de {{ serie.nom }}" style="width: 100px; height: auto;">
+        </a>
+        {% endif %}
+    </li>
+{% endfor %}
+
+    </ul>
+{% endblock %}
