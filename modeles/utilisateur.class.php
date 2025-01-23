@@ -62,7 +62,6 @@ class Utilisateur
                                 ?string $pseudo = null, 
                                 ?string $photoProfil = null, 
                                 ?string $banniereProfil = null, 
-                                ?string $bio = null,
                                 ?string $adressMail = null, 
                                 ?string $motDePasse = null, 
                                 ?string $role = null,
@@ -72,7 +71,6 @@ class Utilisateur
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
         $this->banniereProfil = $banniereProfil;
-        $this->bio = $bio;
         $this->adressMail = $adressMail;
         $this->motDePasse = $motDePasse;
         $this->role = $role;
