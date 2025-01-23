@@ -61,13 +61,13 @@
 
 		<!-- Google tag (gtag.js) -->
 		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-														    <script>
-														        window.dataLayer = window.dataLayer || [];
-														        function gtag(){dataLayer.push(arguments);}
-														        gtag('js', new Date());
-														
-														        gtag('config', 'G-TJGCV8L5XE');
-														    </script> #}
+																				    <script>
+																				        window.dataLayer = window.dataLayer || [];
+																				        function gtag(){dataLayer.push(arguments);}
+																				        gtag('js', new Date());
+																				
+																				        gtag('config', 'G-TJGCV8L5XE');
+																				    </script> #}
 
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -137,14 +137,22 @@
 								</li>
 								{% if utilisateurConnecte.getRole == 'admin' %}
 									<li>
-										<a class="dropdown-item text-danger fw-bold" href="index.php?controleur=admin&methode=render">Administration</a>
+										<a class="dropdown-item" href="index.php?controleur=admin&methode=render" style="color: #A2140A;">
+											<strong>Administration</strong>
+										</a>
 									</li>
 								{% endif %}
+								<li>
+									<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire" style="color: #A2140A;">Paramètres</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1" style="color: #A2140A;">Mes notifications</a>
+								</li>
 								<li>
 									<hr class="dropdown-divider">
 								</li>
 								<li>
-									<a class="dropdown-item text-secondary" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
+									<a class="dropdown-item text-danger fw-bold" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
 								</li>
 							</ul>
 						</div>
@@ -155,11 +163,16 @@
 			<!-- Menu déroulant sous le bouton "Menu" -->
 			<div class="collapse" id="menuBar">
 				<div class="container py-2 d-flex justify-content-center flex-wrap">
-					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
-					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
-					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
-					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
+					{% if utilisateurConnecte %}
+						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
+					{% else %}
+						<a href="http://localhost/PHP/Video-Home-Share/index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
+					{% endif %}
 				</div>
+
 			</div>
 		</header>
 
