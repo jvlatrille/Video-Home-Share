@@ -244,8 +244,8 @@ public function afficherAutreUtilisateur()
     public function verifConnexion(){
         // Récupération des données du formulaire
         $donneesFormulaire = [
-            'mail' => $_POST['mail'] ?? null,
-            'mdp' => $_POST['mdp'] ?? null,
+            'mail' => htmlspecialchars($_POST['mail'],ENT_QUOTES,) ?? null,
+            'mdp' => htmlspecialchars($_POST['mdp'],ENT_QUOTES) ?? null,
         ];
         
         // Validation des données
@@ -288,15 +288,18 @@ public function afficherAutreUtilisateur()
     {
         // Récupération des données du formulaire
         $donneesFormulaire = [
-            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
-            'pseudo' => $_POST['pseudo'] ?? null,
-            'photoProfil' => $_POST['photoProfil'] ?? 'default.png', // Image par défaut
-            'banniereProfil' => $_POST['banniereProfil'] ?? "default.png", // Image par défaut
-            'dateNaiss' => $_POST['dateNaiss'] ?? null,
-            'mail' => $_POST['mail'] ?? null,
-            'mdp' => $_POST['mdp'] ?? null,
-            'mdpVerif' => $_POST['mdpVerif'] ?? null,
-            'role' => $_POST['role'] ?? 'utilisateur', // Role par défaut
+
+            'idUtilisateur' => htmlspecialchars($_POST['idUtilisateur'] ?? null, ENT_QUOTES),
+            'pseudo' => htmlspecialchars($_POST['pseudo'] ?? null, ENT_QUOTES),
+            'photoProfil' => htmlspecialchars($_POST['photoProfil'] ?? 'default.png', ENT_QUOTES), // Image par défaut
+            'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.png", ENT_QUOTES), // Image par défaut
+            'dateNaiss' => htmlspecialchars($_POST['dateNaiss'] ?? null, ENT_QUOTES),
+            'mail' => htmlspecialchars($_POST['mail'] ?? null, ENT_QUOTES),
+            'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
+            'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
+            'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
+            'bio' => htmlspecialchars($_POST['bio'] ?? NULL,ENT_QUOTES),
+
         ];
 
         // Définition des règles de validation
@@ -364,13 +367,16 @@ public function afficherAutreUtilisateur()
 
         // Création de l'utilisateur
         $utilisateur = new Utilisateur(
-            $donneesFormulaire['idUtilisateur'],
-            $donneesFormulaire['pseudo'],
-            $donneesFormulaire['photoProfil'],
-            $donneesFormulaire['banniereProfil'],
-            $donneesFormulaire['mail'],
-            $donneesFormulaire['mdp'],
-            $donneesFormulaire['role']
+
+            htmlspecialchars_decode($donneesFormulaire['idUtilisateur'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['pseudo'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['photoProfil'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['banniereProfil'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
+
         );
 
         // Sauvegarde dans la base de données

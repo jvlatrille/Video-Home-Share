@@ -72,8 +72,6 @@ class ControllerWatchList extends Controller
         
         $watchList = $managerWatchList->findWithFilms($id);
 
-        
-    
         //Generer la vue
         $template = $this->getTwig()->load('watchlist.html.twig');
 
@@ -119,7 +117,7 @@ class ControllerWatchList extends Controller
                 'titre' => $_POST['titre'] ?? null,
                 'genre' => $_POST['genre'] ?? null,
                 'description' => $_POST['description'] ?? null,
-                'visible' => $_POST['visible'] ?? null,
+                'visible' => $_POST['visible'] ?? '0', 
                 'listeOeuvres' => is_string($_POST['listeOeuvres']) ? json_decode($_POST['listeOeuvres'], true) : $_POST['listeOeuvres'],
 
             ];
@@ -131,7 +129,7 @@ class ControllerWatchList extends Controller
                     'longueur_max' => 255,
                 ],
                 'genre' => [
-                    'obligatoire' => true,
+                    'obligatoire' => false,
                     'type' => 'string',
                     'longueur_min' => 1,
                     'longueur_max' => 255,
@@ -142,6 +140,10 @@ class ControllerWatchList extends Controller
                     'longueur_min' => 1,
                     'longueur_max' => 255,
                 ],
+                'visible' => [
+                    'obligatoire' => true,
+                    'type' => 'boolean',]
+
             ];
                     
             $validation = new Validator($regles);
@@ -160,7 +162,13 @@ class ControllerWatchList extends Controller
             $description = $donnees['description'] ?? null;
             $visible = $donnees['visible'] ?? null;
             $idTMDB = $donnees['listeOeuvres'] ?? [];
-            $idTMDB = implode(',', $idTMDB);
+            //si il n'y a pas d'oeuvre dans la watchlist on implode pas
+            if (count($idTMDB) > 0) {
+                $idTMDB = implode(',', $idTMDB);
+            }
+            else {
+                $idTMDB = null;
+            }
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
             //Ajoute la watchlist
@@ -177,7 +185,7 @@ class ControllerWatchList extends Controller
 
 
             //Redirige vers la liste des watchlists
-            header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
+           header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
         }
     }
 
@@ -241,7 +249,7 @@ class ControllerWatchList extends Controller
         $watchList->setGenre($genre);
         $watchList->setDescription($description);
         $watchList->setVisible($visible);
-        $managerWatchList->modifierWatchlist($watchList);
+        $managerWatchList->modifierWatchlistPartielle($watchList);
 
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur() . ''); 
@@ -330,8 +338,33 @@ class ControllerWatchList extends Controller
                 return;
             }
         }
-        //Ajoute l'oeuvre à la watchlist
-        $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
+        //Ajoute l'oeuvre à la watchlist, si la Watchlist contient 0 oeuvre, on ajoute l'oeuvre sans virgule, sinon on ajoute une virgule
+        if ($watchList->getIdTMDB() == null) {
+            $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
+        } else {
+            $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
+        }
+        
+
+        //Recuperer tous les oeuvres de la watchlist
+        $oas = $managerWatchList->afficherOaWatchlist($idWatchList);
+        
+        //Mettre a jour le genre de la watchlist
+        $genreDominant = $managerWatchList->calculGenreDominantWatchlist($oas);
+
+        //modifier la watchlist
+        $watchList = $managerWatchList->find($idWatchList);
+        $watchListModifie= new WatchList();
+        $watchListModifie->setTitre($watchList->getTitre());
+        $watchListModifie->setDescription($watchList->getDescription());
+        $watchListModifie->setVisible($watchList->getVisible());
+        $watchListModifie->setIdTMDB($watchList->getIdTMDB());
+        $watchListModifie->setIdUtilisateur($watchList->getIdUtilisateur());
+        $watchListModifie->setIdWatchList($watchList->getIdWatchList());
+        $watchListModifie->setGenre($genreDominant);
+        $managerWatchList->modifierWatchlistComplete($watchListModifie);
+
+
 
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchlist&id=' . $idWatchList);

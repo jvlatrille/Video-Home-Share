@@ -85,6 +85,7 @@ class UtilisateurDao
         $utilisateur->setAdressMail($tableauAssoc['adressMail']);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setRole($tableauAssoc['role']);
+        $utilisateur->setBio($tableauAssoc['bio']);
         return $utilisateur;
     }
 
@@ -146,6 +147,22 @@ class UtilisateurDao
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute(['mdp' => $mdp, 'id' => $id]);
        
+        return $reussite;
+    }
+
+    /**
+     * @brief Change la bio d'un utilisateur
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $bio Nouvelle bio à attribuer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function changerBio(?int $id, ?string $bio): bool{
+         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                 SET bio = :bio
+                 WHERE idUtilisateur = :id"; 
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['bio' => $bio, 'id' => $id]);
+    
         return $reussite;
     }
 
@@ -221,8 +238,8 @@ class UtilisateurDao
      * @return bool
      */
     public function creerUtilisateur(?Utilisateur $utilisateur): ?bool {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role) 
-                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role)";
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role, bio) 
+                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role, :bio)";
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute([
             'pseudo' => $utilisateur->getPseudo(),
@@ -230,7 +247,8 @@ class UtilisateurDao
             'banniereProfil' => $utilisateur->getBanniereProfil(),
             'adressMail' => $utilisateur->getAdressMail(),
             'motDePasse' => $utilisateur->getMotDePasse(),
-            'role' => $utilisateur->getRole()
+            'role' => $utilisateur->getRole(),
+            'bio' => $bio->getBio()
         ]);
         return $reussite;
     }

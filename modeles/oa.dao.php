@@ -251,13 +251,13 @@ class OADao
     public function findRandomOeuvres(): array
     {
         $randomPage = rand(1, 100);
-        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage, 'include_adult' => 'false']);
-
+        $results = $this->makeApiRequest('/movie/popular', ['include_adult' => false, 'language' => 'fr-FR', 'page' => $randomPage]);
+        
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune œuvre aléatoire trouvée.');
             return [];
         }
-
+        
         return array_map(function ($data) {
             return [
                 'idOa' => $data['id'] ?? null,
@@ -273,9 +273,8 @@ class OADao
      * @return array Liste des objets OA
      * 
      */
-    public function rechercheFilmParNom(string $query): array
-    {
-        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR']);
+    public function rechercheFilmParNom(string $query): array{
+        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR', 'include_adult' => false]);
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucun film trouvé pour la recherche : ' . $query);
             return [];

@@ -62,7 +62,8 @@ class Validator{
         $estValide = true;
 
         // 1. Vérification de la règle "obligatoire" avant toute autre validation.
-        if (isset($regles['obligatoire']) && $regles['obligatoire'] && empty($valeur))
+        if (isset($regles['obligatoire']) && $regles['obligatoire'] && ($valeur === null || $valeur === ''))
+
         {
             $this->messagesErreurs[] = "Le champ $champ est obligatoire.";
             return false; // Arrêter ici si le champ est obligatoire et vide
