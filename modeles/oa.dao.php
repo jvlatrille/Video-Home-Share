@@ -298,12 +298,21 @@ class OADao
      * 
      */
     public function rechercheFilmParNom(string $query): array{
-        $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR', 'include_adult' => false]);
+        $results = $this->makeApiRequest('/search/multi', ['include_adult' => false, 'query' => $query, 'language' => 'fr-FR']);
         if (!isset($results['results']) || empty($results['results'])) {
-            error_log('Aucun film trouvé pour la recherche : ' . $query);
+            error_log('Aucun résultat trouvé pour la recherche : ' . $query);
             return [];
         }
-        return $this->hydrateAll($results['results']);
+
+        $hydratedResults = [];
+        foreach ($results['results'] as $result) {
+            if ($result['media_type'] == 'tv') {
+                $hydratedResults[] = $this->hydrateSerie($result);
+            } else {
+                $hydratedResults[] = $this->hydrate($result);
+            }
+        }
+        return $hydratedResults;
     }
 
     //Implementation des séries
@@ -319,7 +328,7 @@ private function hydrateSerie(array $data): ?OA
         $data['id'] ?? null,
         $data['name'] ?? 'Titre inconnu', 
         $data['vote_average'] ?? 0.0,
-        'Serie',
+        'TV',
         $data['overview'] ?? 'Description non disponible',
         $data['first_air_date'] ?? 'Date inconnue', 
         $data['original_language'] ?? 'Langue inconnue',
