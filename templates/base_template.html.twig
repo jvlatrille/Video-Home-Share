@@ -61,13 +61,13 @@
 
 		<!-- Google tag (gtag.js) -->
 		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-								    <script>
-								        window.dataLayer = window.dataLayer || [];
-								        function gtag(){dataLayer.push(arguments);}
-								        gtag('js', new Date());
-								
-								        gtag('config', 'G-TJGCV8L5XE');
-								    </script> #}
+														    <script>
+														        window.dataLayer = window.dataLayer || [];
+														        function gtag(){dataLayer.push(arguments);}
+														        gtag('js', new Date());
+														
+														        gtag('config', 'G-TJGCV8L5XE');
+														    </script> #}
 
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,22 +112,40 @@
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">
 					{% if utilisateurConnecte is null %}
-					<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
+						<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
 					{% else %}
 						<div class="dropdown">
-							<button class="btn btn-custom dropdown-toggle d-flex align-items-center" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="35" height="35" class="rounded-circle me-2">
-								<span class="text">{{ utilisateurConnecte.pseudo }}</span>
+							<button class="btn d-flex align-items-center p-0 border-0" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="50" height="50" class="rounded-circle border border-2">
+								<i class="fas fa-caret-down ms-2 text-white"></i>
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuButton">
-								{% if utilisateurConnecte.getRole == 'admin' %}
-									<li><a class="dropdown-item text-danger fw-bold" href="index.php?controleur=admin&methode=render">Administration</a></li>
-								{% endif %}
-								<li><a class="dropdown-item text-primary" href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}">Profil</a></li>
+								<li class="dropdown-item">
+									<a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="d-flex align-items-center text-decoration-none">
+										<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="50" height="50" class="rounded-circle me-2">
+										<div>
+											<strong>{{ utilisateurConnecte.pseudo }}</strong><br>
+											<small class="text-muted">{{ utilisateurConnecte.getRole }}</small>
+										</div>
+										<div class="mt-2">
+											<small>Cliquez pour afficher votre profil</small>
+										</a>
+									</div>
+								</li>
 								<li>
 									<hr class="dropdown-divider">
 								</li>
-								<li><a class="dropdown-item text-secondary" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a></li>
+								{% if utilisateurConnecte.getRole == 'admin' %}
+									<li>
+										<a class="dropdown-item text-danger fw-bold" href="index.php?controleur=admin&methode=render">Administration</a>
+									</li>
+								{% endif %}
+								<li>
+									<hr class="dropdown-divider">
+								</li>
+								<li>
+									<a class="dropdown-item text-secondary" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
+								</li>
 							</ul>
 						</div>
 					{% endif %}
@@ -175,7 +193,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 				class="container">
 				<!-- Liens de Navigation -->
 				<div class="footer-nav mb-3">
-                    <a href="index.php" class="footer-link mx-2">Accueil</a>
+					<a href="index.php" class="footer-link mx-2">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
@@ -252,53 +270,53 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 							</div>
 							<div class="modal-body text-dark">
 								<p>Pour toute question ou suggestion, vous pouvez nous contacter :</p>
-                                <ul class="list-unstyled">
-                                    <li>
-                                        <strong>AMREIN Nathan</strong>
-                                        -
-                                        <a href="mailto:namrein@iutbayonne.univ-pau.fr" class="text-primary">namrein@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>BAROS Arthur</strong>
-                                        -
-                                        <a href="mailto:abaros@iutbayonne.univ-pau.fr" class="text-primary">abaros@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>CHIPY Thibault</strong>
-                                        -
-                                        <a href="mailto:tchipy@iutbayonne.univ-pau.fr" class="text-primary">tchipy@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>DESPRE-HILDEVERT Léa</strong>
-                                        -
-                                        <a href="mailto:ldhildevert@iutbayonne.univ-pau.fr" class="text-primary">ldhildevert@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>DIZY Lukas</strong>
-                                        -
-                                        <a href="mailto:ldizy@iutbayonne.univ-pau.fr" class="text-primary">ldizy@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>LEVAL Noah</strong>
-                                        -
-                                        <a href="mailto:noah.leval@etud.univ-pau.fr" class="text-primary">noah.leval@etud.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>NOVION Tatiana</strong>
-                                        -
-                                        <a href="mailto:tnovion@iutbayonne.univ-pau.fr" class="text-primary">tnovion@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>PIGEON Aymeric</strong>
-                                        -
-                                        <a href="mailto:apigeon001@iutbayonne.univ-pau.fr" class="text-primary">apigeon001@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                    <li>
-                                        <strong>VINET LATRILLE Jules</strong>
-                                        -
-                                        <a href="mailto:jvlatrille@iutbayonne.univ-pau.fr" class="text-primary">jvlatrille@iutbayonne.univ-pau.fr</a>
-                                    </li>
-                                </ul>
+								<ul class="list-unstyled">
+									<li>
+										<strong>AMREIN Nathan</strong>
+										-
+										<a href="mailto:namrein@iutbayonne.univ-pau.fr" class="text-primary">namrein@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>BAROS Arthur</strong>
+										-
+										<a href="mailto:abaros@iutbayonne.univ-pau.fr" class="text-primary">abaros@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>CHIPY Thibault</strong>
+										-
+										<a href="mailto:tchipy@iutbayonne.univ-pau.fr" class="text-primary">tchipy@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>DESPRE-HILDEVERT Léa</strong>
+										-
+										<a href="mailto:ldhildevert@iutbayonne.univ-pau.fr" class="text-primary">ldhildevert@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>DIZY Lukas</strong>
+										-
+										<a href="mailto:ldizy@iutbayonne.univ-pau.fr" class="text-primary">ldizy@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>LEVAL Noah</strong>
+										-
+										<a href="mailto:noah.leval@etud.univ-pau.fr" class="text-primary">noah.leval@etud.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>NOVION Tatiana</strong>
+										-
+										<a href="mailto:tnovion@iutbayonne.univ-pau.fr" class="text-primary">tnovion@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>PIGEON Aymeric</strong>
+										-
+										<a href="mailto:apigeon001@iutbayonne.univ-pau.fr" class="text-primary">apigeon001@iutbayonne.univ-pau.fr</a>
+									</li>
+									<li>
+										<strong>VINET LATRILLE Jules</strong>
+										-
+										<a href="mailto:jvlatrille@iutbayonne.univ-pau.fr" class="text-primary">jvlatrille@iutbayonne.univ-pau.fr</a>
+									</li>
+								</ul>
 								<p>Nous vous répondrons dans les plus brefs délais !</p>
 							</div>
 						</div>
@@ -317,7 +335,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block script %}
-		{% endblock %}
+		{% block script %}{% endblock %}
 	</body>
 </html>
