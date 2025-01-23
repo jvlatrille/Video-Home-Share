@@ -53,6 +53,61 @@
             <span class="visually-hidden">Suivant</span>
         </button>
     </div>
+<pre>
+    {{ dump(oaSeriesListe) }}
+</pre>
+{% if oaSeriesListe is not empty %}
+    <h2 class="text-center mt-5">Séries les mieux notées</h2>
+    <div id="carouselSeries" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for i in 0..(oaSeriesListe|slice(0, 10)|length - 1) %}
+                <button type="button" data-bs-target="#carouselSeries" data-bs-slide-to="{{ i }}" {% if i == 0 %} class="active" {% endif %} aria-label="Slide {{ i + 1 }}"></button>
+            {% endfor %}
+        </div>
+        <br><br>
+        <div class="carousel-inner">
+            {% for series in oaSeriesListe|slice(0, 10) %}
+                <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+                    <div class="container py-4">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-md-4 text-center">
+                                {% if series.posterPath %}
+                                    <img src="{{ series.posterPath }}" alt="Affiche de {{ series.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                                {% else %}
+                                    <p><em>Affiche non disponible</em></p>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ series.nom }}</h2>
+                                <p><strong>Date de sortie :</strong> {{ series.dateSortie }}</p>
+                                <p><strong>Genre :</strong> {{ series.genres|join(', ') }}</p>
+                                <p class="text-muted">{{ series.description|slice(0, 200) }}...</p>
+                                <p><strong>Note :</strong>
+                                    {% for i in 1..5 %}
+                                        <img src="{{ i <= (series.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30">
+                                    {% endfor %}
+                                </p>
+                                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ series.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSeries" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselSeries" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+        </button>
+    </div>
+{% endif %}
+
+
+    
 
     <h2 class="text-center mt-5">À la une</h2>
     <div class="container mt-4">

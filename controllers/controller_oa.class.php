@@ -38,10 +38,14 @@ class ControllerOA extends Controller
         try {
             $oaListe = $this->managerOa->findMeilleurNote();
             $oaRandomListe = $this->managerOa->findRandomOeuvres();
+
+            $oaSeriesListe = $this->managerOa->findMeilleurNoteSerie();
+            
             $template = $this->getTwig()->load('index.html.twig');
             echo $template->render([
                 'oaListe' => $oaListe,
-                'oaRandomListe' => $oaRandomListe
+                'oaRandomListe' => $oaRandomListe,
+                'oaSeriesListe' => $oaSeriesListe
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors du listing des films : ' . $e->getMessage());
@@ -136,4 +140,85 @@ class ControllerOA extends Controller
             exit;
         }
     }
+
+
+    /**
+     * @brief Affiche les 10 séries les mieux notées
+     * @return void
+     */
+    public function listerSeries(): void
+    {
+        try {
+            $oaListe = $this->managerOa->findMeilleurNoteSerie();
+            $template = $this->getTwig()->load('series.html.twig');
+            echo $template->render([
+                'oaListe' => $oaListe
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur lors du listing des séries : ' . $e->getMessage());
+            die('Impossible d\'afficher la liste des séries.');
+        }
+    }
+
+    /**
+     * @brief Affiche les détails d'une série spécifique
+     * @return void
+     */
+    public function afficherSerie(): void
+    {
+        $idOa = $_GET['idOa'] ?? null;
+
+        if (!$this->validerId($idOa)) {
+            die('ID de la série invalide ou non spécifié.');
+        }
+
+        try {
+            $idOa = (int)$idOa;
+            $oa = $this->managerOa->findSerie($idOa);
+
+            if (!$oa) {
+                die('Série non trouvée.');
+            }
+
+            // Récupérer les commentaires de la série
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            error_log("Nombre de commentaires : " . count($commentaires));
+
+            // Récupérer les participants de la série
+            $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
+            error_log("Nombre de participants : " . count($participants));
+
+            //Recuperer les watchlist de l'utilisateur
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+                $managerWatchList = new WatchListDao($this->getPdo());
+                $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
+                $template = $this->getTwig()->load('serie.html.twig');
+                echo $template->render([
+                    'watchListListe' => $watchListListe,
+                    'oa' => $oa,
+                    'commentaires' => $commentaires,
+                    'participants' => $participants
+                ]);
+                return;
+            }
+
+            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
+            $template = $this->getTwig()->load('serie.html.twig');
+            echo $template->render([
+                'oa' => $oa,
+                'commentaires' => $commentaires,
+                'participants' => $participants
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());
+            die('Impossible d\'afficher les détails de la série.');
+        }
+    }
+
+
+
+
+
+
 }

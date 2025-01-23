@@ -174,7 +174,11 @@ class OADao
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
-            $this->getProducer($data['credits']['crew'] ?? [])
+            $this->getProducer($data['credits']['crew'] ?? []),
+            null,
+            null,
+            $data['producer'] ?? null
+
         );
     }
 
@@ -240,6 +244,23 @@ class OADao
     }
 
     /**
+     * @brief Récupère les participants d'une série via son ID TMDB
+     * @param int $idTMDB Identifiant TMDB de la série
+     * @return array Liste des participants (nom, rôle, photo)
+     */
+    public function getParticipantsBySerieId(int $idTMDB): array
+    {
+        $credits = $this->makeApiRequest("/tv/$idTMDB/credits", ['language' => 'fr-FR'], true);
+
+        if (empty($credits)) {
+            error_log("Aucun crédit trouvé pour la série ID : $idTMDB");
+            return [];
+        }
+
+        return $this->parseParticipants($credits);
+    }
+
+    /**
      * @brief Récupère des œuvres aléatoires depuis l'API TMDB
      * @return array Liste d'objets OA
      */
@@ -276,5 +297,81 @@ class OADao
         }
         return $this->hydrateAll($results['results']);
     }
+
+    //Implementation des séries
+
+/**
+ * @brief Hydrate un objet OA avec des données pour une série
+ * @param array $data Données API
+ * @return OA|null
+ */
+private function hydrateSerie(array $data): ?OA
+{
+    return new OA(
+        $data['id'] ?? null,
+        $data['name'] ?? 'Titre inconnu', 
+        $data['vote_average'] ?? 0.0,
+        'Serie',
+        $data['overview'] ?? 'Description non disponible',
+        $data['first_air_date'] ?? 'Date inconnue', 
+        $data['original_language'] ?? 'Langue inconnue',
+        $data['episode_run_time'][0] ?? null, 
+        isset($data['genres']) ? array_column($data['genres'], 'name') : [],
+        null,
+        $this->getPosterUrl($data['poster_path'] ?? null),
+        $this->parseParticipants($data['credits'] ?? []),
+        $this->getProducer($data['credits']['crew'] ?? []),
+        $data['number_of_seasons'] ?? null,
+        $data['number_of_episodes'] ?? null,
+        $data['producer'] ?? null
+    );
+}
+
+/**
+ * @brief Hydrate une liste d'objets OA pour les séries avec des données spécifiques
+ * @param array $dataList Liste de données API
+ * @return array Liste d'objets OA
+ */
+private function hydrateAllSerie(array $dataList): array
+{
+    $oaList = [];
+    foreach ($dataList as $data) {
+        $oaList[] = $this->hydrateSerie($data);
+    }
+    return $oaList;
+}
+
+    /**
+     * @brief Récupère les 10 séries les mieux notées
+     * @return array Liste des objets OA
+     */
+    public function findMeilleurNoteSerie(): array
+    {
+        $results = $this->makeApiRequest('/tv/top_rated', ['include_adult' => false,'language' => 'fr-FR', 'page' => 1]);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune série trouvée dans les mieux notées.');
+            return [];
+        }
+        return $this->hydrateAllSerie($results['results']);
+    }
+
+
+
+    /**
+     * @brief Récupère les détails d'une série par son ID
+     * @param int|null $id Identifiant de la série
+     * @return OA|null Objet OA hydraté
+     */
+    public function findSerie(?int $id): ?OA
+    {
+        $serie = $this->makeApiRequest("/tv/$id", ['language' => 'fr-FR'], true);
+        $credits = $this->makeApiRequest("/tv/$id/credits", [], true);
+        $serie['participants'] = $this->parseParticipants($credits);
+        $serie['producer'] = $this->getProducer($credits['crew'] ?? []);
+        return $this->hydrateSerie($serie);
+    }
+
+
+
 
 }
