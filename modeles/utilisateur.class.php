@@ -50,6 +50,7 @@ class Utilisateur
      * @param string|null $pseudo pseudonyme de l'utilisateur
      * @param string|null $photoProfil chemin d'accee de la photo de profil de l'utilisateur
      * @param string|null $banniereProfil chemin d'accee de la banniere de l'utilisateur
+     * @param string|null $bio biographie de l'utilisateur
      * @param string|null $adressMail adresse mail de l'utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
@@ -61,6 +62,7 @@ class Utilisateur
                                 ?string $pseudo = null, 
                                 ?string $photoProfil = null, 
                                 ?string $banniereProfil = null, 
+                                ?string $bio = null,
                                 ?string $adressMail = null, 
                                 ?string $motDePasse = null, 
                                 ?string $role = null,
@@ -70,6 +72,7 @@ class Utilisateur
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
         $this->banniereProfil = $banniereProfil;
+        $this->bio = $bio;
         $this->adressMail = $adressMail;
         $this->motDePasse = $motDePasse;
         $this->role = $role;

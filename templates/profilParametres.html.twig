@@ -25,6 +25,20 @@
                 </form>
             </div>
 
+            <!-- Changer bio -->
+            <div class="mb-4">
+                <label class="form-label">Changer de bio :</label>
+                <form id="changerBio" action="index.php?controleur=profil&methode=changerBio" method="POST" class="d-flex align-items-center">
+                    <div class="me-2 flex-grow-1">
+                        <label for="bio" class="form-label d-none">Changer de bio :</label>
+                        <input type="text" class="form-control" id="bio" name="bio" placeholder="Votre bio" required
+                            maxlength="255" minlength="0" title="Entrez un pseudo entre 0 et 255 caractères.">
+                    </div>
+                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                    <button type="submit" class="btn btn-primary">Changer bio</button>
+                </form>
+            </div>
+
             <!-- Changer photo de profil -->
             <div class="mb-4">
                 <label for="photo" class="form-label">Photo de Profil</label>

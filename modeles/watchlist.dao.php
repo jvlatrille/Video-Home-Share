@@ -49,6 +49,36 @@ class WatchListDao {
         return $this->hydrate($resultat);
     }
 
+    /**
+     * @brief Fonction pour récupérer une Watchlist avec son identifiant et les films associés
+     * @details Cette fonction permet de récupérer une Watchlist avec son identifiant et les films associés
+     *
+     * @param integer $id identifiant de la watchlist à récupérer
+     * @return ?Watchlist la Watchlist correspondant à l'identifiant ou null si non trouvée avec les films associés
+     */
+    public function findWithFilms(int $id): ?WatchList {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist WHERE idWatchlist = :id";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+        $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+
+        if (!$resultat) {
+            return null;
+        }
+        //Si il y aucune oeuvre dans la watchlist
+        if($resultat['idTMDB'] == null){
+            $watchlist = $this->hydrate($resultat);
+            return $watchlist;
+        }
+
+        $watchlist = $this->hydrate($resultat);
+        $oeuvres = $this->recupererOeuvresParWatchlist($watchlist->getIdTMDB());
+        $watchlist->setListeOeuvres($oeuvres);
+        
+        return $watchlist;
+    }
+    
     // Fonction pour afficher toutes les watchlists d'un utilisateur
     /**
      * @brief Fonction pour récupérer toutes les watchlists d'un utilisateur
@@ -150,7 +180,7 @@ class WatchListDao {
      * @param integer $idUtilisateur identifiant de l'utilisateur
      * @return array|null la liste des Watchlists visibles n'appartenant pas à l'utilisateur ou null si non trouvée
      */
-    public function findAllVisible(int $idUtilisateur): ?array {
+    public function findAllVisibleWithFilm(int $idUtilisateur): ?array {
             $sql = "SELECT * FROM ".PREFIXE_TABLE."watchlist WHERE visible = 1 AND idUtilisateur != :id";
         
             $pdoStatement = $this->pdo->prepare($sql);
@@ -230,6 +260,59 @@ class WatchListDao {
         }
     }
 
+    /**
+     * @brief Fonction pour modifier une Watchlist
+     * @details Cette fonction permet de modifier partiellement une Watchlist en mettant à jour les données de la Watchlist
+     * 
+     * @param WatchList $Watchlist la Watchlist à modifier
+     * @return bool true si la Watchlist a été modifiée, false sinon
+     */
+        public function modifierWatchlistPartielle(WatchList $watchlist): bool {
+            $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET titre = :titre, genre = :genre, description = :description, visible = :visible WHERE idWatchlist = :idWatchlist";
+            
+            try {
+                $pdoStatement = $this->pdo->prepare($sql);
+                $pdoStatement->execute([
+                    'titre' => $watchlist->getTitre(),
+                    'genre' => $watchlist->getGenre(),
+                    'description' => $watchlist->getDescription(),
+                    'visible' => $watchlist->getVisible(),
+                    'idWatchlist' => $watchlist->getIdWatchlist()
+                ]);
+                return true;
+            } catch (Exception $e) {
+                error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
+                return false;
+            }
+        }
+
+        /**
+         * @brief Modifier completement une watchlist
+         * @details Cette fonction permet de modifier une Watchlist en mettant à jour les données de la Watchlist
+         * 
+         * @param WatchList $watchlist la Watchlist à modifier
+         * @return bool true si la Watchlist a été modifiée, false sinon
+         */
+        public function modifierWatchlistComplete(WatchList $watchlist): bool {
+            $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET titre = :titre, genre = :genre, description = :description, visible = :visible, idTMDB = :idTMDB WHERE idWatchlist = :idWatchlist";
+            
+            try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute([
+                'titre' => $watchlist->getTitre(),
+                'genre' => $watchlist->getGenre(),
+                'description' => $watchlist->getDescription(),
+                'visible' => $watchlist->getVisible(),
+                'idTMDB' => $watchlist->getIdTMDB(),
+                'idWatchlist' => $watchlist->getIdWatchlist()
+            ]);
+            return true;
+            } catch (Exception $e) {
+            error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
+            return false;
+            }
+        }
+
     // Fonction pour ajouter une OA à une watchlist
     /**
      * @brief Fonction pour ajouter une OA à une Watchlist
@@ -239,7 +322,12 @@ class WatchListDao {
      * @return bool true si l'OA a été ajoutée à la Watchlist, false sinon
      */
     public function ajouterOA(int $idWatchlist, int $idOA): bool {
-        $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET idTMDB = CONCAT(idTMDB, ',', :idOA) WHERE idWatchlist = :idWatchlist";
+        $sql = "UPDATE ".PREFIXE_TABLE."watchlist 
+            SET idTMDB = CASE 
+                WHEN idTMDB IS NULL OR idTMDB = '' THEN :idOA 
+                ELSE CONCAT(idTMDB, ',', :idOA) 
+            END 
+            WHERE idWatchlist = :idWatchlist";
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -305,8 +393,43 @@ class WatchListDao {
         }
 
         $idTMDB = $result['idTMDB'];
+        if (empty($idTMDB)) {
+            return [];
+        }
         return $this->recupererOeuvresParWatchlist($idTMDB);
     }
 
+    public function calculGenreDominantWatchlist(array $films): ?string
+{
+    $compteurGenres = [];
+    $oaDao = new OADao($this->pdo);
+
+    // Récupérer uniquement les ID des films
+    $films = array_map(function($film) {
+        return $film->getIdOa();
+    }, $films);
+
+    // Récupérer les genres de chaque film dans la watchlist
+    foreach ($films as $id) {
+        $oa = $oaDao->find($id); 
+        if ($oa) {
+            $genres = $oa->getGenres(); 
+            if (is_array($genres)) { 
+                foreach ($genres as $genre) {
+                    if (isset($compteurGenres[$genre])) {
+                        $compteurGenres[$genre]++;
+                    } else {
+                        $compteurGenres[$genre] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    // Retourner le genre avec le maximum d'occurrences
+    return !empty($compteurGenres) ? array_search(max($compteurGenres), $compteurGenres) : null;
+}
+
+    
 
 }

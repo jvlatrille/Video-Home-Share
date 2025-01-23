@@ -1,0 +1,9 @@
+# A renommer en .env
+DB_USER="nomUtilisateurBD"
+DB_PASSWORD="mdpUtilisateurBD"
+DB_NAME="nomBD"
+LOCAL_BACKUP_DIR="/chemin/vers/sauvegardes/local"
+REMOTE_USER="nomUtilisateurServeur"
+REMOTE_HOST="ipServeur"
+REMOTE_PORT="portServeur"
+REMOTE_DIR="/chemin/vers/sauvegardes/serveur"

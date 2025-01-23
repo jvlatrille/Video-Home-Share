@@ -48,10 +48,18 @@
 							</div>
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
-								<select class="form-select" id="watchlistVisibility" name="visible">
-									<option value="1" {{ watchlist.visible|default('1') == '1' ? 'selected' : '' }}>Publique</option>
-									<option value="0" {{ watchlist.visible|default('0') == '0' ? 'selected' : '' }}>Privée</option>
-								</select>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">
+										Publique
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPrivate" value="0">
+									<label class="form-check-label" for="visibilityPrivate">
+										Privée
+									</label>
+								</div>
 
 							</div>
 
@@ -69,51 +77,53 @@
 							<!-- Hidden input to store selected IDs -->
 							<input type="hidden" id="selectedIds" name="listeOeuvres" value="">
 
-							<script>
-								let listeOeuvres = [];
-
-function ajouterWatchlist(select) {
-const selectedId = select.value;
-if (! listeOeuvres.includes(selectedId)) {
-listeOeuvres.push(selectedId);
-updateSelectedIds();
-
-const selectedOption = select.options[select.selectedIndex];
-const selectedText = selectedOption.text;
-const selectedImage = selectedOption.getAttribute('data-poster-path');
-
-const selectedItem = document.createElement('div');
-selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
-selectedItem.id = 'item-' + selectedId;
-selectedItem.innerHTML = `
+							{% block script %}
+								<script>
+									let listeOeuvres = [];
+									
+									function ajouterWatchlist(select) {
+										const selectedId = select.value;
+										if (!listeOeuvres.includes(selectedId)) {
+											listeOeuvres.push(selectedId);
+											updateSelectedIds();
+											
+											const selectedOption = select.options[select.selectedIndex];
+											const selectedText = selectedOption.text;
+											const selectedImage = selectedOption.getAttribute('data-poster-path');
+											
+											const selectedItem = document.createElement('div');
+											selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
+											selectedItem.id = 'item-' + selectedId;
+											selectedItem.innerHTML = `
 											<span class="d-flex align-items-center">
 												<img src="${selectedImage}" alt="${selectedText}" class="me-2" style="width: 50px; height: auto;">
 												${selectedText}
 											</span>
 											<button type="button" class="btn-close" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}')"></button>
-										`;
-
-document.getElementById('selectedItemsContainer').appendChild(selectedItem);
-}
-}
-
-function supprimerDeWatchlist(id) {
-const index = listeOeuvres.indexOf(id);
-if (index > -1) {
-listeOeuvres.splice(index, 1);
-updateSelectedIds();
-
-const item = document.getElementById('item-' + id);
-if (item) {
-item.remove();
-}
-}
-}
-
-function updateSelectedIds() {
-document.getElementById('selectedIds').value = JSON.stringify(listeOeuvres);
-}
-							</script>
+											`;
+											
+											document.getElementById('selectedItemsContainer').appendChild(selectedItem);
+										}
+									}
+									
+									function supprimerDeWatchlist(id) {
+										const index = listeOeuvres.indexOf(id);
+										if (index > -1) {
+											listeOeuvres.splice(index, 1);
+											updateSelectedIds();
+											
+											const item = document.getElementById('item-' + id);
+											if (item) {
+												item.remove();
+											}
+										}
+									}
+									
+									function updateSelectedIds() {
+										document.getElementById('selectedIds').value = JSON.stringify(listeOeuvres);
+									}
+								</script>
+							{% endblock %}
 
 
 							<!-- Bouton de soumission -->
