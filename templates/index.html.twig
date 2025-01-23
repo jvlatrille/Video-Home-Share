@@ -43,6 +43,7 @@
                 </div>
             {% endfor %}
         </div>
+        <br>
 
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -180,8 +181,6 @@
                         alert('Impossible de charger de nouvelles œuvres.');
                         return;
                     }
-
-                    // ⚠️ SUPPRIMÉ : container.innerHTML = '';  (On ne vide plus le conteneur)
 
                     data.forEach(oa => {
                         container.innerHTML += `

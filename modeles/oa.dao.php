@@ -138,20 +138,24 @@ class OADao
      * @param array $crew Liste des membres de l'équipe (crew) du film
      * @return string|null Nom du producteur ou null si non trouvé
      */
+    /**
+     * @brief Récupère le nom d'un producteur principal pour une œuvre
+     * @param array $crew Liste des membres de l'équipe (crew) du film
+     * @return string Nom du producteur ou "Non spécifié" si non trouvé
+     */
     private function getProducer(array $crew): ?string
     {
         foreach ($crew as $member) {
-            if (
-                isset($member['job']) &&
-                in_array($member['job'], ['Producer', 'Executive Producer', 'producteur'])
-            ) {
-                return $member['name'] ?? 'Inconnu';
+            if (isset($member['job']) && stripos($member['job'], 'producer') !== false) {
+                return $member['name'] ?? null; // Retourne le premier producteur trouvé
             }
         }
-
-        error_log("Aucun producteur trouvé dans l'équipe : " . print_r($crew, true));
-        return 'Non spécifié';
+        return null; // Retourne null si aucun producteur trouvé
     }
+
+
+
+
 
 
     /**
@@ -174,12 +178,17 @@ class OADao
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
+<<<<<<< HEAD
             $this->getProducer($data['credits']['crew'] ?? []),
             null,
             null,
             $data['producer'] ?? null
 
         );
+=======
+            $data['producer'] ?? null
+        );        
+>>>>>>> main
     }
 
     /**
@@ -205,10 +214,11 @@ class OADao
     {
         $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR'], true);
         $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
-        $movie['participants'] = $this->parseParticipants($credits);
         $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
+        $movie['participants'] = $this->parseParticipants($credits);
         return $this->hydrate($movie);
     }
+
 
 
     /**
@@ -282,7 +292,7 @@ class OADao
             ];
         }, array_slice($results['results'], 0, 10));
     }
-    
+
     /**
      * @brief Recherche des films par titre
      * @param string $query Requête de recherche
@@ -298,6 +308,7 @@ class OADao
         return $this->hydrateAll($results['results']);
     }
 
+<<<<<<< HEAD
     //Implementation des séries
 
 /**
@@ -374,4 +385,89 @@ private function hydrateAllSerie(array $dataList): array
 
 
 
+=======
+
+    /**
+     * @brief Récupère toutes les notes pour un film
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return array Liste des notes
+     */
+    public function recupererNotesParFilm(int $idTMDB): array
+    {
+        $pdo = $this->getConnection();
+        $query = 'SELECT ' . PREFIXE_TABLE . 'notes FROM notes WHERE idTMDB = :idTMDB';
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['idTMDB' => $idTMDB]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+
+    /**
+     * @brief Ajoute une note pour un utilisateur sur une œuvre
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @param int $idTMDB Identifiant TMDB du film
+     * @param int $note Note attribuée (entre 1 et 5)
+     * @return bool Retourne true si l'opération est réussie
+     */
+    public function ajouterNote(int $idUtilisateur, int $idTMDB, int $note): bool
+    {
+        if ($note < 1 || $note > 5) {
+            die('La note doit être comprise entre 1 et 5.');
+        }
+
+        $pdo = $this->getConnection();
+        $query = 'INSERT INTO ' . PREFIXE_TABLE . 'notes (idUtilisateur, idTMDB, note) 
+              VALUES (:idUtilisateur, :idTMDB, :note)
+              ON DUPLICATE KEY UPDATE note = :note';
+        $stmt = $pdo->prepare($query);
+        $result = $stmt->execute([
+            'idUtilisateur' => $idUtilisateur,
+            'idTMDB' => $idTMDB,
+            'note' => $note
+        ]);
+
+        if (!$result) {
+            error_log('Erreur lors de l\'insertion de la note : ' . print_r($stmt->errorInfo(), true));
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @brief Calcule la moyenne des notes pour un film
+     * @param int $idTMDB Identifiant TMDB du film
+     * @param float $noteTMDB Note TMDB
+     * @return float Moyenne des notes
+     */
+    public function calculerMoyenneNotes(int $idTMDB, float $noteTMDB): float
+    {
+        $notes = $this->recupererNotesParFilm($idTMDB);
+        if (empty($notes)) {
+            return $noteTMDB; // Pas de notes utilisateur, retourne la note TMDB
+        }
+
+        $moyenneUtilisateurs = array_sum($notes) / count($notes);
+        return ($moyenneUtilisateurs + $noteTMDB) / 2; // Moyenne pondérée
+    }
+
+    /**
+     * @brief Récupère la note d'un utilisateur pour un film donné
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return int|null Note de l'utilisateur ou null si non noté
+     */
+    public function getNoteUtilisateur(int $idUtilisateur, int $idTMDB): ?int
+    {
+        $pdo = $this->getConnection();
+        $query = 'SELECT note FROM ' . PREFIXE_TABLE . 'notes WHERE idUtilisateur = :idUtilisateur AND idTMDB = :idTMDB';
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            'idUtilisateur' => $idUtilisateur,
+            'idTMDB' => $idTMDB
+        ]);
+        $note = $stmt->fetchColumn();
+        return $note !== false ? (int)$note : null;
+    }
+>>>>>>> main
 }

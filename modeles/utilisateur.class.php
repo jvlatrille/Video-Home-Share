@@ -39,6 +39,10 @@ class Utilisateur
     * @brief role de l'utilisateur
     */
     private ?string $role;
+    /**
+    * @brief bio de l'utilisateur
+    */
+    private ?string $bio;
 
     /**
      * @brief Constructeur de la classe Utilisateur
@@ -50,6 +54,7 @@ class Utilisateur
      * @param string|null $adressMail adresse mail de l'utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
+     * @param string|null $bio bio de l'utilisateur
      * @return void
      */
     // Constructeur de la classe Personne
@@ -57,19 +62,19 @@ class Utilisateur
                                 ?string $pseudo = null, 
                                 ?string $photoProfil = null, 
                                 ?string $banniereProfil = null, 
-                                ?string $bio = null,
                                 ?string $adressMail = null, 
                                 ?string $motDePasse = null, 
-                                ?string $role = null)
+                                ?string $role = null,
+                                ?string $bio = null)
     {
         $this->idUtilisateur = $idUtilisateur;
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
         $this->banniereProfil = $banniereProfil;
-        $this->bio = $bio;
         $this->adressMail = $adressMail;
         $this->motDePasse = $motDePasse;
         $this->role = $role;
+        $this->bio = $bio;
     }
 
     /**
@@ -211,4 +216,25 @@ class Utilisateur
     {
         $this->role = $role;
     }
+
+    /**
+     * @brief Getteur de la bio de l'utilisateur
+     *
+     * @return ?string
+     */
+    public function getBio(): ?string
+    {
+        return $this->bio;
+    }
+
+    /**
+     * @brief Setteur de la bio  de l'utilisateur
+     * @param string role
+     * @return void
+     */
+    public function setBio(?string $bio): void
+    {
+        $this->bio = $bio;
+    }
+
 }
