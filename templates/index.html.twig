@@ -86,6 +86,23 @@
         </div>
     </div>
 
+    <h2 class="text-center mt-5">Les 10 messages les plus likés</h2>
+    <div class="container mt-4">
+        <div class="list-group">
+            {% for message in topMessages %}
+                <a href="index.php?controleur=forum&methode=afficherForum&idForum={{ message.idForum }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ message.contenu }}</h5>
+                    <p class="mb-1 text-muted">
+                        Publié par {{ message.pseudo }} dans le forum "{{ message.forumNom }}"
+                    </p>
+                    <small class="text-primary">{{ message.nbLike }} likes</small>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
     <h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
 <div id="decouvrirOaContainer" class="container mt-4">
     <div class="row row-cols-1 row-cols-md-5 g-4">

@@ -1,47 +1,54 @@
-<?php 
+<?php
 
-class forumDAO{
+class forumDAO
+{
     private ?PDO $pdo;
 
-    public function __construct(PDO $pdo){
+    public function __construct(PDO $pdo)
+    {
         $this->pdo = $pdo;
     }
 
     //Getters et setters
-    public function getPdo(): ?PDO{
+    public function getPdo(): ?PDO
+    {
         return $this->pdo;
     }
 
-    public function setPdo(?PDO $pdo): void{
+    public function setPdo(?PDO $pdo): void
+    {
         $this->pdo = $pdo;
     }
 
     //Méthode pour récupérer un forum
-    public function listeForum(?int $idForum): ?Forum {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."forum";
+    public function listeForum(?int $idForum): ?Forum
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "forum";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idForum' => $idForum));
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-        $forumData = $pdoStatement->fetch();   
+        $forumData = $pdoStatement->fetch();
         return $forumData ? $this->hydrate($forumData) : null;
     }
-    
+
 
     //Méthode pour récupérer tout les forums
-    public function findAll() {
-        
+    public function findAll()
+    {
+
         $sql = "SELECT * FROM " . PREFIXE_TABLE . "forum";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
-        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);  
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
 
         $resultats = $pdoStatement->fetchAll();
 
         // Appelle hydrateAll pour transformer tous les enregistrements en objets forum
         return $this->hydrateAll($resultats);
     }
-    public function hydrate($tableauAssoc) : ?Forum{
-        $forum=new Forum();
+    public function hydrate($tableauAssoc): ?Forum
+    {
+        $forum = new Forum();
         $forum->setIdForum($tableauAssoc['idForum']);
         $forum->setNom($tableauAssoc['nom']);
         $forum->setDescription($tableauAssoc['description']);
@@ -49,18 +56,20 @@ class forumDAO{
         return $forum;
     }
 
-    public function hydrateAll(array $resultats): ?array {
+    public function hydrateAll(array $resultats): ?array
+    {
         $forumListe = [];
         foreach ($resultats as $row) {
             $forumListe[] = $this->hydrate($row);
         }
-        
+
         return $forumListe;
     }
 
-    public function find(int $idForum): ?Forum {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."forum WHERE idForum = :idForum";
-        
+    public function find(int $idForum): ?Forum
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "forum WHERE idForum = :idForum";
+
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idForum' => $idForum]);
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
@@ -68,15 +77,16 @@ class forumDAO{
         if (!$resultat) {
             return null;
         }
-        
+
         return $this->hydrate($resultat);
     }
 
     //Fonction pour creer un forum
-    public function creerForum(Forum $forum): ?Forum {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."forum (nom, description, theme, idUtilisateur) 
+    public function creerForum(Forum $forum): ?Forum
+    {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "forum (nom, description, theme, idUtilisateur) 
                 VALUES (:nom, :description, :theme, :idUtilisateur)";
-        
+
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(array(
@@ -85,7 +95,7 @@ class forumDAO{
                 'theme' => $forum->getTheme(),
                 'idUtilisateur' => $forum->getIdUtilisateur()
             ));
-            
+
             $forum->setIdForum($this->pdo->lastInsertId());
             return $forum;
         } catch (Exception $e) {
@@ -95,5 +105,26 @@ class forumDAO{
         }
     }
 
+
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Cette méthode récupère les messages les plus likés.
+     * @param int $limit Le nombre maximum de messages à récupérer. Par défaut, 10.
+     * @return array Un tableau de tableaux associatifs, chacun contenant les détails du message.
+     */
+    public function getTopLikedMessages(int $limit = 10): array
+    {
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, u.pseudo, f.nom as forumNom, m.idForum
+                FROM " . PREFIXE_TABLE . "message m
+                JOIN " . PREFIXE_TABLE . "utilisateur u ON m.idUtilisateur = u.idUtilisateur
+                JOIN " . PREFIXE_TABLE . "forum f ON m.idForum = f.idForum
+                ORDER BY m.nbLike DESC
+                LIMIT :limit";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $pdoStatement->execute();
+
+        $result = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
 }
-?>
