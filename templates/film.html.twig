@@ -68,22 +68,27 @@
                             </div>
                         </div>
                         <p><strong>Note :</strong></p>
-<div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
-    {% for i in 1..5 %}
-        <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
-             alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" 
-             width="30" 
-             height="30" 
-             data-value="{{ i }}" 
-             class="star me-1" 
-             style="cursor: pointer;">
-    {% endfor %}
-    <span id="rating-display" class="ms-2 fs-5">{{ oa.note }}</span>
-</div>
-
-
+                        <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
+                            {% for i in 1..5 %}
+                                <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
+                                     alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
+                            {% endfor %}
+                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(0, 'floor') }}</span>
+                        </div>
+                        
 {% if utilisateurConnecte %}
     <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
+{% endif %}
+{% if utilisateurConnecte %}
+    <div class="mt-2">
+        <p><strong>Votre note :</strong> 
+            {% if utilisateurNote is defined %}
+                {{ utilisateurNote }} / 5
+            {% else %}
+                <em>Vous n'avez pas encore noté ce film.</em>
+            {% endif %}
+        </p>
+    </div>
 {% endif %}
 
                     </div>
@@ -210,4 +215,86 @@
     {% else %}
         <p>Le film n'existe pas.</p>
     {% endif %}
+{% endblock %}
+{% block script %}
+
+{% if utilisateurConnecte %}
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const stars = document.querySelectorAll('#rating-system .star');
+        const ratingDisplay = document.getElementById('rating-display');
+        const ratingSystem = document.getElementById('rating-system');
+        const filmId = ratingSystem.getAttribute('data-id');
+
+        let originalRating = parseFloat(ratingDisplay.textContent); // Note initiale
+        let selectedRating = null;
+
+        // Fonction pour mettre à jour visuellement les étoiles
+        function updateStars(rating) {
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute('data-value'));
+                star.src = starValue <= rating ? 'img/noteRemplie.png' : 'img/noteVide.png';
+            });
+        }
+
+        // Gestion du survol des étoiles
+        stars.forEach(star => {
+            star.addEventListener('mouseover', () => {
+                const value = parseInt(star.getAttribute('data-value'));
+                updateStars(value);
+                ratingDisplay.textContent = value; // Affiche la note survolée
+            });
+
+            star.addEventListener('mouseout', () => {
+                // Retour à l'état initial si aucune note n'est sélectionnée
+                updateStars(selectedRating || originalRating);
+                ratingDisplay.textContent = selectedRating || originalRating;
+            });
+
+            // Gestion du clic pour noter
+            star.addEventListener('click', () => {
+                const value = parseInt(star.getAttribute('data-value'));
+                selectedRating = value;
+
+                // Envoie les données via fetch
+                fetch('index.php?controleur=oa&methode=noterFilm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        idFilm: filmId,
+                        note: value
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Note ajoutée avec succès.');
+                        originalRating = selectedRating; // Met à jour la note initiale
+                        fetchMoyenne(); // Recharge la moyenne
+                    } else {
+                        alert('Erreur : ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête :', error);
+                    alert('Une erreur est survenue.');
+                });
+            });
+        });
+
+        // Fonction pour récupérer et afficher la moyenne
+        function fetchMoyenne() {
+            fetch(`index.php?controleur=oa&methode=afficherMoyenneNotes&idTMDB=${filmId}&noteTMDB=${originalRating}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    originalRating = data.moyenne;
+                    ratingDisplay.textContent = data.moyenne.toFixed(2);
+                    updateStars(data.moyenne);
+                }
+            });
+        }
+    });
+    </script>
+{% endif %}
 {% endblock %}

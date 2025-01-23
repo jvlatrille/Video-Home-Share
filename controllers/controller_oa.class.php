@@ -55,6 +55,10 @@ class ControllerOA extends Controller
      * @brief Affiche les détails d'un film spécifique
      * @return void
      */
+    /**
+     * @brief Affiche les détails d'un film spécifique
+     * @return void
+     */
     public function afficherFilm(): void
     {
         $idOa = $_GET['idOa'] ?? null;
@@ -79,35 +83,36 @@ class ControllerOA extends Controller
             $participants = $this->managerOa->getParticipantsByFilmId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
 
+            $utilisateurNote = null;
+            $watchListListe = null;
 
-
-            //Recuperer les watchlist de l'utilisateur
+            // Récupérer les données spécifiques à l'utilisateur s'il est connecté
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
                 $managerWatchList = new WatchListDao($this->getPdo());
+
+                // Récupération des watchlists de l'utilisateur
                 $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
-                $template = $this->getTwig()->load('film.html.twig');
-                echo $template->render([
-                    'watchListListe' => $watchListListe,
-                    'oa' => $oa,
-                    'commentaires' => $commentaires,
-                    'participants' => $participants
-                ]);
-                return;
+
+                // Récupération de la note de l'utilisateur pour ce film
+                $utilisateurNote = $this->managerOa->getNoteUtilisateur($utilisateurConnecte->getIdUtilisateur(), $oa->getIdOa());
             }
 
-            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
+            // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
                 'oa' => $oa,
                 'commentaires' => $commentaires,
-                'participants' => $participants
+                'participants' => $participants,
+                'watchListListe' => $watchListListe,
+                'utilisateurNote' => $utilisateurNote, // Transmettre la note utilisateur à la vue
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
             die('Impossible d\'afficher les détails du film.');
         }
     }
+
 
     /**
      * @brief Valide un identifiant
@@ -134,6 +139,71 @@ class ControllerOA extends Controller
             error_log('Erreur lors de la récupération des œuvres aléatoires : ' . $e->getMessage());
             echo json_encode(['error' => 'Impossible de charger des œuvres aléatoires']);
             exit;
+        }
+    }
+
+
+    public function noterFilm(): void
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
+        }
+
+        $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $idTMDB = $input['idFilm'] ?? null;
+        $note = $input['note'] ?? null;
+
+        if (!$idTMDB || !$note) {
+            die(json_encode(['success' => false, 'message' => 'Données invalides reçues : ' . json_encode($input)]));
+        }
+
+        try {
+            $result = $this->managerOa->ajouterNote((int)$idUtilisateur, (int)$idTMDB, (int)$note);
+            echo json_encode(['success' => $result]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        }
+    }
+
+
+    public function afficherMoyenneNotes(): void
+    {
+        $idTMDB = $_GET['idTMDB'] ?? null;
+        $noteTMDB = $_GET['noteTMDB'] ?? null;
+
+        if (!$idTMDB || !$noteTMDB) {
+            die(json_encode(['success' => false, 'message' => 'Données invalides.']));
+        }
+
+        try {
+            $moyenne = $this->managerOa->calculerMoyenneNotes((int)$idTMDB, (float)$noteTMDB);
+            echo json_encode(['success' => true, 'moyenne' => $moyenne]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        }
+    }
+
+    public function afficherNoteUtilisateur(): void
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
+        }
+
+        $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
+        $idOa = $_GET['idOa'] ?? null;
+
+        if (!$this->validerId($idOa)) {
+            die(json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']));
+        }
+
+        try {
+            $idOa = (int)$idOa;
+            $note = $this->managerOa->getNoteUtilisateur($idUtilisateur, $idOa);
+            echo json_encode(['success' => true, 'note' => $note]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
         }
     }
 }

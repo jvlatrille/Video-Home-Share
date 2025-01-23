@@ -246,7 +246,7 @@ class OADao
     public function findRandomOeuvres(): array
     {
         $randomPage = rand(1, 100);
-        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage,'include_adult' => 'false']);
+        $results = $this->makeApiRequest('/movie/popular', ['language' => 'fr-FR', 'page' => $randomPage, 'include_adult' => 'false']);
 
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune œuvre aléatoire trouvée.');
@@ -261,14 +261,15 @@ class OADao
             ];
         }, array_slice($results['results'], 0, 10));
     }
-    
+
     /**
      * @brief Recherche des films par titre
      * @param string $query Requête de recherche
      * @return array Liste des objets OA
      * 
      */
-    public function rechercheFilmParNom(string $query): array{
+    public function rechercheFilmParNom(string $query): array
+    {
         $results = $this->makeApiRequest('/search/movie', ['query' => $query, 'language' => 'fr-FR']);
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucun film trouvé pour la recherche : ' . $query);
@@ -277,4 +278,87 @@ class OADao
         return $this->hydrateAll($results['results']);
     }
 
+
+    /**
+     * @brief Récupère toutes les notes pour un film
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return array Liste des notes
+     */
+    public function recupererNotesParFilm(int $idTMDB): array
+    {
+        $pdo = $this->getConnection();
+        $query = 'SELECT '.PREFIXE_TABLE.'notes FROM notes WHERE idTMDB = :idTMDB';
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(['idTMDB' => $idTMDB]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+
+    /**
+     * @brief Ajoute une note pour un utilisateur sur une œuvre
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @param int $idTMDB Identifiant TMDB du film
+     * @param int $note Note attribuée (entre 1 et 5)
+     * @return bool Retourne true si l'opération est réussie
+     */
+    public function ajouterNote(int $idUtilisateur, int $idTMDB, int $note): bool
+    {
+        if ($note < 1 || $note > 5) {
+            die('La note doit être comprise entre 1 et 5.');
+        }
+
+        $pdo = $this->getConnection();
+        $query = 'INSERT INTO '.PREFIXE_TABLE.'notes (idUtilisateur, idTMDB, note) 
+              VALUES (:idUtilisateur, :idTMDB, :note)
+              ON DUPLICATE KEY UPDATE note = :note';
+        $stmt = $pdo->prepare($query);
+        $result = $stmt->execute([
+            'idUtilisateur' => $idUtilisateur,
+            'idTMDB' => $idTMDB,
+            'note' => $note
+        ]);
+
+        if (!$result) {
+            error_log('Erreur lors de l\'insertion de la note : ' . print_r($stmt->errorInfo(), true));
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @brief Calcule la moyenne des notes pour un film
+     * @param int $idTMDB Identifiant TMDB du film
+     * @param float $noteTMDB Note TMDB
+     * @return float Moyenne des notes
+     */
+    public function calculerMoyenneNotes(int $idTMDB, float $noteTMDB): float
+    {
+        $notes = $this->recupererNotesParFilm($idTMDB);
+        if (empty($notes)) {
+            return $noteTMDB; // Pas de notes utilisateur, retourne la note TMDB
+        }
+
+        $moyenneUtilisateurs = array_sum($notes) / count($notes);
+        return ($moyenneUtilisateurs + $noteTMDB) / 2; // Moyenne pondérée
+    }
+
+    /**
+     * @brief Récupère la note d'un utilisateur pour un film donné
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @param int $idTMDB Identifiant TMDB du film
+     * @return int|null Note de l'utilisateur ou null si non noté
+     */
+    public function getNoteUtilisateur(int $idUtilisateur, int $idTMDB): ?int
+    {
+        $pdo = $this->getConnection();
+        $query = 'SELECT note FROM '.PREFIXE_TABLE.'notes WHERE idUtilisateur = :idUtilisateur AND idTMDB = :idTMDB';
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            'idUtilisateur' => $idUtilisateur,
+            'idTMDB' => $idTMDB
+        ]);
+        $note = $stmt->fetchColumn();
+        return $note !== false ? (int)$note : null;
+    }
 }
