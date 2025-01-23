@@ -138,20 +138,24 @@ class OADao
      * @param array $crew Liste des membres de l'équipe (crew) du film
      * @return string|null Nom du producteur ou null si non trouvé
      */
+    /**
+     * @brief Récupère le nom d'un producteur principal pour une œuvre
+     * @param array $crew Liste des membres de l'équipe (crew) du film
+     * @return string Nom du producteur ou "Non spécifié" si non trouvé
+     */
     private function getProducer(array $crew): ?string
     {
         foreach ($crew as $member) {
-            if (
-                isset($member['job']) &&
-                in_array($member['job'], ['Producer', 'Executive Producer', 'producteur'])
-            ) {
-                return $member['name'] ?? 'Inconnu';
+            if (isset($member['job']) && stripos($member['job'], 'producer') !== false) {
+                return $member['name'] ?? null; // Retourne le premier producteur trouvé
             }
         }
-
-        error_log("Aucun producteur trouvé dans l'équipe : " . print_r($crew, true));
-        return 'Non spécifié';
+        return null; // Retourne null si aucun producteur trouvé
     }
+
+
+
+
 
 
     /**
@@ -174,8 +178,8 @@ class OADao
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
-            $this->getProducer($data['credits']['crew'] ?? [])
-        );
+            $data['producer'] ?? null
+        );        
     }
 
     /**
@@ -201,10 +205,11 @@ class OADao
     {
         $movie = $this->makeApiRequest("/movie/$id", ['language' => 'fr-FR'], true);
         $credits = $this->makeApiRequest("/movie/$id/credits", [], true);
-        $movie['participants'] = $this->parseParticipants($credits);
         $movie['producer'] = $this->getProducer($credits['crew'] ?? []);
+        $movie['participants'] = $this->parseParticipants($credits);
         return $this->hydrate($movie);
     }
+
 
 
     /**
@@ -287,7 +292,7 @@ class OADao
     public function recupererNotesParFilm(int $idTMDB): array
     {
         $pdo = $this->getConnection();
-        $query = 'SELECT '.PREFIXE_TABLE.'notes FROM notes WHERE idTMDB = :idTMDB';
+        $query = 'SELECT ' . PREFIXE_TABLE . 'notes FROM notes WHERE idTMDB = :idTMDB';
         $stmt = $pdo->prepare($query);
         $stmt->execute(['idTMDB' => $idTMDB]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -308,7 +313,7 @@ class OADao
         }
 
         $pdo = $this->getConnection();
-        $query = 'INSERT INTO '.PREFIXE_TABLE.'notes (idUtilisateur, idTMDB, note) 
+        $query = 'INSERT INTO ' . PREFIXE_TABLE . 'notes (idUtilisateur, idTMDB, note) 
               VALUES (:idUtilisateur, :idTMDB, :note)
               ON DUPLICATE KEY UPDATE note = :note';
         $stmt = $pdo->prepare($query);
@@ -352,7 +357,7 @@ class OADao
     public function getNoteUtilisateur(int $idUtilisateur, int $idTMDB): ?int
     {
         $pdo = $this->getConnection();
-        $query = 'SELECT note FROM '.PREFIXE_TABLE.'notes WHERE idUtilisateur = :idUtilisateur AND idTMDB = :idTMDB';
+        $query = 'SELECT note FROM ' . PREFIXE_TABLE . 'notes WHERE idUtilisateur = :idUtilisateur AND idTMDB = :idTMDB';
         $stmt = $pdo->prepare($query);
         $stmt->execute([
             'idUtilisateur' => $idUtilisateur,

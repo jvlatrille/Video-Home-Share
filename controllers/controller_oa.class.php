@@ -90,11 +90,7 @@ class ControllerOA extends Controller
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
                 $managerWatchList = new WatchListDao($this->getPdo());
-
-                // Récupération des watchlists de l'utilisateur
                 $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
-
-                // Récupération de la note de l'utilisateur pour ce film
                 $utilisateurNote = $this->managerOa->getNoteUtilisateur($utilisateurConnecte->getIdUtilisateur(), $oa->getIdOa());
             }
 
@@ -105,7 +101,7 @@ class ControllerOA extends Controller
                 'commentaires' => $commentaires,
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
-                'utilisateurNote' => $utilisateurNote, // Transmettre la note utilisateur à la vue
+                'utilisateurNote' => $utilisateurNote,
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
