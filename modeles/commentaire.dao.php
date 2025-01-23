@@ -141,4 +141,33 @@ class CommentaireDAO
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['idCom' => $idCommentaire]);
     }
+
+
+
+    public function chargerComm(?int $idUtilisateur): ?array
+    {
+        $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
+                FROM vhs_commentaire c
+                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
+                WHERE c.idUtilisateur = :idUtilisateur";
+
+        
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
+            $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+            $resultats = $pdoStatement->fetchAll();
+
+            if (empty($resultats)) {
+                return null; // Aucun message trouvé
+            }
+
+            return $resultats;
+
+           
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'affichage des commentaires de l'utilisateur : " . $e->getMessage());
+            return null;
+        }
+    }
 }
