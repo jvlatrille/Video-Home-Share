@@ -27,6 +27,9 @@ if ($conn->connect_error) {
     die("Erreur de connexion : " . $conn->connect_error);
 }
 
+// Configurer l'encodage UTF-8
+$conn->set_charset("utf8mb4");
+
 // Générer le nom du fichier de sauvegarde
 $date = date('Y-m-d-H-i-s');
 $backupDir = __DIR__ . '/../backupBD/';
@@ -66,7 +69,9 @@ while ($row = $tables->fetch_row()) {
                 if (is_null($value)) {
                     $escapedValues[] = 'NULL';
                 } else {
-                    $escapedValues[] = "'" . $conn->real_escape_string($value) . "'";
+                    // Remplace les apostrophes simples par deux apostrophes pour SQL
+                    $escapedValue = str_replace("'", "''", $value);
+                    $escapedValues[] = "'" . $escapedValue . "'";
                 }
             }
             $backupSql .= "INSERT INTO $table VALUES (" . implode(',', $escapedValues) . ");\n";
