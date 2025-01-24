@@ -31,7 +31,7 @@ class ControllerCommentaire extends Controller
         $contenu = $_POST['contenu'] ?? null;
 
         if (!$this->utilisateurConnecte()) {
-            die("ERREUR : Utilisateur non connecté.");
+            die("ERREUR : Merci de vous connecter.");
         }
 
         if (!$idTMDB || !$contenu) {

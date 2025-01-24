@@ -42,7 +42,7 @@ class Utilisateur
     /**
     * @brief bio de l'utilisateur
     */
-    private ?string $bio;
+    private ?string $bio = null;
 
     /**
      * @brief Constructeur de la classe Utilisateur
@@ -71,7 +71,6 @@ class Utilisateur
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
         $this->banniereProfil = $banniereProfil;
-        $this->bio = $bio;
         $this->adressMail = $adressMail;
         $this->motDePasse = $motDePasse;
         $this->role = $role;

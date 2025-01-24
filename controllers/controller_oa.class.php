@@ -30,27 +30,9 @@ class ControllerOA extends Controller
     }
 
     /**
-     * @brief Affiche les 10 films les mieux notés
+     * @brief Affiche les détails d'un film spécifique
      * @return void
      */
-    public function listerFilms(): void
-    {
-        try {
-            $oaListe = $this->managerOa->findMeilleurNote();
-            $oaRandomListe = $this->managerOa->findRandomOeuvres();
-            $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render([
-                'oaListe' => $oaListe,
-                'oaRandomListe' => $oaRandomListe
-            ]);
-        } catch (Exception $e) {
-            error_log('Erreur lors du listing des films : ' . $e->getMessage());
-            die('Impossible d\'afficher la liste des films.');
-        }
-    }
-
-
-
     /**
      * @brief Affiche les détails d'un film spécifique
      * @return void
@@ -79,35 +61,32 @@ class ControllerOA extends Controller
             $participants = $this->managerOa->getParticipantsByFilmId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
 
+            $utilisateurNote = null;
+            $watchListListe = null;
 
-
-            //Recuperer les watchlist de l'utilisateur
+            // Récupérer les données spécifiques à l'utilisateur s'il est connecté
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
                 $managerWatchList = new WatchListDao($this->getPdo());
                 $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
-                $template = $this->getTwig()->load('film.html.twig');
-                echo $template->render([
-                    'watchListListe' => $watchListListe,
-                    'oa' => $oa,
-                    'commentaires' => $commentaires,
-                    'participants' => $participants
-                ]);
-                return;
+                $utilisateurNote = $this->managerOa->getNoteUtilisateur($utilisateurConnecte->getIdUtilisateur(), $oa->getIdOa());
             }
 
-            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
+            // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
                 'oa' => $oa,
                 'commentaires' => $commentaires,
-                'participants' => $participants
+                'participants' => $participants,
+                'watchListListe' => $watchListListe,
+                'utilisateurNote' => $utilisateurNote,
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
             die('Impossible d\'afficher les détails du film.');
         }
     }
+
 
     /**
      * @brief Valide un identifiant
@@ -127,6 +106,9 @@ class ControllerOA extends Controller
     {
         try {
             $oaListe = $this->managerOa->findRandomOeuvres();
+            $oaListe = array_merge($oaListe, $this->managerOa->findRandomSeries());
+            shuffle($oaListe);
+            array_splice($oaListe, 20);
             header('Content-Type: application/json');
             echo json_encode($oaListe);
             exit;
@@ -136,4 +118,150 @@ class ControllerOA extends Controller
             exit;
         }
     }
+
+
+    public function noterFilm(): void
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
+        }
+
+        $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        $idTMDB = $input['idFilm'] ?? null;
+        $note = $input['note'] ?? null;
+
+        if (!$idTMDB || !$note) {
+            die(json_encode(['success' => false, 'message' => 'Données invalides reçues : ' . json_encode($input)]));
+        }
+
+        try {
+            $result = $this->managerOa->ajouterNote((int)$idUtilisateur, (int)$idTMDB, (int)$note);
+            echo json_encode(['success' => $result]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        }
+    }
+
+
+    public function afficherMoyenneNotes(): void
+    {
+        $idTMDB = $_GET['idTMDB'] ?? null;
+        $noteTMDB = $_GET['noteTMDB'] ?? null;
+
+        if (!$idTMDB || !$noteTMDB) {
+            die(json_encode(['success' => false, 'message' => 'Données invalides.']));
+        }
+
+        try {
+            $moyenne = $this->managerOa->calculerMoyenneNotes((int)$idTMDB, (float)$noteTMDB);
+            echo json_encode(['success' => true, 'moyenne' => $moyenne]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        }
+    }
+
+    public function afficherNoteUtilisateur(): void
+    {
+        if (!isset($_SESSION['utilisateur'])) {
+            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
+        }
+
+        $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
+        $idOa = $_GET['idOa'] ?? null;
+
+        if (!$this->validerId($idOa)) {
+            die(json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']));
+        }
+
+        try {
+            $idOa = (int)$idOa;
+            $note = $this->managerOa->getNoteUtilisateur($idUtilisateur, $idOa);
+            echo json_encode(['success' => true, 'note' => $note]);
+        } catch (Exception $e) {
+            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+        }
+    }
+
+
+    /**
+     * @brief Affiche les 10 séries les mieux notées
+     * @return void
+     */
+    public function listerSeries(): void
+    {
+        try {
+            $oaListe = $this->managerOa->findMeilleurNoteSerie();
+            $template = $this->getTwig()->load('series.html.twig');
+            echo $template->render([
+                'oaListe' => $oaListe
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur lors du listing des séries : ' . $e->getMessage());
+            die('Impossible d\'afficher la liste des séries.');
+        }
+    }
+
+    /**
+     * @brief Affiche les détails d'une série spécifique
+     * @return void
+     */
+    public function afficherSerie(): void
+    {
+        $idOa = $_GET['idOa'] ?? null;
+
+        if (!$this->validerId($idOa)) {
+            die('ID de la série invalide ou non spécifié.');
+        }
+
+        try {
+            $idOa = (int)$idOa;
+            $oa = $this->managerOa->findSerie($idOa);
+
+            if (!$oa) {
+                die('Série non trouvée.');
+            }
+
+            // Récupérer les commentaires de la série
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            error_log("Nombre de commentaires : " . count($commentaires));
+
+            // Récupérer les participants de la série
+            $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
+            error_log("Nombre de participants : " . count($participants));
+
+            //Recuperer les watchlist de l'utilisateur
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+                $managerWatchList = new WatchListDao($this->getPdo());
+                $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
+                $template = $this->getTwig()->load('serie.html.twig');
+                echo $template->render([
+                    'watchListListe' => $watchListListe,
+                    'oa' => $oa,
+                    'commentaires' => $commentaires,
+                    'participants' => $participants
+                ]);
+                return;
+            }
+
+            // Affichage dans la vue normale si l'utilisateur n'est pas connecté
+            $template = $this->getTwig()->load('serie.html.twig');
+            echo $template->render([
+                'oa' => $oa,
+                'commentaires' => $commentaires,
+                'participants' => $participants
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());
+            die('Impossible d\'afficher les détails de la série.');
+        }
+    }
+
+
+
+
+
+
 }
