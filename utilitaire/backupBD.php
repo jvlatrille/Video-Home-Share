@@ -1,8 +1,8 @@
 <?php
 /**
  * @file backupBD.php 
- * @brief Script permettant de sauvegarder la BD réguliérement grâce au planificateur de tâches windows
- * @version 1
+ * @brief Script permettant de sauvegarder la BD régulièrement grâce au planificateur de tâches windows
+ * @version 2
  * @date 24/01/2025
  * @author VINET LATRILLE Jules
  */
@@ -47,37 +47,61 @@ if (!$tables) {
     die("Erreur lors de la récupération des tables : " . $conn->error);
 }
 
+// Récupérer les relations entre tables
+$tableDependencies = [];
 while ($row = $tables->fetch_row()) {
     $table = $row[0];
-
-    // Filtrer les tables selon le préfixe
     if (strpos($table, $prefixeTable) === 0) {
-        // Exporter la structure de la table
+        // Analyser la structure de la table pour extraire les contraintes FOREIGN KEY
         $createTable = $conn->query("SHOW CREATE TABLE $table")->fetch_row()[1];
-        $backupSql .= "-- Structure de la table $table\n";
-        $backupSql .= "$createTable;\n\n";
-
-        // Exporter les données de la table
-        $backupSql .= "-- Données de la table $table\n";
-        $rows = $conn->query("SELECT * FROM $table");
-        while ($data = $rows->fetch_assoc()) {
-            $escapedValues = [];
-            foreach ($data as $value) {
-                if (is_null($value)) {
-                    $escapedValues[] = 'NULL';
-                } else {
-                    // Remplace les apostrophes simples par deux apostrophes pour SQL
-                    $escapedValue = str_replace("'", "''", $value);
-                    $escapedValues[] = "'" . $escapedValue . "'";
-                }
-            }
-            $backupSql .= "INSERT INTO $table VALUES (" . implode(',', $escapedValues) . ");\n";
-        }
-        $backupSql .= "\n";
+        preg_match_all("/FOREIGN KEY.*?REFERENCES `(.*?)`/", $createTable, $matches);
+        $tableDependencies[$table] = $matches[1] ?? [];
     }
 }
 
-// Écrire le fichier de sauvegarde
+// Trier les tables par ordre de dépendance (tri topologique)
+$sortedTables = [];
+$visited = [];
+
+function sortTables($table, &$visited, &$sortedTables, $tableDependencies) {
+    if (!isset($visited[$table])) {
+        $visited[$table] = true;
+        foreach ($tableDependencies[$table] ?? [] as $dependency) {
+            sortTables($dependency, $visited, $sortedTables, $tableDependencies);
+        }
+        $sortedTables[] = $table;
+    }
+}
+
+foreach (array_keys($tableDependencies) as $table) {
+    sortTables($table, $visited, $sortedTables, $tableDependencies);
+}
+
+// Exporter les table et données
+foreach ($sortedTables as $table) {
+    // Exporter la structure de la table (genre pour avoir le bon ordre)
+    $createTable = $conn->query("SHOW CREATE TABLE $table")->fetch_row()[1];
+    $backupSql .= "-- Structure de la table $table\n";
+    $backupSql .= "$createTable;\n\n";
+
+    $backupSql .= "-- Données de la table $table\n";
+    $rows = $conn->query("SELECT * FROM $table");
+    while ($data = $rows->fetch_assoc()) {
+        $escapedValues = [];
+        foreach ($data as $value) {
+            if (is_null($value)) {
+                $escapedValues[] = 'NULL';
+            } else {
+                // Remplace les apostrophes simples par deux apostrophes pour SQL
+                $escapedValue = str_replace("'", "''", $value);
+                $escapedValues[] = "'" . $escapedValue . "'";
+            }
+        }
+        $backupSql .= "INSERT INTO $table VALUES (" . implode(',', $escapedValues) . ");\n";
+    }
+    $backupSql .= "\n";
+}
+
 file_put_contents($backupFile, $backupSql);
 
 // Insérer la date de sauvegarde dans la table `vhs_derniereSave`
