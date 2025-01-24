@@ -58,15 +58,6 @@
                                 <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                             </div>
-                            <div>
-                                <p><strong>Créateur :</strong> 
-                                    {% if oa.producteur %}
-                                        {{ oa.producteur }}
-                                    {% else %}
-                                        <em>Non spécifié</em>
-                                    {% endif %}
-                                </p>
-                            </div>
                         </div>
                         <p><strong>Note :</strong>
                             {% for i in 1..5 %}
@@ -130,7 +121,7 @@
             {% if participants is defined and participants|length > 0 %}
                 <h4 class="fw-bold">Participants</h4>
                 <div class="row">
-                    {% for participant in participants|slice(0, 12) %}
+                    {% for participant in participants|slice(0, 6) %}
                         <div class="col-4 col-md-2 text-center mb-3">
                             {% if participant.photo %}
                                 <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
@@ -144,6 +135,49 @@
                 </div>
             {% else %}
                 <p><em>Aucun participant trouvé pour cette série.</em></p>
+            {% endif %}
+
+            {% if suggestions is defined and suggestions|length > 0 %}
+                <div class="mt-5">
+                    <h2 class="text-center mb-4">Suggestions de séries</h2>
+                    <div id="carouselSuggestions" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for suggestionsChunk in suggestions|batch(5, null) %}
+                                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                    <div class="row text-center justify-content-center">
+                                        {% for suggestion in suggestionsChunk %}
+                                            {% if suggestion is not null %}
+                                                <div class="col-md-2">
+                                                    {% if suggestion.type == 'Film' %}
+                                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                    {% else %}
+                                                        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                    {% endif %}
+                                                            <img src="{{ suggestion.posterPath }}" 
+                                                                alt="{{ suggestion.nom }}" 
+                                                                class="img-fluid rounded mb-2 shadow-sm"
+                                                                style="height: 150px; object-fit: cover;">
+                                                            <p class="text-truncate w-100">{{ suggestion.nom }}</p>
+                                                        </a>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+                            <span class="visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                </div>
+            {% else %}
+                <p><em>Aucune suggestion trouvée pour cette série.</em></p>
             {% endif %}
 
             {% if commentaires is defined and commentaires is not empty %}

@@ -235,6 +235,9 @@ class ControllerOA extends Controller
             $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
 
+            // Récupérer les suggestions de séries
+            $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
+            
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -245,7 +248,8 @@ class ControllerOA extends Controller
                     'watchListListe' => $watchListListe,
                     'oa' => $oa,
                     'commentaires' => $commentaires,
-                    'participants' => $participants
+                    'participants' => $participants,
+                    'suggestions' => $suggestions
                 ]);
                 return;
             }

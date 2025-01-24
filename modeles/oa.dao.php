@@ -509,4 +509,19 @@ class OADao
 
         return $this->hydrateAll(array_slice($results['results'], 0, 10));
     }
+
+    /**
+     * @brief Récupère des suggestions basées sur une série donnée
+     * @param int $idTMDB Identifiant TMDb de la série
+     * @return array Liste d'objets OA suggérés
+     */
+    public function findSuggestionsSerie(int $idTMDB): array
+    {
+        $results = $this->makeApiRequest("/tv/$idTMDB/recommendations", ['language' => 'fr-FR']);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log("Aucune suggestion trouvée pour la série ID : $idTMDB");
+            return [];
+        }
+        return $this->hydrateAllSerie($results['results']);
+    }
 }
