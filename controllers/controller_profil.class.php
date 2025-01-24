@@ -12,7 +12,7 @@
 class ControllerProfil extends Controller
 {
     /**
-     * @brief Constructeur du controler de profil et des régles de validation des formulaires
+     * @brief Constructeur du controler de profil
      * @param \Twig\Environment $twig Environnement Twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
      */
@@ -20,26 +20,6 @@ class ControllerProfil extends Controller
     {
         parent::__construct($twig, $loader);
     }
-
-    // public function creer_regles(): void
-    // {
-    //     $this->reglesValidation = [
-    //         'pseudo' => [
-    //             'obligatoire' => false,
-    //             'type' => 'string',
-    //             'longueur_min' => 5,
-    //             'longueur_max' => 40,
-    //             'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
-    //         ],
-    //         'mail' => [
-    //             'obligatoire' => false,
-    //             'type' => 'string',
-    //             'longueur_min' => 5,
-    //             'longueur_max' => 255,
-    //             'format' => FILTER_VALIDATE_EMAIL
-    //         ],
-    //     ];
-    // }
 
     /**
      * @brief Affiche la page de paramétre du profil
@@ -330,13 +310,8 @@ class ControllerProfil extends Controller
      */
     public function pageChangerMDP()
     {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
-            $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-            echo $template->render(['utilisateur' => $utilisateurConnecte]);
-        }
+        $template = $this->getTwig()->load('profilParametresMdP.html.twig');
+        echo $template->render();
     }
 
     /**
@@ -379,12 +354,9 @@ class ControllerProfil extends Controller
      */
     public function changerMdp()
     {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
             $mdp1=isset($_POST['MDP1'])?$_POST['MDP1']:null;
             $mdp2=isset($_POST['MDP2'])?$_POST['MDP2']:null;
+            $token = isset($_POST['token']) ? $_POST['token'] : null;
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             if (!$managerUtilisateur->estRobuste($mdp1))
@@ -412,9 +384,8 @@ class ControllerProfil extends Controller
 
             // Mise à jour de la session avec les nouvelles données
             $_SESSION['utilisateur'] = serialize($utilisateur);
-            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            header('Location: index.php');
 
-        }
     }
     
 

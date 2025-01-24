@@ -85,6 +85,7 @@ class UtilisateurDao
         $utilisateur->setAdressMail($tableauAssoc['adressMail']);
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setRole($tableauAssoc['role']);
+        $utilisateur->setBio($tableauAssoc['bio']);
         return $utilisateur;
     }
 
@@ -199,6 +200,29 @@ class UtilisateurDao
         return $result;
     }
 
+    public function enregistrerTokenReset($userId, $token, $expiresAt)
+    {
+        // Prépare une requête SQL pour insérer ou mettre à jour le token
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "tokens (user_id, token, expires_at)
+                VALUES (:user_id, :token, :expires_at)
+                ON DUPLICATE KEY UPDATE
+                    token = :token_update,
+                    expires_at = :expires_at_update";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute([':user_id' => $userId, ':token' => $token, ':expires_at' => $expiresAt, ':token_update' => $token, ':expires_at_update' => $expiresAt]);
+
+        return $result;
+    }
+
+    public function getTokenInfo($token)
+    {
+        $sql = "SELECT * FROM reset_tokens WHERE token = :token";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':token' => $token]);
+    
+        return $pdoStatement->fetch(PDO::FETCH_ASSOC);
+    }    
 
     /**
      * @brief Creer un Utilisateur par son adresse mail

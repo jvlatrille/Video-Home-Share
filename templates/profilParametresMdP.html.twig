@@ -1,54 +1,91 @@
-{% extends "base_template_profil.html.twig" %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialisation du mot de passe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #AA8463;
+        }
+        .card {
+            background-color: #D5D0AF;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #A93A32;
+            border-color: #A93A32;
+        }
+        .btn-primary:hover {
+            background-color: #A93A32;
+            border-color: #A93A32;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-vh-100 d-flex align-items-center">
+        <div class="container" background-color="000000">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow-lg p-4">
+                        <h3 class="text-center mb-4">Réinitialisez votre mot de passe</h3>
 
-{% block content %}
-<!-- Couleur des marges -->
-<div style="background-color: #AA8463;">
-    <!-- Bloc principal avec des marges -->
-    <div class="container-fluid min-vh-100 ms-* me-*m-auto" style="background-color: #D5D0AF; border: none; width: 70%;">
-        <div class="p-5">
-            {% if mdpValide == True %}
-                <!-- Changer mot de passe -->
-                <div class="mb-4">
-                    <label class="form-label">Veuillez entrer votre mot de passe :</label>
-                    <form action="index.php?controleur=profil&methode=verifierMDP" method="POST" class="d-flex align-items-center">
-                        <div class="me-2 flex-grow-1">
-                            <label for="MDP" class="form-label d-none">Entrer</label>
-                            <input type="password" class="form-control" id="MDP" name="MDP">
-                        </div>
-                        <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                        <button type="submit" class="btn btn-primary">Changer Mot de Passe</button>
-                    </form>
-                </div>
+                        {% if mdpValide is defined and mdpValide == false %}
+                            <div class="alert alert-danger text-center">
+                                Le lien est invalide ou a expiré.
+                            </div>
+                        {% endif %}
 
-                {% if message is defined %}
-                    <p> {{ message }} </p>
-                {% endif %}
+                        {% if mdpValide is not defined or mdpValide == true %}
+                            <form action="index.php?controleur=profil&methode=changerMdp" method="POST">
+                                <!-- Nouveau mot de passe -->
+                                <div class="form-group mb-3">
+                                    <label for="MDP1" class="form-label">Nouveau mot de passe :</label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="MDP1" 
+                                        name="MDP1" 
+                                        placeholder="Entrez votre nouveau mot de passe" 
+                                        required>
+                                </div>
 
-            {% else %}
-                <!-- Changer mot de passe -->
-                <div class="mb-4">
-                    <label class="form-label">Veuillez entrer votre nouveau mot de passe :</label>
-                    <form action="index.php?controleur=profil&methode=changerMdp" method="POST" class="d-flex align-items-center">
-                        <div class="me-2 flex-grow-1">
-                            <label for="MDP1" class="form-label d-none">Entrer</label>
-                            <input type="password" class="form-control" id="MDP1" name="MDP1">
-                        </div>
+                                <!-- Confirmation du mot de passe -->
+                                <div class="form-group mb-4">
+                                    <label for="MDP2" class="form-label">Confirmez votre mot de passe :</label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="MDP2" 
+                                        name="MDP2" 
+                                        placeholder="Confirmez votre mot de passe" 
+                                        required>
+                                </div>
+
+                                <!-- Champs cachés pour l'utilisateur et le token -->
+                                <input type="hidden" name="token" value="{{ token }}">
+
+                                <!-- Bouton de soumission -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        Changer mon mot de passe
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="index.php?controleur=utilisateur&methode=connexion" class="text-decoration-none">
+                            Retour à la connexion
+                        </a>
+                    </div>
                 </div>
-                
-                <!-- Changer mot de passe -->
-                <div class="mb-4">
-                    <label class="form-label">Veuillez confirmer votre mot de passe :</label>
-                        <div class="me-2 flex-grow-1">
-                            <label for="MDP2" class="form-label d-none">Entrer</label>
-                            <input type="password" class="form-control" id="MDP2" name="MDP2">
-                        </div>
-                        <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                        <button type="submit" class="btn btn-primary">Changer Mot de Passe</button>
-                    </form>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
-</div>
-
-{% endblock %}
+</body>
+</html>
