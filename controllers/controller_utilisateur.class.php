@@ -292,10 +292,12 @@ class ControllerUtilisateur extends Controller
             if ($utilisateur) {
                 // Génère un token unique pour la réinitialisation
                 $token = bin2hex(random_bytes(32));
+                $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+
                 $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
     
                 // Enregistre le token dans la base de données
-                $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $token, $expiresAt);
+                $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
     
                 // Crée le lien de réinitialisation
                 $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMDP&token=$token";
@@ -339,7 +341,7 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao();
 
         // Vérifie si le token existe et est valide
-        $tokenInfo = $managerUtilisateur->getTokenInfo($token);
+        $tokenInfo = $managerUtilisateur->getTokenInfo($token); //Probleme pour comment recup le token en bd
 
         if (!$tokenInfo || strtotime($tokenInfo['expires_at']) < time()) {
             $_SESSION['message'] = "Le lien de réinitialisation a expiré ou est invalide.";

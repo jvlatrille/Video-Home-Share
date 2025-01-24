@@ -215,6 +215,17 @@ class UtilisateurDao
         return $result;
     }
 
+    public function supprimerToken($token)
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "tokens 
+                WHERE token = :token";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute([':token' => $token]);
+        
+        return $result;
+    }
+
     public function getTokenInfo($token)
     {
         $sql = "SELECT * FROM reset_tokens WHERE token = :token";
@@ -222,7 +233,17 @@ class UtilisateurDao
         $pdoStatement->execute([':token' => $token]);
     
         return $pdoStatement->fetch(PDO::FETCH_ASSOC);
-    }    
+    }
+
+    public function getIdByToken($token)
+    {
+        $sql = "SELECT user_id FROM " . PREFIXE_TABLE . "tokens WHERE token = :token";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':token' => $token]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['user_id'] : null;
+    }
 
     /**
      * @brief Creer un Utilisateur par son adresse mail

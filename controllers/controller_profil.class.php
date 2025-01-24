@@ -310,8 +310,25 @@ class ControllerProfil extends Controller
      */
     public function pageChangerMDP()
     {
-        $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-        echo $template->render();
+        // Récupérer le token depuis l'URL
+        $token = isset($_GET['token']) ? $_GET['token'] : null;
+        $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+        $managerUtilisateur = new UtilisateurDao();
+        password_verify($token, $managerUtilisateur->getTokenInfo());
+
+        var_dump($token, $tokenCrypt);
+    
+        if ($token === null) {
+            // Gérer le cas où le token est absent
+            echo "Lien invalide ou token manquant.";
+            return;
+        }
+    
+        // Transmettre le token au template Twig
+        $template = $this->getTwig()->load('profilParametresMDP.html.twig');
+        echo $template->render([
+            'token' => $tokenCrypt // Transmettre le token au formulaire
+        ]);
     }
 
     /**
@@ -359,6 +376,8 @@ class ControllerProfil extends Controller
             $token = isset($_POST['token']) ? $_POST['token'] : null;
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $id = $managerUtilisateur->getIdByToken($token);
+
             if (!$managerUtilisateur->estRobuste($mdp1))
             {
                 $template = $this->getTwig()->load('profilParametresMdP.html.twig');
@@ -380,11 +399,12 @@ class ControllerProfil extends Controller
             
             $mdpHash = password_hash($mdp1, PASSWORD_BCRYPT);
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            $managerUtilisateur->changerMdp($utilisateurConnecte->getIdUtilisateur(), $mdpHash);
+            $managerUtilisateur->changerMdp($id, $mdpHash);
+
+            $managerUtilisateur->supprimerToken($token);
 
             // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateur);
-            header('Location: index.php');
+            header('Location: index.php?controleur=utilisateur&methode=connexion');
 
     }
     
