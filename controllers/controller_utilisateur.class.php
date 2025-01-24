@@ -374,7 +374,7 @@ public function afficherAutreUtilisateur()
             htmlspecialchars_decode($donneesFormulaire['banniereProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
-            htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES)
+            htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
 
         );

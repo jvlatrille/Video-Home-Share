@@ -62,7 +62,6 @@ class Utilisateur
                                 ?string $pseudo = null, 
                                 ?string $photoProfil = null, 
                                 ?string $banniereProfil = null, 
-                                ?string $bio = null,
                                 ?string $adressMail = null, 
                                 ?string $motDePasse = null, 
                                 ?string $role = null,

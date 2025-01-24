@@ -10,28 +10,29 @@
 		</button>
 	</div>
 
-    <!-- Modal de création de forum -->
-    <div class="modal fade" id="createMessageModal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <!-- Formulaire de création de forum -->
-                    <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage">
-                        <!-- Contenu du message -->
-                        <div class="mb-3">
-                            <label for="messageContenu" id ='message' class="form-label">Message : </label>
-                            <input type="text" class="form-control" id="messageContenu" name="contenu" required>
-                        </div>
+    <!-- Modal de création de message -->
+<div class="modal fade" id="createMessageModal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <!-- Formulaire d'ajout de message -->
+                <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage&id={{forumList.idForum}}">
+                    <!-- Contenu du message -->
+                    <div class="mb-3">
+                        <label for="messageContenu" class="form-label">Message :</label>
+                        <textarea class="form-control" id="messageContenu" name="contenu" rows="4" required></textarea>
+                    </div>
 
-                        <!-- Bouton de soumission -->
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success">Ajouter un nouveau message</button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Bouton de soumission -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success">Ajouter un nouveau message</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
 
 
     <!-- Affichage des messages -->
