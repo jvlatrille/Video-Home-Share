@@ -264,11 +264,7 @@ public function afficherAutreUtilisateur()
 
             $_SESSION['utilisateur'] = serialize($utilisateur);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
-            
-            $managerOA = new OADao($this->getPdo());
-            $oaListe = $managerOA->findMeilleurNote();
-            $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render(['oaListe' => $oaListe]);
+            header("Location: index.php");
             
         }
         else{
