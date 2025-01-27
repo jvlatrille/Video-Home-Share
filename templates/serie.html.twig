@@ -47,27 +47,17 @@
 					</div>
 				</div>
 
-				<div class="col-md-8">
-					<h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
-					<div class="bg-light p-3 rounded">
-						<div class="d-flex justify-content-between">
-							<div>
-								<p>
-									<strong>Date de sortie :</strong>
-									{{ oa.dateSortie }}</p>
-								<p>
-									<strong>Nombre de saisons :</strong>
-									{{ oa.nbSaison }}</p>
-								<p>
-									<strong>Nombre d'épisode :</strong>
-									{{ oa.nbEpisode }}
-								</p>
-								<p>
-									<strong>Genre :</strong>
-									{{ oa.genres|join(', ') }}</p>
-							</div>
-
-							{% if oa.producteur is not null %}
+                <div class="col-md-8">
+                    <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
+                    <div class="bg-light p-3 rounded">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Nombre de saisons :</strong> {{ oa.nbSaison }}</p>
+                                <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
+                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                            </div>
+                            {% if oa.producteur is not null %}
 								<div>
 									<p>
 										<strong>Producteur :</strong>
@@ -75,62 +65,60 @@
 									</p>
 								</div>
 							{% endif %}
-
-						</div>
-						<p>
-							<strong>Note :</strong>
-							{% for i in 1..5 %}
-								{% if i <= (oa.note / 2) %}
-									<img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
-								{% else %}
-									<img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
-								{% endif %}
-							{% endfor %}
-						</p>
-					</div>
-
-					<div class="d-flex mt-3">
-						<a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
-						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
-							Ajouter la série à une watchlist
-						</button>
-					</div>
-				</div>
-			</div>
-			<!-- Modal pour ajouter la série à une watchlist -->
-			<div class="modal fade" id="addoaModal" tabindex="-1" aria-labelledby="addoaModalLabel" aria-hidden="true">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="addoaModalLabel">Ajouter à une watchlist</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							<form action="index.php?controleur=watchlist&methode=ajouteroaWatchList" method="post">
-								{% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
-									{% for watchlist in watchListListe %}
-										<div class="mb-3">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
-												<label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
-											</div>
-										</div>
-									{% endfor %}
-									<input type="hidden" name="idOeuvre" value="{{ oa.idoa }}">
-									<input type="hidden" name="type" value={{ oa.type }}>
-									<button type="submit" class="btn btn-primary">Ajouter</button>
-								{% else %}
-									<p>Aucune watchlist trouvée.</p>
-									<p>Vous n'avez pas encore de watchlist ?
-										<a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
-								{% endif %}
-
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-
+                        </div>
+                        <p><strong>Note :</strong>
+                            {% for i in 1..5 %}
+                                {% if i <= (oa.note / 2) %}
+                                    <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
+                                {% else %}
+                                    <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex mt-3">
+                        <a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
+                            Ajouter la série à une watchlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+                         <!-- Modal pour ajouter la série à une watchlist -->
+                        <div class="modal fade" id="addoaModal" tabindex="-1" aria-labelledby="addoaModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à une watchlist</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="index.php?controleur=watchlist&methode=ajouteroaWatchList" method="post">
+                                            {% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
+                                                {% for watchlist in watchListListe %}
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
+                                                            <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                                <input type="hidden" name="idOeuvre" value="{{ oa.idoa }}">
+                                                <input type="hidden" name="type" value={{ oa.type }}>
+                                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                                            {% else %}
+                                                <p>Aucune watchlist trouvée.</p>
+                                                <p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+                                            {% endif %}
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                
 
 			<div class="mt-4 p-3 bg-light rounded">
 				<h4 class="fw-bold">Description</h4>
@@ -238,24 +226,22 @@
 					</p>
 				{% endif %}
 
-				<div id="commentaires" class="mt-4">
-					{% if utilisateurConnecte %}
-						<form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
-							<div class="mb-3">
-								<label for="contenu" class="form-label">Commentaire</label>
-								<textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
-							</div>
-							<input type="hidden" name="oa_id" value="{{ oa.idoa }}">
-							<button type="submit" class="btn btn-primary">Envoyer</button>
-						</form>
-					{% else %}
-						<p>
-							<a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a>
-							pour ajouter un commentaire.</p>
-					{% endif %}
-				</div>
-			</div>
-		{% else %}
-			<p>La série n'existe pas.</p>
-		{% endif %}
-	{% endblock %}
+            <div id="commentaires" class="mt-4">
+            {% if utilisateurConnecte %}
+                <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
+                    <div class="mb-3">
+                        <label for="contenu" class="form-label">Commentaire</label>
+                        <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" name="oa_id" value="{{ oa.idoa }}">
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </form>
+            {% else %}
+                <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>
+            {% endif %}
+        </div>
+        </div>
+    {% else %}
+        <p>La série n'existe pas.</p>
+    {% endif %}
+{% endblock %}
