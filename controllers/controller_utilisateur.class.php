@@ -44,10 +44,14 @@ class ControllerUtilisateur extends Controller
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
             $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+            
+            $managerMessage = new MessageDAO($this->getPdo());
+            $messages = $managerMessage->getMessagesByUser($autreUtilisateur->getIdUtilisateur());
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur]);
+            echo $template->render(['utilisateur' => $autreUtilisateur,'messages' => $messages]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
