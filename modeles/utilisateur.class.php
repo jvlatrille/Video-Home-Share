@@ -50,11 +50,11 @@ class Utilisateur
      * @param string|null $pseudo pseudonyme de l'utilisateur
      * @param string|null $photoProfil chemin d'accee de la photo de profil de l'utilisateur
      * @param string|null $banniereProfil chemin d'accee de la banniere de l'utilisateur
-     * @param string|null $bio biographie de l'utilisateur
      * @param string|null $adressMail adresse mail de l'utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
-     * @param string|null $bio bio de l'utilisateur
+     * @param string|null $bio biographie de l'utilisateur
+
      * @return void
      */
     // Constructeur de la classe Personne
@@ -228,7 +228,8 @@ class Utilisateur
     }
 
     /**
-     * @brief Setteur de la bio  de l'utilisateur
+     * @brief Setteur de la bio de l'utilisateur
+
      * @param string role
      * @return void
      */
@@ -236,5 +237,4 @@ class Utilisateur
     {
         $this->bio = $bio;
     }
-
 }

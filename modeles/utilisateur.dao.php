@@ -200,6 +200,88 @@ class UtilisateurDao
         return $result;
     }
 
+    /**
+     * @brief Enregistre le token dans la base de donnee
+     * @param string $userId Identifiant de l'utilisateur
+     * @param string $token Token du mail
+     * @param date $Date de fin de validité du token
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function enregistrerTokenReset($userId, $token, $expiresAt)
+    {
+        // Prépare une requête SQL pour insérer ou mettre à jour le token
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "tokens (user_id, token, expires_at)
+                VALUES (:user_id, :token, :expires_at)
+                ON DUPLICATE KEY UPDATE
+                    token = :token_update,
+                    expires_at = :expires_at_update";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute([':user_id' => $userId, ':token' => $token, ':expires_at' => $expiresAt, ':token_update' => $token, ':expires_at_update' => $expiresAt]);
+
+        return $result;
+    }
+
+    /**
+     * @brief Supprime le token de la base de donnee
+     * @param string $token Token du mail
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function supprimerToken($token)
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "tokens 
+                WHERE token = :token";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $result = $pdoStatement->execute([':token' => $token]);
+        
+        return $result;
+    }
+
+    /**
+     * @brief Récupère l'ID d'un token.
+     * @param string $token Le token dont il faut récupérer l'ID.
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function getIdByToken($token)
+    {
+        $sql = "SELECT id FROM " . PREFIXE_TABLE . "tokens WHERE token = :token";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':token' => $token]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : null;
+    }
+
+    /**
+     * @brief Récupère le token d'un à partir de son id.
+     * @param int $id L'id du token a récupèrer
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function getTokenById($id)
+    {
+        $sql = "SELECT token FROM " . PREFIXE_TABLE . "tokens WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':id' => $id]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['token'] : null;
+    }
+
+    /**
+     * @brief Récupère l'id de l'utilisateur associé à un token.
+     * @param string $token Le token dont il faut récupérer l'ID utilisateur
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function getIdUserByToken($token)
+    {
+        $sql = "SELECT user_id FROM " . PREFIXE_TABLE . "tokens WHERE token = :token";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':token' => $token]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['user_id'] : null;
+    }
 
     /**
      * @brief Creer un Utilisateur par son adresse mail

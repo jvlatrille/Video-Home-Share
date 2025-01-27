@@ -12,7 +12,7 @@
 class ControllerProfil extends Controller
 {
     /**
-     * @brief Constructeur du controler de profil et des régles de validation des formulaires
+     * @brief Constructeur du controler de profil
      * @param \Twig\Environment $twig Environnement Twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
      */
@@ -20,26 +20,6 @@ class ControllerProfil extends Controller
     {
         parent::__construct($twig, $loader);
     }
-
-    // public function creer_regles(): void
-    // {
-    //     $this->reglesValidation = [
-    //         'pseudo' => [
-    //             'obligatoire' => false,
-    //             'type' => 'string',
-    //             'longueur_min' => 5,
-    //             'longueur_max' => 40,
-    //             'format' => '/^[a-zA-ZÀ-ÿ0-9\'-]+$/'
-    //         ],
-    //         'mail' => [
-    //             'obligatoire' => false,
-    //             'type' => 'string',
-    //             'longueur_min' => 5,
-    //             'longueur_max' => 255,
-    //             'format' => FILTER_VALIDATE_EMAIL
-    //         ],
-    //     ];
-    // }
 
     /**
      * @brief Affiche la page de paramétre du profil
@@ -324,105 +304,6 @@ class ControllerProfil extends Controller
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
-
-    /**
-     * @brief Affiche la page dédié au changement de mot de passe
-     *
-     * @return void
-     */
-    public function pageChangerMDP()
-    {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
-            $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-            echo $template->render(['utilisateur' => $utilisateurConnecte]);
-        }
-    }
-
-    /**
-     * @brief Vérifie que l'utilisateur à bien rentrer son mot de passe avant de pouvoir le changer
-     *
-     * @return void
-     */
-    public function verifierMDP()
-    {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
-            $message = "";
-
-            $mdp = isset($_POST['MDP']) ? trim($_POST['MDP']) : null;
-            if(password_verify($mdp, $utilisateurConnecte->getMotDePasse()))
-            {
-                $mdpValide = True;
-            }
-            else
-            {
-                $mdpValide = False;
-                $message = "mot de passe incorrect";
-            }
-
-            $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-            echo $template->render([
-                'utilisateur' => $utilisateurConnecte,
-                'mdpValide' => $mdpValide,
-                'message' => $message
-            ]);
-        }
-    }
-
-    /**
-     * @brief Change le mot de passe de l'utilisateur aprés modification
-     *
-     * @return void
-     */
-    public function changerMdp()
-    {
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
-            $mdp1=isset($_POST['MDP1'])?$_POST['MDP1']:null;
-            $mdp2=isset($_POST['MDP2'])?$_POST['MDP2']:null;
-
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            if (!$managerUtilisateur->estRobuste($mdp1))
-            {
-                $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-                echo $template->render([
-                    'mdpValide' => True,
-                    'message' => "Le mot de passe n'est pas assez robuste"
-                ]);
-                return;
-            }
-
-            if($mdp1 != $mdp2){
-                $template = $this->getTwig()->load('profilParametresMdP.html.twig');
-                echo $template->render([
-                    'mdpValide' => True,
-                    'message' => 'Les mots de passe ne correspondent pas'
-                ]);
-                return;
-            }
-            
-            $mdpHash = password_hash($mdp1, PASSWORD_BCRYPT);
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            $managerUtilisateur->changerMdp($utilisateurConnecte->getIdUtilisateur(), $mdpHash);
-
-            // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateur);
-            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
-
-        }
-    }
-    
-
-
-
-
     
     /**
      * @brief Affiche toutes les notifications de l'utilisateur connecté sur la page notification
