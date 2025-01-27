@@ -546,8 +546,12 @@ class ControllerProfil extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
             //Recupere l'id de l'utilisateur'
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+            
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
 
 
             // Récupère les messages postés par l'utilisateur
@@ -560,10 +564,14 @@ class ControllerProfil extends Controller
             $commentaires = $managerComm->chargerComm($idUtilisateur);
 
 
+            $utilisateur = $managerUtilisateur->find($idUtilisateur);
+            $_SESSION['utilisateur'] = serialize($utilisateur);
+
             // Génère la vue 
             $template = $this->getTwig()->load('profilAPropos.html.twig');
             echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte]);
 
+            
         }
         else {
             // Sinon, affiche la page de connexion
