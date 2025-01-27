@@ -32,24 +32,36 @@ class ControllerMessage extends Controller
     }
 
     public function ajouterMessage()
-    {
-        //Recuperer l'id forum
-        $idForum = $_GET['idForum'];
-        //Recupere les données du formulaire
-        $contenu = isset($_POST['contenu']) ? $_POST['contenu'] : (isset($_GET['contenu']) ? $_GET['contenu'] : null);
+{
+    // Vérifie si l'utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+        // Récupération des données
+        $idForum = $_POST['idForum'] ?? null;
+        $contenu = $_POST['contenu'] ?? null;
+        $nbLikes = $_POST['nbLikes'] ?? 0;
+        $nbDislikes = $_POST['nbDislikes'] ?? 0;
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+        // Création d'un nouveau message via le DAO
         $managerMessage = new MessageDao($this->getPdo());
         $message = new Message();
-        $message->setContenu($contenu);
         $message->setIdForum($idForum);
-        $message->setNbLikes(0);
-        $message->setNbDislikes(0);
-        $message->setIdUtilisateur(1);
+        $message->setContenu($contenu);
+        $message->setNbLikes($nbLikes);
+        $message->setNbDislikes($nbDislikes);
+        $message->setIdUtilisateur($idUtilisateur);
+
+        // Ajoute le message à la base de données
         $managerMessage->creerMessage($message);
-        var_dump($message);
-        
-        //Redirige vers la liste des forums
-        header('Location: index.php?controleur=message&methode=listerMessage&idForum=' .$idForum. '');
-    }
+
+        // Redirige vers la liste des messages du forum
+        header('Location: index.php?controleur=message&methode=listerMessage&idForum=' . $idForum);
+        exit;
+}
+}
+
 
     public function like()
     {

@@ -64,7 +64,7 @@
 										<input type="hidden" name="description" value="{{ watchList.description }}">
 										<input type="hidden" name="visible" value="{{ watchList.visible }}">
 										{% for oa in watchList.listeOeuvres %}
-											<input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}">
+											<input type="hidden" name="OAs[]" value="{{ oa.idOA }}{{':'}}{{ oa.type }}">
 										{% endfor %}
 										<button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Enregistrer cette WatchList</button>
 									</form>

@@ -54,7 +54,7 @@ class ControllerForum extends Controller
             $theme = $_POST['theme'] ?? $_GET['theme'] ?? null;
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
-            //Ajoute la watchlist
+            //Ajoute le forum
             $managerForum = new ForumDao($this->getPdo());
             $forum = new Forum();
             $forum->setIdForum($idForum);

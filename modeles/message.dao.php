@@ -50,7 +50,7 @@ class messageDAO{
         return $message;
     }
 
-    //Fonction pour creer un forum
+    //Fonction pour creer un message
     public function creerMessage(Message $message): ?Message {
         $sql = "INSERT INTO ".PREFIXE_TABLE."message (id, contenu, nbLike, nbDislike, idUtilisateur, idForum) 
                 VALUES (:id, :contenu, :nbLike, :nbDislike, :idUtilisateur, :idForum)"; 

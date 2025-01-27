@@ -261,7 +261,7 @@ public function afficherAutreUtilisateur()
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-
+            $managerUtilisateur->verifierDerniereSauvegarde();
             $_SESSION['utilisateur'] = serialize($utilisateur);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
             header("Location: index.php");

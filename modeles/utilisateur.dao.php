@@ -289,4 +289,28 @@ class UtilisateurDao
         // La fonction preg_match retourne 1 si une correspondance est trouvée.
         return preg_match($regex, $password) === 1;
     }
+
+    public function verifierDerniereSauvegarde(): void {
+        // Récupérer la date actuelle
+        $dateActuelle = date('Y-m-d');
+    
+        // Rechercher la date la plus récente dans la table vhs_derniereSave
+        $sql = "SELECT date_save FROM " . PREFIXE_TABLE . "derniereSave ORDER BY date_save DESC LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        $dateDerniereSauvegarde = $result ? date('Y-m-d', strtotime($result['date_save'])) : null;
+    
+        // Si la dernière sauvegarde est différente d'aujourd'hui, exécuter le script de sauvegarde
+        if ($dateDerniereSauvegarde !== $dateActuelle) {
+            // Exécuter le script de sauvegarde
+            exec('php ' . __DIR__ . '/../utilitaire/backupBD.php');
+    
+            // Insérer la date actuelle dans la table vhs_derniereSave
+            $sqlInsert = "INSERT INTO " . PREFIXE_TABLE . "derniereSave (date_save) VALUES (:date_save)";
+            $stmtInsert = $this->pdo->prepare($sqlInsert);
+            $stmtInsert->execute(['date_save' => date('Y-m-d H:i:s')]);
+        }
+    }    
 }

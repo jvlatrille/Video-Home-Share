@@ -169,7 +169,7 @@
 										<div class="row">
 											{% for oa in watchList.listeOeuvres %}
 												<div class="col-12 col-md-4">
-												{% if oa.type == 'film' %}
+												{% if oa.type == 'Film' %}
 													<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{oa.idOa}}"><img src="{{oa.posterPath}}" class="d-block w-100" alt="{{oa.nom}}"></a>
 												{% else %}
 													<a href="index.php?controleur=oa&methode=afficherSerie&idOa={{oa.idOa}}"><img src="{{oa.posterPath}}" class="d-block w-100" alt="{{oa.nom}}"></a>
