@@ -261,13 +261,19 @@ class ControllerUtilisateur extends Controller
         }
     }
 
+    /**
+     * @brief Affiche la page du mot de passe oublie
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function mdpOublie(){
         $template = $this->getTwig()->load('motDePasseOublie.html.twig');
         echo $template->render();
     }
 
     /**
-     * @brief 
+     * @brief Envoie le mail de réinitialisation
      * @author Noah LÉVAL 
      *
      * @return void
@@ -276,7 +282,7 @@ class ControllerUtilisateur extends Controller
     {
         // Vérifie si le formulaire a été soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['mail'] ?? '';
+            $email = $_POST['email'] ?? '';
     
             // Valide que l'email a été soumis et qu'il est correct
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -293,14 +299,19 @@ class ControllerUtilisateur extends Controller
                 // Génère un token unique pour la réinitialisation
                 $token = bin2hex(random_bytes(32));
                 $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
-
+    
                 $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
     
                 // Enregistre le token dans la base de données
                 $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
+                $idUtilisateur = $managerUtilisateur->getIdByToken();
+    
+                // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+                $idEncoded = urlencode(base64_encode($idUtilisateur));
+                $tokenEncoded = urlencode(base64_encode($token));
     
                 // Crée le lien de réinitialisation
-                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMDP&token=$token";
+                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
     
                 // Envoie un email avec le lien de réinitialisation
                 $sujet = "Réinitialisation de votre mot de passe";
@@ -313,69 +324,84 @@ class ControllerUtilisateur extends Controller
                 // Message pour ne pas révéler si l'email existe ou non
                 $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
             }
+
+            var_dump($email, $token, $tokenCrypt, $expiresAt, $idEncoded, $tokenEncoded, $lienReset, $sujet, $message);
     
             // Redirige l'utilisateur vers la même page
             header('Location: index.php?controleur=utilisateur&methode=mdpOublie');
             exit();
         }
+    }
     
-        // Si ce n'est pas un POST, affiche simplement le formulaire
-    }
 
-    public function pageReinitialiserMdp(){
-        $template = $this->getTwig()->load('motDePasseOublie.html.twig');
-        echo $template->render();
-    }
-
-    public function reinitialiserMdp()
+    /**
+     * @brief Affiche la page dédié au changement de mot de passe
+     *
+     * @return void
+     */
+    public function pageChangerMDP()
     {
-        // Vérifie si un token est passé en paramètre GET
-        $token = $_GET['token'] ?? null;
+        // Récupérer le token depuis l'URL
+        $id = base64_decode(urldecode($_GET['id']));
+        $token = base64_decode(urldecode($_GET['token']));
 
-        if (!$token) {
-            $_SESSION['message'] = "Token manquant ou invalide.";
-            header('Location: index.php?controleur=utilisateur&methode=connexion');
-            exit();
+        $managerUtilisateur = new UtilisateurDao($this->getPDO());
+        $tokenCrypt = $managerUtilisateur->getTokenById($id);
+
+        if (!password_verify($token, $tokenCrypt))
+        { 
+            // Transmettre le token au template Twig
+            $template = $this->getTwig()->load('changerMDP.html.twig');
+            echo $template->render([
+                'token' => $tokenCrypt // Transmettre le token au formulaire
+            ]);
+            return Null;
         }
+        header('Location: index.php');
+        exit();
+    }
 
-        $managerUtilisateur = new UtilisateurDao();
+    /**
+     * @brief Change le mot de passe de l'utilisateur aprés modification
+     *
+     * @return void
+     */
+    public function changerMdp()
+    {
+            $mdp1=isset($_POST['MDP1'])?$_POST['MDP1']:null;
+            $mdp2=isset($_POST['MDP2'])?$_POST['MDP2']:null;
+            $token = isset($_POST['token']) ? $_POST['token'] : null;
 
-        // Vérifie si le token existe et est valide
-        $tokenInfo = $managerUtilisateur->getTokenInfo($token); //Probleme pour comment recup le token en bd
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $idUser = $managerUtilisateur->getIdUserByToken($token);
 
-        if (!$tokenInfo || strtotime($tokenInfo['expires_at']) < time()) {
-            $_SESSION['message'] = "Le lien de réinitialisation a expiré ou est invalide.";
-            header('Location: index.php?controleur=utilisateur&methode=connexion');
-            exit();
-        }
-
-        // Si c'est une requête POST, traite la réinitialisation du mot de passe
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nouveauMdp = $_POST['nouveau_mdp'] ?? '';
-            $confirmerMdp = $_POST['confirmer_mdp'] ?? '';
-
-            // Vérifie que les deux mots de passe sont identiques
-            if ($nouveauMdp !== $confirmerMdp) {
-                $_SESSION['message'] = "Les mots de passe ne correspondent pas.";
-                header("Location: index.php?controleur=utilisateur&methode=pageReinitialiserMdp&token=$token");
-                exit();
+            if (!$managerUtilisateur->estRobuste($mdp1))
+            {
+                $template = $this->getTwig()->load('changerMDP.html.twig');
+                echo $template->render([
+                    'mdpValide' => True,
+                    'message' => "Le mot de passe n'est pas assez robuste"
+                ]);
+                return;
             }
 
-            // Hash le nouveau mot de passe
-            $nouveauMdpHashe = password_hash($nouveauMdp, PASSWORD_BCRYPT);
-
-            // Met à jour le mot de passe de l'utilisateur dans la base de données
-            $managerUtilisateur->mettreAJourMotDePasse($tokenInfo['user_id'], $nouveauMdpHashe);
-
-            // Supprime le token après utilisation
+            if($mdp1 != $mdp2){
+                $template = $this->getTwig()->load('chnagerMdP.html.twig');
+                echo $template->render([
+                    'mdpValide' => True,
+                    'message' => 'Les mots de passe ne correspondent pas'
+                ]);
+                return;
+            }
+            
+            $mdpHash = password_hash($mdp1, PASSWORD_BCRYPT);
+            $managerUtilisateur->changerMdp($idUser, $mdpHash);
             $managerUtilisateur->supprimerToken($token);
 
-            // Redirige avec un message de succès
-            $_SESSION['message'] = "Votre mot de passe a été réinitialisé avec succès.";
+            // Mise à jour de la session avec les nouvelles données
             header('Location: index.php?controleur=utilisateur&methode=connexion');
-            exit();
-        }
-    }    
+
+    }
     
     /**
      * @brief Affiche le formulaire de connexion d'un utilisateur

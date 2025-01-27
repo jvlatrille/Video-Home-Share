@@ -237,6 +237,26 @@ class UtilisateurDao
 
     public function getIdByToken($token)
     {
+        $sql = "SELECT id FROM " . PREFIXE_TABLE . "tokens WHERE token = :token";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':token' => $token]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : null;
+    }
+
+    public function getTokenById($id)
+    {
+        $sql = "SELECT token FROM " . PREFIXE_TABLE . "tokens WHERE id = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':id' => $id]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['token'] : null;
+    }
+
+    public function getIdUserByToken($token)
+    {
         $sql = "SELECT user_id FROM " . PREFIXE_TABLE . "tokens WHERE token = :token";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute([':token' => $token]);

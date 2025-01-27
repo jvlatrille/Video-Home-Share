@@ -33,14 +33,15 @@
                     <div class="card shadow-lg p-4">
                         <h3 class="text-center mb-4">Réinitialisez votre mot de passe</h3>
 
-                        {% if mdpValide is defined and mdpValide == false %}
+                        <!-- Affichage d'un message d'erreur, si défini -->
+                        {% if message is defined %}
                             <div class="alert alert-danger text-center">
-                                Le lien est invalide ou a expiré.
+                                {{ message }}
                             </div>
                         {% endif %}
 
                         {% if mdpValide is not defined or mdpValide == true %}
-                            <form action="index.php?controleur=profil&methode=changerMdp" method="POST">
+                            <form action="index.php?controleur=utilisateur&methode=changerMdp" method="POST">
                                 <!-- Nouveau mot de passe -->
                                 <div class="form-group mb-3">
                                     <label for="MDP1" class="form-label">Nouveau mot de passe :</label>
