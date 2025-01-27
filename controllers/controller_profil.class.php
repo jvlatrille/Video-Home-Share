@@ -124,15 +124,17 @@ class ControllerProfil extends Controller
                     'type' => 'string',
                     'longueur_min' => 0,
                     'longueur_max' => 255,
-                    'format' => '/^[^\u2028\u2029\u00A0]+$/'
+                    'validation_personnalisee' => function($valeur) {
+                        return preg_match('/^[^\x{2028}\x{2029}\x{00A0}]+$/u', $valeur) ? true : "Le texte ne doit pas contenir de caractères spéciaux.";
+                    },
                 ],
             ];
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $id = $utilisateurConnecte->getIdUtilisateur();
             $bio = isset($_POST['bio']) ? trim($_POST['bio']) : null;
             $donnees = ["bio" => $bio];
+
 
             // Vérification des données reçues
             $validator = new Validator($regles);
@@ -148,9 +150,9 @@ class ControllerProfil extends Controller
             // Génération d'un message en fonction du succès ou de l'échec
             $messages = $validator->getMessagesErreurs();
             $utilisateur = $managerUtilisateur->find($id);
-        
             // Mise à jour de la session avec les nouvelles données
             $_SESSION['utilisateur'] = serialize($utilisateur);
+
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
             exit();
 

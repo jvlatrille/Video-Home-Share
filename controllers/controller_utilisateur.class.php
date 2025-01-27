@@ -285,7 +285,7 @@ public function afficherAutreUtilisateur()
         // Récupération des données du formulaire
         $donneesFormulaire = [
 
-            'idUtilisateur' => htmlspecialchars($_POST['idUtilisateur'] ?? null, ENT_QUOTES),
+            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
             'pseudo' => htmlspecialchars($_POST['pseudo'] ?? null, ENT_QUOTES),
             'photoProfil' => htmlspecialchars($_POST['photoProfil'] ?? 'default.png', ENT_QUOTES), // Image par défaut
             'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.png", ENT_QUOTES), // Image par défaut
@@ -294,10 +294,9 @@ public function afficherAutreUtilisateur()
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => htmlspecialchars($_POST['bio'] ?? NULL,ENT_QUOTES),
+            'bio' => htmlspecialchars($_POST['bio'],ENT_QUOTES) ?? null,
 
         ];
-
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -364,7 +363,7 @@ public function afficherAutreUtilisateur()
         // Création de l'utilisateur
         $utilisateur = new Utilisateur(
 
-            htmlspecialchars_decode($donneesFormulaire['idUtilisateur'], ENT_QUOTES),
+            $donneesFormulaire['idUtilisateur'],
             htmlspecialchars_decode($donneesFormulaire['pseudo'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['photoProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['banniereProfil'], ENT_QUOTES),
