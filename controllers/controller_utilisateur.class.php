@@ -273,7 +273,7 @@ class ControllerUtilisateur extends Controller
     }
 
     /**
-     * @brief Envoie le mail de réinitialisation
+     * @brief Envoie le mail de réinitialisation du mot de passe
      * @author Noah LÉVAL 
      *
      * @return void
@@ -304,7 +304,7 @@ class ControllerUtilisateur extends Controller
     
                 // Enregistre le token dans la base de données
                 $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
-                $idUtilisateur = $managerUtilisateur->getIdByToken();
+                $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
     
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
                 $idEncoded = urlencode(base64_encode($idUtilisateur));
@@ -348,7 +348,7 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPDO());
         $tokenCrypt = $managerUtilisateur->getTokenById($id);
 
-        if (!password_verify($token, $tokenCrypt))
+        if (password_verify($token, $tokenCrypt))
         { 
             // Transmettre le token au template Twig
             $template = $this->getTwig()->load('changerMDP.html.twig');
@@ -368,14 +368,14 @@ class ControllerUtilisateur extends Controller
      */
     public function changerMdp()
     {
-            $mdp1=isset($_POST['MDP1'])?$_POST['MDP1']:null;
-            $mdp2=isset($_POST['MDP2'])?$_POST['MDP2']:null;
+            $mdp=isset($_POST['MDP1'])?$_POST['MDP1']:null;
+            $mdpVerif=isset($_POST['MDP2'])?$_POST['MDP2']:null;
             $token = isset($_POST['token']) ? $_POST['token'] : null;
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $idUser = $managerUtilisateur->getIdUserByToken($token);
 
-            if (!$managerUtilisateur->estRobuste($mdp1))
+            if (!$managerUtilisateur->estRobuste($mdp))
             {
                 $template = $this->getTwig()->load('changerMDP.html.twig');
                 echo $template->render([
@@ -385,8 +385,8 @@ class ControllerUtilisateur extends Controller
                 return;
             }
 
-            if($mdp1 != $mdp2){
-                $template = $this->getTwig()->load('chnagerMdP.html.twig');
+            if($mdp != $mdpVerif){
+                $template = $this->getTwig()->load('changerMDP.html.twig');
                 echo $template->render([
                     'mdpValide' => True,
                     'message' => 'Les mots de passe ne correspondent pas'
@@ -394,7 +394,7 @@ class ControllerUtilisateur extends Controller
                 return;
             }
             
-            $mdpHash = password_hash($mdp1, PASSWORD_BCRYPT);
+            $mdpHash = password_hash($mdp, PASSWORD_BCRYPT);
             $managerUtilisateur->changerMdp($idUser, $mdpHash);
             $managerUtilisateur->supprimerToken($token);
 
