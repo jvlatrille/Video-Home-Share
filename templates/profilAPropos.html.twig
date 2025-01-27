@@ -19,7 +19,7 @@
     {% else %}
         <div class="container">
             {% for message in messageListe %}
-            <h5><strong>Dans le forum : {{ message.nom }}</strong></h5>
+            <h6><strong>Dans le forum : {{ message.nom }}</strong></h6>
                 <div class="card mb-4">
                     <div class="card-body">
                             <div class="d-flex align-items-center">
@@ -63,6 +63,7 @@
                                     <div class="d-flex align-items-center">
                                         
                                         {% if commentaire.photoProfil %}
+                                            {# <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
                                             <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
                                                 <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
                                             </a>
