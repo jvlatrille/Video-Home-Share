@@ -93,5 +93,18 @@ public function dislike()
     }
     }
 
+    /**
+     * @brief Cette méthode affiche les messages les plus likés.
+     * 
+     * @author VINET LATRILLE Jules
+     * @return void
+     */
+    public function afficherTopMessages()
+    {
+        $managerForum = new messageDAO($this->getPdo());
+        $topMessages = $managerForum->getTopLikedMessages();
+        $template = $this->getTwig()->load('index.html.twig');
+        echo $template->render(['topMessages' => $topMessages]);
+    }
 }
 ?>

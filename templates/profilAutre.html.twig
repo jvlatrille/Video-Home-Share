@@ -20,6 +20,23 @@
 			<p class="text-muted">Grade :
 				{{ utilisateur.role | capitalize }}</p>
 		</div>
-
+		<div class="text-center mt-3">
+			<p>{{ utilisateur.bio }}</p>
+		</div>
+		
+		<div class="container mt-5">
+			<h3>Messages envoyés sur les forums</h3>
+			<ul class="list-group">
+				{% for message in utilisateur.messages %}
+					<li class="list-group-item">
+						<strong>{{ message.titre }}</strong>
+						<p>{{ message.contenu }}</p>
+						<small class="text-muted">Envoyé le {{ message.dateEnvoi|date("d/m/Y H:i") }}</small>
+					</li>
+				{% else %}
+					<li class="list-group-item">Aucun message envoyé sur les forums.</li>
+				{% endfor %}
+			</ul>
+		</div>
 	{% endif %}
 {% endblock %}

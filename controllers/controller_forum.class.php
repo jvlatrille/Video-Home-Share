@@ -68,18 +68,4 @@ class ControllerForum extends Controller
             header('Location: index.php?controleur=forum&methode=listerForum');
         }
     }
-
-    /**
-     * @brief Cette méthode affiche les messages les plus likés.
-     * 
-     * @author VINET LATRILLE Jules
-     * @return void
-     */
-    public function afficherTopMessages()
-    {
-        $managerForum = new ForumDAO($this->getPdo());
-        $topMessages = $managerForum->getTopLikedMessages();
-        $template = $this->getTwig()->load('index.html.twig');
-        echo $template->render(['topMessages' => $topMessages]);
-    }
 }

@@ -1,5 +1,7 @@
 <?php
-
+// envoie de mail en local
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 class ControllerUtilisateur extends Controller
 {
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
@@ -20,82 +22,84 @@ class ControllerUtilisateur extends Controller
     }
 
     public function afficherUtilisateur()
-{
-    // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
-        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    {
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        $template = $this->getTwig()->load('profil.html.twig');
-        echo $template->render(['utilisateur' => $utilisateurConnecte]);
-        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+            $template = $this->getTwig()->load('profil.html.twig');
+            echo $template->render(['utilisateur' => $utilisateurConnecte]);
+            return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        }
+
+        // Sinon, affiche la page de connexion
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
     }
 
-    // Sinon, affiche la page de connexion
-    $template = $this->getTwig()->load('connexion.html.twig');
-    echo $template->render();
-}
+    public function afficherAutreUtilisateur()
+    {
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-public function afficherAutreUtilisateur()
-{
-    // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
-        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+            $template = $this->getTwig()->load('profilAutre.html.twig');
+            echo $template->render(['utilisateur' => $autreUtilisateur]);
+            return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        }
 
-        $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
-        $template = $this->getTwig()->load('profilAutre.html.twig');
-        echo $template->render(['utilisateur' => $autreUtilisateur]);
-        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        // Sinon, affiche la page de connexion
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
     }
-
-    // Sinon, affiche la page de connexion
-    $template = $this->getTwig()->load('connexion.html.twig');
-    echo $template->render();
-}
 
 
     // Changer de pseudo
-    public function changerPseudo() {
+    public function changerPseudo()
+    {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $id = $utilisateurConnecte->getIdUtilisateur();
             $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
-    
-        if (!$id || !$newPseudo) {
-            throw new Exception('Informations manquantes : ID ou pseudo.');
+
+            if (!$id || !$newPseudo) {
+                throw new Exception('Informations manquantes : ID ou pseudo.');
+            }
+
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
+
+            $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
+            $utilisateur = $managerUtilisateur->find($id);
+
+            $template = $this->getTwig()->load('profilParametres.html.twig');
+            echo $template->render([
+                'utilisateur' => $utilisateur,
+                'message' => $message
+            ]);
         }
-        
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
-    
-        $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
-        $utilisateur = $managerUtilisateur->find($id);
-    
-        $template = $this->getTwig()->load('profilParametres.html.twig');
-        echo $template->render([
-            'utilisateur' => $utilisateur,
-            'message' => $message
-        ]);
-    }    
-}
+    }
     // Changer de Mail
-    public function changerMail() {
+    public function changerMail()
+    {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $newMail = isset($_GET['mail']) ? $_GET['mail'] : null;
-    
+
         if (!$id || !$newMail) {
             throw new Exception('Informations manquantes : ID ou mail.');
         }
-        
+
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $reussite = $managerUtilisateur->changerMail($id, $newMail);
-    
+
         $message = $reussite ? "Le mail a été changé avec succès." : "Erreur lors du changement de mail.";
         $utilisateur = $managerUtilisateur->find($id);
-    
+
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
@@ -118,7 +122,7 @@ public function afficherAutreUtilisateur()
             // Définir le dossier cible où l'image sera enregistrée
             $targetDir = "img/profils/"; // Dossier relatif à l'arborescence de votre projet
             $targetFile = $targetDir . $fileName;
-            
+
             // Vérifier que l'extension du fichier est autorisée
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -208,16 +212,17 @@ public function afficherAutreUtilisateur()
             echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
         }
     }
- 
 
-    
+
+
     /**
      * @brief Affiche le formulaire de connexion d'un utilisateur
      * @author Thibault CHIPY 
      *
      * @return void
      */
-    public function connexion(){
+    public function connexion()
+    {
         $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render();
     }
@@ -229,7 +234,8 @@ public function afficherAutreUtilisateur()
      * @return void
      */
 
-    public function inscription(){
+    public function inscription()
+    {
         $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render();
     }
@@ -241,16 +247,17 @@ public function afficherAutreUtilisateur()
      * 
      * @return void
      */
-    public function verifConnexion(){
+    public function verifConnexion()
+    {
         // Récupération des données du formulaire
         $donneesFormulaire = [
-            'mail' => htmlspecialchars($_POST['mail'],ENT_QUOTES,) ?? null,
-            'mdp' => htmlspecialchars($_POST['mdp'],ENT_QUOTES) ?? null,
+            'mail' => htmlspecialchars($_POST['mail'], ENT_QUOTES,) ?? null,
+            'mdp' => htmlspecialchars($_POST['mdp'], ENT_QUOTES) ?? null,
         ];
-        
+
         // Validation des données
-       $erreurs = Validator::validerConnexion($donneesFormulaire);
-        if($erreurs){
+        $erreurs = Validator::validerConnexion($donneesFormulaire);
+        if ($erreurs) {
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['erreurs' => $erreurs]);
             return;
@@ -260,14 +267,12 @@ public function afficherAutreUtilisateur()
         $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
-        if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
+        if ($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())) {
             $managerUtilisateur->verifierDerniereSauvegarde();
             $_SESSION['utilisateur'] = serialize($utilisateur);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
             header("Location: index.php");
-            
-        }
-        else{
+        } else {
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => 'Identifiants incorrects']);
         }
@@ -294,7 +299,7 @@ public function afficherAutreUtilisateur()
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => htmlspecialchars($_POST['bio'] ?? NULL,ENT_QUOTES),
+            'bio' => htmlspecialchars($_POST['bio'] ?? NULL, ENT_QUOTES),
 
         ];
 
@@ -384,14 +389,66 @@ public function afficherAutreUtilisateur()
     }
 
 
-        /**
-         * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
-         * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
-         * 
-         * @return void
-         */
-        public function deconnexion(){
-            session_destroy();
+    /**
+     * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
+     * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
+     * 
+     * @return void
+     */
+    public function deconnexion()
+    {
+        session_destroy();
+        header('Location: index.php');
+    }
+
+
+    /**
+     * @brief Affiche la page de paramètres de l'utilisateur connecté
+     * @details Affiche la page de paramètres de l'utilisateur connecté
+     * 
+     * @return void
+     */
+    public function traiterContact()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = htmlspecialchars($_POST['name']);
+            $email = htmlspecialchars($_POST['email']);
+            $message = htmlspecialchars($_POST['message']);
+
+            if (DB_HOST === 'localhost') {
+                try {
+                    $mail = new PHPMailer(true);
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = EMAIL_ADDRESS; // Chargé depuis constantes.yaml
+                    $mail->Password = EMAIL_PASSWORD; // Chargé depuis constantes.yaml
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+
+                    $mail->setFrom(EMAIL_ADDRESS, 'VHS Contact');
+                    $mail->addAddress(EMAIL_ADDRESS);
+                    $mail->addReplyTo($email, $name);
+
+                    $mail->Subject = "VHS : Nouveau message de $name";
+                    $mail->Body = "Nom : $name\nEmail : $email\n\nMessage :\n$message";
+
+                    $mail->send();
+                    $feedback = 'Votre message a bien été envoyé.';
+                } catch (Exception $e) {
+                    $feedback = "Erreur lors de l'envoi : {$mail->ErrorInfo}";
+                }
+            } elseif (DB_HOST === 'lakartxela.iutbayonne.univ-pau.fr') {
+                $feedback = 'Fonctionnalité non implémentée pour cet hôte.';
+            } else {
+                $feedback = 'Hôte non pris en charge.';
+            }
+
+            // Charger la vue avec un message de feedback
+            $template = $this->getTwig()->load('index.html.twig');
+            echo $template->render(['message' => $feedback]);
+        } else {
             header('Location: index.php');
         }
+    }
 }
