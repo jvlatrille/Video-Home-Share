@@ -248,7 +248,7 @@ class UtilisateurDao
             'adressMail' => $utilisateur->getAdressMail(),
             'motDePasse' => $utilisateur->getMotDePasse(),
             'role' => $utilisateur->getRole(),
-            'bio' => $bio->getBio()
+            'bio' => $utilisateur->getBio()
         ]);
         return $reussite;
     }
