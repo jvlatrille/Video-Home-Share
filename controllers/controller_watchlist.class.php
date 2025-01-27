@@ -42,7 +42,9 @@ class ControllerWatchList extends Controller
             $managerOa = new OaDao($this->getPdo());
             $oas = $managerOa->findRandomOeuvres();
 
-
+            $oas=array_merge($oas, $managerOa->findRandomSeries());
+            $oas=array_slice($oas, 0, 15);
+            shuffle($oas);
             // Generer la vue
             $template = $this->getTwig()->load('watchlists.html.twig');
 
@@ -106,88 +108,100 @@ class ControllerWatchList extends Controller
      * @return void
      */
     public function ajouterWatchList()
-    {
+{
+    // Vérifie si un utilisateur est connecté
+    if (isset($_SESSION['utilisateur'])) {
+        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        // Vérifie si un utilisateur est connecté
-    
-        if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-            $donnees = [
-                'idWatchList' => $_POST['idWatchList'] ?? null,
-                'titre' => $_POST['titre'] ?? null,
-                'genre' => $_POST['genre'] ?? null,
-                'description' => $_POST['description'] ?? null,
-                'visible' => $_POST['visible'] ?? '0', 
-                'listeOeuvres' => is_string($_POST['listeOeuvres']) ? json_decode($_POST['listeOeuvres'], true) : $_POST['listeOeuvres'],
+        // Récupération des données du formulaire
+        $donnees = [
+            'idWatchList' => $_POST['idWatchList'] ?? null,
+            'titre' => $_POST['titre'] ?? null,
+            'genre' => $_POST['genre'] ?? null,
+            'description' => $_POST['description'] ?? null,
+            'visible' => $_POST['visible'] ?? '0',
+            'OAs' => is_string($_POST['OAs']) ? json_decode($_POST['OAs'], true) : $_POST['OAs'],
+        ];
+        // Définition des règles de validation
+        $regles = [
+            'titre' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+            'genre' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+            'description' => [
+                'obligatoire' => true,
+                'type' => 'string',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+            'visible' => [
+                'obligatoire' => true,
+                'type' => 'boolean',
+            ],
+        ];
 
-            ];
-            $regles = [
-                'titre' => [
-                    'obligatoire' => true,
-                     'type' => 'string',
-                    'longueur_min' => 1,
-                    'longueur_max' => 255,
-                ],
-                'genre' => [
-                    'obligatoire' => false,
-                    'type' => 'string',
-                    'longueur_min' => 1,
-                    'longueur_max' => 255,
-                ],
-                'description' => [
-                    'obligatoire' => true,
-                    'type' => 'string',
-                    'longueur_min' => 1,
-                    'longueur_max' => 255,
-                ],
-                'visible' => [
-                    'obligatoire' => true,
-                    'type' => 'boolean',]
+        // Validation des données
+        $validation = new Validator($regles);
 
-            ];
-                    
-            $validation = new Validator($regles);
-
-            if(!$validation->valider($donnees)){
-                $erreurs = $validation->getMessagesErreurs();
-                $template = $this->getTwig()->load('watchlists.html.twig');
-                echo $template->render(['erreurs' => $erreurs]);
-                return;
-            }
-
-            // Récupère les données de la watchlist depuis le formulaire
-            $idWatchList = $donnees['idWatchList'] ?? null;
-            $titre = $donnees['titre'] ?? null;
-            $genre = $donnees['genre'] ?? null;
-            $description = $donnees['description'] ?? null;
-            $visible = $donnees['visible'] ?? null;
-            $idTMDB = $donnees['listeOeuvres'] ?? [];
-            //si il n'y a pas d'oeuvre dans la watchlist on implode pas
-            if (count($idTMDB) > 0) {
-                $idTMDB = implode(',', $idTMDB);
-            }
-            else {
-                $idTMDB = null;
-            }
-            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
-
-            //Ajoute la watchlist
-            $managerWatchList = new WatchListDao($this->getPdo());
-            $watchList = new WatchList();
-            $watchList->setIdWatchList($idWatchList);
-            $watchList->setTitre($titre);
-            $watchList->setGenre($genre);
-            $watchList->setDescription($description);
-            $watchList->setVisible($visible);
-            $watchList->setIdTMDB($idTMDB);
-            $watchList->setIdUtilisateur($idUtilisateur);
-            $managerWatchList->creerWatchlist($watchList);
-
-
-            //Redirige vers la liste des watchlists
-           header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur . '');
+        if (!$validation->valider($donnees)) {
+            $erreurs = $validation->getMessagesErreurs();
+            $template = $this->getTwig()->load('watchlists.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
         }
+
+        $idWatchList = $donnees['idWatchList'] ?? null;
+        $titre = $donnees['titre'];
+        $genre = $donnees['genre'] ?? null;
+        $description = $donnees['description'];
+        $visible = (bool)$donnees['visible'];
+        $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+        // Traitement des œuvres (idTMDB et type)
+        $listeOeuvres = $donnees['OAs'] ?? [];
+        
+        $oeuvresFormatees = [];
+
+        foreach ($listeOeuvres as $oeuvre) {
+            if (is_string($oeuvre)) {
+                $idTMDB=explode(':', $oeuvre);
+                $oeuvresFormatees[] = [
+                    'idTMDB' => $idTMDB[0],
+                    'type' => $idTMDB[1],
+                ];
+            }
+        }
+
+        // Création de la watchlist
+        $managerWatchList = new WatchListDao($this->getPdo());
+        $watchList = new WatchList();
+        $watchList->setIdWatchList($idWatchList);
+        $watchList->setTitre($titre);
+        $watchList->setGenre($genre);
+        $watchList->setDescription($description);
+        $watchList->setVisible($visible);
+        $watchList->setIdUtilisateur($idUtilisateur);
+        $managerWatchList->creerWatchlist($watchList);
+
+        $idNouvelleWatchlist = $watchList->getIdWatchList();
+        
+        // Association des œuvres à la watchlist
+        foreach ($oeuvresFormatees as $oeuvre) {
+            $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
+        }
+        // Redirection vers la liste des watchlists
+        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);
+        exit();
     }
+}
 
     //Fonction pour modifier une Watchlist
     /**
@@ -249,7 +263,7 @@ class ControllerWatchList extends Controller
         $watchList->setGenre($genre);
         $watchList->setDescription($description);
         $watchList->setVisible($visible);
-        $managerWatchList->modifierWatchlistPartielle($watchList);
+        $managerWatchList->modifierWatchlistComplete($watchList);
 
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur() . ''); 
@@ -298,6 +312,7 @@ class ControllerWatchList extends Controller
         $donnees = [
             'idWatchList' => $_POST['idWatchList'] ?? null,
             'idOeuvre' => $_POST['idOeuvre'] ?? null,
+            'type' => $_POST['type'] ?? null,
         ];
 
         $regles = [
@@ -310,6 +325,12 @@ class ControllerWatchList extends Controller
             'idOeuvre' => [
                 'obligatoire' => true,
                 'type' => 'int',
+                'longueur_min' => 1,
+                'longueur_max' => 255,
+            ],
+            'type' => [
+                'obligatoire' => true,
+                'type' => 'string',
                 'longueur_min' => 1,
                 'longueur_max' => 255,
             ],
@@ -326,45 +347,32 @@ class ControllerWatchList extends Controller
 
         $idWatchList = $donnees['idWatchList'];
         $idOeuvre = $donnees['idOeuvre'];
+        $type = $donnees['type'];
 
         //Vérifie si l'oeuvre est déjà dans la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
-        $watchList = $managerWatchList->find($idWatchList);
-        $oas = $managerWatchList->afficherOaWatchlist($idWatchList); 
+        $watchList = $managerWatchList->findWithFilms($idWatchList);
+        $oas = $watchList->getListeOeuvres();
         foreach ($oas as $oa) {
             if ($oa->getIdOa() == $idOeuvre) {
-                
-                header('Location: index.php?controleur=watchlist&methode=listerWatchlist&id=' . $idWatchList);
+                header('Location: index.php?controleur=watchlist&methode=afficherWatchList&idWatchlist=' . $idWatchList);
                 return;
             }
         }
-        //Ajoute l'oeuvre à la watchlist, si la Watchlist contient 0 oeuvre, on ajoute l'oeuvre sans virgule, sinon on ajoute une virgule
-        if ($watchList->getIdTMDB() == null) {
-            $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
-        } else {
-            $managerWatchList->ajouterOA($idWatchList, $idOeuvre);
-        }
-        
 
+
+        //Ajoute l'oeuvre à la watchlist
+        $managerWatchList->addOaToWatchlist($idWatchList, $idOeuvre,$type);
         //Recuperer tous les oeuvres de la watchlist
-        $oas = $managerWatchList->afficherOaWatchlist($idWatchList);
-        
+        $oas = $managerWatchList->findOeuvresWatchlist($idWatchList);
+
         //Mettre a jour le genre de la watchlist
         $genreDominant = $managerWatchList->calculGenreDominantWatchlist($oas);
 
         //modifier la watchlist
-        $watchList = $managerWatchList->find($idWatchList);
-        $watchListModifie= new WatchList();
-        $watchListModifie->setTitre($watchList->getTitre());
-        $watchListModifie->setDescription($watchList->getDescription());
-        $watchListModifie->setVisible($watchList->getVisible());
-        $watchListModifie->setIdTMDB($watchList->getIdTMDB());
-        $watchListModifie->setIdUtilisateur($watchList->getIdUtilisateur());
-        $watchListModifie->setIdWatchList($watchList->getIdWatchList());
-        $watchListModifie->setGenre($genreDominant);
-        $managerWatchList->modifierWatchlistComplete($watchListModifie);
-
-
+        $watchList = $managerWatchList->findWithFilms($idWatchList);
+        $watchList->setGenre($genreDominant);
+        $managerWatchList->modifierWatchlistComplete($watchList);
 
         //Redirige vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchlist&id=' . $idWatchList);
@@ -408,6 +416,16 @@ class ControllerWatchList extends Controller
         //Supprime l'oeuvre de la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
         $managerWatchList->supprimerOA($idWatchList, $idOeuvre);
+
+        //Calcul le genre
+        $oas = $managerWatchList->findOeuvresWatchlist($idWatchList);
+        $genreDominant = $managerWatchList->calculGenreDominantWatchlist($oas);
+
+        //modifier la watchlist
+        $watchList = $managerWatchList->findWithFilms($idWatchList);
+        $watchList->setGenre($genreDominant);
+        $managerWatchList->modifierWatchlistComplete($watchList);
+
 
         //Redirige vers la liste des watchlists
        header('Location: index.php?controleur=watchlist&methode=afficherWatchList&idWatchlist=' . $idWatchList);

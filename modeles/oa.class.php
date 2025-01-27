@@ -50,6 +50,14 @@ class OA
     /** @brief Nom du producteur de l'œuvre audiovisuelle */
     private ?string $producteur;
 
+    /** @brief Nombre de saison */
+    private ?int $nbSaison;
+
+    /** @brief Nombre d'épisode */
+    private ?int $nbEpisode;
+
+
+
     /**
      * @brief Constructeur de la classe OA
      * @param int|null $id Identifiant de l'œuvre audiovisuelle
@@ -65,6 +73,8 @@ class OA
      * @param string|null $posterPath Lien de la couverture de l'œuvre audiovisuelle
      * @param array|null $participants Liste des participants
      * @param string|null $producteur Nom du producteur
+     * @param int|null $nbSaison Nombre de saison
+     * @param int|null $nbEpisode Nombre d'épisode
      */
     public function __construct(
         ?int $id = null,
@@ -79,7 +89,9 @@ class OA
         ?string $collection = null,
         ?string $posterPath = null,
         ?array $participants = null,
-        ?string $producteur = null
+        ?string $producteur = null,
+        ?int $nbSaison = null,
+        ?int $nbEpisode = null
     ) {
         $this->idOa = $id;
         $this->nom = $nom;
@@ -94,6 +106,8 @@ class OA
         $this->posterPath = $posterPath;
         $this->participants = $participants;
         $this->producteur = $producteur;
+        $this->nbSaison = $nbSaison;
+        $this->nbEpisode = $nbEpisode;
     }
 
     // Getters et Setters
@@ -210,8 +224,30 @@ class OA
     {
         return $this->producteur;
     }
+
     public function setProducteur(?string $producteur): void
     {
         $this->producteur = $producteur;
     }
+
+    public function getNbSaison(): ?int
+    {
+        return $this->nbSaison;
+    }
+
+    public function setNbSaison(?int $nbSaison): void
+    {
+        $this->nbSaison = $nbSaison;
+    }
+
+    public function getNbEpisode(): ?int
+    {
+        return $this->nbEpisode;
+    }
+
+    public function setNbEpisode(?int $nbEpisode): void
+    {
+        $this->nbEpisode = $nbEpisode;
+    }
+    
 }

@@ -12,36 +12,34 @@ class ControllerForum extends Controller
     {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        // Récupère tous les forums
-        $managerForum = new ForumDAO($this->getPdo());
-        $forumsListe = $managerForum->findAll();
+            // Récupère tous les forums
+            $managerForum = new ForumDAO($this->getPdo());
+            $forumsListe = $managerForum->findAll();
 
-        // Génère la vue
-        $template = $this->getTwig()->load('forums.html.twig');
-        echo $template->render(['forumListe' => $forumsListe]);
-    }
-    else {
-        // Redirige vers la page de connexion
-        header('Location: index.php?controleur=utilisateur&methode=connexion');
-    }
+            // Génère la vue
+            $template = $this->getTwig()->load('forums.html.twig');
+            echo $template->render(['forumListe' => $forumsListe]);
+        } else {
+            // Redirige vers la page de connexion
+            header('Location: index.php?controleur=utilisateur&methode=connexion');
+        }
     }
     //Fonction pour afficher un forum
     public function afficherForum()
     {
         $id = isset($_GET['idForum']) ? $_GET['idForum'] : null;
-        
+
         //Recupere le forum
-        $managerForum=New forumDAO($this->getPdo());
-        $forumList=$managerForum->find($id);
-        
+        $managerForum = new forumDAO($this->getPdo());
+        $forumList = $managerForum->find($id);
+
         //Recupere les noms des forums
         $noms = $managerForum->afficherNomForum($idForum);
-        
+
         //Generer la vue
         $template = $this->getTwig()->load('forum_detail.html.twig');
-        
-        echo $template->render(['forum'=>$forumList, 'noms'=>$noms]);
 
+        echo $template->render(['forum' => $forumList, 'noms' => $noms]);
     }
 
     public function ajouterForum()
@@ -56,7 +54,7 @@ class ControllerForum extends Controller
             $theme = $_POST['theme'] ?? $_GET['theme'] ?? null;
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
-            //Ajoute la watchlist
+            //Ajoute le forum
             $managerForum = new ForumDao($this->getPdo());
             $forum = new Forum();
             $forum->setIdForum($idForum);
@@ -71,5 +69,17 @@ class ControllerForum extends Controller
         }
     }
 
+    /**
+     * @brief Cette méthode affiche les messages les plus likés.
+     * 
+     * @author VINET LATRILLE Jules
+     * @return void
+     */
+    public function afficherTopMessages()
+    {
+        $managerForum = new ForumDAO($this->getPdo());
+        $topMessages = $managerForum->getTopLikedMessages();
+        $template = $this->getTwig()->load('index.html.twig');
+        echo $template->render(['topMessages' => $topMessages]);
+    }
 }
-?>

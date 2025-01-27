@@ -39,6 +39,10 @@ class Utilisateur
     * @brief role de l'utilisateur
     */
     private ?string $role;
+    /**
+    * @brief bio de l'utilisateur
+    */
+    private ?string $bio = null;
 
     /**
      * @brief Constructeur de la classe Utilisateur
@@ -50,6 +54,7 @@ class Utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
      * @param string|null $bio biographie de l'utilisateur
+
      * @return void
      */
     // Constructeur de la classe Personne
@@ -212,7 +217,6 @@ class Utilisateur
         $this->role = $role;
     }
 
-
     /**
      * @brief Getteur de la bio de l'utilisateur
      *
@@ -225,6 +229,7 @@ class Utilisateur
 
     /**
      * @brief Setteur de la bio de l'utilisateur
+
      * @param string role
      * @return void
      */

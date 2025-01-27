@@ -453,14 +453,10 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
-
+            $managerUtilisateur->verifierDerniereSauvegarde();
             $_SESSION['utilisateur'] = serialize($utilisateur);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
-            
-            $managerOA = new OADao($this->getPdo());
-            $oaListe = $managerOA->findMeilleurNote();
-            $template = $this->getTwig()->load('index.html.twig');
-            echo $template->render(['oaListe' => $oaListe]);
+            header("Location: index.php");
             
         }
         else{
@@ -480,7 +476,8 @@ class ControllerUtilisateur extends Controller
     {
         // Récupération des données du formulaire
         $donneesFormulaire = [
-            'idUtilisateur' => htmlspecialchars($_POST['idUtilisateur'] ?? null, ENT_QUOTES),
+
+            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
             'pseudo' => htmlspecialchars($_POST['pseudo'] ?? null, ENT_QUOTES),
             'photoProfil' => htmlspecialchars($_POST['photoProfil'] ?? 'default.png', ENT_QUOTES), // Image par défaut
             'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.png", ENT_QUOTES), // Image par défaut
@@ -489,8 +486,9 @@ class ControllerUtilisateur extends Controller
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-        ];
+            'bio' => htmlspecialchars($_POST['bio'],ENT_QUOTES) ?? null,
 
+        ];
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -556,13 +554,16 @@ class ControllerUtilisateur extends Controller
 
         // Création de l'utilisateur
         $utilisateur = new Utilisateur(
-            htmlspecialchars_decode($donneesFormulaire['idUtilisateur'], ENT_QUOTES),
+
+            $donneesFormulaire['idUtilisateur'],
             htmlspecialchars_decode($donneesFormulaire['pseudo'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['photoProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['banniereProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
-            htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES)
+            htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
+            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
+
         );
 
         // Sauvegarde dans la base de données

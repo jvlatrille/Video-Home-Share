@@ -17,7 +17,7 @@
     <title>{{ oa.nom }}</title>
 
     {% if oa is defined %}
-        <div id="film-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
+        <div id="oa-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
             <div class="row">
                 <div class="col-md-4">
                     {% if oa.posterPath %}
@@ -54,88 +54,64 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                <p><strong>Durée :</strong> {{ oa.duree }} min</p>
+                                <p><strong>Nombre de saisons :</strong> {{ oa.nbSaison }}</p>
+                                <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                             </div>
-                            <div>
-                                
-                                <p><strong>Producteur :</strong> 
-                                    {% if oa.producteur %}
-                                        {{ oa.producteur }}
-                                    {% else %}
-                                        <em>Non spécifié</em>
-                                    {% endif %}
-                                </p>                                
-                            </div>
                         </div>
-                        <p><strong>Note :</strong></p>
-                        <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
+                        <p><strong>Note :</strong>
                             {% for i in 1..5 %}
-                                <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
-                                     alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
+                                {% if i <= (oa.note / 2) %}
+                                    <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
+                                {% else %}
+                                    <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
+                                {% endif %}
                             {% endfor %}
-                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(0, 'floor') }}</span>
-                        </div>
-                        
-{% if utilisateurConnecte %}
-    <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
-{% endif %}
-{% if utilisateurConnecte %}
-    <div class="mt-2">
-        <p><strong>Votre note :</strong> 
-            {% if utilisateurNote is defined %}
-                {{ utilisateurNote }} / 5
-            {% else %}
-                <em>Vous n'avez pas encore noté ce film.</em>
-            {% endif %}
-        </p>
-    </div>
-{% endif %}
-
+                        </p>
                     </div>
                     
                     <div class="d-flex mt-3">
                         <a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-                            Ajouter l'oeuvre à une watchlist
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
+                            Ajouter la série à une watchlist
                         </button>
                     </div>
                 </div>
             </div>
-                         <!-- Modal pour ajouter le film à une watchlist -->
-						<div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="addFilmModalLabel">Ajouter à une watchlist</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<form action="index.php?controleur=watchlist&methode=ajouterOaWatchList" method="post">
-											{% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
-												{% for watchlist in watchListListe %}
-													<div class="mb-3">
-														<div class="form-check">
-															<input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
-															<label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
-														</div>
-													</div>
-												{% endfor %}
-												<input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
-                                                <input type="hidden" name="type" value="{{ oa.type }}">
-											<button type="submit" class="btn btn-primary">Ajouter</button>
-											{% else %}
-												<p>Aucune watchlist trouvée.</p>
-												<p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
-											{% endif %}
-											
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-					
-				
+                         <!-- Modal pour ajouter la série à une watchlist -->
+                        <div class="modal fade" id="addoaModal" tabindex="-1" aria-labelledby="addoaModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à une watchlist</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="index.php?controleur=watchlist&methode=ajouteroaWatchList" method="post">
+                                            {% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
+                                                {% for watchlist in watchListListe %}
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
+                                                            <label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                                <input type="hidden" name="idOeuvre" value="{{ oa.idoa }}">
+                                                <input type="hidden" name="type" value={{ oa.type }}>
+                                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                                            {% else %}
+                                                <p>Aucune watchlist trouvée.</p>
+                                                <p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+                                            {% endif %}
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                
 
             <div class="mt-4 p-3 bg-light rounded">
                 <h4 class="fw-bold">Description</h4>
@@ -145,7 +121,7 @@
             {% if participants is defined and participants|length > 0 %}
                 <h4 class="fw-bold">Participants</h4>
                 <div class="row">
-                    {% for participant in participants|slice(0, 12) %}
+                    {% for participant in participants|slice(0, 6) %}
                         <div class="col-4 col-md-2 text-center mb-3">
                             {% if participant.photo %}
                                 <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
@@ -158,12 +134,12 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p><em>Aucun participant trouvé pour ce film.</em></p>
+                <p><em>Aucun participant trouvé pour cette série.</em></p>
             {% endif %}
 
             {% if suggestions is defined and suggestions|length > 0 %}
                 <div class="mt-5">
-                    <h2 class="text-center mb-4">Suggestions de films</h2>
+                    <h2 class="text-center mb-4">Suggestions de séries</h2>
                     <div id="carouselSuggestions" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {% for suggestionsChunk in suggestions|batch(5, null) %}
@@ -200,6 +176,8 @@
                         </button>
                     </div>
                 </div>
+            {% else %}
+                <p><em>Aucune suggestion trouvée pour cette série.</em></p>
             {% endif %}
 
             {% if commentaires is defined and commentaires is not empty %}
@@ -226,7 +204,7 @@
                             </div>
                             {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
                                 <div>
-                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
+                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idoa={{ oa.idoa }}"
                                        class="btn btn-danger btn-sm"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
                                         Supprimer
@@ -237,7 +215,7 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p><em>Aucun commentaire pour ce film.</em></p>
+                <p><em>Aucun commentaire pour cette série.</em></p>
             {% endif %}
 
             <div id="commentaires" class="mt-4">
@@ -247,7 +225,7 @@
                         <label for="contenu" class="form-label">Commentaire</label>
                         <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
                     </div>
-                    <input type="hidden" name="film_id" value="{{ oa.idOa }}">
+                    <input type="hidden" name="oa_id" value="{{ oa.idoa }}">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                 </form>
             {% else %}
@@ -256,88 +234,6 @@
         </div>
         </div>
     {% else %}
-        <p>Le film n'existe pas.</p>
+        <p>La série n'existe pas.</p>
     {% endif %}
-{% endblock %}
-{% block script %}
-
-{% if utilisateurConnecte %}
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const stars = document.querySelectorAll('#rating-system .star');
-        const ratingDisplay = document.getElementById('rating-display');
-        const ratingSystem = document.getElementById('rating-system');
-        const filmId = ratingSystem.getAttribute('data-id');
-
-        let originalRating = parseFloat(ratingDisplay.textContent); // Note initiale
-        let selectedRating = null;
-
-        // Fonction pour mettre à jour visuellement les étoiles
-        function updateStars(rating) {
-            stars.forEach(star => {
-                const starValue = parseInt(star.getAttribute('data-value'));
-                star.src = starValue <= rating ? 'img/noteRemplie.png' : 'img/noteVide.png';
-            });
-        }
-
-        // Gestion du survol des étoiles
-        stars.forEach(star => {
-            star.addEventListener('mouseover', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                updateStars(value);
-                ratingDisplay.textContent = value; // Affiche la note survolée
-            });
-
-            star.addEventListener('mouseout', () => {
-                // Retour à l'état initial si aucune note n'est sélectionnée
-                updateStars(selectedRating || originalRating);
-                ratingDisplay.textContent = selectedRating || originalRating;
-            });
-
-            // Gestion du clic pour noter
-            star.addEventListener('click', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                selectedRating = value;
-
-                // Envoie les données via fetch
-                fetch('index.php?controleur=oa&methode=noterFilm', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        idFilm: filmId,
-                        note: value
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Note ajoutée avec succès.');
-                        originalRating = selectedRating; // Met à jour la note initiale
-                        fetchMoyenne(); // Recharge la moyenne
-                    } else {
-                        alert('Erreur : ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la requête :', error);
-                    alert('Une erreur est survenue.');
-                });
-            });
-        });
-
-        // Fonction pour récupérer et afficher la moyenne
-        function fetchMoyenne() {
-            fetch(`index.php?controleur=oa&methode=afficherMoyenneNotes&idTMDB=${filmId}&noteTMDB=${originalRating}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    originalRating = data.moyenne;
-                    ratingDisplay.textContent = data.moyenne.toFixed(2);
-                    updateStars(data.moyenne);
-                }
-            });
-        }
-    });
-    </script>
-{% endif %}
 {% endblock %}
