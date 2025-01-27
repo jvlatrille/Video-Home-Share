@@ -475,6 +475,7 @@ class ControllerUtilisateur extends Controller
     public function verifInscription()
     {
         // Récupération des données du formulaire
+
         $donneesFormulaire = [
 
             'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
@@ -486,7 +487,7 @@ class ControllerUtilisateur extends Controller
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => htmlspecialchars($_POST['bio'],ENT_QUOTES) ?? null,
+            'bio' => isset($_POST['bio']) ? htmlspecialchars($_POST['bio'], ENT_QUOTES) : null,
 
         ];
         // Définition des règles de validation
@@ -527,6 +528,11 @@ class ControllerUtilisateur extends Controller
                     return $value === $donneesFormulaire['mdp'] ? true : 'Les mots de passe ne correspondent pas';
                 },
             ],
+            'bio' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 255,
+            ],
         ];
 
         // Validation des données
@@ -562,7 +568,7 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
-            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
+            $donneesFormulaire['bio'],
 
         );
 
