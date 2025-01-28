@@ -1,68 +1,137 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<div class="container">
-    <div class="text-center mb-4">
-        <h1>Ajouter les questions pour le Quizz</h1>
-    </div>
+<div class="container py-5">
 
     <form action="index.php?controleur=question&methode=saveQuestions" method="POST">
         <input type="hidden" name="idQuizz" value="{{ idQuizz }}">
 
-        {% for i in range(1, nbQuestion) %}
-    <div class="card mb-3">
-        <div class="card-body" id="question-{{ i }}">
-            <h5 class="card-title">Question {{ i }}</h5>
-            
-            <input type="hidden" name="questions[{{ i }}][numero]" value="{{ i }}"> <!-- Ajout du numéro de la question -->
+        <!-- Stepper Navigation -->
+        <div class="steps d-flex justify-content-between mb-4">
+            {% for i in range(1, nbQuestion + 1) %}
+                <div class="step" id="step-label-{{ i }}" onclick="goToStep({{ i }})" style="cursor: pointer;">
+                    Question {{ i }}
+                </div>
+            {% endfor %}
+        </div>
 
-            <div class="mb-3">
-                <label for="contenu_{{ i }}" class="form-label">Contenu de la question</label>
-                <input type="text" class="form-control" id="contenu_{{ i }}" name="questions[{{ i }}][contenu]" placeholder="Entrez le contenu de la question" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="bonneReponse_{{ i }}" class="form-label">Bonne réponse</label>
-                <input type="text" class="form-control" id="bonneReponse_{{ i }}" name="questions[{{ i }}][bonneReponse]" placeholder="Entrez la bonne réponse" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="mauvaiseReponse1_{{ i }}" class="form-label">Mauvaise réponse 1</label>
-                <input type="text" class="form-control" id="mauvaiseReponse1_{{ i }}" name="questions[{{ i }}][mauvaiseReponse1]" placeholder="Entrez une mauvaise réponse" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="mauvaiseReponse2_{{ i }}" class="form-label">Mauvaise réponse 2</label>
-                <input type="text" class="form-control" id="mauvaiseReponse2_{{ i }}" name="questions[{{ i }}][mauvaiseReponse2]" placeholder="Entrez une mauvaise réponse" required>
+        <!-- Stepper Content -->
+        {% for i in range(1, nbQuestion + 1) %}
+        <div id="step-{{ i }}" class="step-content d-none" style="border: 1px solid #dcdcdc; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <!-- Illustration -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 col-md-8">
+                    <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
+                        <input type="text" class="form-control text-center border-0 bg-transparent" id="cheminImage_{{ i }}" name="questions[{{ i }}][cheminImage]" placeholder="Entrez le chemin de l'image (optionnel)">
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="mauvaiseReponse3_{{ i }}" class="form-label">Mauvaise réponse 3</label>
-                <input type="text" class="form-control" id="mauvaiseReponse3_{{ i }}" name="questions[{{ i }}][mauvaiseReponse3]" placeholder="Entrez une mauvaise réponse" required>
-            </div>
-            
-            <div class="mb-3">
-                <label for="difficulte_{{ i }}" class="form-label">Niveau de difficulté</label>
-                <select class="form-control" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
-                    <option value="Facile">Facile</option>
-                    <option value="Moyen">Moyen</option>
-                    <option value="Difficile">Difficile</option>
-                </select>
+            <!-- Question -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 col-md-8">
+                    <div class="text-center bg-danger text-white py-2 rounded">
+                        <input type="text" class="form-control text-center border-0 bg-transparent text-white" id="contenu_{{ i }}" name="questions[{{ i }}][contenu]" placeholder="Entrez le contenu de la question" required>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="cheminImage_{{ i }}" class="form-label">Chemin de l'image (optionnel)</label>
-                <input type="text" class="form-control" id="cheminImage_{{ i }}" name="questions[{{ i }}][cheminImage]" placeholder="Entrez le chemin de l'image si nécessaire">
+            <!-- Difficulté -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 col-md-8 text-center">
+                    <p class="text-primary">Difficulté :
+                        <select class="form-select d-inline-block w-auto" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
+                            <option value="1">Facile</option>
+                            <option value="2">Moyen</option>
+                            <option value="3">Difficile</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Réponses -->
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <input type="text" class="form-control" id="bonneReponse_{{ i }}" name="questions[{{ i }}][bonneReponse]" placeholder="Bonne réponse" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <input type="text" class="form-control" id="mauvaiseReponse1_{{ i }}" name="questions[{{ i }}][mauvaiseReponse1]" placeholder="Mauvaise réponse 1" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <input type="text" class="form-control" id="mauvaiseReponse2_{{ i }}" name="questions[{{ i }}][mauvaiseReponse2]" placeholder="Mauvaise réponse 2" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <input type="text" class="form-control" id="mauvaiseReponse3_{{ i }}" name="questions[{{ i }}][mauvaiseReponse3]" placeholder="Mauvaise réponse 3" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center mt-3">
+                {% if i > 1 %}
+                <button type="button" class="btn btn-secondary prev-step">Précédent</button>
+                {% endif %}
+                {% if i <= nbQuestion %}
+                <button type="button" class="btn btn-primary next-step">Suivant</button>
+                {% endif %}
+                {% if i > nbQuestion %}
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                {% endif %}
             </div>
         </div>
-    </div>
-{% endfor %}
-
-
-        <div class="text-center mt-3">
-            <button type="submit" class="btn btn-success mb-4">Enregistrer les questions</button>
-            <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-secondary mb-4">Annuler</a>
-        </div>
+        {% endfor %}
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const steps = document.querySelectorAll('.step');
+        const contents = document.querySelectorAll('.step-content');
+        let currentStep = 0;
+    
+        function showStep(index) {
+            steps.forEach((step, i) => {
+                // Activation de l'étape correspondante
+                step.classList.toggle('active', i === index);
+                step.style.fontWeight = i === index ? 'bold' : 'normal';
+                contents[i].classList.toggle('d-none', i !== index);
+    
+                // Ajustement de la bordure pour l'étape active
+                contents[i].style.border = i === index ? '1px solid #A2140A' : '1px solid #dcdcdc';
+            });
+        }
+    
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', () => {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            });
+        });
+    
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    showStep(currentStep);
+                }
+            });
+        });
+    
+        window.goToStep = function(index) {
+            if (index >= 1 && index <= steps.length) {
+                currentStep = index - 1; // Conversion index 1-based à 0-based
+                showStep(currentStep);
+            }
+        };
+    
+        // Initialisation : afficher la première étape
+        showStep(currentStep);
+    });
+    
+</script>
 {% endblock %}
