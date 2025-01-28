@@ -29,7 +29,7 @@
                             <div class="col-md-6 text-center">
                                 <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ oa.nom }}</h2>
                                 <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                                <p><strong>Description :</strong></p>
                                 <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
                                 <p><strong>Note :</strong>
                                     {% for i in 1..5 %}
@@ -88,67 +88,57 @@
 
     <h2 class="text-center mt-5">Messages les plus likés</h2>
     <div class="container mt-4">
-    <table class="table table-bordered table-hover">
-        <tbody>
-            {% for row in topMessages|batch(3, '') %}
-                <tr>
-                    {% for message in row %}
-                        {% if message %}
-                            <td class="align-middle" style="width: 33%; height: 300px;">
-                                <div class="d-flex flex-column align-items-center justify-content-between h-100">
-                                    <!-- Photo de profil -->
-                                    <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
-                                         alt="Photo de profil de {{ message.pseudo }}" 
-                                         class="rounded-circle mb-3" 
-                                         style="width: 80px; height: 80px; object-fit: cover;">
-                                    <h5 class="text-primary fw-bold">{{ message.pseudo }}</h5>
-                                    <p class="text-muted small mb-1">Forum : <strong>{{ message.forumNom }}</strong></p>
-                                    <p class="text-center text-muted flex-grow-1 overflow-auto" 
-                                       style="font-size: 0.9rem; max-height: 80px;">
-                                        {{ message.contenu}}
-                                    </p>
-                                    <p class="text-danger small mb-0">
-                                        <i class="fas fa-heart"></i> {{ message.nbLike }} likes
-                                    </p>
-                                    <a href="index.php?controleur=message&methode=listerMessage&idForum={{ message.idForum }}" 
-                                       class="btn btn-outline-primary btn-sm mt-2">Voir le forum</a>
-                                </div>
-                            </td>
-                        {% else %}
-                            <td style="width: 33%; height: 300px;"></td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for message in topMessages %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                                <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
+                                    alt="Photo de profil de {{ message.pseudo }}" 
+                                    class="rounded-circle mb-3 border border-3" 
+                                    style="width: 80px; height: 80px; object-fit: cover;">
+                            </a>
+                            <h5 class="text-primary fw-bold">{{ message.pseudo }}</h5>
+                            <p class="text-muted small mb-1">Forum : <strong>{{ message.forumNom }}</strong></p>
+                            <p class="text-center text-muted" style="font-size: 0.9rem;">
+                                {{ message.contenu|slice(0, 100) ~ '...' }}
+                            </p>
+                            <p class="text-danger small mb-0">
+                                <i class="fas fa-heart"></i> {{ message.nbLike }} likes
+                            </p>
+                            <a href="index.php?controleur=message&methode=listerMessage&idForum={{ message.idForum }}" 
+                            class="btn btn-outline-primary btn-sm mt-3">Voir le forum</a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
+        </div>
+    </div>
 
 
 
     <h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
-<div id="decouvrirOaContainer" class="container mt-4">
-    <div class="row row-cols-1 row-cols-md-5 g-4">
-        {% for oa in oaRandomListe %}
-            <div class="col">
-                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
-                    <div class="card h-100 shadow-sm">
-                        {% if oa.posterPath %}
-                            <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
-                        {% else %}
-                            <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
-                        {% endif %}
-                        <div class="card-body text-center">
-                            <h6 class="card-title text-truncate">{{ oa.nom }}</h6>
+    <div id="decouvrirOaContainer" class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-5 g-4">
+            {% for oa in oaRandomListe %}
+                <div class="col">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            {% if oa.posterPath %}
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
+                            {% endif %}
+                            <div class="card-body text-center">
+                                <h6 class="card-title text-truncate">{{ oa.nom }}</h6>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
 
 
 

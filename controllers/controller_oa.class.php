@@ -72,6 +72,9 @@ class ControllerOA extends Controller
                 $utilisateurNote = $this->managerOa->getNoteUtilisateur($utilisateurConnecte->getIdUtilisateur(), $oa->getIdOa());
             }
 
+            // Récupérer les suggestions de films
+            $suggestions = $this->managerOa->findSuggestions($oa->getIdOa());
+
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
@@ -80,6 +83,7 @@ class ControllerOA extends Controller
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
                 'utilisateurNote' => $utilisateurNote,
+                'suggestions' => $suggestions
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
@@ -231,6 +235,9 @@ class ControllerOA extends Controller
             $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
 
+            // Récupérer les suggestions de séries
+            $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
+            
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -241,7 +248,8 @@ class ControllerOA extends Controller
                     'watchListListe' => $watchListListe,
                     'oa' => $oa,
                     'commentaires' => $commentaires,
-                    'participants' => $participants
+                    'participants' => $participants,
+                    'suggestions' => $suggestions
                 ]);
                 return;
             }
@@ -259,9 +267,27 @@ class ControllerOA extends Controller
         }
     }
 
+    /**
+     * @brief Affiche 10 suggestions basées sur un film donné
+     * @return void
+     */
+    public function suggestionsFilm(): void
+    {
+        $idFilm = $_GET['idFilm'] ?? null;
 
+        if (!$this->validerId($idFilm)) {
+            die(json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']));
+        }
 
-
-
-
+        try {
+            $suggestions = $this->managerOa->findSuggestions((int)$idFilm);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des suggestions : ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Impossible de récupérer les suggestions.']);
+            exit;
+        }
+    }
 }
