@@ -181,9 +181,9 @@ class OADao
             $data['producer'] ?? null,
             null,
             null
-            
-            
-        );        
+
+
+        );
     }
 
     /**
@@ -273,12 +273,12 @@ class OADao
     {
         $randomPage = rand(1, 100);
         $results = $this->makeApiRequest('/movie/popular', ['include_adult' => false, 'language' => 'fr-FR', 'page' => $randomPage]);
-        
+
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune œuvre aléatoire trouvée.');
             return [];
         }
-        
+
         return array_map(function ($data) {
             return [
                 'idOa' => $data['id'] ?? null,
@@ -297,12 +297,12 @@ class OADao
     {
         $randomPage = rand(1, 100);
         $results = $this->makeApiRequest('/tv/popular', ['include_adult' => false, 'language' => 'fr-FR', 'page' => $randomPage]);
-        
+
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune série aléatoire trouvée.');
             return [];
         }
-        
+
         return array_map(function ($data) {
             return [
                 'idOa' => $data['id'] ?? null,
@@ -319,7 +319,8 @@ class OADao
      * @return array Liste des objets OA
      * 
      */
-    public function rechercheFilmParNom(string $query): array{
+    public function rechercheFilmParNom(string $query): array
+    {
         $results = $this->makeApiRequest('/search/multi', ['include_adult' => false, 'query' => $query, 'language' => 'fr-FR']);
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucun résultat trouvé pour la recherche : ' . $query);
@@ -339,31 +340,31 @@ class OADao
 
     //Implementation des séries
 
-/**
- * @brief Hydrate un objet OA avec des données pour une série
- * @param array $data Données API
- * @return OA|null
- */
-private function hydrateSerie(array $data): ?OA
-{
-    return new OA(
-        $data['id'] ?? null,
-        $data['name'] ?? 'Titre inconnu', 
-        $data['vote_average'] ?? 0.0,
-        'TV',
-        $data['overview'] ?? 'Description non disponible',
-        $data['first_air_date'] ?? 'Date inconnue', 
-        $data['original_language'] ?? 'Langue inconnue',
-        $data['episode_run_time'][0] ?? null, 
-        isset($data['genres']) ? array_column($data['genres'], 'name') : [],
-        null,
-        $this->getPosterUrl($data['poster_path'] ?? null),
-        $this->parseParticipants($data['credits'] ?? []),
-        $data['producteur']=$this->getCreator($data['created_by'] ?? []),
-        $data['number_of_seasons'] ?? null,
-        $data['number_of_episodes'] ?? null
-    );
-}
+    /**
+     * @brief Hydrate un objet OA avec des données pour une série
+     * @param array $data Données API
+     * @return OA|null
+     */
+    private function hydrateSerie(array $data): ?OA
+    {
+        return new OA(
+            $data['id'] ?? null,
+            $data['name'] ?? 'Titre inconnu',
+            $data['vote_average'] ?? 0.0,
+            'TV',
+            $data['overview'] ?? 'Description non disponible',
+            $data['first_air_date'] ?? 'Date inconnue',
+            $data['original_language'] ?? 'Langue inconnue',
+            $data['episode_run_time'][0] ?? null,
+            isset($data['genres']) ? array_column($data['genres'], 'name') : [],
+            null,
+            $this->getPosterUrl($data['poster_path'] ?? null),
+            $this->parseParticipants($data['credits'] ?? []),
+            $data['producteur'] = $this->getCreator($data['created_by'] ?? []),
+            $data['number_of_seasons'] ?? null,
+            $data['number_of_episodes'] ?? null
+        );
+    }
 
     /**
      * @brief Hydrate une liste d'objets OA pour les séries avec des données spécifiques
@@ -385,7 +386,7 @@ private function hydrateSerie(array $data): ?OA
      */
     public function findMeilleurNoteSerie(): array
     {
-        $results = $this->makeApiRequest('/tv/top_rated', ['include_adult' => false,'language' => 'fr-FR', 'page' => 1]);
+        $results = $this->makeApiRequest('/tv/top_rated', ['include_adult' => false, 'language' => 'fr-FR', 'page' => 1]);
         if (!isset($results['results']) || empty($results['results'])) {
             error_log('Aucune série trouvée dans les mieux notées.');
             return [];
@@ -490,5 +491,37 @@ private function hydrateSerie(array $data): ?OA
         ]);
         $note = $stmt->fetchColumn();
         return $note !== false ? (int)$note : null;
+    }
+
+    /**
+     * @brief Récupère 10 suggestions basées sur un film donné
+     * @param int $idFilm Identifiant TMDB du film
+     * @return array Liste des suggestions sous forme d'objets OA
+     */
+    public function findSuggestions(int $idFilm): array
+    {
+        $results = $this->makeApiRequest("/movie/$idFilm/recommendations", ['language' => 'fr-FR', 'page' => 1], true);
+
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune suggestion trouvée pour le film ID : ' . $idFilm);
+            return [];
+        }
+
+        return $this->hydrateAll(array_slice($results['results'], 0, 10));
+    }
+
+    /**
+     * @brief Récupère des suggestions basées sur une série donnée
+     * @param int $idTMDB Identifiant TMDb de la série
+     * @return array Liste d'objets OA suggérés
+     */
+    public function findSuggestionsSerie(int $idTMDB): array
+    {
+        $results = $this->makeApiRequest("/tv/$idTMDB/recommendations", ['language' => 'fr-FR']);
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log("Aucune suggestion trouvée pour la série ID : $idTMDB");
+            return [];
+        }
+        return $this->hydrateAllSerie($results['results']);
     }
 }
