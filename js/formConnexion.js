@@ -5,6 +5,7 @@
  * d'erreur si ce n'est pas le cas.
  * @version 1.1
  * @date 28/01/2025
+ * @author CHIPY Thibault
  */
 
 document.addEventListener('DOMContentLoaded', function() {
