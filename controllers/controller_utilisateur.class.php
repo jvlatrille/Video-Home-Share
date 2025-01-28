@@ -461,7 +461,7 @@ class ControllerUtilisateur extends Controller
         }
         else{
             $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render(['message' => 'Identifiants incorrects']);
+            echo $template->render(['message' => "L'adresse mail ou le mot de passe est incorrect"]);
         }
     }
 
