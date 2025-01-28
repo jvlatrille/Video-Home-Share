@@ -20,9 +20,12 @@ class messageDAO
     }
 
     //Méthode pour récupérer tout les messages d'un forum
-    public function findAll(?int $idForum): ?array
-    {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "message WHERE idForum = :idForum";
+    public function findAll(?int $idForum): ?array {
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.idUtilisateur, m.idForum, u.pseudo, u.photoProfil
+                FROM vhs_message m
+                JOIN vhs_utilisateur u ON m.idUtilisateur = u.idUtilisateur
+                WHERE idForum = :idForum";
+                
 
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idForum' => $idForum));
@@ -52,6 +55,8 @@ class messageDAO
         $message->setContenu($tableauAssoc['contenu']);
         $message->setNbLikes($tableauAssoc['nbLike']);
         $message->setNbDislikes($tableauAssoc['nbDislike']);
+        $message->setPseudo($tableauAssoc['pseudo']);
+        $message->setPhotoProfil($tableauAssoc['photoProfil']);
         $message->setIdForum($tableauAssoc['idForum']);
         $message->setIdUtilisateur($tableauAssoc['idUtilisateur']);
         return $message;
@@ -66,10 +71,11 @@ class messageDAO
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(array(
-                'id' => $message->getIdMessage(),
                 'contenu' => $message->getContenu(),
                 'nbLike' => $message->getNbLikes(),
                 'nbDislike' => $message->getNbDislikes(),
+                'pseudo' => $message->getPseudo(),
+                'photoProfil' => $message->getPhotoProfil(),
                 'idUtilisateur' => $message->getIdUtilisateur(),
                 'idForum' => $message->getIdForum()
             ));
@@ -86,40 +92,9 @@ class messageDAO
 
     public function incrementLike(int $idMessage): void
     {
-        $sql = "UPDATE " . PREFIXE_TABLE . "message SET nbLike = nbLike + 1 WHERE idMessage = :idMessage";
+        $sql = "UPDATE ".PREFIXE_TABLE."message SET nbLike = nbLike + 1 WHERE idMessage = :idMessage";
         $query = $this->pdo->prepare($sql);
         $query->execute(['idMessage' => $idMessage]);
-    }
-
-    public function incrementDislike(int $idMessage): void
-    {
-        $sql = "UPDATE " . PREFIXE_TABLE . "message SET nbDislike = nbDislike + 1 WHERE idMessage = :idMessage";
-        $query = $this->pdo->prepare($sql);
-        $query->execute(['idMessage' => $idMessage]);
-    }
-
-
-
-    public function chargerAPropos(?int $idUtilisateur): ?array
-    {
-        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM " . PREFIXE_TABLE . "message m JOIN " . PREFIXE_TABLE . "forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
-
-
-        try {
-            $pdoStatement = $this->pdo->prepare($sql);
-            $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
-            $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
-            $resultats = $pdoStatement->fetchAll();
-
-            if (empty($resultats)) {
-                return null; // Aucun message trouvé
-            }
-
-            return $resultats;
-        } catch (Exception $e) {
-            error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
-            return null;
-        }
     }
 
     /**
