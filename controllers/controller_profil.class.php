@@ -32,6 +32,8 @@ class ControllerProfil extends Controller
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
+            var_dump($utilisateurConnecte);
+
             $template = $this->getTwig()->load('profilParametres.html.twig');
             echo $template->render(['utilisateur' => $utilisateurConnecte]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
@@ -199,6 +201,7 @@ class ControllerProfil extends Controller
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $userId = $utilisateurConnecte->getIdUtilisateur();
+            $userPseudo = $utilisateurConnecte->getPseudo();
             $messages = [];
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             
@@ -212,7 +215,7 @@ class ControllerProfil extends Controller
                 if ($photoValide) {
                     // Définir le dossier de destination
                     $uploadDir = 'img/profils/';
-                    $fileName = basename($_FILES['photo']['name']); //time() . '_' . basename($_FILES['photo']['name']);
+                    $fileName = " $userId" || "_" || "$userPseudo";
                     $filePath = $uploadDir . $fileName;
                     
                     // Déplacer le fichier téléchargé
