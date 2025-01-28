@@ -17,7 +17,11 @@ class messageDAO{
 
     //Méthode pour récupérer tout les messages d'un forum
     public function findAll(?int $idForum): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idForum = :idForum";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.idUtilisateur, m.idForum, u.pseudo, u.photoProfil
+                FROM vhs_message m
+                JOIN vhs_utilisateur u ON m.idUtilisateur = u.idUtilisateur
+                WHERE idForum = :idForum";
+                
 
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idForum' => $idForum));    
@@ -54,7 +58,7 @@ class messageDAO{
 
     //Fonction pour creer un message
     public function creerMessage(Message $message): ?Message {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, pseudo, photoProfil idUtilisateur, idForum) 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, pseudo, photoProfil, idUtilisateur, idForum) 
                 VALUES (:contenu, :nbLike, :nbDislike, :pseudo, :photoProfil, :idUtilisateur, :idForum)"; 
         
         try {
@@ -63,6 +67,8 @@ class messageDAO{
                 'contenu' => $message->getContenu(),
                 'nbLike' => $message->getNbLikes(),
                 'nbDislike' => $message->getNbDislikes(),
+                'pseudo' => $message->getPseudo(),
+                'photoProfil' => $message->getPhotoProfil(),
                 'idUtilisateur' => $message->getIdUtilisateur(),
                 'idForum' => $message->getIdForum()
             ));
