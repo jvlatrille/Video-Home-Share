@@ -123,6 +123,5 @@ public function chargerAPropos(?int $idUtilisateur): ?array
         }
     }
 
-
 }
 ?>
