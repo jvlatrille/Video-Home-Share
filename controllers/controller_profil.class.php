@@ -32,8 +32,6 @@ class ControllerProfil extends Controller
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-            var_dump($utilisateurConnecte);
-
             $template = $this->getTwig()->load('profilParametres.html.twig');
             echo $template->render(['utilisateur' => $utilisateurConnecte]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
@@ -215,7 +213,7 @@ class ControllerProfil extends Controller
                 if ($photoValide) {
                     // Définir le dossier de destination
                     $uploadDir = 'img/profils/';
-                    $fileName = " $userId" || "_" || "$userPseudo";
+                    $fileName = "$userId" . "_" . "$userPseudo";
                     $filePath = $uploadDir . $fileName;
                     
                     // Déplacer le fichier téléchargé
