@@ -2,6 +2,7 @@
 // envoie de mail en local
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
 class ControllerUtilisateur extends Controller
 {
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
@@ -47,11 +48,22 @@ class ControllerUtilisateur extends Controller
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
-            
+
             $managerMessage = new MessageDAO($this->getPdo());
             $messages = $managerMessage->getMessagesByUser($autreUtilisateur->getIdUtilisateur());
+
+            // Grouper les messages par forumNom
+            $groupedMessages = [];
+            foreach ($messages as $message) {
+                $forumNom = $message['forumNom'];
+                if (!isset($groupedMessages[$forumNom])) {
+                    $groupedMessages[$forumNom] = [];
+                }
+                $groupedMessages[$forumNom][] = $message;
+            }
+            
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur,'messages' => $messages]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'messages' => $messages]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
