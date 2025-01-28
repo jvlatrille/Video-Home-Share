@@ -45,6 +45,8 @@ class messageDAO{
         $message->setContenu($tableauAssoc['contenu']);
         $message->setNbLikes($tableauAssoc['nbLike']);
         $message->setNbDislikes($tableauAssoc['nbDislike']);
+        $message->setPseudo($tableauAssoc['pseudo']);
+        $message->setPhotoProfil($tableauAssoc['photoProfil']);
         $message->setIdForum($tableauAssoc['idForum']);
         $message->setIdUtilisateur($tableauAssoc['idUtilisateur']);
         return $message;
@@ -52,13 +54,12 @@ class messageDAO{
 
     //Fonction pour creer un message
     public function creerMessage(Message $message): ?Message {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."message (id, contenu, nbLike, nbDislike, idUtilisateur, idForum) 
-                VALUES (:id, :contenu, :nbLike, :nbDislike, :idUtilisateur, :idForum)"; 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, pseudo, photoProfil idUtilisateur, idForum) 
+                VALUES (:contenu, :nbLike, :nbDislike, :pseudo, :photoProfil, :idUtilisateur, :idForum)"; 
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(array(
-                'id' => $message->getIdMessage(),
                 'contenu' => $message->getContenu(),
                 'nbLike' => $message->getNbLikes(),
                 'nbDislike' => $message->getNbDislikes(),
@@ -94,7 +95,7 @@ public function incrementDislike(int $idMessage): void
 
 public function chargerAPropos(?int $idUtilisateur): ?array
     {
-        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.pseudo, m.photoProfil, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
 
         
         try {

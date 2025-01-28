@@ -57,11 +57,35 @@ class ControllerMessage extends Controller
         $managerMessage->creerMessage($message);
 
         // Redirige vers la liste des messages du forum
-        header('Location: index.php?controleur=message&methode=listerMessage&idForum=' . $idForum);
+        header('Location: index.php?controleur=message&methode=listerMessage');
         exit;
-}
+    }
 }
 
+    public function chargerPhotoProfil()
+    {
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            //Recupere l'id de l'utilisateur'
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+
+            // Récupère les messages postés par l'utilisateur
+            $managerMessage = new MessageDao($this->getPdo());
+            $messageListe = $managerMessage->chargerPhotoProfilMessage($idUtilisateur);
+
+            // Génère la vue 
+            $template = $this->getTwig()->load('forum_detail.html.twig');
+            echo $template->render(['messageListe' => $messageListe, 'utilisateur' => $utilisateurConnecte]);
+
+        }
+        else {
+            // Sinon, affiche la page de connexion
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render();
+        }
+    }
 
     public function like()
     {

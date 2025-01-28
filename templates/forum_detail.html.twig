@@ -33,8 +33,6 @@
     </div>
 </div>
 
-
-
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
         <p class="text-center">Aucun message à afficher pour ce forum.</p>
@@ -42,10 +40,23 @@
         <div class="container">
             {% for message in messageListe %}
                 <div class="card mb-4">
-                    <div class="card-body">
-                        <p>{{ message.contenu }}</p>
+                    <div class="card-body d-flex align-items-center">
+                        <!-- Photo de profil -->
+                        {% if message.photoProfil %}
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                                <img src="{{ 'img/profils/' ~ message.photoProfil }}" alt="Photo de {{ message.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+                            </a>
+                        {% else %}
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                                <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                            </a>
+                        {% endif %}
+                        <!-- Contenu du message -->
+                        <div>
+                            <p class="mb-1">{{ message.contenu }}</p>
+                            <small class="text-muted">Envoyé par {{ message.pseudo }}</small>
+                        </div>
                     </div>
-
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div>
                             <form method="POST" action="index.php?controleur=message&methode=like">
