@@ -57,7 +57,6 @@ class Validator{
      * @param array $regleChamp : règles de validation du champ
      * @return bool : true si le champ est valide, false sinon
      */
-
     public function validerChamp(string $champ, $valeur, array $regles): bool{
         $estValide = true;
 
@@ -167,7 +166,12 @@ class Validator{
         return $estValide;
     }
 
-    // Verifie la validité du fichier
+    /**
+     * @brief Valider une photo de profil
+     * @param array $photo : photo de profil a vérifier
+     * @param array $messagesErreurs : tableau contenant les messages d'erreurs
+     * @return bool : true si le champ est valide, false sinon
+     */
     public function validerPhotoProfil(array $photo, array &$messagesErreurs): bool
     {
         $valide = true;
@@ -202,7 +206,12 @@ class Validator{
         return $valide;
     }
 
-    // Verifie l'upload de fichier
+    /**
+     * @brief valide l'upload et le fichier
+     * @param array $fichier : fichier a vérifier
+     * @param array $messagesErreurs : tableau contenant les messages d'erreurs
+     * @return bool : true si le champ est valide, false sinon
+     */
     public function validerUploadEtPhoto(array $fichier, array &$messagesErreurs): bool
     {
         if (isset($fichier) && $fichier['error'] === UPLOAD_ERR_OK) {

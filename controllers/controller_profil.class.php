@@ -194,11 +194,12 @@ class ControllerProfil extends Controller
     {
         if (isset($_SESSION['utilisateur'])) {
             $regles = [];
-
+    
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
+    
             $userId = $utilisateurConnecte->getIdUtilisateur();
+            $userPseudo = $utilisateurConnecte->getPseudo();
             $messages = [];
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             
@@ -211,9 +212,18 @@ class ControllerProfil extends Controller
                 // Si la photo est valide
                 if ($photoValide) {
                     // Définir le dossier de destination
+                    $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
                     $uploadDir = 'img/profils/';
-                    $fileName = basename($_FILES['photo']['name']); //time() . '_' . basename($_FILES['photo']['name']);
+                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
                     $filePath = $uploadDir . $fileName;
+                    
+                    // Supprimer l'ancienne photo si elle existe
+                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    foreach ($anciennePhoto as $fichier) {
+                        if (is_file($fichier)) {
+                            unlink($fichier);
+                        }
+                    }
                     
                     // Déplacer le fichier téléchargé
                     if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
@@ -235,7 +245,7 @@ class ControllerProfil extends Controller
             } else {
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
-
+    
             $utilisateur = $managerUtilisateur->find($userId);
         
             // Mise à jour de la session avec les nouvelles données
@@ -244,6 +254,7 @@ class ControllerProfil extends Controller
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
+    
     
     /**
      * @brief Change la banniere de l'utilisateur
@@ -259,6 +270,7 @@ class ControllerProfil extends Controller
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $userId = $utilisateurConnecte->getIdUtilisateur();
+            $userPseudo = $utilisateurConnecte->getPseudo();
             $messages = [];
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             
@@ -271,9 +283,18 @@ class ControllerProfil extends Controller
                 // Si la photo est valide
                 if ($photoValide) {
                     // Définir le dossier de destination
+                    $fileExtension = strtolower(pathinfo($_FILES['banniere']['name'], PATHINFO_EXTENSION));
                     $uploadDir = 'img/banniere/';
-                    $fileName = basename($_FILES['banniere']['name']); //time() . '_' . basename($_FILES['banniere']['name']);
+                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
                     $filePath = $uploadDir . $fileName;
+                    
+                    // Supprimer l'ancienne banniere si elle existe
+                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    foreach ($anciennePhoto as $fichier) {
+                        if (is_file($fichier)) {
+                            unlink($fichier);
+                        }
+                    }
                     
                     // Déplacer le fichier téléchargé
                     if (move_uploaded_file($_FILES['banniere']['tmp_name'], $filePath)) {
