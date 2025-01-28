@@ -72,8 +72,6 @@ class ControllerUtilisateur extends Controller
     {
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-
             $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
@@ -93,7 +91,7 @@ class ControllerUtilisateur extends Controller
             }
 
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur, 'messages' => $messages]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages,]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 

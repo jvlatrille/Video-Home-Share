@@ -26,43 +26,45 @@
 
 		<div class="container mt-4">
 			<h2>Messages de {{ utilisateur.pseudo }}</h2>
-			{% if messages is empty %}
+			{% if groupedMessages is empty %}
 				<p class="text-center">Cet utilisateur n'a pas encore envoyé de messages.</p>
 			{% else %}
 				<div class="container">
-					{% for message in messages %}
-						<h5><strong>Dans le forum : {{ message.forumNom }}</strong></h5>
-						<div class="card mb-4">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<!-- Affichage de la photo de profil -->
-									<div class="rounded-circle" 
-										style="background-image: url('{{ photo }}');
-										height: 70px;
-										width: 70px;
-										background-size: cover;
-										background-position: center;
-										border: 4px solid #fff;">
-									</div>
-									
-									<!-- Contenu du message -->
-									<div class="ml-3">
-										<p>{{ message.contenu }}</p>
-									</div>
-								</div>
-							</div>
+					{% for forumNom, messages in groupedMessages %}
+						<h3 class="mt-4">{{ forumNom }}</h3> <!-- Nom du forum -->
+						{% for message in messages %}
+							<div class="card mb-4">
+								<div class="card-body">
+									<div class="d-flex align-items-center">
+										<!-- Affichage de la photo de profil -->
+										<div class="rounded-circle" 
+											style="background-image: url('{{ photo }}');
+											height: 70px;
+											width: 70px;
+											background-size: cover;
+											background-position: center;
+											border: 4px solid #fff;">
+										</div>
 		
-							<!-- Pied de la carte (likes/dislikes) -->
-							<div class="card-footer d-flex justify-content-between align-items-center">
-								<div>
-									<button type="button" class="btn btn-success btn-sm">👍 {{ message.nbLike }}</button>
-									<button type="button" class="btn btn-danger btn-sm">👎 {{ message.nbDislike }}</button>
+										<!-- Contenu du message -->
+										<div class="ml-3">
+											<p>{{ message.contenu }}</p>
+										</div>
+									</div>
+								</div>
+		
+								<!-- Pied de la carte (likes/dislikes) -->
+								<div class="card-footer d-flex justify-content-between align-items-center">
+									<div>
+										<button type="button" class="btn btn-success btn-sm">👍 {{ message.nbLike }}</button>
+										<button type="button" class="btn btn-danger btn-sm">👎 {{ message.nbDislike }}</button>
+									</div>
 								</div>
 							</div>
-						</div>
+						{% endfor %}
 					{% endfor %}
 				</div>
 			{% endif %}
-		</div>		
+		</div>			
 	{% endif %}
 {% endblock %}
