@@ -1,13 +1,31 @@
 <?php
 
+/**
+ * @file controller_profil.class.php
+ * @author Léval Noah, Thibault Chipy
+ * @brief Controleur des utilisateurs
+ * @version 2.0
+ * @date 14/11/2024
+ */
+
 class ControllerUtilisateur extends Controller
 {
+    /**
+     * @brief Constructeur du controler d'utilisateur
+     * @param \Twig\Environment $twig Environnement Twig
+     * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
+     */
     public function __construct(\Twig\Environment $twig, \Twig\Loader\FilesystemLoader $loader)
     {
         parent::__construct($twig, $loader);
     }
 
-    // Afficher tous les utilisateurs
+    /**
+     * @brief Permet d'afficher tout les utilisateurs
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function AllUtilisateurs()
     {
         // Récupère tout les utilisateurs
@@ -19,43 +37,59 @@ class ControllerUtilisateur extends Controller
         echo $template->render(['utilisateurListe' => $utilisateurListe]);
     }
 
+    /**
+     * @brief Permet d'afficher un utilisateur
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function afficherUtilisateur()
-{
-    // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
-        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    {
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        $template = $this->getTwig()->load('profil.html.twig');
-        echo $template->render(['utilisateur' => $utilisateurConnecte]);
-        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+            $template = $this->getTwig()->load('profil.html.twig');
+            echo $template->render(['utilisateur' => $utilisateurConnecte]);
+            return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        }
+
+        // Sinon, affiche la page de connexion
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
     }
 
-    // Sinon, affiche la page de connexion
-    $template = $this->getTwig()->load('connexion.html.twig');
-    echo $template->render();
-}
+    /**
+     * @brief Permet d'afficher la page d'un autre utilisateur
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function afficherAutreUtilisateur()
+    {
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-public function afficherAutreUtilisateur()
-{
-    // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
-        $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+            $template = $this->getTwig()->load('profilAutre.html.twig');
+            echo $template->render(['utilisateur' => $autreUtilisateur]);
+            return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        }
 
-        $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
-        $template = $this->getTwig()->load('profilAutre.html.twig');
-        echo $template->render(['utilisateur' => $autreUtilisateur]);
-        return; // Arrête l'exécution de la méthode sinon on a un double affichage
+        // Sinon, affiche la page de connexion
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render();
     }
 
-    // Sinon, affiche la page de connexion
-    $template = $this->getTwig()->load('connexion.html.twig');
-    echo $template->render();
-}
-
-
-    // Changer de pseudo
+    /**
+     * @brief Permet de changer le pseudo de l'utilisateur
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function changerPseudo() {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -81,7 +115,13 @@ public function afficherAutreUtilisateur()
         ]);
     }    
 }
-    // Changer de Mail
+
+    /**
+     * @brief Permet de changer le mail de l'utilisateur
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function changerMail() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $newMail = isset($_GET['mail']) ? $_GET['mail'] : null;
@@ -103,6 +143,12 @@ public function afficherAutreUtilisateur()
         ]);
     }
 
+    /**
+     * @brief Permet de changer la photo de profil
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function changerPhotoProfil()
     {
         // Vérifier si un fichier a été envoyé
@@ -157,6 +203,12 @@ public function afficherAutreUtilisateur()
         }
     }
 
+    /**
+     * @brief Permet de changer la banniere du l'utilisateur
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
     public function changerBanniere()
     {
         // Vérifier si un fichier a été téléchargé
@@ -208,8 +260,148 @@ public function afficherAutreUtilisateur()
             echo json_encode(["success" => false, "message" => "Aucun fichier n'a été téléchargé."]);
         }
     }
- 
 
+    /**
+     * @brief Affiche la page du mot de passe oublie
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function mdpOublie(){
+        $template = $this->getTwig()->load('motDePasseOublie.html.twig');
+        echo $template->render();
+    }
+
+    /**
+     * @brief Envoie le mail de réinitialisation du mot de passe
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function motDePasseOublie()
+    {
+        // Vérifie si le formulaire a été soumis
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+    
+            // Valide que l'email a été soumis et qu'il est correct
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
+                header('Location: index.php?controleur=utilisateur&methode=motDePasseOublie');
+                exit();
+            }
+    
+            // Vérifie si l'email existe dans la base de données
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $utilisateur = $managerUtilisateur->findByMail($email);
+    
+            if ($utilisateur) {
+                // Génère un token unique pour la réinitialisation
+                $token = bin2hex(random_bytes(32));
+                $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+    
+                $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
+    
+                // Enregistre le token dans la base de données
+                $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
+                $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
+    
+                // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+                $idEncoded = urlencode(base64_encode($idUtilisateur));
+                $tokenEncoded = urlencode(base64_encode($token));
+    
+                // Crée le lien de réinitialisation
+                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
+    
+                // Envoie un email avec le lien de réinitialisation
+                $sujet = "Réinitialisation de votre mot de passe";
+                $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n$lienReset\n\nSi vous n'avez pas demandé de réinitialisation, ignorez cet email.";
+                mail($email, $sujet, $message);
+    
+                // Message de succès
+                $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
+            } else {
+                // Message pour ne pas révéler si l'email existe ou non
+                $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
+            }
+
+            var_dump($email, $token, $tokenCrypt, $expiresAt, $idEncoded, $tokenEncoded, $lienReset, $sujet, $message);
+    
+            // Redirige l'utilisateur vers la même page
+            header('Location: index.php?controleur=utilisateur&methode=mdpOublie');
+            exit();
+        }
+    }
+    
+
+    /**
+     * @brief Affiche la page dédié au changement de mot de passe
+     *
+     * @return void
+     */
+    public function pageChangerMDP()
+    {
+        // Récupérer le token depuis l'URL
+        $id = base64_decode(urldecode($_GET['id']));
+        $token = base64_decode(urldecode($_GET['token']));
+
+        $managerUtilisateur = new UtilisateurDao($this->getPDO());
+        $tokenCrypt = $managerUtilisateur->getTokenById($id);
+
+        if (password_verify($token, $tokenCrypt))
+        { 
+            // Transmettre le token au template Twig
+            $template = $this->getTwig()->load('changerMDP.html.twig');
+            echo $template->render([
+                'token' => $tokenCrypt // Transmettre le token au formulaire
+            ]);
+            return Null;
+        }
+        header('Location: index.php');
+        exit();
+    }
+
+    /**
+     * @brief Change le mot de passe de l'utilisateur aprés modification
+     *
+     * @return void
+     */
+    public function changerMdp()
+    {
+            $mdp=isset($_POST['MDP1'])?$_POST['MDP1']:null;
+            $mdpVerif=isset($_POST['MDP2'])?$_POST['MDP2']:null;
+            $token = isset($_POST['token']) ? $_POST['token'] : null;
+
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $idUser = $managerUtilisateur->getIdUserByToken($token);
+
+            if (!$managerUtilisateur->estRobuste($mdp))
+            {
+                $template = $this->getTwig()->load('changerMDP.html.twig');
+                echo $template->render([
+                    'mdpValide' => True,
+                    'message' => "Le mot de passe n'est pas assez robuste"
+                ]);
+                return;
+            }
+
+            if($mdp != $mdpVerif){
+                $template = $this->getTwig()->load('changerMDP.html.twig');
+                echo $template->render([
+                    'mdpValide' => True,
+                    'message' => 'Les mots de passe ne correspondent pas'
+                ]);
+                return;
+            }
+            
+            $mdpHash = password_hash($mdp, PASSWORD_BCRYPT);
+            $managerUtilisateur->changerMdp($idUser, $mdpHash);
+            $managerUtilisateur->supprimerToken($token);
+
+            // Mise à jour de la session avec les nouvelles données
+            header('Location: index.php?controleur=utilisateur&methode=connexion');
+
+    }
     
     /**
      * @brief Affiche le formulaire de connexion d'un utilisateur
@@ -283,9 +475,10 @@ public function afficherAutreUtilisateur()
     public function verifInscription()
     {
         // Récupération des données du formulaire
+
         $donneesFormulaire = [
 
-            'idUtilisateur' => htmlspecialchars($_POST['idUtilisateur'] ?? null, ENT_QUOTES),
+            'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
             'pseudo' => htmlspecialchars($_POST['pseudo'] ?? null, ENT_QUOTES),
             'photoProfil' => htmlspecialchars($_POST['photoProfil'] ?? 'default.png', ENT_QUOTES), // Image par défaut
             'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.png", ENT_QUOTES), // Image par défaut
@@ -294,10 +487,9 @@ public function afficherAutreUtilisateur()
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => htmlspecialchars($_POST['bio'] ?? NULL,ENT_QUOTES),
+            'bio' => isset($_POST['bio']) ? htmlspecialchars($_POST['bio'], ENT_QUOTES) : null,
 
         ];
-
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -336,6 +528,11 @@ public function afficherAutreUtilisateur()
                     return $value === $donneesFormulaire['mdp'] ? true : 'Les mots de passe ne correspondent pas';
                 },
             ],
+            'bio' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 255,
+            ],
         ];
 
         // Validation des données
@@ -364,14 +561,14 @@ public function afficherAutreUtilisateur()
         // Création de l'utilisateur
         $utilisateur = new Utilisateur(
 
-            htmlspecialchars_decode($donneesFormulaire['idUtilisateur'], ENT_QUOTES),
+            $donneesFormulaire['idUtilisateur'],
             htmlspecialchars_decode($donneesFormulaire['pseudo'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['photoProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['banniereProfil'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
-            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
+            $donneesFormulaire['bio'],
 
         );
 
@@ -384,14 +581,15 @@ public function afficherAutreUtilisateur()
     }
 
 
-        /**
-         * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
-         * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
-         * 
-         * @return void
-         */
-        public function deconnexion(){
-            session_destroy();
-            header('Location: index.php');
-        }
+    /**
+     * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil
+     * @details Détruit la session de l'utilisateur et le redirige vers la page d'accueil
+     * @author Thibault CHIPY
+     * 
+     * @return void
+     */
+    public function deconnexion(){
+        session_destroy();
+        header('Location: index.php');
+    }
 }

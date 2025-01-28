@@ -58,6 +58,14 @@
                                 <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                             </div>
+                            {% if oa.producteur is not null %}
+								<div>
+									<p>
+										<strong>Producteur :</strong>
+										{{ oa.producteur }}
+									</p>
+								</div>
+							{% endif %}
                         </div>
                         <p><strong>Note :</strong>
                             {% for i in 1..5 %}
