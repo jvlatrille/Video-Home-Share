@@ -182,6 +182,10 @@ class QuestionDao {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
+    public function getLastInsertId(): int
+{
+    return $this->pdo->lastInsertId();
+}
 }
 
 

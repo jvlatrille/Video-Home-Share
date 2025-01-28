@@ -8,7 +8,7 @@
 
         <!-- Stepper Navigation -->
         <div class="steps d-flex justify-content-between mb-4">
-            {% for i in range(1, nbQuestion + 1) %}
+            {% for i in range(1, nbQuestion) %}
                 <div class="step" id="step-label-{{ i }}" onclick="goToStep({{ i }})" style="cursor: pointer;">
                     Question {{ i }}
                 </div>
@@ -16,11 +16,13 @@
         </div>
 
         <!-- Stepper Content -->
-        {% for i in range(1, nbQuestion + 1) %}
+        {% for i in range(1, nbQuestion) %}
         <div id="step-{{ i }}" class="step-content d-none" style="border: 1px solid #dcdcdc; padding: 15px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
             <!-- Illustration -->
             <div class="row justify-content-center mb-4">
                 <div class="col-12 col-md-8">
+                <input type="hidden" name="questions[{{ i }}][numero]" value="{{ i }}">
+
                     <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
                         <input type="text" class="form-control text-center border-0 bg-transparent" id="cheminImage_{{ i }}" name="questions[{{ i }}][cheminImage]" placeholder="Entrez le chemin de l'image (optionnel)">
                     </div>
@@ -74,10 +76,9 @@
                 {% if i > 1 %}
                 <button type="button" class="btn btn-secondary prev-step">Précédent</button>
                 {% endif %}
-                {% if i <= nbQuestion %}
+                {% if i < nbQuestion %}
                 <button type="button" class="btn btn-primary next-step">Suivant</button>
-                {% endif %}
-                {% if i > nbQuestion %}
+                {% else %}
                 <button type="submit" class="btn btn-success">Enregistrer</button>
                 {% endif %}
             </div>
@@ -87,6 +88,9 @@
 </div>
 
 <script>
+document.querySelector('form').addEventListener('submit', (e) => {
+    console.log('Soumission en cours...');
+});
     document.addEventListener('DOMContentLoaded', () => {
         const steps = document.querySelectorAll('.step');
         const contents = document.querySelectorAll('.step-content');
@@ -124,7 +128,7 @@
     
         window.goToStep = function(index) {
             if (index >= 1 && index <= steps.length) {
-                currentStep = index - 1; // Conversion index 1-based à 0-based
+                currentStep = index - 1;
                 showStep(currentStep);
             }
         };
@@ -132,6 +136,6 @@
         // Initialisation : afficher la première étape
         showStep(currentStep);
     });
-    
+
 </script>
 {% endblock %}
