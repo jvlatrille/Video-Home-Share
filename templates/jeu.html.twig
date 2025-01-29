@@ -2,13 +2,38 @@
     {% block title %}Le jeu : {{jeu.nom}} - {{ constant('WEBSITE_TITLE')}} {% endblock %}
 
     {% block content %}
-       
-        <div class="card" style="width: 18rem;">
+       <div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
+       <div class="container text-center p-5">
+            <h1 class="">Morpion</h1>
+            <div id="board" class="board justify-content-md-center">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+            <p id="message"></p>
+            <button id="restart" class="hidden">Recommencer</button>
+        </div>
+  
+        {# <div class="card" style="width: 18rem;">
             <img src="" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">{{jeu.nom}}</h5>
                 <p class="card-text">{{jeu.regle}}</p>
             </div>
-        </div>
+        </div> #}
 
+    {% endblock %}
+
+    {% block script %}
+        <script src="js/morpion.js"></script>
     {% endblock %}

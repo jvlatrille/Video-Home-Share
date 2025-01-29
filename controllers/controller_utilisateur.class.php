@@ -461,7 +461,7 @@ class ControllerUtilisateur extends Controller
         }
         else{
             $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render(['message' => 'Identifiants incorrects']);
+            echo $template->render(['message' => "L'adresse mail ou le mot de passe est incorrect"]);
         }
     }
 
@@ -475,6 +475,7 @@ class ControllerUtilisateur extends Controller
     public function verifInscription()
     {
         // Récupération des données du formulaire
+
         $donneesFormulaire = [
 
             'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
@@ -528,6 +529,11 @@ class ControllerUtilisateur extends Controller
                 'validation_personnalisee' => function ($value) use ($donneesFormulaire) {
                     return $value === $donneesFormulaire['mdp'] ? true : 'Les mots de passe ne correspondent pas';
                 },
+            ],
+            'bio' => [
+                'obligatoire' => false,
+                'type' => 'string',
+                'longueur_max' => 255,
             ],
         ];
 
