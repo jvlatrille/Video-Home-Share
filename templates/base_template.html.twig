@@ -99,19 +99,30 @@
 				<!-- Logo et bouton Menu -->
 				<div class="d-flex align-items-center">
 					<a class="navbar-brand d-flex align-items-center" href="index.php">
-						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2">
-						VHS
+						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2" >
+						<strong>VHS</strong>
 					</a>
-					<button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
+					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
 						Menu
-					</button>
+					</button> #}
 				</div>
 
-				<!-- Barre de recherche -->
-				<form class="d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
-					<input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
-				</form>
-
+				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
+					{% if utilisateurConnecte %}
+						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">WatchList</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quizz</a>
+					{% else %}
+						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
+					{% endif %}
+				</div>
+			
+							<!-- Barre de recherche -->
+						<form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="margin-right: 413px;">
+							<input class="form-control" type="search" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
+						</form>
+					
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">
 					{% if utilisateurConnecte is null %}
@@ -164,19 +175,19 @@
 			</nav>
 
 			<!-- Menu déroulant sous le bouton "Menu" -->
-			<div class="collapse" id="menuBar">
-				<div class="container py-2 d-flex justify-content-center flex-wrap">
-					{% if utilisateurConnecte %}
+			{# <div class="collapse" id="menuBar"> #}
+				{# <div class="container py-2 d-flex justify-content-center flex-wrap"> #}
+					{# {% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
 						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
 						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
-					{% endif %}
-				</div>
+					{% endif %} #}
+				{# </div> #}
 
-			</div>
+			{# </div> #}
 		</header>
 
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
