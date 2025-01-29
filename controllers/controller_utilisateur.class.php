@@ -577,7 +577,7 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
-            $donneesFormulaire['valide'] = (int)($_POST['valide'] ?? 0)
+            $donneesFormulaire['valide']
 
         );
         
