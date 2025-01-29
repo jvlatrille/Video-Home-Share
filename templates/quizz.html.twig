@@ -1,26 +1,33 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-    <div class="container">
-        <div class="text-center mb-4">
-            <h1>{{ quizz.nom }}</h1>
-            <p><strong>Thème :</strong> {{ quizz.theme }}</p>
-            <p><strong>Difficulté :</strong> {{ quizz.difficulte }}</p>
-            <p><strong>Nombre de questions :</strong> {{ quizz.nbQuestion }}</p>
-            {% if quizz.meilleurJ %}
-                <p><strong>Meilleur joueur :</strong> {{ quizz.meilleurJ }}</p>
-            {% else %}
-                <p><strong>Aucun meilleur joueur enregistré.</strong></p>
-            {% endif %}
-        </div>
-        
-        <!-- Bouton pour lancer le quizz -->
-        <div class="text-center mb-4">
-            <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ quizz.idQuizz }}" class="btn btn-secondary">Lancer le quizz</a>
-        </div>
+    <div class="container py-5 d-flex justify-content-center">
+        <div class="card shadow-lg p-4" style="max-width: 600px; width: 100%; border-radius: 12px;">
+            <div class="text-center mb-4">
+                <h1 class="fw-bold text-primary">{{ quizz.nom }}</h1>
+                <p class="text-muted"><i class="fas fa-book me-2"></i>Thème : <span class="fw-semibold">{{ quizz.theme }}</span></p>
+                <p class="text-muted"><i class="fas fa-signal me-2"></i>Difficulté : <span class="fw-semibold">{{ quizz.difficulte }}</span></p>
+                <p class="text-muted"><i class="fas fa-question-circle me-2"></i>Nombre de questions : <span class="fw-semibold">{{ quizz.nbQuestion }}</span></p>
+                {% if quizz.meilleurJ %}
+                    <p class="text-success"><i class="fas fa-trophy me-2"></i>Meilleur joueur : <span class="fw-semibold">{{ quizz.meilleurJ }}</span></p>
+                {% else %}
+                    <p class="text-warning"><i class="fas fa-exclamation-circle me-2"></i>Aucun meilleur joueur enregistré.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Bouton pour lancer le quizz -->
+            <div class="text-center mb-4">
+                <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ quizz.idQuizz }}" 
+                   class="btn btn-success btn-lg shadow-sm w-100" style="border-radius: 8px;">
+                    <i class="fas fa-play me-2"></i>Lancer le quizz
+                </a>
+            </div>
 
-        <div class="text-center mt-4  mb-4">
-            <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-primary">Retour à la liste des quizz</a>
+            <div class="text-center mt-3">
+                <a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-secondary w-100" style="border-radius: 8px;">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste des quizz
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}
