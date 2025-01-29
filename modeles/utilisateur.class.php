@@ -46,7 +46,7 @@ class Utilisateur
     /**
     * @brief Indique si l'utilisateur peut se connecter
     */
-    private ?bool $valide = null;
+    private ?int $valide = null;
 
     /**
      * @brief Constructeur de la classe Utilisateur
@@ -58,7 +58,7 @@ class Utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
      * @param string|null $bio biographie de l'utilisateur
-     * @param bool|int $valide indique si l'utilisateur peut se connecter (1 si oui, 0 sinon)
+     * @param int|null $valide indique si l'utilisateur peut se connecter (1 si oui, 0 sinon)
 
      * @return void
      */
