@@ -57,9 +57,9 @@ class ControllerMessage extends Controller
         $managerMessage->creerMessage($message);
 
         // Redirige vers la liste des messages du forum
-        header('Location: index.php?controleur=message&methode=listerMessage&idForum=' . $idForum);
+        header('Location: index.php?controleur=message&methode=listerMessage');
         exit;
-}
+    }
 }
 
 

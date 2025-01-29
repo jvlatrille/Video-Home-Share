@@ -115,57 +115,68 @@ class ControllerQuestion extends Controller
 
 
     public function saveQuestions()
-    {
-        // Vérifie si une session est active
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
-        $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
-        // Si l'ID du quizz est manquant
-        if (!$idQuizz) {
-            die("L'identifiant du quizz est requis !");
-        }
-
-        $managerQuestion = new QuestionDao($this->getPdo());
-
-        foreach ($questionsData as $questionData) {
-            // Extraction des données pour chaque question
-
-            $contenu = $questionData['contenu'] ?? '';
-            $numero = $questionData['numero'] ?? 1;
-            $nvDifficulte = $questionData['nvDifficulte'] ?? '';
-            $bonneReponse = $questionData['bonneReponse'] ?? '';
-            $mauvaiseReponse1 = $questionData['mauvaiseReponse1'] ?? '';
-            $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
-            $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
-            $cheminImage = $questionData['cheminImage'] ?? '';
-
-            // Création de l'objet Question
-            $question = new question(
-                null, // L'ID sera généré automatiquement par la base de données
-                $contenu,
-                $numero,
-                $nvDifficulte,
-                $bonneReponse,
-                $cheminImage,
-                $mauvaiseReponse1,
-                $mauvaiseReponse2,
-                $mauvaiseReponse3
-            );
-
-            // Ajout de la question
-            if (!$managerQuestion->add($question)) {
-                // Si l'ajout échoue, afficher une erreur
-                die("Erreur lors de l'ajout de la question.");
-            }
-        }
-
-        // Redirection après l'ajout des questions
-        // header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
-        exit;
+{
+    // Vérifie si une session est active
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
+    $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
+
+    // Si l'ID du quizz est manquant
+    if (!$idQuizz) {
+        die("L'identifiant du quizz est requis !");
+    }
+
+    $managerQuestion = new QuestionDao($this->getPdo());
+
+    foreach ($questionsData as $questionData) {
+        // Extraction des données pour chaque question
+        $contenu = $questionData['contenu'] ?? '';
+        $numero = $questionData['numero'] ?? 1;
+        $nvDifficulte = $questionData['nvDifficulte'] ?? '';
+        $bonneReponse = $questionData['bonneReponse'] ?? '';
+        $mauvaiseReponse1 = $questionData['mauvaiseReponse1'] ?? '';
+        $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
+        $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
+        $cheminImage = $questionData['cheminImage'] ?? '';
+
+        // Création de l'objet Question
+        $question = new Question(
+            null, // L'ID sera généré automatiquement par la base de données
+            $contenu,
+            $numero,
+            $nvDifficulte,
+            $bonneReponse,
+            $cheminImage,
+            $mauvaiseReponse1,
+            $mauvaiseReponse2,
+            $mauvaiseReponse3
+        );
+
+        // Ajout de la question
+        if ($managerQuestion->add($question)) {
+            // Récupérer l'ID de la question ajoutée
+            $idQuestion = $managerQuestion->getLastInsertId();
+
+            // Lier la question au quizz dans la table vhs_portersur
+            $sql = "INSERT INTO vhs_portersur (idQuizz, idQuestion) VALUES (:idQuizz, :idQuestion)";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->execute([
+                'idQuizz' => $idQuizz,
+                'idQuestion' => $idQuestion
+            ]);
+        } else {
+            // Si l'ajout échoue, afficher une erreur
+            die("Erreur lors de l'ajout de la question.");
+        }
+    }
+
+    // Redirection après l'ajout des questions
+    header('Location: index.php?controleur=quizz&methode=listerQuizz');
+    exit;
+}
 
 
 

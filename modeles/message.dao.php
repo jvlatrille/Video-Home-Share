@@ -17,7 +17,11 @@ class messageDAO{
 
     //Méthode pour récupérer tout les messages d'un forum
     public function findAll(?int $idForum): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idForum = :idForum";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.idUtilisateur, m.idForum, u.pseudo, u.photoProfil
+                FROM vhs_message m
+                JOIN vhs_utilisateur u ON m.idUtilisateur = u.idUtilisateur
+                WHERE idForum = :idForum";
+                
 
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(array('idForum' => $idForum));    
@@ -45,6 +49,8 @@ class messageDAO{
         $message->setContenu($tableauAssoc['contenu']);
         $message->setNbLikes($tableauAssoc['nbLike']);
         $message->setNbDislikes($tableauAssoc['nbDislike']);
+        $message->setPseudo($tableauAssoc['pseudo']);
+        $message->setPhotoProfil($tableauAssoc['photoProfil']);
         $message->setIdForum($tableauAssoc['idForum']);
         $message->setIdUtilisateur($tableauAssoc['idUtilisateur']);
         return $message;
@@ -52,16 +58,17 @@ class messageDAO{
 
     //Fonction pour creer un message
     public function creerMessage(Message $message): ?Message {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."message (id, contenu, nbLike, nbDislike, idUtilisateur, idForum) 
-                VALUES (:id, :contenu, :nbLike, :nbDislike, :idUtilisateur, :idForum)"; 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, pseudo, photoProfil, idUtilisateur, idForum) 
+                VALUES (:contenu, :nbLike, :nbDislike, :pseudo, :photoProfil, :idUtilisateur, :idForum)"; 
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(array(
-                'id' => $message->getIdMessage(),
                 'contenu' => $message->getContenu(),
                 'nbLike' => $message->getNbLikes(),
                 'nbDislike' => $message->getNbDislikes(),
+                'pseudo' => $message->getPseudo(),
+                'photoProfil' => $message->getPhotoProfil(),
                 'idUtilisateur' => $message->getIdUtilisateur(),
                 'idForum' => $message->getIdForum()
             ));
@@ -94,7 +101,7 @@ public function incrementDislike(int $idMessage): void
 
 public function chargerAPropos(?int $idUtilisateur): ?array
     {
-        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.pseudo, m.photoProfil, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
 
         
         try {
@@ -115,7 +122,6 @@ public function chargerAPropos(?int $idUtilisateur): ?array
             return null;
         }
     }
-
 
 }
 ?>

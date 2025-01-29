@@ -1,50 +1,64 @@
 {% extends 'base_template.html.twig' %}
-{% block title %}Connexion - {{ constant('WEBSITE_TITLE') }} {% endblock %}
+{% block title %}Connexion -
+	{{ constant('WEBSITE_TITLE') }}
+{% endblock %}
 
 {% block content %}
 
-    {% if message is defined %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endif %}
-    <form action="index.php?controleur=utilisateur&methode=verifConnexion" method="POST" class="text-center col-12 col-md-6 col-lg-4 mx-auto my-auto p-4">
-        <div class="bg-mydark rounded p-4 mb-5">
-            <h3 class="mb-3 fw-bold">Connexion</h3>
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
+	<form action="index.php?controleur=utilisateur&methode=verifConnexion" method="POST" class="text-center col-12 col-md-6 col-lg-4 mx-auto my-auto p-4">
+		<div class="bg-mydark rounded p-4 mb-5">
+			<h3 class="mb-3 fw-bold">Connexion</h3>
 
-            {% if erreurs is defined %}
-                <div class="alert alert-danger">
-                    <h3>Erreurs :</h3>
-                    <ul>
-                        {% for erreur in erreurs %}
-                            <li>{{ erreur }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+			<!-- Champ Email -->
+			<div class="form-group mb-3">
+				<label for="email" class="d-block text-start mb-0">Mail</label>
+				<input type="email" name="mail" id="email" class="form-control" required placeholder="Exemple : mail@mail.fr">
+				<small id="emailErreur" class="text-danger"></small>
+			</div>
+
+			<!-- Champ Mot de Passe -->
+			<div class="form-group mb-4">
+				<label for="password" class="d-block text-start mb-0">Mot de passe</label>
+				<input type="password" name="mdp" id="mdp" class="form-control" required placeholder="Mot de passe">
+				<small id="mdpErreur" class="text-danger"></small>
+			</div>
+			{% if erreurs is defined %}
+				<div class="alert alert-danger text-center">
+					<h3>Erreurs :</h3>
+					<ul >
+						{% for erreur in erreurs %}
+							<li>{{ erreur }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+
+            {% if message is defined %}
+                <div class="alert alert-danger text-danger">{{ message }}</div>
             {% endif %}
-            
-            <!-- Champ Email -->
-            <div class="form-group mb-3">
-                <label for="email" class="d-block text-start mb-0">Mail</label>
-                <input type="email" name="mail" id="email" class="form-control" required>
-            </div>
+			<input
+			type="submit" id="boutonConnexion" class="btn btn-primary my-2 mx-auto" value="Se connecter">
 
-            <!-- Champ Mot de Passe -->
-            <div class="form-group mb-4">
-                <label for="password" class="d-block text-start mb-0">Mot de passe</label>
-                <input type="password" name="mdp" id="mdp" class="form-control" required>
-            </div>
+			<!-- Lien Mot de Passe Oublié -->
+			<div class="mt-2">
+				<a href="index.php?controleur=utilisateur&methode=mdpOublie" class="text-decoration-none">Mot de passe oublié ?</a>
+			</div>
 
-            <input type="submit" class="btn btn-primary my-2 mx-auto" value="Se connecter">
+			<!-- Lien Inscription -->
+			<div class="mt-3">
+				<a href="index.php?controleur=utilisateur&methode=inscription" class="btn btn-primary">S'inscrire</a>
+			</div>
+		</div>
+	</form>
 
-            <!-- Lien Mot de Passe Oublié -->
-            <div class="mt-2">
-                <a href="index.php?controleur=utilisateur&methode=mdpOublie" class="text-decoration-none">Mot de passe oublié ?</a>
-            </div>
 
-            <!-- Lien Inscription -->
-            <div class="mt-3">
-                <a href="index.php?controleur=utilisateur&methode=inscription" class="btn btn-primary">S'inscrire</a>
-            </div>
-        </div>
-    </form>
+	{% block scripts %}
+		<script src="js/formConnexion.js"></script>
+	{% endblock %}
 
 {% endblock %}

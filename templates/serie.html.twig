@@ -1,52 +1,56 @@
 {% extends 'base_template.html.twig' %}
 
-{% block css %} 
-    {% if oa is defined and oa is not null %}
-    <style>
-        /* Fond avec l'affiche */
-        body {
-            background: url('{{ oa.posterPath }}') no-repeat center center fixed;
-            background-size: cover;
-            background-attachment: scroll;
-        }
-    </style>
-    {% endif %}
+{% block css %}
+	{% if oa is defined and oa is not null %}
+		<style>
+			/* Fond avec l'affiche */
+			body {
+				background: url('{{ oa.posterPath }}') no-repeat center center fixed;
+				background-size: cover;
+				background-attachment: scroll;
+			}
+		</style>
+	{% endif %}
 {% endblock %}
 
 {% block content %}
-    <title>{{ oa.nom }}</title>
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
+	<title>{{ oa.nom }}</title>
 
-    {% if oa is defined %}
-        <div id="oa-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
-            <div class="row">
-                <div class="col-md-4">
-                    {% if oa.posterPath %}
-                        <img src="{{ oa.posterPath }}" 
-                             alt="Affiche de {{ oa.nom }}" 
-                             class="img-fluid rounded mb-3" 
-                             style="max-height: 500px; object-fit: cover; cursor: pointer;"
-                             data-bs-toggle="modal" 
-                             data-bs-target="#afficheModal">
-                    {% else %}
-                        <p><em>Affiche non disponible</em></p>
-                    {% endif %}
-                </div>
+	{% if oa is defined %}
+		<div id="oa-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
+			<div class="row">
+				<div class="col-md-4">
+					{% if oa.posterPath %}
+						<img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded mb-3" style="max-height: 500px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#afficheModal">
+					{% else %}
+						<p>
+							<em>Affiche non disponible</em>
+						</p>
+					{% endif %}
+				</div>
 
-                <div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-transparent border-0">
-                            <div class="modal-body d-flex align-items-center p-0 position-relative">
-                                {% if oa.posterPath %}
-                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;">
-                                {% else %}
-                                    <p><em>Affiche non disponible</em></p>
-                                {% endif %}
-                                <h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
-                                <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg">
+						<div class="modal-content bg-transparent border-0">
+							<div class="modal-body d-flex align-items-center p-0 position-relative">
+								{% if oa.posterPath %}
+									<img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;">
+								{% else %}
+									<p>
+										<em>Affiche non disponible</em>
+									</p>
+								{% endif %}
+								<h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
+								<button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+						</div>
+					</div>
+				</div>
 
                 <div class="col-md-8">
                     <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
@@ -55,9 +59,17 @@
                             <div>
                                 <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
                                 <p><strong>Nombre de saisons :</strong> {{ oa.nbSaison }}</p>
-                                <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
+                                <p><strong>Nombre d'épisodes :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                             </div>
+                            {% if oa.producteur is not null %}
+								<div>
+									<p>
+										<strong>Producteur :</strong>
+										{{ oa.producteur }}
+									</p>
+								</div>
+							{% endif %}
                         </div>
                         <p><strong>Note :</strong>
                             {% for i in 1..5 %}
@@ -71,7 +83,7 @@
                     </div>
                     
                     <div class="d-flex mt-3">
-                        <a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
+                        <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un avis</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
                             Ajouter la série à une watchlist
                         </button>
@@ -83,7 +95,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à une watchlist</h5>
+                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à la WatchList</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -113,110 +125,111 @@
                     
                 
 
-            <div class="mt-4 p-3 bg-light rounded">
-                <h4 class="fw-bold">Description</h4>
-                <p>{{ oa.description }}</p>
-            </div>
+			<div class="mt-4 p-3 bg-light rounded">
+				<h4 class="fw-bold">Description</h4>
+				<p>{{ oa.description }}</p>
+			</div>
 
-            {% if participants is defined and participants|length > 0 %}
-                <h4 class="fw-bold">Participants</h4>
-                <div class="row">
-                    {% for participant in participants|slice(0, 6) %}
-                        <div class="col-4 col-md-2 text-center mb-3">
-                            {% if participant.photo %}
-                                <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-                            {% else %}
-                                <img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
-                            {% endif %}
-                            <p class="mt-2 fw-bold">{{ participant.nom }}</p>
-                            <p class="text-muted small">{{ participant.role }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p><em>Aucun participant trouvé pour cette série.</em></p>
-            {% endif %}
+			{% if participants is defined and participants|length > 0 %}
+				<h4 class="fw-bold">Participants</h4>
+				<div class="row">
+					{% for participant in participants|slice(0, 6) %}
+						<div class="col-4 col-md-2 text-center mb-3">
+							{% if participant.photo %}
+								<img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+							{% else %}
+								<img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
+							{% endif %}
+							<p class="mt-2 fw-bold">{{ participant.nom }}</p>
+							<p class="text-muted small">{{ participant.role }}</p>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<p>
+					<em>Aucun participant trouvé pour cette série.</em>
+				</p>
+			{% endif %}
 
-            {% if suggestions is defined and suggestions|length > 0 %}
-                <div class="mt-5">
-                    <h2 class="text-center mb-4">Suggestions de séries</h2>
-                    <div id="carouselSuggestions" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            {% for suggestionsChunk in suggestions|batch(5, null) %}
-                                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                    <div class="row text-center justify-content-center">
-                                        {% for suggestion in suggestionsChunk %}
-                                            {% if suggestion is not null %}
-                                                <div class="col-md-2">
-                                                    {% if suggestion.type == 'Film' %}
-                                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
-                                                    {% else %}
-                                                        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
-                                                    {% endif %}
-                                                            <img src="{{ suggestion.posterPath }}" 
-                                                                alt="{{ suggestion.nom }}" 
-                                                                class="img-fluid rounded mb-2 shadow-sm"
-                                                                style="height: 150px; object-fit: cover;">
-                                                            <p class="text-truncate w-100">{{ suggestion.nom }}</p>
-                                                        </a>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" style="filter: invert(100%);" aria-hidden="true"></span>
-                            <span class="visually-hidden">Précédent</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" style="filter: invert(100%);" aria-hidden="true"></span>
-                            <span class="visually-hidden">Suivant</span>
-                        </button>
-                    </div>
-                </div>
-            {% else %}
-                <p><em>Aucune suggestion trouvée pour cette série.</em></p>
-            {% endif %}
+			{% if suggestions is defined and suggestions|length > 0 %}
+				<div class="mt-5">
+					<h2 class="text-center mb-4">Suggestions de séries</h2>
+					<div id="carouselSuggestions" class="carousel slide" data-bs-ride="carousel">
+						<div class="carousel-inner">
+							{% for suggestionsChunk in suggestions|batch(5, null) %}
+								<div class="carousel-item {% if loop.first %}active{% endif %}">
+									<div class="row text-center justify-content-center">
+										{% for suggestion in suggestionsChunk %}
+											{% if suggestion is not null %}
+												<div class="col-md-2">
+													{% if suggestion.type == 'Film' %}
+														<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+														{% else %}
+															<a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+															{% endif %}
+															<img src="{{ suggestion.posterPath }}" alt="{{ suggestion.nom }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 150px; object-fit: cover;">
+															<p class="text-truncate w-100">{{ suggestion.nom }}</p>
+														</a>
+													</div>
+												{% endif %}
+											{% endfor %}
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+							<button class="carousel-control-prev" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+								<span class="visually-hidden">Précédent</span>
+							</button>
+							<button class="carousel-control-next" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="next">
+								<span class="carousel-control-next-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+								<span class="visually-hidden">Suivant</span>
+							</button>
+						</div>
+					</div>
+				{% else %}
+					<p>
+						<em>Aucune suggestion trouvée pour cette série.</em>
+					</p>
+				{% endif %}
 
-            {% if commentaires is defined and commentaires is not empty %}
-                <h2>Commentaires</h2>
-                <ul class="list-group mb-4">
-                    {% for commentaire in commentaires %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                {% if commentaire.photoProfil %}
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
-                                    </a>
-                                {% else %}
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
-                                    </a>
-                                {% endif %}
-                                <div>
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <strong>{{ commentaire.pseudo }}</strong>
-                                    </a>
-                                    <p>{{ commentaire.contenu }}</p>
-                                </div>
-                            </div>
-                            {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
-                                <div>
-                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idoa={{ oa.idoa }}"
-                                       class="btn btn-danger btn-sm"
-                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
-                                        Supprimer
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p><em>Aucun commentaire pour cette série.</em></p>
-            {% endif %}
+				{% if commentaires is defined and commentaires is not empty %}
+					<h2>Commentaires</h2>
+					<ul class="list-group mb-4">
+						{% for commentaire in commentaires %}
+							<li class="list-group-item d-flex justify-content-between align-items-center">
+								<div class="d-flex align-items-center">
+									{% if commentaire.photoProfil %}
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+											<img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+										</a>
+									{% else %}
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+											<img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+										</a>
+									{% endif %}
+									<div>
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+											<strong>{{ commentaire.pseudo }}</strong>
+										</a>
+										<p>{{ commentaire.contenu }}</p>
+									</div>
+								</div>
+								{% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
+									<div>
+										<a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idoa={{ oa.idoa }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+											Supprimer
+										</a>
+									</div>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% else %}
+					<p>
+						<em>Aucun commentaire pour cette série.</em>
+					</p>
+				{% endif %}
 
             <div id="commentaires" class="mt-4">
             {% if utilisateurConnecte %}
