@@ -86,6 +86,7 @@ class UtilisateurDao
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setRole($tableauAssoc['role']);
         $utilisateur->setBio($tableauAssoc['bio']);
+        $utilisateur->setValide($tableauAssoc['valide']);
         return $utilisateur;
     }
 
@@ -320,8 +321,8 @@ class UtilisateurDao
      * @return bool
      */
     public function creerUtilisateur(?Utilisateur $utilisateur): ?bool {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role, bio) 
-                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role, :bio)";
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role, bio, valide) 
+                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role, :bio, :valide)";
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute([
             'pseudo' => $utilisateur->getPseudo(),
@@ -330,7 +331,8 @@ class UtilisateurDao
             'adressMail' => $utilisateur->getAdressMail(),
             'motDePasse' => $utilisateur->getMotDePasse(),
             'role' => $utilisateur->getRole(),
-            'bio' => $utilisateur->getBio()
+            'bio' => $utilisateur->getBio(),
+            'valide' => $utilisateur->getValide()
         ]);
         return $reussite;
     }

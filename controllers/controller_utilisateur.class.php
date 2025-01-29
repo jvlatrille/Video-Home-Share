@@ -486,9 +486,11 @@ class ControllerUtilisateur extends Controller
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => htmlspecialchars($_POST['bio'],ENT_QUOTES) ?? null,
+            'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
+            'valide' => $_POST['valide'] ?? FALSE
 
         ];
+        var_dump($donneesFormulaire);
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -562,10 +564,11 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
-            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES)
+            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
+            $donneesFormulaire['valide']
 
         );
-
+        var_dump($utilisateur);
         // Sauvegarde dans la base de données
         $managerUtilisateur->creerUtilisateur($utilisateur);
 
@@ -574,6 +577,10 @@ class ControllerUtilisateur extends Controller
         exit;
     }
 
+    public function verifMail()
+    {
+
+    }
 
     /**
      * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil

@@ -190,6 +190,11 @@
                 });
         });
     }
+
+    const message = '{{ message|escape("js") }}';
+    if (message) {
+        alert(message);
+    }
 });
 </script>
 {% endblock %}
