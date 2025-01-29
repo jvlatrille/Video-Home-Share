@@ -90,8 +90,12 @@ class ControllerUtilisateur extends Controller
                 $groupedMessages[$forumNom][] = $message;
             }
 
+            $managerCommentaire = new CommentaireDAO($this->getPdo());
+            $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($autreUtilisateur->getIdUtilisateur());
+
+
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages,]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
@@ -653,6 +657,30 @@ class ControllerUtilisateur extends Controller
             echo $template->render(['message' => $feedback]);
         } else {
             header('Location: index.php');
+        }
+    }
+
+    public function afficherCommentairesUtilisateur()
+    {
+        if (isset($_GET['idUtilisateur'])) {
+            $idUtilisateur = (int) $_GET['idUtilisateur'];
+
+            // Récupération des commentaires de l'utilisateur
+            $managerCommentaire = new CommentaireDAO($this->getPdo());
+            $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($idUtilisateur);
+
+            // Récupération des infos utilisateur
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $utilisateur = $managerUtilisateur->find($idUtilisateur);
+
+            // Passer les données au template
+            $template = $this->getTwig()->load('commentairesUtilisateur.html.twig');
+            echo $template->render([
+                'utilisateur' => $utilisateur,
+                'commentaires' => $commentaires,
+            ]);
+        } else {
+            echo "Identifiant utilisateur manquant !";
         }
     }
 }
