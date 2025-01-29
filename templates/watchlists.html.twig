@@ -1,6 +1,11 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
 	<div class="container">
 		<div class="row">
 			<h1 class="col-3">Mes watchlist</h1>
@@ -149,7 +154,7 @@
 
 				<div class="container text-center mt-2">
 					<div class="row">
-						<div class="col text-start">
+						<div class="col text-start mb-2">
 							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}">
 								<h2>{{watchList.titre}}</h2>
 							</a>
@@ -201,8 +206,8 @@
 			{% endfor %}
 
 
-			<div class="text-center mt-4">
-				<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-secondary">Parcourir les watchlists de la communauté</a>
+			<div class="text-center mt-4 mb-3">
+				<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-primary">Parcourir les watchlists de la communauté</a>
 			</div>
 		{% endif %}
 	</div>
