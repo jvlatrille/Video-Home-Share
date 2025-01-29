@@ -208,7 +208,7 @@ class UtilisateurDao
      * @param date $Date de fin de validité du token
      * @return bool Retourne true en cas de succès, false sinon
      */
-    public function enregistrerTokenReset($userId, $token, $expiresAt)
+    public function enregistrerToken($userId, $token, $expiresAt)
     {
         // Prépare une requête SQL pour insérer ou mettre à jour le token
         $sql = "INSERT INTO " . PREFIXE_TABLE . "tokens (user_id, token, expires_at)

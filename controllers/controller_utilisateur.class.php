@@ -303,7 +303,7 @@ class ControllerUtilisateur extends Controller
                 $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
     
                 // Enregistre le token dans la base de données
-                $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
+                $managerUtilisateur->enregistrerToken($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
                 $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
     
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
@@ -595,7 +595,7 @@ class ControllerUtilisateur extends Controller
         $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
 
         // Enregistre le token dans la base de données
-        $managerUtilisateur->enregistrerTokenReset($idUtilisateur, $tokenCrypt, $expiresAt);
+        $managerUtilisateur->enregistrerToken($idUtilisateur, $tokenCrypt, $expiresAt);
 
         // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
         $idEncoded = urlencode(base64_encode($idUtilisateur));

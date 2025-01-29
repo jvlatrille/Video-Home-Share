@@ -166,11 +166,30 @@ class ControllerProfil extends Controller
             $validator = new Validator($regles);
             $valides = $validator->valider($donnees);
         
-            // Interaction avec le DAO pour mettre à jour le pseudo
+            // Interaction avec le DAO pour evoyer le lien pour mettre à jour le mail
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             if ($valides)
             {
-                $reussite = $managerUtilisateur->changerMail($id, $newMail);
+                //$reussite = $managerUtilisateur->changerMail($id, $newMail);
+                $token = bin2hex(random_bytes(32));
+                $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+    
+                $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
+    
+                // Enregistre le token dans la base de données
+                $managerUtilisateur->enregistrerToken($id, $tokenCrypt, $expiresAt);
+    
+                // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+                $idEncoded = urlencode(base64_encode($id));
+                $tokenEncoded = urlencode(base64_encode($token));
+    
+                // Crée le lien de réinitialisation
+                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
+    
+                // Envoie un email avec le lien de réinitialisation
+                $sujet = "Changer votre adresse mail";
+                $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour changer votre adresse mail :\n$lienReset\n\nSi vous n'avez pas demandé de changement de mail, ignorez cet email.";
+                mail($email, $sujet, $message);
             }
         
             // Génération d'un message en fonction du succès ou de l'échec
