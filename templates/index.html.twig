@@ -29,7 +29,7 @@
                             <div class="col-md-6 text-center">
                                 <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ oa.nom }}</h2>
                                 <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                                <p><strong>Description :</strong></p>
                                 <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
                                 <p><strong>Note :</strong>
                                     {% for i in 1..5 %}
@@ -189,11 +189,6 @@
                     alert('Erreur de connexion avec le serveur.');
                 });
         });
-    }
-
-    const message = '{{ message|escape("js") }}';
-    if (message) {
-        alert(message);
     }
 });
 </script>

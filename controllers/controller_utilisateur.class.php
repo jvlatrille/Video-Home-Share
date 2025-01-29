@@ -324,8 +324,6 @@ class ControllerUtilisateur extends Controller
                 // Message pour ne pas révéler si l'email existe ou non
                 $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
             }
-
-            var_dump($email, $token, $tokenCrypt, $expiresAt, $idEncoded, $tokenEncoded, $lienReset, $sujet, $message);
     
             // Redirige l'utilisateur vers la même page
             header('Location: index.php?controleur=utilisateur&methode=mdpOublie');
@@ -451,6 +449,14 @@ class ControllerUtilisateur extends Controller
         $mail = $donneesFormulaire['mail'];
         $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
+
+        if(!$managerUtilisateur->estValide($mail)){
+            $erreurs[] = "Veuillez activer votre compte";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
+
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
             $managerUtilisateur->verifierDerniereSauvegarde();
@@ -570,14 +576,52 @@ class ControllerUtilisateur extends Controller
         // Sauvegarde dans la base de données
         $managerUtilisateur->creerUtilisateur($utilisateur);
 
+        $email = htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES);
+        $utilisateur = $managerUtilisateur->findByMail($email);
+
+        // Génère un token unique pour la réinitialisation
+        $token = bin2hex(random_bytes(32));
+        $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+        $idUtilisateur = $utilisateur->getIdUtilisateur();
+
+        $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
+
+        // Enregistre le token dans la base de données
+        $managerUtilisateur->enregistrerTokenReset($idUtilisateur, $tokenCrypt, $expiresAt);
+
+        // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+        $idEncoded = urlencode(base64_encode($idUtilisateur));
+        $tokenEncoded = urlencode(base64_encode($token));
+
+        // Crée le lien de réinitialisation
+        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
+
+        // Envoie un email avec le lien de réinitialisation
+        $sujet = "Réinitialisation de votre mot de passe";
+        $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour active votre compte :\n$lienReset\n\nSi vous n'avez pas creer de compte, ignorez cet email.";
+        mail($email, $sujet, $message);
+
         // Redirection vers la page de connexion
-        header('Location: index.php?controleur=utilisateur&methode=verifMail');
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render(['message' => "Veuillez regarder votre boite mail afin d'activer votre compte"]);
         exit;
     }
 
     public function verifMail()
     {
-        //envoie de mail avec token et id de l'user comme d'hab :)
+        // Récupérer le token depuis l'URL
+        $id = base64_decode(urldecode($_GET['id']));
+        $token = base64_decode(urldecode($_GET['token']));
+
+        $managerUtilisateur = new UtilisateurDao($this->getPDO());
+        $tokenCrypt = $managerUtilisateur->getTokenById($id);
+
+        if (password_verify($token, $tokenCrypt))
+        { 
+            $managerUtilisateur->activerCompte($id);
+        }
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        exit();
     }
 
     /**
