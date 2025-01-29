@@ -314,7 +314,7 @@ class ControllerUtilisateur extends Controller
                 $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
     
                 // Envoie un email avec le lien de réinitialisation
-                $sujet = "Réinitialisation de votre mot de passe";
+                $sujet = "Reinitialisation de votre mot de passe";
                 $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n$lienReset\n\nSi vous n'avez pas demandé de réinitialisation, ignorez cet email.";
                 mail($email, $sujet, $message);
     
@@ -450,7 +450,7 @@ class ControllerUtilisateur extends Controller
         $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
 
-        if(!$managerUtilisateur->estValide($mail)){
+        if(!$managerUtilisateur->estValide($mail) && $managerUtilisateur->emailExiste($mail)){ 
             $erreurs[] = "Veuillez activer votre compte";
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['erreurs' => $erreurs]);
@@ -597,7 +597,7 @@ class ControllerUtilisateur extends Controller
         $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
 
         // Envoie un email avec le lien de réinitialisation
-        $sujet = "Réinitialisation de votre mot de passe";
+        $sujet = "Activez votre compte !";
         $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour active votre compte :\n$lienReset\n\nSi vous n'avez pas creer de compte, ignorez cet email.";
         mail($email, $sujet, $message);
 
@@ -619,6 +619,7 @@ class ControllerUtilisateur extends Controller
         if (password_verify($token, $tokenCrypt))
         { 
             $managerUtilisateur->activerCompte($id);
+            $managerUtilisateur->supprimerToken($tokenCrypt);
         }
         header('Location: index.php?controleur=utilisateur&methode=connexion');
         exit();

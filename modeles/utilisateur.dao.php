@@ -344,7 +344,6 @@ class UtilisateurDao
      * @param email de l'Utilisateur 
      * @return bool true si l'email existe, false sinon.
      */
-
      public function emailExiste(string $mail):bool{
         $sql="SELECT COUNT(adressMail) FROM " . PREFIXE_TABLE . "utilisateur WHERE adressMail = :mail";
         $sqlStatement = $this->pdo->prepare($sql);
@@ -364,8 +363,12 @@ class UtilisateurDao
         $sql = "SELECT valide FROM " . PREFIXE_TABLE . "utilisateur WHERE adressMail = :mail";
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute(['mail' => $mail]);
-        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
-        return (bool) $result['valide'];
+        if ($reussite && $pdoStatement->rowCount() > 0) {
+            $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+            return (bool) $result['valide'];
+        }
+
+        return false;
     }
 
     /**
