@@ -5,6 +5,8 @@
         private ?string $contenu;
         private ?int $nbLikes;
         private ?int $nbDislikes;
+        private ?string $pseudo;
+        private ?string $photoProfil;
         private ?int $idForum;
         private ?int $idUtilisateur;
         
@@ -48,6 +50,22 @@
 
         public function setNbDislikes(?int $nbDislikes): void{
             $this->nbDislikes = $nbDislikes;
+        }
+
+        public function getPseudo(): ?string{
+            return $this->pseudo;
+        }
+
+        public function setPseudo(?string $pseudo): void{
+            $this->pseudo = $pseudo;
+        }
+
+        public function getPhotoProfil(): ?string{
+            return $this->photoProfil;
+        }
+
+        public function setPhotoProfil(?string $photoProfil): void{
+            $this->photoProfil = $photoProfil;
         }
 
         public function getIdForum(): ?int{
