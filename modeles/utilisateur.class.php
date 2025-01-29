@@ -43,6 +43,10 @@ class Utilisateur
     * @brief bio de l'utilisateur
     */
     private ?string $bio = null;
+    /**
+    * @brief indique si l'utilisateur peut se connecter
+    */
+    private ?bool $valide = null;
 
     /**
      * @brief Constructeur de la classe Utilisateur
