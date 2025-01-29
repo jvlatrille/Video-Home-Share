@@ -16,19 +16,36 @@
         </div>
 
         <!-- Question -->
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center">
             <div class="col-12 col-md-8">
                 <div class="text-center bg-danger text-white py-2 rounded">
                     <h4>{{ question.getContenu() }}</h4>
                 </div>
             </div>
         </div>
-
-        <!-- difficulté -->
-        <div class="row justify-content-center mt-4">
+        
+        <!-- Affichage du score -->
+        <div class="row justify-content-center mt-2">
             <div class="col-12 col-md-8 text-center">
-                <p class="text-primary">Difficulté :
-                    <strong>{{ question.getNvDifficulte() }}</strong>
+                <p class="score-info" style="color: red;">Score actuel : <strong>{{ score }} / {{ nbTotalQuestions }}</strong></p>
+            </div>
+        </div>
+        
+        <!-- difficulté -->
+        <div class="row justify-content-center mb-2">
+            <div class="col-12 col-md-8 text-center">
+                {% set difficultyClass = '' %}
+                
+                {% if question.getNvDifficulte() == 'Facile' %}
+                    {% set difficultyClass = 'text-success' %}
+                {% elseif question.getNvDifficulte() == 'Moyen' %}
+                    {% set difficultyClass = 'text-warning' %}
+                {% elseif question.getNvDifficulte() == 'Difficile' %}
+                    {% set difficultyClass = 'text-danger' %}
+                {% endif %}
+        
+                <p class="{{ difficultyClass }}" style="margin-top: 0;">
+                    Difficulté : <strong>{{ question.getNvDifficulte() }}</strong>
                 </p>
             </div>
         </div>
@@ -48,13 +65,25 @@
             </div>
         </div>
 
-        <!-- Affichage du score -->
-        <div class="row justify-content-center mt-4">
+        <!-- Barre de progression -->
+        <div class="row justify-content-center mb-3">
             <div class="col-12 col-md-8 text-center">
-                <p class="score-info" style="color: red;">Score actuel : <strong>{{ score }} / {{ nbTotalQuestions }}</strong></p>
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ nbTotalQuestions }}"></div>
+                </div>
             </div>
         </div>
-    </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-12 col-md-8 text-center">
+                <div class="d-flex justify-content-center align-items-center">
+                    <p style="font-size: 1.2rem; font-weight: bold; margin-right: 10px;">
+                        Question {{ question.numero }} sur {{ nbTotalQuestions }} <button id="nextQuestionBtn" class="btn" style="display: none; font-size: 1.2rem; font-weight: bold;">
+                            →
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
 
     {% block javascripts %}
         <script>
@@ -73,48 +102,59 @@
                 }
             }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.response-button');
-    const idQuizz = {{ idQuizz }};
-    const nextNumero = {{ question.numero + 1 }};
-    const isLastQuestion = {{ isLastQuestion ? 'true' : 'false' }};
-    const nbQuestions = {{ nbTotalQuestions }};
-
-    let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
-
-    if (nextNumero - 1 === 1) {
-        score = 0;
-        sessionStorage.setItem('score', score);
-    }
-
-    document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
-    updateScoreColor(score, nbQuestions); // Appel initial pour définir la couleur
-
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-            buttons.forEach(btn => btn.disabled = true);
-
-            if (button.getAttribute('data-correct') === 'true') {
-                button.classList.add('bg-success', 'text-white');
-                score++;
-                sessionStorage.setItem('score', score);
-                document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
-                updateScoreColor(score, nbQuestions); // Mise à jour de la couleur après changement du score
-            } else {
-                button.classList.add('bg-danger', 'text-white');
+            function updateProgressBar(currentQuestion, totalQuestions) {
+                const progressBar = document.getElementById('progressBar');
+                const percentage = (currentQuestion / totalQuestions) * 100;
+                progressBar.style.width = `${percentage}%`;
+                progressBar.setAttribute('aria-valuenow', currentQuestion);
             }
 
-            const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
-            correctButton.classList.add('bg-success', 'text-white');
+            document.addEventListener('DOMContentLoaded', function () {
+                const buttons = document.querySelectorAll('.response-button');
+                const idQuizz = {{ idQuizz }};
+                const nextNumero = {{ question.numero + 1 }};
+                const isLastQuestion = {{ isLastQuestion ? 'true' : 'false' }};
+                const nbQuestions = {{ nbTotalQuestions }};
+                const currentQuestion = {{ question.numero }};
 
-            setTimeout(() => {
-                window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
-            }, 1500);
-        });
-    });
-});
+                let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
 
+                if (nextNumero - 1 === 1) {
+                    score = 0;
+                    sessionStorage.setItem('score', score);
+                }
 
-</script>
+                document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong>` ;
+                updateScoreColor(score, nbQuestions); // Appel initial pour définir la couleur
+                updateProgressBar(currentQuestion, nbQuestions); // Mettre à jour la barre de progression
+
+                buttons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        buttons.forEach(btn => btn.disabled = true);
+
+                        if (button.getAttribute('data-correct') === 'true') {
+                            button.classList.add('bg-success', 'text-white');
+                            score++;
+                            sessionStorage.setItem('score', score);
+                            document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong>` ;
+                            updateScoreColor(score, nbQuestions); // Mise à jour de la couleur après changement du score
+                        } else {
+                            button.classList.add('bg-danger', 'text-white');
+                        }
+
+                        const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
+                        correctButton.classList.add('bg-success', 'text-white');
+
+                        // Afficher la flèche pour passer à la question suivante
+                        document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+                    });
+                });
+
+                // Fonction pour passer à la question suivante
+                document.getElementById('nextQuestionBtn').addEventListener('click', function () {
+                    window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
+                });
+            });
+        </script>
     {% endblock %}
 {% endblock %}

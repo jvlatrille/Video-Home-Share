@@ -33,7 +33,7 @@
             <div class="row justify-content-center mb-4">
                 <div class="col-12 col-md-8">
                     <div class="text-center bg-danger text-white py-2 rounded">
-                        <input type="text" class="form-control text-center border-0 bg-transparent text-white" id="contenu_{{ i }}" name="questions[{{ i }}][contenu]" placeholder="Entrez le contenu de la question" required>
+                        <input type="text" class="form-control text-center border-0 bg-transparent fw-bold" id="contenu_{{ i }}" name="questions[{{ i }}][contenu]" placeholder="Entrez le contenu de la question" required>
                     </div>
                 </div>
             </div>
@@ -41,11 +41,11 @@
             <!-- Difficulté -->
             <div class="row justify-content-center mt-4 mb-4">
                 <div class="col-12 col-md-8 text-center">
-                    <label class="text-primary d-block mb-2">Difficulté :</label>
+                    <label class="d-block mb-2">Difficulté :</label>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 1, this)">Facile</button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 2, this)">Moyen</button>
-                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 3, this)">Difficile</button>
+                        <button type="button" class="btn" onclick="setDifficulty({{ i }}, 'Facile', this)" style="background-color: transparent; border-color: green;">Facile</button>
+                        <button type="button" class="btn" onclick="setDifficulty({{ i }}, 'Moyen', this)" style="background-color: transparent; border-color: orange;">Moyen</button>
+                        <button type="button" class="btn" onclick="setDifficulty({{ i }}, 'Difficile', this)" style="background-color: transparent; border-color: red;">Difficile</button>
                     </div>
                     <input type="hidden" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
                 </div>
@@ -57,16 +57,16 @@
                 <div class="col-12 col-md-8">
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <input type="text" class="form-control" id="bonneReponse_{{ i }}" name="questions[{{ i }}][bonneReponse]" placeholder="Bonne réponse" required>
+                            <input type="text" class="form-control bg-transparent border-success border-2" id="bonneReponse_{{ i }}" name="questions[{{ i }}][bonneReponse]" placeholder="Bonne réponse" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <input type="text" class="form-control" id="mauvaiseReponse1_{{ i }}" name="questions[{{ i }}][mauvaiseReponse1]" placeholder="Mauvaise réponse 1" required>
+                            <input type="text" class="form-control bg-transparent border-danger border-2" id="mauvaiseReponse1_{{ i }}" name="questions[{{ i }}][mauvaiseReponse1]" placeholder="Mauvaise réponse" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <input type="text" class="form-control" id="mauvaiseReponse2_{{ i }}" name="questions[{{ i }}][mauvaiseReponse2]" placeholder="Mauvaise réponse 2" required>
+                            <input type="text" class="form-control bg-transparent border-danger border-2" id="mauvaiseReponse2_{{ i }}" name="questions[{{ i }}][mauvaiseReponse2]" placeholder="Mauvaise réponse" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <input type="text" class="form-control" id="mauvaiseReponse3_{{ i }}" name="questions[{{ i }}][mauvaiseReponse3]" placeholder="Mauvaise réponse 3" required>
+                            <input type="text" class="form-control bg-transparent border-danger border-2" id="mauvaiseReponse3_{{ i }}" name="questions[{{ i }}][mauvaiseReponse3]" placeholder="Mauvaise réponse" required>
                         </div>
                     </div>
                 </div>
@@ -91,17 +91,14 @@
 <script>
     function setDifficulty(questionIndex, value, button) {
         document.getElementById('difficulte_' + questionIndex).value = value;
-
-        // Réinitialiser les boutons de difficulté pour la question actuelle
         let buttons = button.parentNode.querySelectorAll('button');
         buttons.forEach(btn => {
-            btn.classList.remove('btn-secondary');
-            btn.classList.add('btn-outline-secondary');
+            btn.style.backgroundColor = 'transparent';
+            btn.style.color = ''; 
         });
 
-        // Activer le bouton sélectionné
-        button.classList.remove('btn-outline-secondary');
-        button.classList.add('btn-secondary');
+        button.style.backgroundColor = (value === 'Facile') ? 'green' : (value === 'Moyen') ? 'orange' : 'red';
+        button.style.color = 'white';
     }
 document.querySelector('form').addEventListener('submit', (e) => {
     console.log('Soumission en cours...');

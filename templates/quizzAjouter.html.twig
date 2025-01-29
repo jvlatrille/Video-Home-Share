@@ -1,74 +1,69 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<div class="container">
-    <div class="text-center mb-4">
-        <h1>Ajouter un nouveau Quizz</h1>
-    </div>
-
-    <!-- Formulaire pour ajouter un quizz -->
-    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST">
-        <div class="mb-3">
-            <label for="nom" class="form-label">Nom du Quizz</label>
-            <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom du quizz" required>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4 shadow-lg" style="width: 50%;">
+        <div class="text-center mb-4">
+            <h1>Ajouter un nouveau Quizz</h1>
         </div>
 
-        <div class="mb-3">
-            <label for="theme" class="form-label">Thème</label>
-            <select class="form-select" id="theme" name="theme" required>
-                <option value="Films cultes">Films cultes</option>
-                <option value="Réalisateurs célèbres">Réalisateurs célèbres</option>
-                <option value="Acteurs et actrices">Acteurs et actrices</option>
-                <option value="Oscars et récompenses">Oscars et récompenses</option>
-                <option value="Films d'animation">Films d'animation</option>
-                <option value="Sagas et franchises">Sagas et franchises</option>
-                <option value="Films d'horreur">Films d'horreur</option>
-                <option value="Films de science-fiction">Films de science-fiction</option>
-                <option value="Films français">Films français</option>
-                <option value="Bandes originales">Bandes originales</option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="nbQuestion" class="form-label">Nombre de questions</label>
-            <input type="number" class="form-control" id="nbQuestion" name="nbQuestion" min="1" placeholder="Entrez le nombre de questions" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Difficulté</label>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty('Facile', this)">Facile</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty('Moyen', this)">Moyen</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty('Difficile', this)">Difficile</button>
+        <!-- Formulaire pour ajouter un quizz -->
+        <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST">
+            <div class="mb-3">
+                <label for="nom" class="form-label">Nom du Quizz</label>
+                <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom du quizz" required>
             </div>
-            <input type="hidden" id="difficulte" name="difficulte" required>
-        </div>
 
-        <div class="text-center mt-3 mb-4">
-            <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-custom">Annuler</a>
-            <button type="submit" class="btn btn-secondary">Ajouter</button>
-        </div>
-    </form>
+            <div class="mb-3">
+                <label for="theme" class="form-label">Thème</label>
+                <select class="form-select" id="theme" name="theme" required>
+                    <option value="Films cultes">Films cultes</option>
+                    <option value="Réalisateurs célèbres">Réalisateurs célèbres</option>
+                    <option value="Acteurs et actrices">Acteurs et actrices</option>
+                    <option value="Oscars et récompenses">Oscars et récompenses</option>
+                    <option value="Films d'animation">Films d'animation</option>
+                    <option value="Sagas et franchises">Sagas et franchises</option>
+                    <option value="Films d'horreur">Films d'horreur</option>
+                    <option value="Films de science-fiction">Films de science-fiction</option>
+                    <option value="Films français">Films français</option>
+                    <option value="Bandes originales">Bandes originales</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="nbQuestion" class="form-label">Nombre de questions</label>
+                <input type="number" class="form-control" id="nbQuestion" name="nbQuestion" min="1" placeholder="Entrez le nombre de questions" required>
+            </div>
+
+            <div class="mb-4 d-flex align-items-center justify-content-center">
+                <label class="form-label me-3">Difficulté :</label>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn" onclick="setDifficulty('Facile', this)" style="background-color: transparent; border-color: green;">Facile</button>
+                    <button type="button" class="btn" onclick="setDifficulty('Moyen', this)" style="background-color: transparent; border-color: orange;">Moyen</button>
+                    <button type="button" class="btn" onclick="setDifficulty('Difficile', this)" style="background-color: transparent; border-color: red;">Difficile</button>
+                </div>
+                <input type="hidden" id="difficulte" name="difficulte" required>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-custom">Annuler</a>
+                <button type="submit" class="btn btn-secondary">Ajouter</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
-    let activeButton = null;
-
     function setDifficulty(value, button) {
         document.getElementById('difficulte').value = value;
-        
-        // Réinitialiser le bouton précédemment actif
-        if (activeButton) {
-            activeButton.classList.remove('btn-secondary');
-            activeButton.classList.add('btn-outline-secondary');
-        }
-        
-        // Sélectionner le bouton cliqué
-        button.classList.remove('btn-outline-secondary');
-        button.classList.add('btn-secondary');
-        
-        // Mettre à jour le bouton actif
-        activeButton = button;
+        let buttons = button.parentNode.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.style.backgroundColor = 'transparent';
+            btn.style.color = ''; 
+        });
+
+        button.style.backgroundColor = (value === 'Facile') ? 'green' : (value === 'Moyen') ? 'orange' : 'red';
+        button.style.color = 'white';
     }
 </script>
 
