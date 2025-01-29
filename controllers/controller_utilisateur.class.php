@@ -620,22 +620,29 @@ class ControllerUtilisateur extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = htmlspecialchars($_POST['name']);
-            $email = htmlspecialchars($_POST['email']);
+            $email = htmlspecialchars($_POST['mail']);
             $message = htmlspecialchars($_POST['message']);
-
+            // Valide que l'email a été soumis et qu'il est correct
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
+                header('Location: index.php?controleur=utilisateur&methode=traiterContact');
+                exit();
+            }
             if (DB_HOST === 'localhost') {
                 try {
+                    // echo "<script>alert('Localhost reconnu');</script>";
                     $mail = new PHPMailer(true);
                     $mail->isSMTP();
                     $mail->Host = 'smtp.gmail.com';
                     $mail->SMTPAuth = true;
-                    $mail->Username = EMAIL_ADDRESS; // Chargé depuis constantes.yaml
-                    $mail->Password = EMAIL_PASSWORD; // Chargé depuis constantes.yaml
+                    $mail->Username = EMAIL_ADDRESS;
+                    $mail->Password = EMAIL_PASSWORD;
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port = 587;
+                    
 
-                    $mail->setFrom(EMAIL_ADDRESS, 'VHS Contact');
-                    $mail->addAddress(EMAIL_ADDRESS);
+                    $mail->setFrom($email, $name);
+                    $mail->addAddress(EMAIL_ADDRESS, 'VHS Contact');
                     $mail->addReplyTo($email, $name);
 
                     $mail->Subject = "VHS : Nouveau message de $name";
@@ -643,11 +650,14 @@ class ControllerUtilisateur extends Controller
 
                     $mail->send();
                     $feedback = 'Votre message a bien été envoyé.';
+                    echo "<script>alert('Mail envoyé');</script>";
                 } catch (Exception $e) {
-                    $feedback = "Erreur lors de l'envoi : {$mail->ErrorInfo}";
+                    $feedback = 'Erreur lors de l\'envoi du mail : ' . $e->getMessage();
                 }
-            } elseif (DB_HOST === 'lakartxela.iutbayonne.univ-pau.fr') {
-                $feedback = 'Fonctionnalité non implémentée pour cet hôte.';
+            } 
+            elseif (DB_HOST === 'lakartxela.iutbayonne.univ-pau.fr') {
+                $sujet = "VHS : Nouveau message de $name";
+                mail($email, $sujet, $message);
             } else {
                 $feedback = 'Hôte non pris en charge.';
             }
@@ -655,9 +665,8 @@ class ControllerUtilisateur extends Controller
             // Charger la vue avec un message de feedback
             $template = $this->getTwig()->load('index.html.twig');
             echo $template->render(['message' => $feedback]);
-        } else {
-            header('Location: index.php');
         }
+        header('Location: index.php');
     }
 
     public function afficherCommentairesUtilisateur()
