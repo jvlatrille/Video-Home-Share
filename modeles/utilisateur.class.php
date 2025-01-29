@@ -54,6 +54,7 @@ class Utilisateur
      * @param string|null $motDePasse mot de passe hacher de l'utilisateur
      * @param string|null $role role de l'utilisateur
      * @param string|null $bio biographie de l'utilisateur
+     * @param bool|int $valide indique si l'utilisateur peut se connecter (1 si oui, 0 sinon)
 
      * @return void
      */
@@ -65,7 +66,8 @@ class Utilisateur
                                 ?string $adressMail = null, 
                                 ?string $motDePasse = null, 
                                 ?string $role = null,
-                                ?string $bio = null)
+                                ?string $bio = null,
+                                ?int $valide = null)
     {
         $this->idUtilisateur = $idUtilisateur;
         $this->pseudo = $pseudo;
@@ -75,6 +77,7 @@ class Utilisateur
         $this->motDePasse = $motDePasse;
         $this->role = $role;
         $this->bio = $bio;
+        $this->valide = $valide;
     }
 
     /**
@@ -236,5 +239,26 @@ class Utilisateur
     public function setBio(?string $bio): void
     {
         $this->bio = $bio;
+    }
+
+    /**
+     * @brief Getteur de la validité de l'utilisateur
+     *
+     * @return ?int
+     */
+    public function getValide(): ?int
+    {
+        return $this->valide;
+    }
+
+    /**
+     * @brief Setteur de la validité de l'utilisateur
+
+     * @param int valide
+     * @return void
+     */
+    public function setValide(?int $valide): void
+    {
+        $this->valide = $valide;
     }
 }
