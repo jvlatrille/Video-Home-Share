@@ -494,7 +494,7 @@ class ControllerUtilisateur extends Controller
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
             'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
-            'valide' => $_POST['valide'] ?? 0;
+            'valide' => $_POST['valide'] ?? 0
 
         ];
         
@@ -578,9 +578,6 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
             $donneesFormulaire['valide']
-=========
-            $donneesFormulaire['bio'],
->>>>>>>>> Temporary merge branch 2
 
         );
         
