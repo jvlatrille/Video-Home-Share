@@ -487,10 +487,9 @@ class ControllerUtilisateur extends Controller
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
             'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
-            'valide' => $_POST['valide'] ?? FALSE
-
+            'valide' => $_POST['valide'] ?? 0
         ];
-        var_dump($donneesFormulaire);
+        
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -565,21 +564,20 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
-            $donneesFormulaire['valide']
-
+            $donneesFormulaire['valide'] = (int)($_POST['valide'] ?? 0)
         );
-        var_dump($utilisateur);
+        
         // Sauvegarde dans la base de données
         $managerUtilisateur->creerUtilisateur($utilisateur);
 
         // Redirection vers la page de connexion
-        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        header('Location: index.php?controleur=utilisateur&methode=verifMail');
         exit;
     }
 
     public function verifMail()
     {
-
+        //envoie de mail avec token et id de l'user comme d'hab :)
     }
 
     /**
