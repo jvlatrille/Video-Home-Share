@@ -39,17 +39,18 @@
             </div>
 
             <!-- Difficulté -->
-            <div class="row justify-content-center mt-4">
+            <div class="row justify-content-center mt-4 mb-4">
                 <div class="col-12 col-md-8 text-center">
-                    <p class="text-primary">Difficulté :
-                        <select class="form-select d-inline-block w-auto" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
-                            <option value="1">Facile</option>
-                            <option value="2">Moyen</option>
-                            <option value="3">Difficile</option>
-                        </select>
-                    </p>
+                    <label class="text-primary d-block mb-2">Difficulté :</label>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 1, this)">Facile</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 2, this)">Moyen</button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="setDifficulty({{ i }}, 3, this)">Difficile</button>
+                    </div>
+                    <input type="hidden" id="difficulte_{{ i }}" name="questions[{{ i }}][nvDifficulte]" required>
                 </div>
             </div>
+            
 
             <!-- Réponses -->
             <div class="row justify-content-center">
@@ -88,6 +89,20 @@
 </div>
 
 <script>
+    function setDifficulty(questionIndex, value, button) {
+        document.getElementById('difficulte_' + questionIndex).value = value;
+
+        // Réinitialiser les boutons de difficulté pour la question actuelle
+        let buttons = button.parentNode.querySelectorAll('button');
+        buttons.forEach(btn => {
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-outline-secondary');
+        });
+
+        // Activer le bouton sélectionné
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-secondary');
+    }
 document.querySelector('form').addEventListener('submit', (e) => {
     console.log('Soumission en cours...');
 });
