@@ -34,6 +34,12 @@
                             <textarea class="form-control" id="forumDescription" name="description" rows="3" required></textarea>
                         </div>
 
+                        <!-- Contenu message obligatoire -->
+                        <div class="mb-3">
+                            <label for="forumDescription" class="form-label">1er message du forum :</label>
+                            <textarea class="form-control" id="messageContenu" name="contenu" rows="3" required></textarea>
+                        </div>
+
                         <!-- Bouton de soumission -->
                         <div class="text-center">
                             <button type="submit" class="btn btn-success">Créer un nouveau forum</button>
@@ -53,6 +59,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ forumList.nom }}</h5>
+                        <h5 class="card-title">Thème : {{ forumList.theme }}</h5>
 						<p class="card-text">{{ forumList.description }}</p>
                         <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>            
                     </div>
