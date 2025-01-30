@@ -111,18 +111,30 @@ class OADao
     }
 
     /**
-     * @brief Retourne l'URL complète du fond d'écran (backdrop)
-     * @param string|null $backdropPath Chemin de l'image
-     * @param string $size Taille de l'image
-     * @return string URL complète du backdrop
+     * @brief Récupère tous les backdrops d'un film depuis l'API TMDB
+     * @param int $idOa Identifiant TMDB du film
+     * @return array Liste des URLs des backdrops
      */
-    private function getBackdropUrl(?string $backdropPath, string $size = 'w1280'): string
+    public function getBackdrops(int $idOa): array
     {
-        $baseUrl = 'https://image.tmdb.org/t/p/';
+        $baseUrl = 'https://image.tmdb.org/t/p/original';
         $defaultImage = 'https://via.placeholder.com/1280x720?text=Image+non+disponible';
 
-        return $backdropPath ? $baseUrl . $size . $backdropPath : $defaultImage;
+        // Appel à l'API TMDB pour récupérer les images
+        $response = $this->makeApiRequest("/movie/$idOa/images", [], true);
+
+        if (!isset($response['backdrops']) || empty($response['backdrops'])) {
+            return [$defaultImage]; // Retourne une image par défaut si aucune image n'est trouvée
+        }
+
+        // Récupérer toutes les URLs des backdrops
+        return array_map(fn($img) => $baseUrl . $img['file_path'], array_slice($response['backdrops'], 0, 10));
     }
+
+
+
+
+
     /**
      * @brief Analyse les participants à partir des crédits API
      * @param array $credits Données des crédits API
@@ -190,7 +202,7 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
-            $this->getBackdropUrl($data['backdrop_path'] ?? null),
+            $backdrops = $this->getBackdrops($data['id'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
             $data['producer'] ?? null,
             null,

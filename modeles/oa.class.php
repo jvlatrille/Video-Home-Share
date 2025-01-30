@@ -44,8 +44,8 @@ class OA
     /** @brief Lien vers la couverture de l'œuvre audiovisuelle */
     private ?string $posterPath;
 
-    /** @brief Lien vers le fond d'écran de l'œuvre audiovisuelle */
-    private ?string $backdropPath;
+    /** @brief Lien vers les fonds d'écrans de l'œuvre audiovisuelle */
+    private ?array $backdropPath;
 
     /** @brief Liste des participants de l'œuvre audiovisuelle */
     private ?array $participants = [];
@@ -74,7 +74,7 @@ class OA
      * @param array|null $genres Genres de l'œuvre audiovisuelle
      * @param string|null $collection Collection de l'œuvre audiovisuelle
      * @param string|null $posterPath Lien de la couverture de l'œuvre audiovisuelle
-     * @param string|null $backdropPath Lien du fond d'écran de l'œuvre audiovisuelle
+     * @param array|null $backdropPath Lien des fonds d'écrans de l'œuvre audiovisuelle
      * @param array|null $participants Liste des participants
      * @param string|null $producteur Nom du producteur
      * @param int|null $nbSaison Nombre de saison
@@ -92,7 +92,7 @@ class OA
         ?array $genres = null,
         ?string $collection = null,
         ?string $posterPath = null,
-        ?string $backdropPath = null,
+        ?array $backdropPath = null,
         ?array $participants = null,
         ?string $producteur = null,
         ?int $nbSaison = null,
@@ -217,12 +217,12 @@ class OA
         $this->posterPath = $posterPath;
     }
 
-    public function getBackdropPath(): ?string
+    public function getBackdropPath(): ?array
     {
         return $this->backdropPath;
     }
 
-    public function setBackdropPath(?string $backdropPath): void
+    public function setBackdropPath(?array $backdropPath): void
     {
         $this->backdropPath = $backdropPath;
     }

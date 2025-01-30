@@ -75,6 +75,9 @@ class ControllerOA extends Controller
             // Récupérer les suggestions de films
             $suggestions = $this->managerOa->findSuggestions($oa->getIdOa());
 
+            // Récupérer les fond d'écran
+            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa());
+
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
@@ -83,7 +86,8 @@ class ControllerOA extends Controller
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
                 'utilisateurNote' => $utilisateurNote,
-                'suggestions' => $suggestions
+                'suggestions' => $suggestions,
+                'backdrops' => $backdrops
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
@@ -237,7 +241,7 @@ class ControllerOA extends Controller
 
             // Récupérer les suggestions de séries
             $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
-            
+
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
