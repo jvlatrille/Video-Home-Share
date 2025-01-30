@@ -552,6 +552,6 @@ class OADao
             error_log('Aucune suggestion trouvée pour le genre ID : ' . $idGenre);
             return [];
         }
-        return $this->hydrateAll(array_slice($results['results'], 0, 10));
+        return array_slice($results['results'], 0, 10);
     }
 }

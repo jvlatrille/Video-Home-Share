@@ -106,7 +106,7 @@
         <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
             <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
             <input type="hidden" name="titre" value="{{ watchList.titre }}">
-            <input type="hidden" name="genre" value="{{ watchList.genre }}">
+            <input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
             <input type="hidden" name="description" value="{{ watchList.description }}">
             <input type="hidden" name="visible" value="{{ watchList.visible }}">
             {% for oa in watchList.listeOeuvres %}
@@ -159,15 +159,26 @@
                             </div>
                             <div class="mb-3">
                                 <label for="genre" class="form-label">Genre</label>
-                                <input type="text" class="form-control" id="genre" name="genre" value="{{ watchList.genre }}">
+                                <input type="text" class="form-control" id="selectedGenre" name="genre" value="{{ watchList.genre }}">
                             </div>
                             <div class="mb-3">
-                                <label for="visible" class="form-label">Visibilité</label>
-                                <select class="form-select" id="visible" name="visible" required>
-                                    <option value="1" {{ watchList.visible == '1' ? 'selected' : '' }}>Publique</option>
-                                    <option value="0" {{ watchList.visible == '0' ? 'selected' : '' }}>Privée</option>
-                                </select>
-                            </div>
+								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilePublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">
+										Publique
+									</label>
+								<small id="visibleErreur" class="text-danger"></small>
+
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilePrive" value="0">
+									<label class="form-check-label" for="visibilityPrivate">
+										Privée
+									</label>
+								</div>
+
+							</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>

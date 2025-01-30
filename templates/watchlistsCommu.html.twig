@@ -65,7 +65,7 @@
 									<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
 										<input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
 										<input type="hidden" name="titre" value="{{ watchList.titre }}">
-										<input type="hidden" name="genre" value="{{ watchList.genre }}">
+										<input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
 										<input type="hidden" name="description" value="{{ watchList.description }}">
 										<input type="hidden" name="visible" value="{{ watchList.visible }}">
 										{% for oa in watchList.listeOeuvres %}
