@@ -55,12 +55,12 @@
                 </div>
             </div>
         </div>
-
+        {% set pourcentage = (question.numero / nbTotalQuestions    ) * 100 %}
         <!-- Barre de progression -->
         <div class="row justify-content-center mb-3">
             <div class="col-12 col-md-8 text-center">
                 <div class="progress">
-                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ nbTotalQuestions }}"></div>
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ pourcentage }}%" aria-valuenow="{{ question.numero }}" aria-valuemin="0" aria-valuemax="{{ nbTotalQuestions }}"></div>
                 </div>
             </div>
         </div>
