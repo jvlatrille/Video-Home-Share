@@ -314,7 +314,7 @@ class ControllerUtilisateur extends Controller
                 $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
     
                 // Envoie un email avec le lien de réinitialisation
-                $sujet = "Réinitialisation de votre mot de passe";
+                $sujet = "Reinitialisation de votre mot de passe";
                 $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n$lienReset\n\nSi vous n'avez pas demandé de réinitialisation, ignorez cet email.";
                 mail($email, $sujet, $message);
     
@@ -324,8 +324,6 @@ class ControllerUtilisateur extends Controller
                 // Message pour ne pas révéler si l'email existe ou non
                 $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
             }
-
-            var_dump($email, $token, $tokenCrypt, $expiresAt, $idEncoded, $tokenEncoded, $lienReset, $sujet, $message);
     
             // Redirige l'utilisateur vers la même page
             header('Location: index.php?controleur=utilisateur&methode=mdpOublie');
@@ -451,6 +449,14 @@ class ControllerUtilisateur extends Controller
         $mail = $donneesFormulaire['mail'];
         $mdp = $donneesFormulaire['mdp'];
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
+
+        if(!$managerUtilisateur->estValide($mail) && $managerUtilisateur->emailExiste($mail)){ 
+            $erreurs[] = "Veuillez activer votre compte";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
+
         $utilisateur = $managerUtilisateur->findByMail($mail);
         if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
             $managerUtilisateur->verifierDerniereSauvegarde();
@@ -461,7 +467,7 @@ class ControllerUtilisateur extends Controller
         }
         else{
             $template = $this->getTwig()->load('connexion.html.twig');
-            echo $template->render(['message' => 'Identifiants incorrects']);
+            echo $template->render(['message' => "L'adresse mail ou le mot de passe est incorrect"]);
         }
     }
 
@@ -487,9 +493,11 @@ class ControllerUtilisateur extends Controller
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
             'mdpVerif' => htmlspecialchars($_POST['mdpVerif'] ?? null, ENT_QUOTES),
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
-            'bio' => isset($_POST['bio']) ? htmlspecialchars($_POST['bio'], ENT_QUOTES) : null,
+            'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
+            'valide' => $_POST['valide'] ?? 0
 
         ];
+        
         // Définition des règles de validation
         $reglesValidation = [
             'pseudo' => [
@@ -568,18 +576,62 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['mdp'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
-            $donneesFormulaire['bio'],
+            htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
+            $donneesFormulaire['valide']
 
         );
-
+        
         // Sauvegarde dans la base de données
         $managerUtilisateur->creerUtilisateur($utilisateur);
 
+        $email = htmlspecialchars_decode($donneesFormulaire['mail'], ENT_QUOTES);
+        $utilisateur = $managerUtilisateur->findByMail($email);
+
+        // Génère un token unique pour la réinitialisation
+        $token = bin2hex(random_bytes(32));
+        $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+        $idUtilisateur = $utilisateur->getIdUtilisateur();
+
+        $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
+
+        // Enregistre le token dans la base de données
+        $managerUtilisateur->enregistrerTokenReset($idUtilisateur, $tokenCrypt, $expiresAt);
+
+        // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+        $idEncoded = urlencode(base64_encode($idUtilisateur));
+        $tokenEncoded = urlencode(base64_encode($token));
+
+        // Crée le lien de réinitialisation
+        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
+
+        // Envoie un email avec le lien de réinitialisation
+        $sujet = "Activez votre compte !";
+        $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour active votre compte :\n$lienReset\n\nSi vous n'avez pas creer de compte, ignorez cet email.";
+        mail($email, $sujet, $message);
+
         // Redirection vers la page de connexion
-        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        $template = $this->getTwig()->load('connexion.html.twig');
+        echo $template->render(['message' => "Veuillez regarder votre boite mail afin d'activer votre compte"]);
         exit;
     }
 
+    public function verifMail()
+    {
+        // Récupérer le token depuis l'URL
+        $id = base64_decode(urldecode($_GET['id']));
+        $token = base64_decode(urldecode($_GET['token']));
+
+        $managerUtilisateur = new UtilisateurDao($this->getPDO());
+        $tokenCrypt = $managerUtilisateur->getTokenById($id);
+
+        if (password_verify($token, $tokenCrypt))
+        { 
+            $managerUtilisateur->activerCompte($id);
+            $managerUtilisateur->supprimerToken($tokenCrypt);
+        }
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        exit();
+    }
 
     /**
      * @brief Déconnecte un utilisateur et le redirige vers la page d'accueil

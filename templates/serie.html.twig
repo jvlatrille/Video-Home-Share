@@ -14,6 +14,11 @@
 {% endblock %}
 
 {% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
 	<title>{{ oa.nom }}</title>
 
 	{% if oa is defined %}
@@ -54,7 +59,7 @@
                             <div>
                                 <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
                                 <p><strong>Nombre de saisons :</strong> {{ oa.nbSaison }}</p>
-                                <p><strong>Nombre d'épisode :</strong> {{ oa.nbEpisode }} </p>
+                                <p><strong>Nombre d'épisodes :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                             </div>
                             {% if oa.producteur is not null %}
@@ -78,7 +83,7 @@
                     </div>
                     
                     <div class="d-flex mt-3">
-                        <a href="#commentaires" class="btn btn-sm btn-secondary me-2">Ajouter un avis</a>
+                        <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un avis</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
                             Ajouter la série à une watchlist
                         </button>
@@ -90,7 +95,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à une watchlist</h5>
+                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à la WatchList</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
