@@ -11,29 +11,32 @@
         <div class="row justify-content-center mb-4">
             <div class="col-12 col-md-8">
                 <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
-                    {% if question.getCheminImage() %}
-                        <img src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                    {% else %}
-                        <span class="text-secondary">Aucune image disponible</span>
-                    {% endif %}
+                    <img id="questionImage" src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                 </div>
             </div>
         </div>
 
         <!-- Question -->
-        <div class="row justify-content-center mb-4">
+        <div class="row justify-content-center">
             <div class="col-12 col-md-8">
                 <div class="text-center bg-danger text-white py-2 rounded">
-                    <h4>{{ question.getContenu() }}</h4>
+                    <h4 id="questionText">{{ question.getContenu() }}</h4>
                 </div>
             </div>
         </div>
-
-        <!-- difficulté -->
-        <div class="row justify-content-center mt-4">
+        
+        <!-- Affichage du score -->
+        <div class="row justify-content-center mt-2">
             <div class="col-12 col-md-8 text-center">
-                <p class="text-primary">Difficulté :
-                    <strong>{{ question.getNvDifficulte() }}</strong>
+                <p class="score-info" style="color: red;">Score actuel : <strong>{{ score }} / {{ nbTotalQuestions }}</strong></p>
+            </div>
+        </div>
+        
+        <!-- Difficulté -->
+        <div class="row justify-content-center mb-2">
+            <div class="col-12 col-md-8 text-center">
+                <p id="difficultyLevel" style="margin-top: 0;">
+                    Difficulté : <strong>{{ question.getNvDifficulte() }}</strong>
                 </p>
             </div>
         </div>
@@ -41,7 +44,7 @@
         <!-- Réponses -->
         <div class="row justify-content-center">
             <div class="col-12 col-md-8">
-                <div class="row">
+                <div class="row" id="answersContainer">
                     {% for reponse in reponses %}
                         <div class="col-6 mb-3">
                             <button class="btn btn-light w-100 py-2 border border-primary response-button" data-correct="{{ reponse == question.getBonneReponse() ? 'true' : 'false' }}">
@@ -53,73 +56,114 @@
             </div>
         </div>
 
-        <!-- Affichage du score -->
-        <div class="row justify-content-center mt-4">
+        <!-- Barre de progression -->
+        <div class="row justify-content-center mb-3">
             <div class="col-12 col-md-8 text-center">
-                <p class="score-info" style="color: red;">Score actuel : <strong>{{ score }} / {{ nbTotalQuestions }}</strong></p>
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="{{ nbTotalQuestions }}"></div>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- Numéro de question et bouton suivant -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-12 col-md-8 text-center position-relative">
+                <p class="pb" style="font-size: 1.2rem; font-weight: bold; margin: 0;">
+                    Question <span id="questionNumber">{{ question.numero }}</span> sur {{ nbTotalQuestions }}
+                </p>
+                <button id="nextQuestionBtn" class="btn position-absolute" style="display: none; font-size: 1.2rem; font-weight: bold; right: 0; top: 50%; transform: translateY(-50%); opacity: 0;">
+                    →
+                </button>
+            </div>
+        </div>
 
     {% block javascripts %}
-        <script>
-            function updateScoreColor(score, totalQuestions) {
-                const scoreElement = document.querySelector('.score-info');
-                const quarterSize = totalQuestions / 4;
-                
-                if (score <= quarterSize) {
-                    scoreElement.style.color = 'red';
-                } else if (score <= quarterSize * 2) {
-                    scoreElement.style.color = 'orange';
-                } else if (score <= quarterSize * 3) {
-                    scoreElement.style.color = 'green';
-                } else {
-                    scoreElement.style.color = '#00c04b';
-                }
-            }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.response-button');
+       <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".response-button");
     const idQuizz = {{ idQuizz }};
-    const nextNumero = {{ question.numero + 1 }};
-    const isLastQuestion = {{ isLastQuestion ? 'true' : 'false' }};
+    let currentQuestion = {{ question.numero }};
     const nbQuestions = {{ nbTotalQuestions }};
+    let score = sessionStorage.getItem("score") ? parseInt(sessionStorage.getItem("score")) : 0;
 
-    let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
-
-    if (nextNumero - 1 === 1) {
+    if (currentQuestion === 1) {
         score = 0;
-        sessionStorage.setItem('score', score);
+        sessionStorage.setItem("score", score);
     }
 
-    document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
-    updateScoreColor(score, nbQuestions); // Appel initial pour définir la couleur
+    function updateScoreDisplay() {
+        document.querySelector(".score-info").innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong>`;
+    }
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-            buttons.forEach(btn => btn.disabled = true);
+    function updateProgressBar(currentQuestion, totalQuestions) {
+        const progressBar = document.getElementById("progressBar");
+        const percentage = (currentQuestion / totalQuestions) * 100;
+        progressBar.style.width = `${percentage}%`;
+        progressBar.setAttribute("aria-valuenow", currentQuestion);
+    }
 
-            if (button.getAttribute('data-correct') === 'true') {
-                button.classList.add('bg-success', 'text-white');
-                score++;
-                sessionStorage.setItem('score', score);
-                document.querySelector('.score-info').innerHTML = `Score actuel : <strong>${score} / ${nbQuestions}</strong> `;
-                updateScoreColor(score, nbQuestions); // Mise à jour de la couleur après changement du score
-            } else {
-                button.classList.add('bg-danger', 'text-white');
-            }
+    function updateDifficultyLevel(difficulty) {
+        const difficultyElement = document.getElementById("difficultyLevel");
+        difficultyElement.innerHTML = `Difficulté : <strong>${difficulty}</strong>`;
+    }
 
-            const correctButton = Array.from(buttons).find(btn => btn.getAttribute('data-correct') === 'true');
-            correctButton.classList.add('bg-success', 'text-white');
+    function loadNextQuestion() {
+        fetch(`index.php?controleur=question&methode=afficherQuestionAjax&idQuizz=${idQuizz}&numero=${currentQuestion + 1}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.end) {
+                    window.location.href = `index.php?controleur=question&methode=afficherScore&idQuizz=${idQuizz}`;
+                    return;
+                }
 
-            setTimeout(() => {
-                window.location.href = `index.php?controleur=question&methode=afficherQuestion&idQuizz=${idQuizz}&numero=${nextNumero}`;
-            }, 1500);
-        });
-    });
+                currentQuestion++;
+                document.getElementById("questionText").innerText = data.question;
+                document.getElementById("questionNumber").innerText = currentQuestion;
+                document.getElementById("questionImage").src = data.image;
+                updateDifficultyLevel(data.difficulty);
+                updateProgressBar(currentQuestion, nbQuestions);
+
+                const answersContainer = document.getElementById("answersContainer");
+                answersContainer.innerHTML = "";
+                data.reponses.forEach(reponse => {
+                    const button = document.createElement("button");
+                    button.classList.add("btn", "btn-light", "w-100", "py-2", "border", "border-primary", "response-button");
+                    button.setAttribute("data-correct", reponse.correct);
+                    button.innerText = reponse.text;
+                    button.addEventListener("click", handleAnswerClick);
+
+                    const col = document.createElement("div");
+                    col.classList.add("col-6", "mb-3");
+                    col.appendChild(button);
+                    answersContainer.appendChild(col);
+                });
+
+                document.getElementById("nextQuestionBtn").style.display = "none";
+                document.getElementById("nextQuestionBtn").style.opacity = "0";
+            })
+            .catch(error => console.error("Erreur lors du chargement de la question :", error));
+    }
+
+    function handleAnswerClick(event) {
+        const button = event.target;
+        const isCorrect = button.getAttribute("data-correct") === "true";
+
+        document.querySelectorAll(".response-button").forEach(btn => btn.disabled = true);
+        button.classList.add(isCorrect ? "bg-success" : "bg-danger", "text-white");
+
+        if (isCorrect) {
+            score++;
+            sessionStorage.setItem("score", score);
+            updateScoreDisplay();
+        }
+
+        document.getElementById("nextQuestionBtn").style.display = "inline-block";
+        document.getElementById("nextQuestionBtn").style.opacity = "1";
+    }
+
+    buttons.forEach(button => button.addEventListener("click", handleAnswerClick));
+    document.getElementById("nextQuestionBtn").addEventListener("click", loadNextQuestion);
 });
-
-
 </script>
     {% endblock %}
 {% endblock %}
