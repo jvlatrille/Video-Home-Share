@@ -37,9 +37,9 @@
                                     {% endfor %}
                                 </p>
                                 {% if oa.type == 'Film' %}
-                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
                                 {% else %}
-                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -152,44 +152,150 @@
 
 {% block script %} 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const loadRandomBtn = document.getElementById('loadRandomBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+        const loadRandomBtn = document.getElementById('loadRandomBtn');
 
-    if (loadRandomBtn) {
-        loadRandomBtn.addEventListener('click', function () {
-            fetch('index.php?controleur=oa&methode=decouvrirPlus')
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.querySelector('#decouvrirOaContainer .row');
+        if (loadRandomBtn) {
+            loadRandomBtn.addEventListener('click', function () {
+                fetch('index.php?controleur=oa&methode=decouvrirPlus')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.querySelector('#decouvrirOaContainer .row');
 
-                    if (data.length === 0 || data.error) {
-                        console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
-                        alert('Impossible de charger de nouvelles œuvres.');
-                        return;
-                    }
+                        if (data.length === 0 || data.error) {
+                            console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
+                            alert('Impossible de charger de nouvelles œuvres.');
+                            return;
+                        }
 
-                    data.forEach(oa => {
-                        console.log(oa);
-                        container.innerHTML += `
-                            <div class="col">
-                                <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">                                    <div class="card h-100 shadow-sm">
-                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
-                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
+                        data.forEach(oa => {
+                            console.log(oa);
+                            container.innerHTML += `
+                                <div class="col">
+                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">                                    <div class="card h-100 shadow-sm">
+                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
+                                            : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title text-truncate">${oa.nom}</h6>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                        `;
+                                    </a>
+                                </div>
+                            `;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des œuvres :', error);
+                        alert('Erreur de connexion avec le serveur.');
                     });
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des œuvres :', error);
-                    alert('Erreur de connexion avec le serveur.');
-                });
+            });
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const boutonDecouvrir = document.querySelectorAll('.btn.btn-primary.mt-2');
+
+        boutonDecouvrir.forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault(); // Empêche le chargement immédiat
+
+                const loader = document.createElement('div');
+                loader.id = 'loadingMessage';
+                loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                        Patienter un instant...
+                                    </div>`;
+                document.body.appendChild(loader);
+
+                setTimeout(() => {
+                    window.location.href = button.href; // Redirige après un court instant
+                }, 5);
+            });
+        });
+    });
+    
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const aLaUneLinks = document.querySelectorAll('.container.mt-4 .row-cols-md-5 a');
+
+    aLaUneLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault(); // Empêche le chargement immédiat
+
+            // Crée et affiche le message "Patienter un instant..."
+            const loader = document.createElement('div');
+            loader.id = 'loadingMessage';
+            loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Patienter un instant...
+                                </div>`;
+            document.body.appendChild(loader);
+
+            setTimeout(() => {
+                window.location.href = link.href;
+            }, 5);
+        });
+    });
+});
+
+    document.addEventListener('DOMContentLoaded', () => {
+    function ajouterEffetChargementAuxLiens() {
+        const decouvrirLinks = document.querySelectorAll('#decouvrirOaContainer .row a');
+
+        decouvrirLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Empêche le chargement immédiat
+
+                // Supprime tout ancien message de chargement
+                const oldLoader = document.getElementById('loadingMessage');
+                if (oldLoader) {
+                    oldLoader.remove();
+                }
+
+                // Crée et affiche le message "Patienter un instant..."
+                const loader = document.createElement('div');
+                loader.id = 'loadingMessage';
+
+                loader.style.position = 'fixed';
+                loader.style.top = '0';
+                loader.style.left = '0';
+                loader.style.width = '100vw';
+                loader.style.height = '100vh';
+                loader.style.background = 'rgba(0, 0, 0, 0.7)';
+                loader.style.display = 'flex';
+                loader.style.justifyContent = 'center';
+                loader.style.alignItems = 'center';
+                loader.style.zIndex = '1050'; // Au-dessus du reste de la page
+
+
+
+
+                loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                        Patienter un instant...
+                                    </div>`;
+                document.body.appendChild(loader);
+
+                // Redirige après 1 seconde
+                setTimeout(() => {
+                    window.location.href = link.href;
+                }, 1000);
+            });
         });
     }
+
+    // Appliquer l'effet de chargement aux liens existants
+    ajouterEffetChargementAuxLiens();
+
+    // Observer si de nouveaux éléments sont ajoutés (pour gérer le chargement dynamique)
+    const observer = new MutationObserver(() => {
+        ajouterEffetChargementAuxLiens();
+    });
+
+    observer.observe(document.getElementById('decouvrirOaContainer'), { childList: true, subtree: true });
 });
+
+
 </script>
 {% endblock %}

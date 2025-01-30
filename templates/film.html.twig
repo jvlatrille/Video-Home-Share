@@ -338,6 +338,32 @@
             });
         }
     });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const carouselLinks = document.querySelectorAll('#carouselSuggestions a');
+
+        carouselLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Empêche le chargement immédiat
+
+                const loader = document.createElement('div');
+                loader.id = 'loadingMessage';
+                loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                        Patienter un instant...
+                                    </div>`;
+                document.body.appendChild(loader);
+
+                setTimeout(() => {
+                    window.location.href = link.href; // Redirige après un court instant
+                }, 5);
+            });
+        });
+    });
+
+
+
     </script>
 {% endif %}
 {% endblock %}

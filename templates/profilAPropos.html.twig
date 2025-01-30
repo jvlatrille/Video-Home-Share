@@ -62,8 +62,11 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
                                         
+                                        {# <a href="index.php?controleur=commentaire&methode=afficherAPropos&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}">
+                                        
+                                        <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
+
                                         {% if commentaire.photoProfil %}
-                                            {# <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
                                             <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
                                                 <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
                                             </a>
@@ -79,7 +82,7 @@
                                             <p>{{ commentaire.contenu }}</p>
                                         </div>
                                     </div>
-                                    {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
+                                    {# {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
                                         <div>
                                             <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
                                             class="btn btn-danger btn-sm"
@@ -87,7 +90,7 @@
                                                 Supprimer
                                             </a>
                                         </div>
-                                    {% endif %}
+                                    {% endif %} #}
                                 </li>
                             {% endfor %}
                         </ul>
