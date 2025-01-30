@@ -2,6 +2,7 @@
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
+		<script src="js/formContact.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
 			tarteaucitron.init({
@@ -94,24 +95,40 @@
 		</title>
 	</head>
 	<body class="d-flex flex-column min-vh-100">
+	
 		<header class="header-bg text-light header-sm container-fluid">
 			<nav
 				class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
+				
 				<!-- Logo et bouton Menu -->
 				<div class="d-flex align-items-center">
+				
 					<a class="navbar-brand d-flex align-items-center" href="index.php">
-						<img src="img/LogoPopCorn.png" alt="Logo" width="80" height="80" class="me-2">
-						VHS
+						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2" >
+						<strong>VHS</strong>
 					</a>
-					<button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
+					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
 						Menu
-					</button>
+					</button> #}
 				</div>
-
-				<!-- Barre de recherche -->
-				<form class="d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
-					<input class="form-control" type="search" name="requete" placeholder="Barre de recherche" aria-label="Search" style="max-width: 400px;">
+				
+				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
+					{% if utilisateurConnecte %}
+						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">WatchList</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quizz</a>
+					{% else %}
+						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
+					{% endif %}
+				</div>
+				
+				{# <!-- Barre de recherche -->d-flex justify-content-center flex-grow-1 mt-2 mt-md-0 #}
+				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;">
+				{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
+					<input class="form-control" type="search" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
 				</form>
+
 
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">
@@ -165,19 +182,19 @@
 			</nav>
 
 			<!-- Menu déroulant sous le bouton "Menu" -->
-			<div class="collapse" id="menuBar">
-				<div class="container py-2 d-flex justify-content-center flex-wrap">
-					{% if utilisateurConnecte %}
+			{# <div class="collapse" id="menuBar"> #}
+				{# <div class="container py-2 d-flex justify-content-center flex-wrap"> #}
+					{# {% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
 						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
 						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
-					{% endif %}
-				</div>
+					{% endif %} #}
+				{# </div> #}
 
-			</div>
+			{# </div> #}
 		</header>
 
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
@@ -277,6 +294,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 						</div>
 					</div>
 				</div>
+
 				<!-- Modal Contact -->
 				<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
@@ -285,60 +303,30 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 								<h5 class="modal-title fw-bold text-dark" id="contactModalLabel">Nous contacter</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
 							</div>
-							<div class="modal-body text-dark">
-								<p>Pour toute question ou suggestion, vous pouvez nous contacter :</p>
-								<ul class="list-unstyled">
-									<li>
-										<strong>AMREIN Nathan</strong>
-										-
-										<a href="mailto:namrein@iutbayonne.univ-pau.fr" class="text-primary">namrein@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>BAROS Arthur</strong>
-										-
-										<a href="mailto:abaros@iutbayonne.univ-pau.fr" class="text-primary">abaros@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>CHIPY Thibault</strong>
-										-
-										<a href="mailto:tchipy@iutbayonne.univ-pau.fr" class="text-primary">tchipy@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>DESPRE-HILDEVERT Léa</strong>
-										-
-										<a href="mailto:ldhildevert@iutbayonne.univ-pau.fr" class="text-primary">ldhildevert@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>DIZY Lukas</strong>
-										-
-										<a href="mailto:ldizy@iutbayonne.univ-pau.fr" class="text-primary">ldizy@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>LEVAL Noah</strong>
-										-
-										<a href="mailto:noah.leval@etud.univ-pau.fr" class="text-primary">noah.leval@etud.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>NOVION Tatiana</strong>
-										-
-										<a href="mailto:tnovion@iutbayonne.univ-pau.fr" class="text-primary">tnovion@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>PIGEON Aymeric</strong>
-										-
-										<a href="mailto:apigeon001@iutbayonne.univ-pau.fr" class="text-primary">apigeon001@iutbayonne.univ-pau.fr</a>
-									</li>
-									<li>
-										<strong>VINET LATRILLE Jules</strong>
-										-
-										<a href="mailto:jvlatrille@iutbayonne.univ-pau.fr" class="text-primary">jvlatrille@iutbayonne.univ-pau.fr</a>
-									</li>
-								</ul>
-								<p>Nous vous répondrons dans les plus brefs délais !</p>
-							</div>
+							<form action="index.php?controleur=utilisateur&methode=traiterContact" method="POST">
+								<div class="modal-body text-dark">
+									<div class="mb-3">
+										<label for="name" class="form-label">Nom :</label>
+										<input type="text" id="name" name="name" class="form-control" required>
+									</div>
+									<div class="form-group mb-3">
+										<label for="email" class="form-label">Mail :</label>
+										<input type="email" name="mail" name="email" class="form-control" required placeholder="Exemple : mail@mail.fr">
+										<small id="emailErreur" class="text-danger"></small>
+									</div>
+									<div class="mb-3">
+										<label for="message" class="form-label">Message :</label>
+										<textarea id="message" name="message" class="form-control" rows="5" required></textarea>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="submit" class="btn btn-primary w-100" onclick="showPopup()">Envoyer</button>
+								</div>
+							</form>
 						</div>
 					</div>
-				</div>
+				</div>						
+
 
 				<div class="footer-social mb-2">
 					<div class="sharethis-inline-share-buttons"></div>
@@ -352,6 +340,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block script %}{% endblock %}
+		{% block scripts %}
+		{% endblock %}
 	</body>
 </html>

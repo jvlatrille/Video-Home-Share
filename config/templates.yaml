@@ -19,3 +19,7 @@ WEBSITE_:
 TMDB_:
   CLE_KEY:
   TOKEN_ACCES:
+
+EMAIL_:
+  ADDRESS: adresseMailDeContactDeLApplication
+  PASSWORD: MdpDeLadresseMailDeContact

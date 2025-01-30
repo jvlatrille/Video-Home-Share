@@ -111,6 +111,19 @@ class OADao
     }
 
     /**
+     * @brief Retourne l'URL complète du fond d'écran (backdrop)
+     * @param string|null $backdropPath Chemin de l'image
+     * @param string $size Taille de l'image
+     * @return string URL complète du backdrop
+     */
+    private function getBackdropUrl(?string $backdropPath, string $size = 'w1280'): string
+    {
+        $baseUrl = 'https://image.tmdb.org/t/p/';
+        $defaultImage = 'https://via.placeholder.com/1280x720?text=Image+non+disponible';
+
+        return $backdropPath ? $baseUrl . $size . $backdropPath : $defaultImage;
+    }
+    /**
      * @brief Analyse les participants à partir des crédits API
      * @param array $credits Données des crédits API
      * @return array Liste des participants
@@ -177,6 +190,7 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
+            $this->getBackdropUrl($data['backdrop_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
             $data['producer'] ?? null,
             null,
@@ -359,6 +373,7 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
+            $this->getBackdropUrl($data['backdrop_path'] ?? null),
             $this->parseParticipants($data['credits'] ?? []),
             $data['producteur'] = $this->getCreator($data['created_by'] ?? []),
             $data['number_of_seasons'] ?? null,
