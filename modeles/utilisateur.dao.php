@@ -285,6 +285,21 @@ class UtilisateurDao
     }
 
     /**
+     * @brief Récupère le mot de passe de l'utilisateur associé à un id.
+     * @param int $idUtilisateur L'id dont il faut récupérer le mot de passe
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function getMdpById($idUtilisateur)
+    {
+        $sql = "SELECT motDePasse FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':idUtilisateur' => $idUtilisateur]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['motDePasse'] : null;
+    }
+
+    /**
      * @brief Creer un Utilisateur par son adresse mail
      * @author Thibault CHIPY
      * @param string $mail

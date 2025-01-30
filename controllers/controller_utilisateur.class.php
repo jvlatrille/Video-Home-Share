@@ -366,8 +366,8 @@ class ControllerUtilisateur extends Controller
      */
     public function changerMdp()
     {
-            $mdp=isset($_POST['MDP1'])?$_POST['MDP1']:null;
-            $mdpVerif=isset($_POST['MDP2'])?$_POST['MDP2']:null;
+            $mdp = isset($_POST['MDP1'])?$_POST['MDP1']:null;
+            $mdpVerif = isset($_POST['MDP2'])?$_POST['MDP2']:null;
             $token = isset($_POST['token']) ? $_POST['token'] : null;
 
             $managerUtilisateur = new UtilisateurDao($this->getPdo());

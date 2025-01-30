@@ -26,17 +26,12 @@
     </style>
 </head>
 <body>
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
     <div class="min-vh-100 d-flex align-items-center">
         <div class="container" background-color="000000">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">
                     <div class="card shadow-lg p-4">
-                        <h3 class="text-center mb-4">Réinitialisez votre mot de passe</h3>
+                        <h3 class="text-center mb-4">Changer votre mail</h3>
 
                         <!-- Affichage d'un message d'erreur, si défini -->
                         {% if message is defined %}
@@ -46,7 +41,7 @@
                         {% endif %}
 
                         {% if mdpValide is not defined or mdpValide == true %}
-                            <form action="index.php?controleur=utilisateur&methode=changerMail" method="POST">
+                            <form action="index.php?controleur=profil&methode=changerMail" method="POST">
                                 <!-- Mot de passe -->
                                 <div class="form-group mb-3">
                                     <label for="MDP1" class="form-label">Entrez votre mot de passe :</label>
@@ -59,10 +54,8 @@
                                         required>
                                 </div>
 
-                                <!-- Champs cachés pour l'utilisateur et le token -->
+                                <!-- Champs cachés pour le token -->
                                 <input type="hidden" name="token" value="{{ token }}">
-
-
                                 <!-- Bouton de soumission -->
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary btn-lg">
@@ -72,6 +65,22 @@
                             </form>
                         {% endif %}
                     </div>
+
+            
+                    {% if erreurs is defined %}
+                        <div class="alert alert-danger text-center">
+                            <h3>Erreurs :</h3>
+                            <ul >
+                                {% for erreur in erreurs %}
+                                    <li>{{ erreur }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    {% if message is defined %}
+                        <div class="alert alert-danger text-danger">{{ message }}</div>
+                    {% endif %}
 
                     <div class="text-center mt-3">
                         <a href="index.php?controleur=utilisateur&methode=connexion" class="text-decoration-none">

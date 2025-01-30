@@ -227,12 +227,6 @@ class ControllerProfil extends Controller
      * @return void
      */
     public function pageChangerMail(){
-        $template = $this->getTwig()->load('pageChangerMail.html.twig');
-        echo $template->render();
-    }
-
-    public function changerMail()
-    {
         // Récupérer le token depuis l'URL
         $id = base64_decode(urldecode($_GET['id']));
         $token = base64_decode(urldecode($_GET['token']));
@@ -240,10 +234,51 @@ class ControllerProfil extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPDO());
         $tokenCrypt = $managerUtilisateur->getTokenById($id);
 
-        if (password_verify($token, $tokenCrypt))
+        if (empty($token) || empty($tokenCrypt) || !password_verify($token, $tokenCrypt))
         { 
-            $managerUtilisateur->activerCompte($id);
+            $erreurs[] = "Erreur de token";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
         }
+
+        // Transmettre le token au template Twig
+        $template = $this->getTwig()->load('changerMail.html.twig');
+        echo $template->render([
+            'token' => $tokenCrypt // Transmettre le token au formulaire
+        ]);
+        return Null;
+    }
+
+    /**
+     * @brief Vérifie la saisie du mot de passe et change le mail
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function changerMail()
+    {
+        // Récupérer le token et l'id depuis l'URL et le mdp depuis le formulaire
+        $mdp = isset($_POST['MDP'])?$_POST['MDP']:null;
+        $token = isset($_POST['token']) ? $_POST['token'] : null;
+
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $id = $managerUtilisateur->getIdUserByToken($token);
+        $mdpCrypt = $managerUtilisateur->getMdpById($id);
+
+        if(empty($mdp) || !password_verify($mdp, $mdpCrypt))
+        {
+            $erreurs[] = "Mot de passe incorrect";
+            $template = $this->getTwig()->load('changerMail.html.twig');
+            echo $template->render([
+                'erreurs' => $erreurs,
+                'token' => $token
+            ]);
+            return;
+        }
+
+        $managerUtilisateur->activerCompte($id); 
+        $managerUtilisateur->supprimerToken($token);
         header('Location: index.php?controleur=utilisateur&methode=connexion');
         exit();
     }
