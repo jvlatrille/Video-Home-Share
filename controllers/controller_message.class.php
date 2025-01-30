@@ -32,36 +32,37 @@ class ControllerMessage extends Controller
     }
 
     public function ajouterMessage()
-{
+    {
     // Vérifie si l'utilisateur est connecté
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
         // Récupération des données
-        $idForum = $_POST['idForum'] ?? null;
-        $contenu = $_POST['contenu'] ?? null;
-        $nbLikes = $_POST['nbLikes'] ?? 0;
-        $nbDislikes = $_POST['nbDislikes'] ?? 0;
+        $idForum = $_POST['idForum'] ?? $_GET['idForum'] ?? null;
+        $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
+        $pseudo = $utilisateurConnecte->getPseudo();
+        $photoProfil = $utilisateurConnecte->getPhotoProfil();
         $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
-
+        
         // Création d'un nouveau message via le DAO
         $managerMessage = new MessageDao($this->getPdo());
         $message = new Message();
-        $message->setIdForum($idForum);
         $message->setContenu($contenu);
-        $message->setNbLikes($nbLikes);
-        $message->setNbDislikes($nbDislikes);
+        $message->setNbLikes(0);
+        $message->setNbDislikes(0);
+        $message->setPseudo($pseudo);
+        $message->setPhotoProfil($photoProfil);
         $message->setIdUtilisateur($idUtilisateur);
+        $message->setIdForum($idForum);
 
         // Ajoute le message à la base de données
         $managerMessage->creerMessage($message);
 
         // Redirige vers la liste des messages du forum
-        header('Location: index.php?controleur=message&methode=listerMessage');
+        header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $idForum);
         exit;
     }
-}
-
+    }
 
     public function like()
     {
@@ -78,7 +79,7 @@ class ControllerMessage extends Controller
     }
     }
 
-public function dislike()
+    public function dislike()
     {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
         $idMessage = (int)$_POST['idMessage'];

@@ -16,16 +16,16 @@
         <div class="modal-content">
             <div class="modal-body">
                 <!-- Formulaire d'ajout de message -->
-                <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage&id={{forumList.idForum}}">
+                <form id="createMessageForm" method="POST" action="index.php?controleur=message&methode=ajouterMessage&idForum={{forum.idForum}}">
                     <!-- Contenu du message -->
                     <div class="mb-3">
                         <label for="messageContenu" class="form-label">Message :</label>
-                        <textarea class="form-control" id="messageContenu" name="contenu" rows="4" required></textarea>
+                        <textarea class="form-control" id="messageContenu" name="contenu" rows="3" required></textarea>
                     </div>
 
                     <!-- Bouton de soumission -->
                     <div class="text-center">
-                        <button type="submit" class="btn btn-success">Ajouter un nouveau message</button>
+                        <button type="submit" class="btn btn-secondary">Ajouter un nouveau message</button>
                     </div>
                 </form>
             </div>

@@ -58,8 +58,8 @@ class messageDAO{
 
     //Fonction pour creer un message
     public function creerMessage(Message $message): ?Message {
-        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, pseudo, photoProfil, idUtilisateur, idForum) 
-                VALUES (:contenu, :nbLike, :nbDislike, :pseudo, :photoProfil, :idUtilisateur, :idForum)"; 
+        $sql = "INSERT INTO ".PREFIXE_TABLE."message (contenu, nbLike, nbDislike, idUtilisateur, idForum) 
+                VALUES (:contenu, :nbLike, :nbDislike, :idUtilisateur, :idForum)"; 
         
         try {
             $pdoStatement = $this->pdo->prepare($sql);
@@ -67,8 +67,6 @@ class messageDAO{
                 'contenu' => $message->getContenu(),
                 'nbLike' => $message->getNbLikes(),
                 'nbDislike' => $message->getNbDislikes(),
-                'pseudo' => $message->getPseudo(),
-                'photoProfil' => $message->getPhotoProfil(),
                 'idUtilisateur' => $message->getIdUtilisateur(),
                 'idForum' => $message->getIdForum()
             ));
