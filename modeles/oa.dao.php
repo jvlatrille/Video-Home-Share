@@ -524,4 +524,34 @@ class OADao
         }
         return $this->hydrateAllSerie($results['results']);
     }
+
+    /**
+     * @brief Récupère les genres 
+     * @return array Liste des genres
+     */
+    public function getGenresFilms(): array{
+        $resultsFilms = $this->makeApiRequest('/genre/movie/list', ['language' => 'fr-FR']);
+        if (!isset($resultsFilms['genres']) || empty($resultsFilms['genres'])) {
+            error_log('Aucun genre trouvé pour les films.');
+            return [];
+        }
+        
+        return $resultsFilms['genres'];
+    }
+
+    /**
+     * @brief Récupère des suggestions basées sur un genre donné
+     * @param int $idGenre Identifiant du genre
+     * @return array Liste des suggestions sous forme d'objets OA
+     */
+    public function findSuggestionsByGenre(int $idGenre): array
+    {
+        $results = $this->makeApiRequest('/discover/movie', ['include_adult'=>false,'with_genres' => $idGenre, 'language' => 'fr-FR', 'page' => 1], true);
+
+        if (!isset($results['results']) || empty($results['results'])) {
+            error_log('Aucune suggestion trouvée pour le genre ID : ' . $idGenre);
+            return [];
+        }
+        return $this->hydrateAll(array_slice($results['results'], 0, 10));
+    }
 }
