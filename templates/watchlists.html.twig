@@ -41,7 +41,7 @@
 						<form id="createWatchlistForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterWatchList">
 							<div class="mb-3">
 								<label for="watchlistTitle" class="form-label">Titre :</label>
-								<input type="text" class="form-control" id="watchlistTitle" name="titre" required>
+								<input type="text" class="form-control" id="watchlistTitle" placeholder="Mes films préférés !" name="titre"  required>
 								<small id="titreErreur" class="text-danger"></small>
 
 							</div>
@@ -56,12 +56,13 @@
 
 							<div class="mb-3">
 								<label for="watchlistDescription" class="form-label">Description :</label>
-								<textarea class="form-control" id="watchlistDescription" name="description" rows="3"></textarea>
+								<textarea class="form-control" id="watchlistDescription" placeholder="Ici décrivez le but de cette watchlist." name="description" rows="3"></textarea>
 								<small id="descErreur" class="text-danger"></small>
 
 							</div>
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<small class="form-text text-muted"><br><strong>Publique</strong> : visible par tous les utilisateurs.</small>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
 									<label class="form-check-label" for="visibilityPublic">
@@ -81,7 +82,7 @@
 
 							<div class="mb-3">
 								<label for="watchlistSuggestions" class="form-label">Suggestions :</label>
-								<select class="form-select" id="watchlistSuggestions" name="suggestions" onchange="ajouterWatchlist(this)">
+								<select class="form-select" id="watchlistSuggestions" name="suggestions" onchange="ajouterWatchlist(this)" placeholder="Sélectionner une oeuvre">
 								
 										<option value="" data-poster-path="" data-type="" data-note=""></option>
 									
@@ -115,8 +116,8 @@
 
 				<div class="container text-center mt-2">
 					<div class="row">
-						<div class="col text-start mb-2">
-							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}">
+						<div class="col text-start mb-2 ">
+							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}" class="text-primary text-decoration-none">
 								<h2>{{watchList.titre}}</h2>
 							</a>
 						</div>

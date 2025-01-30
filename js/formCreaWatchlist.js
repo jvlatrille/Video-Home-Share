@@ -3,7 +3,7 @@
  * @details Ce script permet de gérer le formulaire de création de watchlist de l'utilisateur
  * en vérifiant que les champs sont bien remplis et en affichant des messages
  * d'erreur si ce n'est pas le cas.
- * @version 1.1
+ * @version 2.0
  * @date 30/01/2025
  * @author CHIPY Thibault
  */
@@ -72,7 +72,7 @@ function gestionGenre() {
                 return;
             }
 
-            genreSelect.innerHTML = ""; // Vider les options existantes
+            genreSelect.innerHTML = ""; 
 
             if (!data.genres || !Array.isArray(data.genres)) {
                 console.error("Format des données incorrect:", data);
@@ -87,13 +87,6 @@ function gestionGenre() {
                 genreSelect.appendChild(option);
             });
 
-            // Sélectionner la valeur définie dans data-selected ou la première option
-            // let genreChoisiId = genreSelect.getAttribute("data-selected");
-            // if (genreChoisiId) {
-            //     genreSelect.value = genreChoisiId;
-            // } else {
-            //     genreSelect.value = data.genres[0].id;
-            // }
             const optionVide = document.createElement("option");
             optionVide.value = "";
             optionVide.textContent = "Choisir un genre";
@@ -101,7 +94,6 @@ function gestionGenre() {
             optionVide.selected = true;  // Option par défaut
             genreSelect.insertBefore(optionVide, genreSelect.firstChild);
 
-            // Mettre à jour l'input caché avec l'ID et le nom du genre
             function updateSelectedGenre() {
                 const genreChoisi = data.genres.find(g => g.id == genreSelect.value);
                 if (genreChoisi) {
@@ -112,7 +104,6 @@ function gestionGenre() {
             // Mettre à jour dès le chargement
             updateSelectedGenre();
 
-            // Ajouter un événement pour détecter les changements dans le select
             genreSelect.addEventListener("change", updateSelectedGenre);
         })
         .catch(error => console.error("Erreur lors de la récupération des genres:", error));
@@ -184,7 +175,7 @@ function verifierDescription() {
     }
 }
 
-// Vérifier les suggestions (ajouter des œuvres à la watchlist)
+// Vérifier les suggestions
 function verifierSuggestions() {
     const selectedIdsValue = document.getElementById('selectedIds').value;
     if (selectedIdsValue === '' || listeOeuvres.length === 0) {
@@ -198,7 +189,7 @@ function verifierSuggestions() {
 }
 
 
-// Vérifier tous les champs et activer/désactiver le bouton de soumission
+// Vérifier tous les champs et activer/désactiver le bouton
 function verifierChamps() {
     if (verifierTitre() && verifierGenre() && verifierDescription() && verifierSuggestions()) {
         boutonSubmit.disabled = false;
@@ -207,7 +198,6 @@ function verifierChamps() {
     }
 }
 
-// Ajouter des événements pour vérifier les champs à chaque modification
 form.addEventListener('input', function(event) {
     verifierChamps();
 
@@ -215,7 +205,6 @@ form.addEventListener('input', function(event) {
 });
 
 //Mettre a jour les suggestions en fonction du genre choisi
-// Fonction pour charger les suggestions en fonction du genre sélectionné
 function chargerSuggestionsParGenre() {
     const genreSelect = document.getElementById('genreSelect');
 
@@ -232,14 +221,12 @@ function chargerSuggestionsParGenre() {
             return;
         }
 
-        // Envoyer une requête AJAX pour récupérer les suggestions basées sur le genre
         fetch(`index.php?controleur=oa&methode=getSuggestionsByGenre&genre=${genreId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.suggestions) {
-                    // Mettre à jour le sélecteur de suggestions avec les nouvelles données
                     const suggestionsSelect = document.getElementById('watchlistSuggestions');
-                    suggestionsSelect.innerHTML = ''; // Vider les options existantes
+                    suggestionsSelect.innerHTML = ''; 
 
                     data.suggestions.forEach(suggestion => {
                         const option = document.createElement('option');
