@@ -145,6 +145,12 @@ class CommentaireDAO
 
 
 
+    /**
+     * @brief Affiche les commentaires de l'utilisateur connecté
+     * @author Léa Despré-Hildevert
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @return array
+     */
     public function chargerComm(?int $idUtilisateur): ?array
     {
         $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
