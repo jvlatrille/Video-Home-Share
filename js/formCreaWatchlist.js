@@ -88,12 +88,18 @@ function gestionGenre() {
             });
 
             // Sélectionner la valeur définie dans data-selected ou la première option
-            let genreChoisiId = genreSelect.getAttribute("data-selected");
-            if (genreChoisiId) {
-                genreSelect.value = genreChoisiId;
-            } else {
-                genreSelect.value = data.genres[0].id;
-            }
+            // let genreChoisiId = genreSelect.getAttribute("data-selected");
+            // if (genreChoisiId) {
+            //     genreSelect.value = genreChoisiId;
+            // } else {
+            //     genreSelect.value = data.genres[0].id;
+            // }
+            const optionVide = document.createElement("option");
+            optionVide.value = "";
+            optionVide.textContent = "Choisir un genre";
+            optionVide.disabled = true;
+            optionVide.selected = true;  // Option par défaut
+            genreSelect.insertBefore(optionVide, genreSelect.firstChild);
 
             // Mettre à jour l'input caché avec l'ID et le nom du genre
             function updateSelectedGenre() {
@@ -230,7 +236,6 @@ function chargerSuggestionsParGenre() {
         fetch(`index.php?controleur=oa&methode=getSuggestionsByGenre&genre=${genreId}`)
             .then(response => response.json())
             .then(data => {
-                console.log('Suggestions:', data);
                 if (data.success && data.suggestions) {
                     // Mettre à jour le sélecteur de suggestions avec les nouvelles données
                     const suggestionsSelect = document.getElementById('watchlistSuggestions');
