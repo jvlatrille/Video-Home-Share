@@ -92,6 +92,13 @@ public function incrementDislike(int $idMessage): void
 
 
 
+/**
+    * @brief Supprime un commentaire par son ID
+    * @author Léa Despré-Hildevert
+    * @param int $idCommentaire Identifiant du commentaire
+    * @return bool
+*/
+
 public function chargerAPropos(?int $idUtilisateur): ?array
     {
         $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";

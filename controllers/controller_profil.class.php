@@ -446,13 +446,17 @@ class ControllerProfil extends Controller
             $managerComm = new CommentaireDao($this->getPdo());
             $commentaires = $managerComm->chargerComm($idUtilisateur);
 
+            //Récupère le titre de l'OA
+            // $managerOa = new OADao($this->getPdo());
+            // $titreOA =$managerOa->find();
+
 
             $utilisateur = $managerUtilisateur->find($idUtilisateur);
             $_SESSION['utilisateur'] = serialize($utilisateur);
 
             // Génère la vue 
             $template = $this->getTwig()->load('profilAPropos.html.twig');
-            echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte]);
+            echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte]); //'titreOA'=>$titreOA
 
             
         }
