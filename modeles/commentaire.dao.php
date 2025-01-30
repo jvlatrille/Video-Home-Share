@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @file commentaire.dao.php
  * @author VINET LATRILLE Jules
  * @brief Classe CommentaireDAO pour accéder aux commentaires en base de données
  * @version 1.0
-  * @date 2024-12-22
+ * @date 2024-12-22
  */
 
 require_once 'commentaire.class.php';
@@ -157,7 +158,7 @@ class CommentaireDAO
                 JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
                 WHERE c.idUtilisateur = :idUtilisateur";
 
-        
+
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
@@ -169,11 +170,39 @@ class CommentaireDAO
             }
 
             return $resultats;
-
-           
         } catch (Exception $e) {
             error_log("Erreur lors de l'affichage des commentaires de l'utilisateur : " . $e->getMessage());
             return null;
         }
+    }
+
+    public function findCommentairesByIdUtilisateur(int $idUtilisateur): array
+    {
+        $sql = "SELECT c.idCom, c.idTMDB, 
+                c.contenu, 
+                c.dateCommentaire, 
+                c.idUtilisateur, 
+                u.pseudo, 
+                u.photoProfil
+            FROM vhs_commentaire c
+            JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
+            WHERE c.idUtilisateur = :idUtilisateur
+            ORDER BY c.dateCommentaire DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['idUtilisateur' => $idUtilisateur]);
+
+        $commentaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Charger les infos des œuvres via OADao
+        $oaDao = new OADao($this->pdo);
+        foreach ($commentaires as &$commentaire) {
+            $tmdbId = $commentaire['idTMDB'];
+            $oeuvre = $oaDao->find($tmdbId); // Utilisation de OADao pour récupérer l'œuvre
+            $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Titre inconnu";
+            $commentaire['backdropOeuvre'] = $oeuvre ? $oeuvre->getBackdropPath() : null;
+        }
+
+        return $commentaires;
     }
 }

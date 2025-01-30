@@ -140,11 +140,11 @@ class ControllerProfil extends Controller
     }  
      
     /**
-     * @brief Change le mail de l'utilisateur
+     * @brief Envoie un email pour changer le mail de l'utilisateur
      *
      * @return void
      */
-    public function changerMail() { 
+    public function boutonChangerMail() { 
         if (isset($_SESSION['utilisateur'])) {
             $regles = [
                 'mail' => [
@@ -159,30 +159,128 @@ class ControllerProfil extends Controller
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $id = $utilisateurConnecte->getIdUtilisateur();
+            $ancienMail = $utilisateurConnecte->getAdressMail();
             $newMail = isset($_POST['mail']) ? trim($_POST['mail']) : null;
             $donnees = ["mail" => $newMail];
 
             // Vérification des données reçues
             $validator = new Validator($regles);
             $valides = $validator->valider($donnees);
-        
-            // Interaction avec le DAO pour mettre à jour le pseudo
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            if ($valides)
+
+            if (!$valides)
             {
-                $reussite = $managerUtilisateur->changerMail($id, $newMail);
+                $erreurs[] = "Veuillez entrez une adresse mail valide";
+                $template = $this->getTwig()->load('profilParametres.html.twig');
+                echo $template->render(['erreurs' => $erreurs]);
+                return;
             }
-        
+
+            // Verification si le mail est different
+            if($ancienMail === $newMail || empty($newMail))
+            {
+                $erreurs[] = "Veuillez entrez une adresse mail différente";
+                $template = $this->getTwig()->load('profilParametres.html.twig');
+                echo $template->render(['erreurs' => $erreurs]);
+                return;
+            }
+
+            // Interaction avec le DAO pour evoyer le lien pour mettre à jour le mail
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            
+            $token = bin2hex(random_bytes(32));
+            $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
+    
+            $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
+    
+            // Enregistre le token dans la base de données
+            $managerUtilisateur->enregistrerToken($id, $tokenCrypt, $expiresAt);
+    
+            // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
+            $idEncoded = urlencode(base64_encode($id));
+            $tokenEncoded = urlencode(base64_encode($token));
+    
+            // Crée le lien de réinitialisation
+            $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
+    
+            // Envoie un email avec le lien de réinitialisation
+            $sujet = "Changer votre adresse mail";
+            $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour changer votre adresse mail :\n$lienReset\n\nSi vous n'avez pas demandé de changement de mail, ignorez cet email.";
+            mail($newMail, $sujet, $message);
+
+            $managerUtilisateur->desactiverCompte($id);
+            $managerUtilisateur->changerMail($id, $newMail);
+
             // Génération d'un message en fonction du succès ou de l'échec
             $messages = $validator->getMessagesErreurs();
-            $utilisateur = $managerUtilisateur->find($id);
-        
-            // Mise à jour de la session avec les nouvelles données
-            $_SESSION['utilisateur'] = serialize($utilisateur);
-            header('Location: index.php?controleur=profil&methode=afficherFormulaire');
+            
+            // Deconnexion
+            header('Location: index.php?controleur=utilisateur&methode=deconnexion');
             exit();
 
         }
+    }
+
+    /**
+     * @brief Affiche la page pour confirmer le changement du mail
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function pageChangerMail(){
+        // Récupérer le token depuis l'URL
+        $id = base64_decode(urldecode($_GET['id']));
+        $token = base64_decode(urldecode($_GET['token']));
+
+        $managerUtilisateur = new UtilisateurDao($this->getPDO());
+        $tokenCrypt = $managerUtilisateur->getTokenById($id);
+
+        if (empty($token) || empty($tokenCrypt) || !password_verify($token, $tokenCrypt))
+        { 
+            $erreurs[] = "Erreur de token";
+            $template = $this->getTwig()->load('connexion.html.twig');
+            echo $template->render(['erreurs' => $erreurs]);
+            return;
+        }
+
+        // Transmettre le token au template Twig
+        $template = $this->getTwig()->load('changerMail.html.twig');
+        echo $template->render([
+            'token' => $tokenCrypt // Transmettre le token au formulaire
+        ]);
+        return Null;
+    }
+
+    /**
+     * @brief Vérifie la saisie du mot de passe et change le mail
+     * @author Noah LÉVAL 
+     *
+     * @return void
+     */
+    public function changerMail()
+    {
+        // Récupérer le token et l'id depuis l'URL et le mdp depuis le formulaire
+        $mdp = isset($_POST['MDP'])?$_POST['MDP']:null;
+        $token = isset($_POST['token']) ? $_POST['token'] : null;
+
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $id = $managerUtilisateur->getIdUserByToken($token);
+        $mdpCrypt = $managerUtilisateur->getMdpById($id);
+
+        if(empty($mdp) || !password_verify($mdp, $mdpCrypt))
+        {
+            $erreurs[] = "Mot de passe incorrect";
+            $template = $this->getTwig()->load('changerMail.html.twig');
+            echo $template->render([
+                'erreurs' => $erreurs,
+                'token' => $token
+            ]);
+            return;
+        }
+
+        $managerUtilisateur->activerCompte($id); 
+        $managerUtilisateur->supprimerToken($token);
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+        exit();
     }
 
     /**
@@ -194,11 +292,12 @@ class ControllerProfil extends Controller
     {
         if (isset($_SESSION['utilisateur'])) {
             $regles = [];
-
+    
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
-
+    
             $userId = $utilisateurConnecte->getIdUtilisateur();
+            $userPseudo = $utilisateurConnecte->getPseudo();
             $messages = [];
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             
@@ -211,9 +310,18 @@ class ControllerProfil extends Controller
                 // Si la photo est valide
                 if ($photoValide) {
                     // Définir le dossier de destination
+                    $fileExtension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
                     $uploadDir = 'img/profils/';
-                    $fileName = basename($_FILES['photo']['name']); //time() . '_' . basename($_FILES['photo']['name']);
+                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
                     $filePath = $uploadDir . $fileName;
+                    
+                    // Supprimer l'ancienne photo si elle existe
+                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    foreach ($anciennePhoto as $fichier) {
+                        if (is_file($fichier)) {
+                            unlink($fichier);
+                        }
+                    }
                     
                     // Déplacer le fichier téléchargé
                     if (move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
@@ -235,7 +343,7 @@ class ControllerProfil extends Controller
             } else {
                 $messages[] = "Aucune photo téléchargée ou erreur lors du téléchargement.";
             }
-
+    
             $utilisateur = $managerUtilisateur->find($userId);
         
             // Mise à jour de la session avec les nouvelles données
@@ -244,6 +352,7 @@ class ControllerProfil extends Controller
             header('Location: index.php?controleur=profil&methode=afficherFormulaire');
         }
     }
+    
     
     /**
      * @brief Change la banniere de l'utilisateur
@@ -259,6 +368,7 @@ class ControllerProfil extends Controller
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $userId = $utilisateurConnecte->getIdUtilisateur();
+            $userPseudo = $utilisateurConnecte->getPseudo();
             $messages = [];
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             
@@ -271,9 +381,18 @@ class ControllerProfil extends Controller
                 // Si la photo est valide
                 if ($photoValide) {
                     // Définir le dossier de destination
+                    $fileExtension = strtolower(pathinfo($_FILES['banniere']['name'], PATHINFO_EXTENSION));
                     $uploadDir = 'img/banniere/';
-                    $fileName = basename($_FILES['banniere']['name']); //time() . '_' . basename($_FILES['banniere']['name']);
+                    $fileName = "$userId" . "_" . "$userPseudo" . ".$fileExtension";
                     $filePath = $uploadDir . $fileName;
+                    
+                    // Supprimer l'ancienne banniere si elle existe
+                    $anciennePhoto = glob($uploadDir . "$userId" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+                    foreach ($anciennePhoto as $fichier) {
+                        if (is_file($fichier)) {
+                            unlink($fichier);
+                        }
+                    }
                     
                     // Déplacer le fichier téléchargé
                     if (move_uploaded_file($_FILES['banniere']['tmp_name'], $filePath)) {

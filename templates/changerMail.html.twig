@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialisation du mot de passe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #AA8463;
+        }
+        .card {
+            background-color: #D5D0AF;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #A93A32;
+            border-color: #A93A32;
+        }
+        .btn-primary:hover {
+            background-color: #A93A32;
+            border-color: #A93A32;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-vh-100 d-flex align-items-center">
+        <div class="container" background-color="000000">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card shadow-lg p-4">
+                        <h3 class="text-center mb-4">Changer votre mail</h3>
+
+                        <!-- Affichage d'un message d'erreur, si défini -->
+                        {% if message is defined %}
+                            <div class="alert alert-danger text-center">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+
+                        {% if mdpValide is not defined or mdpValide == true %}
+                            <form action="index.php?controleur=profil&methode=changerMail" method="POST">
+                                <!-- Mot de passe -->
+                                <div class="form-group mb-3">
+                                    <label for="MDP1" class="form-label">Entrez votre mot de passe :</label>
+                                    <input 
+                                        type="password" 
+                                        class="form-control" 
+                                        id="MDP" 
+                                        name="MDP" 
+                                        placeholder="Entrez votre mot de passe" 
+                                        required>
+                                </div>
+
+                                <!-- Champs cachés pour le token -->
+                                <input type="hidden" name="token" value="{{ token }}">
+                                <!-- Bouton de soumission -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        Changer mon mail
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+
+            
+                    {% if erreurs is defined %}
+                        <div class="alert alert-danger text-center">
+                            <h3>Erreurs :</h3>
+                            <ul >
+                                {% for erreur in erreurs %}
+                                    <li>{{ erreur }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    {% if message is defined %}
+                        <div class="alert alert-danger text-danger">{{ message }}</div>
+                    {% endif %}
+
+                    <div class="text-center mt-3">
+                        <a href="index.php?controleur=utilisateur&methode=connexion" class="text-decoration-none">
+                            Retour à la connexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

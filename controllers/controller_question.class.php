@@ -115,57 +115,68 @@ class ControllerQuestion extends Controller
 
 
     public function saveQuestions()
-    {
-        // Vérifie si une session est active
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
-        $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
-        // Si l'ID du quizz est manquant
-        if (!$idQuizz) {
-            die("L'identifiant du quizz est requis !");
-        }
-
-        $managerQuestion = new QuestionDao($this->getPdo());
-
-        foreach ($questionsData as $questionData) {
-            // Extraction des données pour chaque question
-
-            $contenu = $questionData['contenu'] ?? '';
-            $numero = $questionData['numero'] ?? 1;
-            $nvDifficulte = $questionData['nvDifficulte'] ?? '';
-            $bonneReponse = $questionData['bonneReponse'] ?? '';
-            $mauvaiseReponse1 = $questionData['mauvaiseReponse1'] ?? '';
-            $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
-            $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
-            $cheminImage = $questionData['cheminImage'] ?? '';
-
-            // Création de l'objet Question
-            $question = new question(
-                null, // L'ID sera généré automatiquement par la base de données
-                $contenu,
-                $numero,
-                $nvDifficulte,
-                $bonneReponse,
-                $cheminImage,
-                $mauvaiseReponse1,
-                $mauvaiseReponse2,
-                $mauvaiseReponse3
-            );
-
-            // Ajout de la question
-            if (!$managerQuestion->add($question)) {
-                // Si l'ajout échoue, afficher une erreur
-                die("Erreur lors de l'ajout de la question.");
-            }
-        }
-
-        // Redirection après l'ajout des questions
-        // header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $idQuizz);
-        exit;
+{
+    // Vérifie si une session est active
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+
+    $idQuizz = $_POST['idQuizz'] ?? null; // ID du quizz provenant du formulaire
+    $questionsData = $_POST['questions'] ?? []; // Données des questions soumises
+
+    // Si l'ID du quizz est manquant
+    if (!$idQuizz) {
+        die("L'identifiant du quizz est requis !");
+    }
+
+    $managerQuestion = new QuestionDao($this->getPdo());
+
+    foreach ($questionsData as $questionData) {
+        // Extraction des données pour chaque question
+        $contenu = $questionData['contenu'] ?? '';
+        $numero = $questionData['numero'] ?? 1;
+        $nvDifficulte = $questionData['nvDifficulte'] ?? '';
+        $bonneReponse = $questionData['bonneReponse'] ?? '';
+        $mauvaiseReponse1 = $questionData['mauvaiseReponse1'] ?? '';
+        $mauvaiseReponse2 = $questionData['mauvaiseReponse2'] ?? '';
+        $mauvaiseReponse3 = $questionData['mauvaiseReponse3'] ?? '';
+        $cheminImage = $questionData['cheminImage'] ?? '';
+
+        // Création de l'objet Question
+        $question = new Question(
+            null, // L'ID sera généré automatiquement par la base de données
+            $contenu,
+            $numero,
+            $nvDifficulte,
+            $bonneReponse,
+            $cheminImage,
+            $mauvaiseReponse1,
+            $mauvaiseReponse2,
+            $mauvaiseReponse3
+        );
+
+        // Ajout de la question
+        if ($managerQuestion->add($question)) {
+            // Récupérer l'ID de la question ajoutée
+            $idQuestion = $managerQuestion->getLastInsertId();
+
+            // Lier la question au quizz dans la table vhs_portersur
+            $sql = "INSERT INTO vhs_portersur (idQuizz, idQuestion) VALUES (:idQuizz, :idQuestion)";
+            $stmt = $this->getPdo()->prepare($sql);
+            $stmt->execute([
+                'idQuizz' => $idQuizz,
+                'idQuestion' => $idQuestion
+            ]);
+        } else {
+            // Si l'ajout échoue, afficher une erreur
+            die("Erreur lors de l'ajout de la question.");
+        }
+    }
+
+    // Redirection après l'ajout des questions
+    header('Location: index.php?controleur=quizz&methode=listerQuizz');
+    exit;
+}
 
 
 
@@ -185,7 +196,7 @@ class ControllerQuestion extends Controller
             $numero = $_POST['numero'] ?? $question->getNumero();
             $nvDifficulte = $_POST['nvDifficulte'] ?? $question->getNvDifficulte();
             $bonneReponse = $_POST['bonneReponse'] ?? $question->getBonneReponse();
-            $bonneReponse = $_POST['cheminImage'] ?? $question->getcheminImage();
+            $cheminImage = $_POST['cheminImage'] ?? $question->getcheminImage();
             $mauvaiseReponse1 = $_POST['mauvaiseReponse1'] ?? $question->getMauvaiseReponse1();
             $mauvaiseReponse2 = $_POST['mauvaiseReponse2'] ?? $question->getMauvaiseReponse2();
             $mauvaiseReponse3 = $_POST['mauvaiseReponse3'] ?? $question->getMauvaiseReponse3();
@@ -233,21 +244,88 @@ class ControllerQuestion extends Controller
         }
     }
     public function afficherScore()
-    {
-        // Récupère le score de la session
-        $score = $_SESSION['score'] ?? 0;
+{
+    // Récupère le score de la session
+    $score = $_SESSION['score'] ?? 0;
 
-        // Récupère l'ID du quizz
-        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+    // Récupère l'ID du quizz
+    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
 
-        // Générer la vue pour afficher le score
-        $template = $this->getTwig()->load('quizzResultat.html.twig');
-        echo $template->render([
-            'score' => $score,
-            'idQuizz' => $idQuizz
-        ]);
-
-        // Réinitialiser le score pour un futur quizz
-        unset($_SESSION['score']);
+    if (!$idQuizz) {
+        echo "ID du quizz manquant.";
+        return;
     }
+
+    // Récupère le nombre total de questions du quizz
+    $managerQuizz = new QuizzDao($this->getPdo());
+    $quizz = $managerQuizz->find($idQuizz);
+    $nbTotalQuestions = $quizz->getNbQuestion();
+
+    // Générer la vue pour afficher le score
+    $template = $this->getTwig()->load('quizzResultat.html.twig');
+    echo $template->render([
+        'score' => $score,
+        'nbTotalQuestions' => $nbTotalQuestions, // Passage du nombre total de questions à la vue
+        'idQuizz' => $idQuizz
+    ]);
+
+    // Réinitialiser le score pour un futur quizz
+    unset($_SESSION['score']);
 }
+
+    public function afficherQuestionAjax()
+{
+    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+    $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
+
+    if (!$idQuizz) {
+        echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
+        return;
+    }
+
+    $managerQuestion = new QuestionDao($this->getPdo());
+    $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+
+    if (!$question) {
+        echo json_encode(["end" => true]);
+        return;
+    }
+
+    $reponses = [
+        ["text" => $question->getBonneReponse(), "correct" => true],
+        ["text" => $question->getMauvaiseReponse1(), "correct" => false],
+        ["text" => $question->getMauvaiseReponse2(), "correct" => false],
+        ["text" => $question->getMauvaiseReponse3(), "correct" => false]
+    ];
+    shuffle($reponses);
+
+    $difficultyClass = '';
+    if ($question->getNvDifficulte() == 'Facile') {
+        $difficultyClass = 'text-success';
+    } elseif ($question->getNvDifficulte() == 'Moyen') {
+        $difficultyClass = 'text-warning';
+    } elseif ($question->getNvDifficulte() == 'Difficile') {
+        $difficultyClass = 'text-danger';
+    }
+
+    // Ajouter le chemin de l'image dans la réponse
+    $cheminImage = $question->getCheminImage();
+
+    echo json_encode([
+        "question" => $question->getContenu(),
+        "reponses" => $reponses,
+        "difficulty" => $question->getNvDifficulte(),
+        "difficultyClass" => $difficultyClass,
+        "numero" => $numero,
+        "image" => $cheminImage // Ajout du chemin de l'image
+    ]);
+}
+
+    
+}
+
+
+
+
+
+
