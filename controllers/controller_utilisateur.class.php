@@ -1,4 +1,7 @@
 <?php
+// envoie de mail en local
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 /**
  * @file controller_profil.class.php
@@ -61,7 +64,7 @@ class ControllerUtilisateur extends Controller
 
     /**
      * @brief Permet d'afficher la page d'un autre utilisateur
-     * @author Noah LÉVAL 
+     * @author VINET LATRILLE Jules
      *
      * @return void
      */
@@ -69,13 +72,30 @@ class ControllerUtilisateur extends Controller
     {
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-
             $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+
+            $managerMessage = new MessageDAO($this->getPdo());
+            $messages = $managerMessage->getMessagesByUser($autreUtilisateur->getIdUtilisateur());
+
+            // Grouper les messages par forumNom
+            $groupedMessages = [];
+            foreach ($messages as $message) {
+                $forumNom = $message['forumNom'];
+                if (!isset($groupedMessages[$forumNom])) {
+                    $groupedMessages[$forumNom] = [];
+                }
+                $groupedMessages[$forumNom][] = $message;
+            }
+
+            $managerCommentaire = new CommentaireDAO($this->getPdo());
+            $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($autreUtilisateur->getIdUtilisateur());
+
+
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
@@ -90,52 +110,48 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    public function changerPseudo() {
+    public function changerPseudo()
+    {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
 
             $id = $utilisateurConnecte->getIdUtilisateur();
             $newPseudo = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
-    
-        if (!$id || !$newPseudo) {
-            throw new Exception('Informations manquantes : ID ou pseudo.');
-        }
-        
-        $managerUtilisateur = new UtilisateurDao($this->getPdo());
-        $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
-    
-        $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
-        $utilisateur = $managerUtilisateur->find($id);
-    
-        $template = $this->getTwig()->load('profilParametres.html.twig');
-        echo $template->render([
-            'utilisateur' => $utilisateur,
-            'message' => $message
-        ]);
-    }    
-}
 
-    /**
-     * @brief Permet de changer le mail de l'utilisateur
-     * @author Noah LÉVAL 
-     *
-     * @return void
-     */
-    public function changerMail() {
+            if (!$id || !$newPseudo) {
+                throw new Exception('Informations manquantes : ID ou pseudo.');
+            }
+
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $reussite = $managerUtilisateur->changerPseudo($id, $newPseudo);
+
+            $message = $reussite ? "Le pseudo a été changé avec succès." : "Erreur lors du changement de pseudo.";
+            $utilisateur = $managerUtilisateur->find($id);
+
+            $template = $this->getTwig()->load('profilParametres.html.twig');
+            echo $template->render([
+                'utilisateur' => $utilisateur,
+                'message' => $message
+            ]);
+        }
+    }
+    // Changer de Mail
+    public function changerMail()
+    {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         $newMail = isset($_GET['mail']) ? $_GET['mail'] : null;
-    
+
         if (!$id || !$newMail) {
             throw new Exception('Informations manquantes : ID ou mail.');
         }
-        
+
         $managerUtilisateur = new UtilisateurDao($this->getPdo());
         $reussite = $managerUtilisateur->changerMail($id, $newMail);
-    
+
         $message = $reussite ? "Le mail a été changé avec succès." : "Erreur lors du changement de mail.";
         $utilisateur = $managerUtilisateur->find($id);
-    
+
         $template = $this->getTwig()->load('profilParametres.html.twig');
         echo $template->render([
             'utilisateur' => $utilisateur,
@@ -164,7 +180,7 @@ class ControllerUtilisateur extends Controller
             // Définir le dossier cible où l'image sera enregistrée
             $targetDir = "img/profils/"; // Dossier relatif à l'arborescence de votre projet
             $targetFile = $targetDir . $fileName;
-            
+
             // Vérifier que l'extension du fichier est autorisée
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
@@ -267,7 +283,8 @@ class ControllerUtilisateur extends Controller
      *
      * @return void
      */
-    public function mdpOublie(){
+    public function mdpOublie()
+    {
         $template = $this->getTwig()->load('motDePasseOublie.html.twig');
         echo $template->render();
     }
@@ -283,54 +300,53 @@ class ControllerUtilisateur extends Controller
         // Vérifie si le formulaire a été soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
-    
+
             // Valide que l'email a été soumis et qu'il est correct
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
                 header('Location: index.php?controleur=utilisateur&methode=motDePasseOublie');
                 exit();
             }
-    
+
             // Vérifie si l'email existe dans la base de données
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
             $utilisateur = $managerUtilisateur->findByMail($email);
-    
+
             if ($utilisateur) {
                 // Génère un token unique pour la réinitialisation
                 $token = bin2hex(random_bytes(32));
                 $tokenCrypt = password_hash($token, PASSWORD_BCRYPT);
-    
+
                 $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
-    
+
                 // Enregistre le token dans la base de données
                 $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
                 $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
-    
+
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
                 $idEncoded = urlencode(base64_encode($idUtilisateur));
                 $tokenEncoded = urlencode(base64_encode($token));
-    
+
                 // Crée le lien de réinitialisation
                 $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
-    
+
                 // Envoie un email avec le lien de réinitialisation
                 $sujet = "Reinitialisation de votre mot de passe";
                 $message = "Bonjour,\n\nCliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :\n$lienReset\n\nSi vous n'avez pas demandé de réinitialisation, ignorez cet email.";
                 mail($email, $sujet, $message);
-    
+
                 // Message de succès
                 $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
             } else {
                 // Message pour ne pas révéler si l'email existe ou non
                 $_SESSION['message'] = "Un email avec un lien de réinitialisation vous a été envoyé si cette adresse est associée à un compte.";
             }
-    
             // Redirige l'utilisateur vers la même page
             header('Location: index.php?controleur=utilisateur&methode=mdpOublie');
             exit();
         }
     }
-    
+
 
     /**
      * @brief Affiche la page dédié au changement de mot de passe
@@ -346,8 +362,7 @@ class ControllerUtilisateur extends Controller
         $managerUtilisateur = new UtilisateurDao($this->getPDO());
         $tokenCrypt = $managerUtilisateur->getTokenById($id);
 
-        if (password_verify($token, $tokenCrypt))
-        { 
+        if (password_verify($token, $tokenCrypt)) {
             // Transmettre le token au template Twig
             $template = $this->getTwig()->load('changerMDP.html.twig');
             echo $template->render([
@@ -366,48 +381,47 @@ class ControllerUtilisateur extends Controller
      */
     public function changerMdp()
     {
-            $mdp=isset($_POST['MDP1'])?$_POST['MDP1']:null;
-            $mdpVerif=isset($_POST['MDP2'])?$_POST['MDP2']:null;
-            $token = isset($_POST['token']) ? $_POST['token'] : null;
+        $mdp = isset($_POST['MDP1']) ? $_POST['MDP1'] : null;
+        $mdpVerif = isset($_POST['MDP2']) ? $_POST['MDP2'] : null;
+        $token = isset($_POST['token']) ? $_POST['token'] : null;
 
-            $managerUtilisateur = new UtilisateurDao($this->getPdo());
-            $idUser = $managerUtilisateur->getIdUserByToken($token);
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $idUser = $managerUtilisateur->getIdUserByToken($token);
 
-            if (!$managerUtilisateur->estRobuste($mdp))
-            {
-                $template = $this->getTwig()->load('changerMDP.html.twig');
-                echo $template->render([
-                    'mdpValide' => True,
-                    'message' => "Le mot de passe n'est pas assez robuste"
-                ]);
-                return;
-            }
+        if (!$managerUtilisateur->estRobuste($mdp)) {
+            $template = $this->getTwig()->load('changerMDP.html.twig');
+            echo $template->render([
+                'mdpValide' => True,
+                'message' => "Le mot de passe n'est pas assez robuste"
+            ]);
+            return;
+        }
 
-            if($mdp != $mdpVerif){
-                $template = $this->getTwig()->load('changerMDP.html.twig');
-                echo $template->render([
-                    'mdpValide' => True,
-                    'message' => 'Les mots de passe ne correspondent pas'
-                ]);
-                return;
-            }
-            
-            $mdpHash = password_hash($mdp, PASSWORD_BCRYPT);
-            $managerUtilisateur->changerMdp($idUser, $mdpHash);
-            $managerUtilisateur->supprimerToken($token);
+        if ($mdp != $mdpVerif) {
+            $template = $this->getTwig()->load('changerMDP.html.twig');
+            echo $template->render([
+                'mdpValide' => True,
+                'message' => 'Les mots de passe ne correspondent pas'
+            ]);
+            return;
+        }
 
-            // Mise à jour de la session avec les nouvelles données
-            header('Location: index.php?controleur=utilisateur&methode=connexion');
+        $mdpHash = password_hash($mdp, PASSWORD_BCRYPT);
+        $managerUtilisateur->changerMdp($idUser, $mdpHash);
+        $managerUtilisateur->supprimerToken($token);
 
+        // Mise à jour de la session avec les nouvelles données
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
     }
-    
+
     /**
      * @brief Affiche le formulaire de connexion d'un utilisateur
      * @author Thibault CHIPY 
      *
      * @return void
      */
-    public function connexion(){
+    public function connexion()
+    {
         $template = $this->getTwig()->load('connexion.html.twig');
         echo $template->render();
     }
@@ -419,7 +433,8 @@ class ControllerUtilisateur extends Controller
      * @return void
      */
 
-    public function inscription(){
+    public function inscription()
+    {
         $template = $this->getTwig()->load('inscription.html.twig');
         echo $template->render();
     }
@@ -431,16 +446,17 @@ class ControllerUtilisateur extends Controller
      * 
      * @return void
      */
-    public function verifConnexion(){
+    public function verifConnexion()
+    {
         // Récupération des données du formulaire
         $donneesFormulaire = [
-            'mail' => htmlspecialchars($_POST['mail'],ENT_QUOTES,) ?? null,
-            'mdp' => htmlspecialchars($_POST['mdp'],ENT_QUOTES) ?? null,
+            'mail' => htmlspecialchars($_POST['mail'], ENT_QUOTES,) ?? null,
+            'mdp' => htmlspecialchars($_POST['mdp'], ENT_QUOTES) ?? null,
         ];
-        
+
         // Validation des données
-       $erreurs = Validator::validerConnexion($donneesFormulaire);
-        if($erreurs){
+        $erreurs = Validator::validerConnexion($donneesFormulaire);
+        if ($erreurs) {
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['erreurs' => $erreurs]);
             return;
@@ -458,14 +474,12 @@ class ControllerUtilisateur extends Controller
         }
 
         $utilisateur = $managerUtilisateur->findByMail($mail);
-        if($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())){
+        if ($utilisateur && password_verify($mdp, $utilisateur->getMotDePasse())) {
             $managerUtilisateur->verifierDerniereSauvegarde();
             $_SESSION['utilisateur'] = serialize($utilisateur);
             $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateur);
             header("Location: index.php");
-            
-        }
-        else{
+        } else {
             $template = $this->getTwig()->load('connexion.html.twig');
             echo $template->render(['message' => "L'adresse mail ou le mot de passe est incorrect"]);
         }
@@ -640,8 +654,91 @@ class ControllerUtilisateur extends Controller
      * 
      * @return void
      */
-    public function deconnexion(){
+    public function deconnexion()
+    {
         session_destroy();
         header('Location: index.php');
+    }
+
+
+    /**
+     * @brief Affiche la page de paramètres de l'utilisateur connecté
+     * @details Affiche la page de paramètres de l'utilisateur connecté
+     * 
+     * @return void
+     */
+    public function traiterContact()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = htmlspecialchars($_POST['name']);
+            $email = htmlspecialchars($_POST['mail']);
+            $message = htmlspecialchars($_POST['message']);
+            // Valide que l'email a été soumis et qu'il est correct
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
+                header('Location: index.php?controleur=utilisateur&methode=traiterContact');
+                exit();
+            }
+            if (DB_HOST === 'localhost') {
+                try {
+                    $mail = new PHPMailer(true);
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = EMAIL_ADDRESS;
+                    $mail->Password = EMAIL_PASSWORD;
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
+                    
+
+                    $mail->setFrom($email, $name);
+                    $mail->addAddress(EMAIL_ADDRESS, 'VHS Contact');
+                    $mail->addReplyTo($email, $name);
+
+                    $mail->Subject = "VHS : Nouveau message de $name";
+                    $mail->Body = "Nom : $name\nEmail : $email\n\nMessage :\n$message";
+
+                    $mail->send();
+                    $feedback = 'Votre message a bien été envoyé.';
+                } catch (Exception $e) {
+                    $feedback = 'Erreur lors de l\'envoi du mail : ' . $e->getMessage();
+                }
+            } 
+            elseif (DB_HOST === 'lakartxela.iutbayonne.univ-pau.fr') {
+                $sujet = "VHS : Nouveau message de $name avec le mail $email";
+                mail(EMAIL_ADDRESS, $sujet, $message);
+                $feedback = 'Mail enové avec succés.';
+            } else {
+                $feedback = 'Hôte non pris en charge.';
+            }
+
+            // Charger la vue avec un message de feedback
+            $template = $this->getTwig()->load('index.html.twig');
+            echo $template->render(['message' => $feedback]);
+        }
+    }
+
+    public function afficherCommentairesUtilisateur()
+    {
+        if (isset($_GET['idUtilisateur'])) {
+            $idUtilisateur = (int) $_GET['idUtilisateur'];
+
+            // Récupération des commentaires de l'utilisateur
+            $managerCommentaire = new CommentaireDAO($this->getPdo());
+            $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($idUtilisateur);
+
+            // Récupération des infos utilisateur
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $utilisateur = $managerUtilisateur->find($idUtilisateur);
+
+            // Passer les données au template
+            $template = $this->getTwig()->load('commentairesUtilisateur.html.twig');
+            echo $template->render([
+                'utilisateur' => $utilisateur,
+                'commentaires' => $commentaires,
+            ]);
+        } else {
+            echo "Identifiant utilisateur manquant !";
+        }
     }
 }

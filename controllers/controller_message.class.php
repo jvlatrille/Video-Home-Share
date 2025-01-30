@@ -18,7 +18,7 @@ class ControllerMessage extends Controller
         $idForum = (int) $_GET['idForum'];
         $managerForum = new ForumDAO($this->getPdo());
         $forum = $managerForum->find($idForum);
-        
+
 
         // Récupère tous les messages
         $managerMessage = new MessageDAO($this->getPdo());
@@ -28,7 +28,8 @@ class ControllerMessage extends Controller
         $template = $this->getTwig()->load('forum_detail.html.twig');
         echo $template->render([
             'messageListe' => $messagesListe,
-            'forum' => $forum]);
+            'forum' => $forum
+        ]);
     }
 
     public function ajouterMessage()
@@ -55,8 +56,8 @@ class ControllerMessage extends Controller
         $message->setIdUtilisateur($idUtilisateur);
         $message->setIdForum($idForum);
 
-        // Ajoute le message à la base de données
-        $managerMessage->creerMessage($message);
+            // Ajoute le message à la base de données
+            $managerMessage->creerMessage($message);
 
         // Redirige vers la liste des messages du forum
         header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $idForum);
@@ -66,33 +67,69 @@ class ControllerMessage extends Controller
 
     public function like()
     {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
-        $idMessage = (int)$_POST['idMessage'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
+            $idMessage = (int)$_POST['idMessage'];
 
-        // Récupère et incrémente le like
-        $messageDAO = new MessageDAO($this->getPdo());
-        $messageDAO->incrementLike($idMessage);
+            // Récupère et incrémente le like
+            $messageDAO = new MessageDAO($this->getPdo());
+            $messageDAO->incrementLike($idMessage);
 
-        // Redirige vers la liste des messages
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-        exit;
-    }
+            // Redirige vers la liste des messages
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
     }
 
     public function dislike()
     {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
-        $idMessage = (int)$_POST['idMessage'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
+            $idMessage = (int)$_POST['idMessage'];
 
-        // Récupère et incrémente le dislike
-        $messageDAO = new MessageDAO($this->getPdo());
-        $messageDAO->incrementDislike($idMessage);
+            // Récupère et incrémente le dislike
+            $messageDAO = new MessageDAO($this->getPdo());
+            $messageDAO->incrementDislike($idMessage);
 
-        // Redirige vers la liste des messages
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-        exit;
+            // Redirige vers la liste des messages
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
     }
+
+    /**
+     * @brief Cette méthode affiche les messages les plus likés.
+     * 
+     * @author VINET LATRILLE Jules
+     * @return void
+     */
+    public function afficherTopMessages()
+    {
+        $managerForum = new messageDAO($this->getPdo());
+        $topMessages = $managerForum->getTopLikedMessages();
+        $template = $this->getTwig()->load('index.html.twig');
+        echo $template->render(['topMessages' => $topMessages]);
     }
 
+    public function afficherMessagesUtilisateur()
+    {
+        if (isset($_GET['idUtilisateur'])) {
+            $idUtilisateur = (int) $_GET['idUtilisateur'];
+
+            // Récupération des messages de l'utilisateur
+            $managerMessage = new MessageDAO($this->getPdo());
+            $messages = $managerMessage->getMessagesByUser($idUtilisateur);
+
+            // Récupération des infos utilisateur (optionnel)
+            $managerUtilisateur = new UtilisateurDao($this->getPdo());
+            $utilisateur = $managerUtilisateur->find($idUtilisateur);
+
+            // Génération de la vue
+            $template = $this->getTwig()->load('messagesUtilisateur.html.twig');
+            echo $template->render([
+                'utilisateur' => $utilisateur,
+                'messages' => $messages
+            ]);
+        } else {
+            echo "Identifiant utilisateur manquant !";
+        }
+    }
 }
-?>
