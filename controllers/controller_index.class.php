@@ -27,12 +27,12 @@ class ControllerIndex extends Controller
         $oaListe = array_merge($oaListe, $managerOa->findMeilleurNoteSerie());
         shuffle($oaListe);
         $oaListe = array_slice($oaListe, 0, 20);
-        $managerForum = new ForumDAO($this->getPdo());
-        $topMessages = $managerForum->getTopLikedMessages(); // Ajoute les messages ici
+        $managerMessage = new MessageDAO($this->getPdo());
+        $topMessages = $managerMessage->getTopLikedMessages();
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render([
             'oaListe' => $oaListe,
-            'topMessages' => $topMessages, // Passe les messages à la vue
+            'topMessages' => $topMessages,
         ]);
     }
 

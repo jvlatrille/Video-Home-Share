@@ -196,7 +196,7 @@ class ControllerQuestion extends Controller
             $numero = $_POST['numero'] ?? $question->getNumero();
             $nvDifficulte = $_POST['nvDifficulte'] ?? $question->getNvDifficulte();
             $bonneReponse = $_POST['bonneReponse'] ?? $question->getBonneReponse();
-            $bonneReponse = $_POST['cheminImage'] ?? $question->getcheminImage();
+            $cheminImage = $_POST['cheminImage'] ?? $question->getcheminImage();
             $mauvaiseReponse1 = $_POST['mauvaiseReponse1'] ?? $question->getMauvaiseReponse1();
             $mauvaiseReponse2 = $_POST['mauvaiseReponse2'] ?? $question->getMauvaiseReponse2();
             $mauvaiseReponse3 = $_POST['mauvaiseReponse3'] ?? $question->getMauvaiseReponse3();
@@ -244,21 +244,88 @@ class ControllerQuestion extends Controller
         }
     }
     public function afficherScore()
-    {
-        // Récupère le score de la session
-        $score = $_SESSION['score'] ?? 0;
+{
+    // Récupère le score de la session
+    $score = $_SESSION['score'] ?? 0;
 
-        // Récupère l'ID du quizz
-        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+    // Récupère l'ID du quizz
+    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
 
-        // Générer la vue pour afficher le score
-        $template = $this->getTwig()->load('quizzResultat.html.twig');
-        echo $template->render([
-            'score' => $score,
-            'idQuizz' => $idQuizz
-        ]);
-
-        // Réinitialiser le score pour un futur quizz
-        unset($_SESSION['score']);
+    if (!$idQuizz) {
+        echo "ID du quizz manquant.";
+        return;
     }
+
+    // Récupère le nombre total de questions du quizz
+    $managerQuizz = new QuizzDao($this->getPdo());
+    $quizz = $managerQuizz->find($idQuizz);
+    $nbTotalQuestions = $quizz->getNbQuestion();
+
+    // Générer la vue pour afficher le score
+    $template = $this->getTwig()->load('quizzResultat.html.twig');
+    echo $template->render([
+        'score' => $score,
+        'nbTotalQuestions' => $nbTotalQuestions, // Passage du nombre total de questions à la vue
+        'idQuizz' => $idQuizz
+    ]);
+
+    // Réinitialiser le score pour un futur quizz
+    unset($_SESSION['score']);
 }
+
+    public function afficherQuestionAjax()
+{
+    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+    $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
+
+    if (!$idQuizz) {
+        echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
+        return;
+    }
+
+    $managerQuestion = new QuestionDao($this->getPdo());
+    $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+
+    if (!$question) {
+        echo json_encode(["end" => true]);
+        return;
+    }
+
+    $reponses = [
+        ["text" => $question->getBonneReponse(), "correct" => true],
+        ["text" => $question->getMauvaiseReponse1(), "correct" => false],
+        ["text" => $question->getMauvaiseReponse2(), "correct" => false],
+        ["text" => $question->getMauvaiseReponse3(), "correct" => false]
+    ];
+    shuffle($reponses);
+
+    $difficultyClass = '';
+    if ($question->getNvDifficulte() == 'Facile') {
+        $difficultyClass = 'text-success';
+    } elseif ($question->getNvDifficulte() == 'Moyen') {
+        $difficultyClass = 'text-warning';
+    } elseif ($question->getNvDifficulte() == 'Difficile') {
+        $difficultyClass = 'text-danger';
+    }
+
+    // Ajouter le chemin de l'image dans la réponse
+    $cheminImage = $question->getCheminImage();
+
+    echo json_encode([
+        "question" => $question->getContenu(),
+        "reponses" => $reponses,
+        "difficulty" => $question->getNvDifficulte(),
+        "difficultyClass" => $difficultyClass,
+        "numero" => $numero,
+        "image" => $cheminImage // Ajout du chemin de l'image
+    ]);
+}
+
+    
+}
+
+
+
+
+
+

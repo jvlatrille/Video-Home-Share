@@ -52,7 +52,10 @@ class ControllerForum extends Controller
             $nom = $_POST['nom'] ?? $_GET['nom'] ?? null;
             $description = $_POST['description'] ?? $_GET['description'] ?? null;
             $theme = $_POST['theme'] ?? $_GET['theme'] ?? null;
+            $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
             $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+            $photoProfil = $utilisateurConnecte->getPhotoProfil();
+            $pseudo = $utilisateurConnecte->getPseudo();
 
             //Ajoute le forum
             $managerForum = new ForumDao($this->getPdo());
@@ -63,23 +66,24 @@ class ControllerForum extends Controller
             $forum->setTheme($theme);
             $forum->setIdUtilisateur($idUtilisateur);
             $managerForum->creerForum($forum);
+            
+            //Récupère l'id du forum qui vient d'être créé
+            $idForum = $forum->getIdForum();
 
+            //Crée le 1er message du forum, obligatoire
+            $managerMessage = new MessageDao($this->getPdo());
+            $message = new Message();
+            $message->setContenu($contenu);
+            $message->setNbLikes(0);
+            $message->setNbDislikes(0);
+            $message->setPseudo($pseudo);
+            $message->setPhotoProfil($photoProfil);
+            $message->setIdUtilisateur($idUtilisateur);
+            $message->setIdForum($idForum);
+            $managerMessage->creerMessage($message);
+            
             //Redirige vers la liste des forums
             header('Location: index.php?controleur=forum&methode=listerForum');
         }
-    }
-
-    /**
-     * @brief Cette méthode affiche les messages les plus likés.
-     * 
-     * @author VINET LATRILLE Jules
-     * @return void
-     */
-    public function afficherTopMessages()
-    {
-        $managerForum = new ForumDAO($this->getPdo());
-        $topMessages = $managerForum->getTopLikedMessages();
-        $template = $this->getTwig()->load('index.html.twig');
-        echo $template->render(['topMessages' => $topMessages]);
     }
 }
