@@ -152,6 +152,7 @@
 
 {% block script %} 
 <script>
+        
         document.addEventListener('DOMContentLoaded', function () {
         const loadRandomBtn = document.getElementById('loadRandomBtn');
 
@@ -192,110 +193,19 @@
         }
     });
 
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const boutonDecouvrir = document.querySelectorAll('.btn.btn-primary.mt-2');
-
-        boutonDecouvrir.forEach(button => {
-            button.addEventListener('click', (event) => {
-                event.preventDefault(); // Empêche le chargement immédiat
-
-                const loader = document.createElement('div');
-                loader.id = 'loadingMessage';
-                loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Patienter un instant...
-                                    </div>`;
-                document.body.appendChild(loader);
-
-                setTimeout(() => {
-                    window.location.href = button.href; // Redirige après un court instant
-                }, 5);
-            });
-        });
-    });
-    
-
-    document.addEventListener('DOMContentLoaded', () => {
-    const aLaUneLinks = document.querySelectorAll('.container.mt-4 .row-cols-md-5 a');
-
-    aLaUneLinks.forEach(link => {
-        link.addEventListener('click', (event) => {
-            event.preventDefault(); // Empêche le chargement immédiat
-
-            // Crée et affiche le message "Patienter un instant..."
-            const loader = document.createElement('div');
-            loader.id = 'loadingMessage';
-            loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
-                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                    Patienter un instant...
-                                </div>`;
-            document.body.appendChild(loader);
-
-            setTimeout(() => {
-                window.location.href = link.href;
-            }, 5);
-        });
-    });
-});
-
-    document.addEventListener('DOMContentLoaded', () => {
-    function ajouterEffetChargementAuxLiens() {
-        const decouvrirLinks = document.querySelectorAll('#decouvrirOaContainer .row a');
-
-        decouvrirLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Empêche le chargement immédiat
-
-                // Supprime tout ancien message de chargement
-                const oldLoader = document.getElementById('loadingMessage');
-                if (oldLoader) {
-                    oldLoader.remove();
-                }
-
-                // Crée et affiche le message "Patienter un instant..."
-                const loader = document.createElement('div');
-                loader.id = 'loadingMessage';
-
-                loader.style.position = 'fixed';
-                loader.style.top = '0';
-                loader.style.left = '0';
-                loader.style.width = '100vw';
-                loader.style.height = '100vh';
-                loader.style.background = 'rgba(0, 0, 0, 0.7)';
-                loader.style.display = 'flex';
-                loader.style.justifyContent = 'center';
-                loader.style.alignItems = 'center';
-                loader.style.zIndex = '1050'; // Au-dessus du reste de la page
-
-
-
-
-                loader.innerHTML = `<div class="text-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Patienter un instant...
-                                    </div>`;
-                document.body.appendChild(loader);
-
-                // Redirige après 1 seconde
-                setTimeout(() => {
-                    window.location.href = link.href;
-                }, 1000);
-            });
-        });
-    }
-
-    // Appliquer l'effet de chargement aux liens existants
-    ajouterEffetChargementAuxLiens();
-
-    // Observer si de nouveaux éléments sont ajoutés (pour gérer le chargement dynamique)
-    const observer = new MutationObserver(() => {
-        ajouterEffetChargementAuxLiens();
-    });
-
-    observer.observe(document.getElementById('decouvrirOaContainer'), { childList: true, subtree: true });
-});
-
-
 </script>
+
+<script src="js/patientez.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterBouton(boutonDecouvrir); // Boutons "Découvrir" dans le carrousel page d'accueil
+        patienterLien(lienALaUne); // "Découvrir plus d'œuvres"
+        patienterBouton(boutonDecouvrirPlus);//découplrir plus d'oeuvre
+    });
+
+ 
+</script>
+
+
 {% endblock %}
