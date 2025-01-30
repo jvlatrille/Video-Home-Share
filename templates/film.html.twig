@@ -122,7 +122,7 @@
 													<div class="mb-3">
 														<div class="form-check">
 															<input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
-															<label class="form-check-label" for="watchlist{{ watchlist.idWatchlist }}">{{ watchlist.titre }}</label>
+															<label class="form-check-label">{{ watchlist.titre }}</label>
 														</div>
 													</div>
 												{% endfor %}
@@ -231,6 +231,9 @@
                             </div>
                             {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
                                 <div>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCommentModal{{ commentaire.idCom }}">
+                                        Modifier
+                                    </button>
                                     <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
                                        class="btn btn-danger btn-sm"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
@@ -244,13 +247,38 @@
             {% else %}
                 <p><em>Aucun commentaire pour ce film.</em></p>
             {% endif %}
+            {% for commentaire in commentaires %}
+                <div class="modal fade" id="editCommentModal{{ commentaire.idCom }}" tabindex="-1" aria-labelledby="editCommentModalLabel{{ commentaire.idCom }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modifier votre commentaire</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="index.php?controleur=commentaire&methode=modifierCommentaire" method="post">
+                                    <div class="mb-3">
+                                        <label for="contenu{{ commentaire.idCom }}" class="form-label">Nouveau contenu</label>
+                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" 
+                                            value="{{ commentaire.contenu }}" required>
+                                    </div>
+                                    <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
+                                    <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script>
+
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>           
+            {% endfor %}
 
             <div id="commentaires" class="mt-4">
             {% if utilisateurConnecte %}
                 <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
                     <div class="mb-3">
-                        <label for="contenu" class="form-label">Commentaire</label>
-                        <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+                        <label for="contenu{{ commentaire.idCom }}" class="form-label">Commentaire</label>
+                        <textarea class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" rows="3">{{ commentaire.contenu }}</textarea>
                     </div>
                     <input type="hidden" name="film_id" value="{{ oa.idOa }}">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
@@ -265,7 +293,6 @@
     {% endif %}
 {% endblock %}
 {% block script %}
-
 {% if utilisateurConnecte %}
     <script>
     document.addEventListener('DOMContentLoaded', () => {

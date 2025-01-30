@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file controller_commentaire.class.php
  * @author VINET LATRILLE Jules
@@ -94,6 +95,37 @@ class ControllerCommentaire extends Controller
         $managerCommentaire->supprimer($idCommentaire);
 
         $this->redirectAvecSucces($idOa);
+    }
+
+    /**
+     * @brief Modifie un commentaire
+     */
+    public function modifierCommentaire()
+    {
+        if (!$this->utilisateurConnecte()) {
+            die("ERREUR : Vous devez être connecté pour modifier un commentaire.");
+        }
+
+        $idCommentaire = $_POST['idCommentaire'] ?? null;
+        $nouveauContenu = $_POST['contenu'] ?? null;
+
+        if (!$idCommentaire || !$nouveauContenu) {
+            die("ERREUR : Données invalides.");
+        }
+
+        $utilisateur = $this->getUtilisateurConnecte();
+        $managerCommentaire = new CommentaireDAO($this->getPdo());
+        $commentaire = $managerCommentaire->find($idCommentaire);
+
+        if (!$commentaire || $commentaire->getIdUtilisateur() !== $utilisateur->getIdUtilisateur()) {
+            die("ERREUR : Vous ne pouvez modifier que vos propres commentaires.");
+        }
+
+        if ($managerCommentaire->modifier($idCommentaire, $nouveauContenu)) {
+            $this->redirectAvecSucces($commentaire->getIdTMDB());
+        } else {
+            $this->redirectAvecErreur($commentaire->getIdTMDB());
+        }
     }
 
     /**

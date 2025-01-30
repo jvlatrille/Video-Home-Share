@@ -199,4 +199,20 @@ class CommentaireDAO
 
         return $commentaires;
     }
+
+    /**
+     * @brief Modifie un commentaire existant
+     * @param int $idCom Identifiant du commentaire
+     * @param string $contenu Nouveau contenu du commentaire
+     * @return bool Retourne true si la modification est réussie, sinon false
+     */
+    public function modifier(int $idCom, string $contenu): bool
+    {
+        $sql = "UPDATE vhs_commentaire SET contenu = :contenu WHERE idCom = :idCom";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            'contenu' => $contenu,
+            'idCom' => $idCom
+        ]);
+    }
 }
