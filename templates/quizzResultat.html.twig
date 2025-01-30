@@ -1,19 +1,28 @@
 {% extends "base_template.html.twig" %}
 
 {% block content %}
-    <div class="container py-5">
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
+    <div class="container py-5 text-center">
+
         <div class="row justify-content-center">
-            <div class="col-12 col-md-8 text-center">
+            <div class="col-12 col-md-8">
                 <h2 class="mb-4">Résultats du Quizz</h2>
-
-                <div class="bg-light p-4 rounded">
-                    <h3 class="text mb-3">Votre Score : <strong id="score-display">0</strong></h3>
-
-                    <p id="feedback-message"></p>
-
-                    <div class="mt-4">
-                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-secondary" class="btn btn-primary">Rejouer</a>
-                        <a href="index.php" class="btn btn-secondary">Retour à l'accueil</a>
+                
+                <div class="bg-white p-5 shadow rounded">
+                    <h3 class="mb-3 text-primary">Votre Score : <strong id="score-display" class="text-dark">{{ score }}</strong> / {{ nbTotalQuestions }}</h3>
+                    
+                    <p id="feedback-message" class="fw-bold"></p>
+                    
+                    <!-- Image du score -->
+                    <img id="score-image" src="" alt="Résultat du quizz" class="img-fluid mt-3 rounded shadow" style="max-width: 300px; opacity: 0; transition: opacity 0.5s ease-in-out;"/>
+                    
+                    <div class="mt-4 d-flex justify-content-center gap-3">
+                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-primary px-4">Rejouer</a>
+                        <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-outline-secondary px-4">Accueil</a>
                     </div>
                 </div>
             </div>
@@ -23,26 +32,49 @@
     {% block javascripts %}
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // Récupération du score depuis sessionStorage
                 let score = sessionStorage.getItem('score') ? parseInt(sessionStorage.getItem('score')) : 0;
+                let totalQuestions = {{ nbTotalQuestions|default(0) }};
 
-                // Mise à jour de l'affichage du score dans le DOM
-                const scoreElement = document.getElementById('score-display');
-                if (scoreElement) {
-                    scoreElement.textContent = score; // Affichage du score
-                }
+                // Mise à jour du score affiché
+                document.getElementById('score-display').textContent = score;
 
-                // Gérer l'affichage du message de feedback en fonction du score
+                // Messages de feedback améliorés
                 const feedbackMessage = document.getElementById('feedback-message');
                 if (score === 0) {
-                    feedbackMessage.innerHTML = '<p class="text-danger">Oups, vous n\'avez pas trouvé de bonnes réponses. Essayez à nouveau !</p>';
-                } else if (score <= 3) {
-                    feedbackMessage.innerHTML = '<p class="text-danger">Pas mal, mais il y a encore du travail à faire. Continuez à vous entraîner !</p>';
-                } else if (score <= 6) {
-                    feedbackMessage.innerHTML = '<p class="text-success">Bien joué ! Vous avez presque tout bon !</p>';
+                    feedbackMessage.innerHTML = '❌ Oups, vous n\'avez pas trouvé de bonnes réponses. Essayez à nouveau !';
+                    feedbackMessage.classList.add('text-danger');
+                } else if (score <= totalQuestions / 4) {
+                    feedbackMessage.innerHTML = '⚠️ Pas mal, mais il y a encore du travail à faire. Continuez à vous entraîner !';
+                    feedbackMessage.classList.add('text-warning');
+                } else if (score <= totalQuestions / 2) {
+                    feedbackMessage.innerHTML = '👍 Bien joué ! Vous avez presque tout bon !';
+                    feedbackMessage.classList.add('text-primary');
+                } else if (score <= (3 * totalQuestions) / 4) {
+                    feedbackMessage.innerHTML = '🔥 Super travail ! Vous êtes très proche de la perfection !';
+                    feedbackMessage.classList.add('text-success');
                 } else {
-                    feedbackMessage.innerHTML = '<p class="text-success">Félicitations, vous avez réussi le quizz avec un excellent score !</p>';
+                    feedbackMessage.innerHTML = '🏆 Félicitations, vous avez réussi le quizz avec un excellent score !';
+                    feedbackMessage.classList.add('text-success');
                 }
+
+                // Gestion des images en fonction du score
+                const scoreImage = document.getElementById('score-image');
+                let imagePath = '';
+
+                if (score === 0) {
+                    imagePath = 'img/quizzResultats/score-0.jpg';
+                } else if (score <= 3) {
+                    imagePath = 'img/quizzResultats/score-1-3.jpg';
+                } else if (score <= 6) {
+                    imagePath = 'img/quizzResultats/score-4-6.jpg';
+                } else {
+                    imagePath = 'img/quizzResultats/score-7.jpg';
+                }
+
+                scoreImage.src = imagePath;
+                scoreImage.onload = function () {
+                    scoreImage.style.opacity = 1;
+                };
             });
         </script>
     {% endblock %}

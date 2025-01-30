@@ -4,6 +4,11 @@
 {% endblock %}
 
 {% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
 	{% if message is defined %}
 		<div class="alert alert-danger">{{ message }}</div>
 	{% endif %}

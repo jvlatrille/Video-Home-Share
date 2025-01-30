@@ -86,6 +86,7 @@ class UtilisateurDao
         $utilisateur->setMotDePasse($tableauAssoc['motDePasse']);
         $utilisateur->setRole($tableauAssoc['role']);
         $utilisateur->setBio($tableauAssoc['bio']);
+        $utilisateur->setValide($tableauAssoc['valide']);
         return $utilisateur;
     }
 
@@ -260,7 +261,7 @@ class UtilisateurDao
      */
     public function getTokenById($id)
     {
-        $sql = "SELECT token FROM " . PREFIXE_TABLE . "tokens WHERE id = :id";
+        $sql = "SELECT token FROM " . PREFIXE_TABLE . "tokens WHERE user_id = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute([':id' => $id]);
     
@@ -320,8 +321,8 @@ class UtilisateurDao
      * @return bool
      */
     public function creerUtilisateur(?Utilisateur $utilisateur): ?bool {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role, bio) 
-                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role, :bio)";
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "utilisateur (pseudo, photoProfil, banniereProfil, adressMail, motDePasse, role, bio, valide) 
+                VALUES (:pseudo, :photoProfil, :banniereProfil, :adressMail, :motDePasse, :role, :bio, :valide)";
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute([
             'pseudo' => $utilisateur->getPseudo(),
@@ -330,7 +331,8 @@ class UtilisateurDao
             'adressMail' => $utilisateur->getAdressMail(),
             'motDePasse' => $utilisateur->getMotDePasse(),
             'role' => $utilisateur->getRole(),
-            'bio' => $utilisateur->getBio()
+            'bio' => $utilisateur->getBio(),
+            'valide' => $utilisateur->getValide()
         ]);
         return $reussite;
     }
@@ -342,14 +344,50 @@ class UtilisateurDao
      * @param email de l'Utilisateur 
      * @return bool true si l'email existe, false sinon.
      */
-
      public function emailExiste(string $mail):bool{
-        $sql="SELECT COUNT(adressMail) FROM vhs_utilisateur WHERE adressMail = :mail";
+        $sql="SELECT COUNT(adressMail) FROM " . PREFIXE_TABLE . "utilisateur WHERE adressMail = :mail";
         $sqlStatement = $this->pdo->prepare($sql);
         $sqlStatement->execute(['mail' => $mail]);
         return $sqlStatement->fetchColumn() > 0;
      }
 
+     /**
+      * @brief Vérifie si un compte d'utilisateur est valide
+      * @author Noah LÉVAL
+      * 
+      * @param $mail Le mail du compte à verifier
+      * @return bool true si en cas de succees, false sinon.
+      */
+    public function estValide($mail) :bool
+    {
+        $sql = "SELECT valide FROM " . PREFIXE_TABLE . "utilisateur WHERE adressMail = :mail";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['mail' => $mail]);
+        if ($reussite && $pdoStatement->rowCount() > 0) {
+            $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+            return (bool) $result['valide'];
+        }
+
+        return false;
+    }
+
+    /**
+     * @brief Active le compte de l'utilisateur
+     * @author Noah LÉVAL
+     * 
+     * @param $id l'id de l'Utilisateur 
+     * @return bool true si en cas de succees, false sinon.
+     */
+    public function activerCompte($id) :bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET valide = 1 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['id' => $id]);
+
+        return $reussite;
+    }
 
      /**
      * Vérifie si un mot de passe est robuste.

@@ -1,31 +1,55 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
+
+    <div class="container py-5">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
     <div class="container">
         <div class="text-center mb-4">
-            <h1>LOGO (Quizz)</h1>
+            <h1 class="fw-bold text-primary">Quizz</h1>
         </div>
         
         <div class="text-center mb-4">
-            <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-primary">Créer un quizz</a>
+            <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-primary btn-lg shadow-sm">Créer un quizz</a>
         </div>
 
-        <h2>Les quizz :</h2>
+        <div class="quiz-list mb-4">
+            {% set quizzParPage = 10 %}
+            {% set pageActuelle = page|default(1) %}
+            {% set totalQuizz = quizzListe|length %}
+            {% set totalPages = (totalQuizz / quizzParPage)|round(0, 'ceil') %}
+            {% set start = (pageActuelle - 1) * quizzParPage %}
+            {% set quizzAffiches = quizzListe[start:start + quizzParPage] %}
 
-        <div class="quiz-list">
-            {% for quiz in quizzListe %}
-                <div class="quiz-item border p-3 mb-3 d-flex justify-content-between align-items-center">
+            {% for quiz in quizzAffiches %}
+                <div class="quiz-item border rounded p-4 mb-3 shadow-sm d-flex justify-content-between align-items-center bg-light">
                     <div>
-                        <h4>{{ quiz.nom }}</h4>
-                        <p>Thème : {{ quiz.theme }}</p>
+                        <h4 class="mb-1 text-dark">{{ quiz.nom }}</h4>
+                        <p class="text-muted">Thème : {{ quiz.theme }}</p>
                     </div>
                     <div>
-                        <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quiz.idQuizz }}" class="btn btn-secondary">Rejoindre</a>
+                        <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quiz.idQuizz }}" class="btn btn-outline-primary">Rejoindre</a>
                     </div>
                 </div>
             {% else %}
-                <p>Aucun quiz disponible pour l'instant.</p>
+                <p class="text-muted">Aucun quiz disponible pour l'instant.</p>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if totalPages > 1 %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {% if i == pageActuelle %}active{% endif %}">
+                            <a class="page-link" href="index.php?controleur=quizz&methode=listerQuizz&page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 {% endblock %}
