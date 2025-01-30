@@ -630,7 +630,6 @@ class ControllerUtilisateur extends Controller
             }
             if (DB_HOST === 'localhost') {
                 try {
-                    // echo "<script>alert('Localhost reconnu');</script>";
                     $mail = new PHPMailer(true);
                     $mail->isSMTP();
                     $mail->Host = 'smtp.gmail.com';
@@ -650,14 +649,14 @@ class ControllerUtilisateur extends Controller
 
                     $mail->send();
                     $feedback = 'Votre message a bien été envoyé.';
-                    echo "<script>alert('Mail envoyé');</script>";
                 } catch (Exception $e) {
                     $feedback = 'Erreur lors de l\'envoi du mail : ' . $e->getMessage();
                 }
             } 
             elseif (DB_HOST === 'lakartxela.iutbayonne.univ-pau.fr') {
-                $sujet = "VHS : Nouveau message de $name";
-                mail($email, $sujet, $message);
+                $sujet = "VHS : Nouveau message de $name avec le mail $email";
+                mail(EMAIL_ADDRESS, $sujet, $message);
+                $feedback = 'Mail enové avec succés.';
             } else {
                 $feedback = 'Hôte non pris en charge.';
             }
@@ -666,7 +665,6 @@ class ControllerUtilisateur extends Controller
             $template = $this->getTwig()->load('index.html.twig');
             echo $template->render(['message' => $feedback]);
         }
-        header('Location: index.php');
     }
 
     public function afficherCommentairesUtilisateur()
