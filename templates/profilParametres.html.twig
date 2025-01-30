@@ -72,7 +72,7 @@
             <!-- Changer mail -->
             <div class="mb-4">
                 <label class="form-label">Changer d'Adresse Mail :</label>
-                <form action="index.php?controleur=profil&methode=changerMail" method="POST" class="d-flex align-items-center">
+                <form action="index.php?controleur=profil&methode=boutonChangerMail" method="POST" class="d-flex align-items-center" novalidate>
                     <div class="me-2 flex-grow-1">
                         <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
                         <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
@@ -83,16 +83,20 @@
                 </form>
             </div>
 
-            {% if message|length == 1 %}
-                <p class="text-success">{{ message[0] }}</p>
-            {% else %}
-                <div class="text alert alert-danger">
-                    <ul>
-                        {% for messages in message %}
-                            <li>{{ messages }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            
+			{% if erreurs is defined %}
+				<div class="alert alert-danger text-center">
+					<h3>Erreurs :</h3>
+					<ul >
+						{% for erreur in erreurs %}
+							<li>{{ erreur }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+
+            {% if message is defined %}
+                <div class="alert alert-danger text-danger">{{ message }}</div>
             {% endif %}
         </div>
     </div>

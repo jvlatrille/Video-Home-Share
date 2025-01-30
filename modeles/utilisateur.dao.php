@@ -389,6 +389,24 @@ class UtilisateurDao
         return $reussite;
     }
 
+    /**
+     * @brief Desactive le compte de l'utilisateur
+     * @author Noah LÉVAL
+     * 
+     * @param $id l'id de l'Utilisateur
+     * @return bool true si en cas de succees, false sinon.
+     */
+    public function desactiverCompte($id) :bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET valide = 0 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['id' => $id]);
+
+        return $reussite;
+    }
+
      /**
      * Vérifie si un mot de passe est robuste.
      *
