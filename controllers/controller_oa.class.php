@@ -33,10 +33,6 @@ class ControllerOA extends Controller
      * @brief Affiche les détails d'un film spécifique
      * @return void
      */
-    /**
-     * @brief Affiche les détails d'un film spécifique
-     * @return void
-     */
     public function afficherFilm(): void
     {
         $idOa = $_GET['idOa'] ?? null;
@@ -76,7 +72,7 @@ class ControllerOA extends Controller
             $suggestions = $this->managerOa->findSuggestions($oa->getIdOa());
 
             // Récupérer les fond d'écran
-            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa());
+            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'movie');
 
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
@@ -91,6 +87,7 @@ class ControllerOA extends Controller
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
+            var_dump($e);
             die('Impossible d\'afficher les détails du film.');
         }
     }
@@ -242,6 +239,8 @@ class ControllerOA extends Controller
             // Récupérer les suggestions de séries
             $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
 
+            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'tv');
+
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -253,7 +252,8 @@ class ControllerOA extends Controller
                     'oa' => $oa,
                     'commentaires' => $commentaires,
                     'participants' => $participants,
-                    'suggestions' => $suggestions
+                    'suggestions' => $suggestions,
+                    'backdrops' => $backdrops,
                 ]);
                 return;
             }
@@ -263,7 +263,8 @@ class ControllerOA extends Controller
             echo $template->render([
                 'oa' => $oa,
                 'commentaires' => $commentaires,
-                'participants' => $participants
+                'participants' => $participants,
+                'backdrops' => $backdrops,
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());

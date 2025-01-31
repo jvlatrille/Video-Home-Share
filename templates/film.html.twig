@@ -164,25 +164,66 @@
                 </div>
             {% else %}
                 <p><em>Aucun participant trouvé pour ce film.</em></p>
-            {% endif %}
+            {% endif %}     
 
+            {% if suggestions is defined and suggestions|length > 0 %}
+                <div class="mt-5">
+                    <h2 class="text-center mb-4">Suggestions de films</h2>
+                    <div id="carouselSuggestions" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for suggestionsChunk in suggestions|batch(5, null) %}
+                                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                    <div class="row text-center justify-content-center">
+                                        {% for suggestion in suggestionsChunk %}
+                                            {% if suggestion is not null %}
+                                                <div class="col-md-2">
+                                                    {% if suggestion.type == 'Film' %}
+                                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                    {% else %}
+                                                        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                    {% endif %}
+                                                            <img src="{{ suggestion.posterPath }}" 
+                                                                alt="{{ suggestion.nom }}" 
+                                                                class="img-fluid rounded mb-2 shadow-sm"
+                                                                style="height: 150px; object-fit: cover;">
+                                                            <p class="text-truncate w-100">{{ suggestion.nom }}</p>
+                                                        </a>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+                            <span class="visually-hidden">Précédent</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSuggestions" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" style="filter: invert(100%);" aria-hidden="true"></span>
+                            <span class="visually-hidden">Suivant</span>
+                        </button>
+                    </div>
+                </div>
+            {% endif %}
+            
             {% if backdrops is defined and backdrops|length > 0 %}
-                <h4 class="fw-bold">Fonds d'écran pour cette oeuvre</h4>
+                <h4 class="fw-bold text-center mb-3">Fonds d'écran</h4> 
                 <div id="carouselBackdrops" class="carousel slide mb-4" data-bs-ride="carousel">
-                    <div class="carousel-inner text-center">
+                    <div class="carousel-inner">
                         {% for backdropsChunk in backdrops|batch(3, null) %}
                             <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                <div class="d-flex justify-content-center">
+                                <div class="d-flex justify-content-center gap-3">
                                     {% for backdrop in backdropsChunk %}
                                         {% if backdrop is not null %}
-                                            <div class="p-2 text-center" style="flex: 0 0 30%;">
-                                                <img data-src="{{ backdrop|replace({'original': 'w300'}) }}" 
-                                                    class="img-fluid rounded backdrop-thumbnail lazyload"
+                                            <div class="p-2 text-center">
+                                                <img src="{{ backdrop.full }}" 
+                                                    class="img-fluid rounded backdrop-thumbnail shadow"
                                                     alt="Backdrop de {{ oa.nom }}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#backdropModal" 
-                                                    data-backdrop-src="{{ backdrop }}"
-                                                    style="max-height: 150px; object-fit: cover; width: 100%; cursor: pointer;">
+                                                    data-backdrop-src="{{ backdrop.full }}"
+                                                    style="max-height: 180px; object-fit: cover; width: 100%; cursor: pointer;">
                                             </div>
                                         {% endif %}
                                     {% endfor %}
@@ -191,28 +232,30 @@
                         {% endfor %}
                     </div>
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -50px; color: black;">
-                        <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: black;"></span>
+                    <!-- Contrôles du Carousel -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -75px;">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
                         <span class="visually-hidden">Précédent</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -50px; color: black;">
-                        <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: black;"></span>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -75px;">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
                         <span class="visually-hidden">Suivant</span>
                     </button>
                 </div>
 
                 <!-- Modal pour afficher l'image en grand -->
                 <div class="modal fade" id="backdropModal" tabindex="-1" aria-labelledby="backdropModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content bg-transparent border-0">
-                            <div class="modal-body p-0 d-flex justify-content-center">
-                                <img src="" id="backdropFullScreen" class="img-fluid rounded" alt="Backdrop en grand">
+                            <div class="modal-body d-flex justify-content-center">
+                                <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand">
                             </div>
                             <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Script pour gérer le changement d'image dans le modal -->
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         document.querySelectorAll(".backdrop-thumbnail").forEach(img => {
@@ -223,7 +266,7 @@
                     });
                 </script>
             {% else %}
-                <p class="text-center"><em>Aucun backdrop trouvé pour ce film.</em></p>
+                <p class="text-center"><em>Aucun backdrop trouvé pour cette œuvre.</em></p>
             {% endif %}
 
 
