@@ -167,6 +167,7 @@
             {% endif %}
 
             {% if backdrops is defined and backdrops|length > 0 %}
+                <h4 class="fw-bold">Fonds d'écran pour cette oeuvre</h4>
                 <div id="carouselBackdrops" class="carousel slide mb-4" data-bs-ride="carousel">
                     <div class="carousel-inner text-center">
                         {% for backdropsChunk in backdrops|batch(3, null) %}
@@ -175,8 +176,8 @@
                                     {% for backdrop in backdropsChunk %}
                                         {% if backdrop is not null %}
                                             <div class="p-2 text-center" style="flex: 0 0 30%;">
-                                                <img src="{{ backdrop }}" 
-                                                    class="img-fluid rounded backdrop-thumbnail"
+                                                <img data-src="{{ backdrop|replace({'original': 'w300'}) }}" 
+                                                    class="img-fluid rounded backdrop-thumbnail lazyload"
                                                     alt="Backdrop de {{ oa.nom }}"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#backdropModal" 
@@ -200,7 +201,7 @@
                     </button>
                 </div>
 
-                <!-- Modal pour affichage en grand -->
+                <!-- Modal pour afficher l'image en grand -->
                 <div class="modal fade" id="backdropModal" tabindex="-1" aria-labelledby="backdropModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content bg-transparent border-0">
@@ -317,6 +318,7 @@
 {% endblock %}
 {% block script %}
 {% if utilisateurConnecte %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const stars = document.querySelectorAll('#rating-system .star');

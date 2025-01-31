@@ -111,27 +111,29 @@ class OADao
     }
 
     /**
-     * @brief Récupère tous les backdrops d'un film depuis l'API TMDB
+     * @brief Récupère tous les backdrops d'un film en optimisant la qualité d'affichage
      * @param int $idOa Identifiant TMDB du film
-     * @return array Liste des URLs des backdrops
+     * @return array Liste des URLs des backdrops avec version réduite et HD
      */
     public function getBackdrops(int $idOa): array
     {
-        $baseUrl = 'https://image.tmdb.org/t/p/original';
-        $defaultImage = 'https://via.placeholder.com/1280x720?text=Image+non+disponible';
-
-        // Appel à l'API TMDB pour récupérer les images
         $response = $this->makeApiRequest("/movie/$idOa/images", [], true);
 
         if (!isset($response['backdrops']) || empty($response['backdrops'])) {
-            return [$defaultImage]; // Retourne une image par défaut si aucune image n'est trouvée
+            return [
+                [
+                    'small' => 'https://via.placeholder.com/300x169?text=Image+non+disponible',
+                    'full' => 'https://via.placeholder.com/1280x720?text=Image+non+disponible'
+                ]
+            ];
         }
 
-        // Récupérer toutes les URLs des backdrops
-        return array_map(fn($img) => $baseUrl . $img['file_path'], array_slice($response['backdrops'], 0, 10));
+        // Génère une version réduite (w300) et une version HD (original)
+        return array_map(fn($img) => [
+            'small' => 'https://image.tmdb.org/t/p/w300' . $img['file_path'],
+            'full' => 'https://image.tmdb.org/t/p/original' . $img['file_path']
+        ], array_slice($response['backdrops'], 0, 10)); // Limite à 10 images max
     }
-
-
 
 
 
