@@ -1,14 +1,17 @@
 
-// //bouton découvrir ds caroussel page accueil
+// Bouton découvrir ds caroussel page accueil
 const boutonDecouvrir = document.querySelectorAll('.btn.btn-primary.mt-2');
-//A la une
+// A la une
 const lienALaUne = document.querySelectorAll('.container.mt-4 .row-cols-md-5 a');
-//Découvrir plus d'oeuvres
+// Découvrir plus d'oeuvres
 const boutonDecouvrirPlus = document.querySelectorAll('#decouvrirOaContainer .row a');
-//Suggestion film
+// Suggestion film
 const lienCarouselSuggFilm = document.querySelectorAll('#carouselSuggestions a');
-//Suggestion séries
+// Suggestion séries
 const lienCarouselSuggSerie = document.querySelectorAll('#carouselSuggestions a');
+// Film d'une watchlist
+const lienCarouselWatchList = document.querySelectorAll('#carouselWatchList a');
+
 
 
         function patienterBouton(b){
