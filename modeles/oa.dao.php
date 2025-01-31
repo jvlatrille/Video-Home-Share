@@ -111,18 +111,32 @@ class OADao
     }
 
     /**
-     * @brief Retourne l'URL complète du fond d'écran (backdrop)
-     * @param string|null $backdropPath Chemin de l'image
-     * @param string $size Taille de l'image
-     * @return string URL complète du backdrop
+     * @brief Récupère tous les backdrops d'un film en optimisant la qualité d'affichage
+     * @param int $idOa Identifiant TMDB du film
+     * @param string $type Type de l'œuvre (movie ou tv)
+     * @return array Liste des URLs des backdrops avec version réduite et HD
      */
-    private function getBackdropUrl(?string $backdropPath, string $size = 'w1280'): string
+    public function getBackdrops(int $idOa, string $type): array
     {
-        $baseUrl = 'https://image.tmdb.org/t/p/';
-        $defaultImage = 'https://via.placeholder.com/1280x720?text=Image+non+disponible';
+        $response = $this->makeApiRequest("/$type/$idOa/images", [], true);
+        if (!isset($response['backdrops']) || empty($response['backdrops'])) {
+            return [
+                [
+                    'small' => 'https://via.placeholder.com/300x169?text=Image+non+disponible',
+                    'full' => 'https://via.placeholder.com/1280x720?text=Image+non+disponible'
+                ]
+            ];
+        }
 
-        return $backdropPath ? $baseUrl . $size . $backdropPath : $defaultImage;
+        return array_map(fn($img) => [
+            'small' => 'https://image.tmdb.org/t/p/w300' . $img['file_path'],
+            'full' => 'https://image.tmdb.org/t/p/original' . $img['file_path']
+        ], array_slice($response['backdrops'], 0, 10)); // Limite à 10 images max
     }
+
+    
+
+
     /**
      * @brief Analyse les participants à partir des crédits API
      * @param array $credits Données des crédits API
@@ -189,14 +203,12 @@ class OADao
             $data['runtime'] ?? null,
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
-            $this->getPosterUrl($data['poster_path'] ?? null),
-            $this->getBackdropUrl($data['backdrop_path'] ?? null),
+            $this->getPosterUrl(posterPath: $data['poster_path'] ?? null),
+            $this->getBackdrops($data['id'] ?? null, 'movie'),
             $this->parseParticipants($data['credits'] ?? []),
             $data['producer'] ?? null,
             null,
             null
-
-
         );
     }
 
@@ -373,7 +385,7 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl($data['poster_path'] ?? null),
-            $this->getBackdropUrl($data['backdrop_path'] ?? null),
+            $backdrops = $this->getBackdrops($data['id'] ?? null, type: 'tv'),
             $this->parseParticipants($data['credits'] ?? []),
             $data['producteur'] = $this->getCreator($data['created_by'] ?? []),
             $data['number_of_seasons'] ?? null,

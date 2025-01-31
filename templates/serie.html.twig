@@ -151,6 +151,68 @@
 				</p>
 			{% endif %}
 
+			{% if backdrops is defined and backdrops|length > 0 %}
+                <h4 class="fw-bold text-center mb-3">Fonds d'écran</h4> 
+                <div id="carouselBackdrops" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for backdropsChunk in backdrops|batch(3, null) %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="d-flex justify-content-center gap-3">
+                                    {% for backdrop in backdropsChunk %}
+                                        {% if backdrop is not null %}
+                                            <div class="p-2 text-center">
+                                                <img src="{{ backdrop.full }}" 
+                                                    class="img-fluid rounded backdrop-thumbnail shadow"
+                                                    alt="Backdrop de {{ oa.nom }}"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#backdropModal" 
+                                                    data-backdrop-src="{{ backdrop.full }}"
+                                                    style="max-height: 180px; object-fit: cover; width: 100%; cursor: pointer;">
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Contrôles du Carousel -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -75px;">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -75px;">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+
+                <!-- Modal pour afficher l'image en grand -->
+                <div class="modal fade" id="backdropModal" tabindex="-1" aria-labelledby="backdropModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content bg-transparent border-0">
+                            <div class="modal-body d-flex justify-content-center">
+                                <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand">
+                            </div>
+                            <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Script pour gérer le changement d'image dans le modal -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.querySelectorAll(".backdrop-thumbnail").forEach(img => {
+                            img.addEventListener("click", function () {
+                                document.getElementById("backdropFullScreen").src = this.dataset.backdropSrc;
+                            });
+                        });
+                    });
+                </script>
+            {% else %}
+                <p class="text-center"><em>Aucun backdrop trouvé pour cette œuvre.</em></p>
+            {% endif %}
+			
 			{% if suggestions is defined and suggestions|length > 0 %}
 				<div class="mt-5">
 					<h2 class="text-center mb-4">Suggestions de séries</h2>
