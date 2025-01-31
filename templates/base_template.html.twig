@@ -105,7 +105,6 @@
 				
 					<a class="navbar-brand d-flex align-items-center" href="index.php">
 						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2" >
-						<strong>VHS</strong>
 					</a>
 					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
 						Menu
@@ -231,7 +230,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
-					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">Accord</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">CGU</a>
 				</div>
 				<!-- PopUp pour l'accord TMDB -->
 				<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
@@ -341,6 +340,21 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 		</footer>
 
 		{% block scripts %}
+		<script src="js/patientez.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
+        patienterLien(lienALaUne);            // Découvrir plus d'œuvres
+        patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
+		patienterLien(lienCarouselSuggSerie); // Suggestion série
+		patienterLien(lienCarouselSuggFilm);  // Suggestion film
+		patienterLien(lienCarouselWatchList); // Watchlist film
+
+    });
+
+ 
+</script>
 		{% endblock %}
 	</body>
 </html>
