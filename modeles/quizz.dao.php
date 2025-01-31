@@ -59,26 +59,21 @@ class QuizzDao {
         }
         return $quizzListe;
     }
-    public function add(Quizz $quizz): int|false {
-        try {
-            $stmt = $this->pdo->prepare(
-                "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, image) 
-                 VALUES (:nom, :theme, :nbQuestion, :difficulte, ;image)"
-            );
-            $stmt->execute([
-                ':nom' => $quizz->getNom(),
-                ':theme' => $quizz->getTheme(),
-                ':nbQuestion' => $quizz->getNbQuestion(),
-                ':difficulte' => $quizz->getDifficulte(),
-                ':image' => $quizz->getImage()
-            ]);
 
-            // Retourner l'ID généré après l'insertion
-            return $this->pdo->lastInsertId();
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout du quizz : " . $e->getMessage());
-            return false;
-        }
+    public function add(Quizz $quizz): int|false {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, image) 
+                VALUES (:nom, :theme, :nbQuestion, :difficulte, :image)";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            ':nom' => $quizz->getNom(),
+            ':theme' => $quizz->getTheme(),
+            ':nbQuestion' => $quizz->getNbQuestion(),
+            ':difficulte' => $quizz->getDifficulte(),
+            ':image' => $quizz->getImage()
+        ]);
+
+        return $this->pdo->lastInsertId();
     }
 
     public function ajoutImage($idQuizz, $fileName)

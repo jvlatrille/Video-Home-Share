@@ -46,27 +46,33 @@ class ControllerQuizz extends Controller {
             $theme = $_POST['theme'] ?? '';
             $nbQuestion = $_POST['nbQuestion'] ?? 1;
             $difficulte = $_POST['difficulte'] ?? 1;
+            $image = "default.png";
         
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, null);
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $image);
         
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);
             $messages = [];
 
+            var_dump(isset($_FILES['imageQuizz']));
             // Vérifier si un fichier a été envoyé
             if (isset($_FILES['imageQuizz']) && $_FILES['imageQuizz']['error'] == 0) {
+                var_dump('1');
                 // Valider le fichier photo
                 $validator = new Validator($regles);
                 $photoValide = $validator->validerUploadEtPhoto($_FILES['imageQuizz'], $messages);
+                var_dump($photoValide);
                 
                 // Si la photo est valide
                 if ($photoValide) {
+                    var_dump('2');
                     // Définir le dossier de destination
                     $fileExtension = strtolower(pathinfo($_FILES['imageQuizz']['name'], PATHINFO_EXTENSION));
                     $uploadDir = 'img/quizz/';
                     $fileName = "$idQuizz" . "_" . "$nom" . ".$fileExtension";
                     $filePath = $uploadDir . $fileName;
                     
+                    var_dump($fileExtension, $uploadDir, $fileName, $filePath);
                     // Supprimer l'ancienne photo si elle existe
                     $anciennePhoto = glob($uploadDir . "$idQuizz" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
                     foreach ($anciennePhoto as $fichier) {
@@ -77,10 +83,12 @@ class ControllerQuizz extends Controller {
                     
                     // Déplacer le fichier téléchargé
                     if (!move_uploaded_file($_FILES['photo']['tmp_name'], $filePath)) {
+                        var_dump('3');
                         $messages[] = "Erreur lors de l'upload de l'image";
                     }
 
-                    $managerQuizz->ajoutImage($idQuizz, $fileName);
+                    $reussite = $managerQuizz->ajoutImage($idQuizz, $fileName);
+                    var_dump($reussite);
                 }
             }
         

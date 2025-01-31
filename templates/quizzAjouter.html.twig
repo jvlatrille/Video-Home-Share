@@ -42,15 +42,9 @@
             </div>
 
             <!-- Image de quizz -->
-            <div class="mb-4">
-                <label for="photo" class="form-label">Image de quizz</label>
-                <form id="imageQuizz" action="index.php?controleur=profil&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="photo" class="form-label d-none">Changer Image de quizz :</label>
-                        <input type="file" class="form-control" id="photo" name="photo"
-                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
-                    </div>
-                </form>
+            <div class="mb-3">
+                <label for="photo" class="form-label d-none">Changer Image de quizz :</label>
+                <input type="file" class="form-control" id="imageQuizz" name="imageQuizz" aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
                 <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
