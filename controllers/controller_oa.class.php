@@ -295,4 +295,46 @@ class ControllerOA extends Controller
             exit;
         }
     }
+
+    /**
+     * @brief Recupere les genres 
+     * @return void
+     */
+    public function getGenres(): void
+    {
+        try {
+            $genres = $this->managerOa->getGenresFilms();
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'genres' => $genres]);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des genres : ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Impossible de récupérer les genres.']);
+            exit;
+        }
+    }
+
+    /**
+     * @brief Recupere les films en fonction des genres
+     * @return void
+     */
+
+     public function getSuggestionsByGenre():void {
+        $genre = $_GET['genre'] ?? null;
+
+        if (!$genre) {
+            die(json_encode(['success' => false, 'message' => 'Genre invalide ou non spécifié.']));
+        }
+
+        try {
+            $suggestions = $this->managerOa->findSuggestionsByGenre($genre);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des suggestions : ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Impossible de récupérer les suggestions.']);
+            exit;
+        }
+     }
 }

@@ -94,6 +94,38 @@ class messageDAO
         $query->execute(['idMessage' => $idMessage]);
     }
 
+    public function incrementDislike(int $idMessage): void
+    {
+        $sql = "UPDATE ".PREFIXE_TABLE."message SET nbDislike = nbDislike + 1 WHERE idMessage = :idMessage";
+        $query = $this->pdo->prepare($sql);
+        $query->execute(['idMessage' => $idMessage]);
+    }
+
+
+
+
+    public function chargerAPropos(?int $idUtilisateur): ?array
+    {
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.pseudo, m.photoProfil, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);
+            $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+            $resultats = $pdoStatement->fetchAll();
+
+            if (empty($resultats)) {
+                return null; // Aucun message trouvé
+            }
+
+            return $resultats;
+
+           
+        } catch (Exception $e) {
+            error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
+            return null;
+        }
+    }
+
     /**
      * @author VINET LATRILLE Jules
      * @brief Cette méthode récupère les messages les plus likés.

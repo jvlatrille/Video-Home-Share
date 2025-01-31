@@ -37,9 +37,9 @@
                                     {% endfor %}
                                 </p>
                                 {% if oa.type == 'Film' %}
-                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
                                 {% else %}
-                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-danger mt-2">Voir plus</a>
+                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -49,12 +49,12 @@
         </div>
         <br>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev" >
+            <span class="carousel-control-prev-icon" style=" width: 70px; height: 70px;" aria-hidden="true"></span>
             <span class="visually-hidden">Précédent</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="carousel-control-next-icon" style=" width: 70px; height: 70px;" aria-hidden="true"></span>
             <span class="visually-hidden">Suivant</span>
         </button>
     </div>
@@ -152,44 +152,59 @@
 
 {% block script %} 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    const loadRandomBtn = document.getElementById('loadRandomBtn');
+        
+        document.addEventListener('DOMContentLoaded', function () {
+        const loadRandomBtn = document.getElementById('loadRandomBtn');
 
-    if (loadRandomBtn) {
-        loadRandomBtn.addEventListener('click', function () {
-            fetch('index.php?controleur=oa&methode=decouvrirPlus')
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.querySelector('#decouvrirOaContainer .row');
+        if (loadRandomBtn) {
+            loadRandomBtn.addEventListener('click', function () {
+                fetch('index.php?controleur=oa&methode=decouvrirPlus')
+                    .then(response => response.json())
+                    .then(data => {
+                        const container = document.querySelector('#decouvrirOaContainer .row');
 
-                    if (data.length === 0 || data.error) {
-                        console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
-                        alert('Impossible de charger de nouvelles œuvres.');
-                        return;
-                    }
+                        if (data.length === 0 || data.error) {
+                            console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
+                            alert('Impossible de charger de nouvelles œuvres.');
+                            return;
+                        }
 
-                    data.forEach(oa => {
-                        console.log(oa);
-                        container.innerHTML += `
-                            <div class="col">
-                                <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">                                    <div class="card h-100 shadow-sm">
-                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
-                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
+                        data.forEach(oa => {
+                            console.log(oa);
+                            container.innerHTML += `
+                                <div class="col">
+                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">                                    <div class="card h-100 shadow-sm">
+                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
+                                            : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title text-truncate">${oa.nom}</h6>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                        `;
+                                    </a>
+                                </div>
+                            `;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des œuvres :', error);
+                        alert('Erreur de connexion avec le serveur.');
                     });
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des œuvres :', error);
-                    alert('Erreur de connexion avec le serveur.');
-                });
-        });
-    }
-});
+            });
+        }
+    });
+
 </script>
+
+<script src="js/patientez.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterBouton(boutonDecouvrir); // Boutons "Découvrir" dans le carrousel page d'accueil
+        patienterLien(lienALaUne); // "Découvrir plus d'œuvres"
+        patienterBouton(boutonDecouvrirPlus);//découplrir plus d'oeuvre
+    });
+
+ 
+</script>
+
 {% endblock %}

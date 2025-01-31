@@ -311,4 +311,18 @@
     {% else %}
         <p>La série n'existe pas.</p>
     {% endif %}
+
+
+{% block script %} 
+<script src="js/patientez.js"></script>
+<script>
+
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterLien(lienCarouselSuggSerie); // Suggestion série
+    });
+</script>
+
+{% endblock %}
+    
+
 {% endblock %}

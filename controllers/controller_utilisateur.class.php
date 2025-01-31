@@ -11,6 +11,14 @@ use PHPMailer\PHPMailer\Exception;
  * @date 14/11/2024
  */
 
+/**
+ * @file controller_profil.class.php
+ * @author Léval Noah, Thibault Chipy
+ * @brief Controleur des utilisateurs
+ * @version 2.0
+ * @date 14/11/2024
+ */
+
 class ControllerUtilisateur extends Controller
 {
     /**
@@ -300,7 +308,6 @@ class ControllerUtilisateur extends Controller
         // Vérifie si le formulaire a été soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
-
             // Valide que l'email a été soumis et qu'il est correct
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
@@ -320,7 +327,7 @@ class ControllerUtilisateur extends Controller
                 $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
 
                 // Enregistre le token dans la base de données
-                $managerUtilisateur->enregistrerTokenReset($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
+                $managerUtilisateur->enregistrerToken($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
                 $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
 
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
@@ -346,7 +353,6 @@ class ControllerUtilisateur extends Controller
             exit();
         }
     }
-
 
     /**
      * @brief Affiche la page dédié au changement de mot de passe
@@ -592,7 +598,6 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
             $donneesFormulaire['valide']
-
         );
         
         // Sauvegarde dans la base de données
@@ -609,7 +614,7 @@ class ControllerUtilisateur extends Controller
         $expiresAt = date('Y-m-d H:i:s', time() + 3600); // Token valide pour 1 heure
 
         // Enregistre le token dans la base de données
-        $managerUtilisateur->enregistrerTokenReset($idUtilisateur, $tokenCrypt, $expiresAt);
+        $managerUtilisateur->enregistrerToken($idUtilisateur, $tokenCrypt, $expiresAt);
 
         // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
         $idEncoded = urlencode(base64_encode($idUtilisateur));

@@ -208,7 +208,7 @@ class UtilisateurDao
      * @param date $Date de fin de validité du token
      * @return bool Retourne true en cas de succès, false sinon
      */
-    public function enregistrerTokenReset($userId, $token, $expiresAt)
+    public function enregistrerToken($userId, $token, $expiresAt)
     {
         // Prépare une requête SQL pour insérer ou mettre à jour le token
         $sql = "INSERT INTO " . PREFIXE_TABLE . "tokens (user_id, token, expires_at)
@@ -285,6 +285,21 @@ class UtilisateurDao
     }
 
     /**
+     * @brief Récupère le mot de passe de l'utilisateur associé à un id.
+     * @param int $idUtilisateur L'id dont il faut récupérer le mot de passe
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function getMdpById($idUtilisateur)
+    {
+        $sql = "SELECT motDePasse FROM " . PREFIXE_TABLE . "utilisateur WHERE idUtilisateur = :idUtilisateur";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([':idUtilisateur' => $idUtilisateur]);
+    
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['motDePasse'] : null;
+    }
+
+    /**
      * @brief Creer un Utilisateur par son adresse mail
      * @author Thibault CHIPY
      * @param string $mail
@@ -341,7 +356,7 @@ class UtilisateurDao
      * @brief Vérifier si un utilisateur existe en base de données avec son adresse mail
      * @author Thibault CHIPY 
      * 
-     * @param email de l'Utilisateur 
+     * @param $mail de l'Utilisateur 
      * @return bool true si l'email existe, false sinon.
      */
      public function emailExiste(string $mail):bool{
@@ -382,6 +397,24 @@ class UtilisateurDao
     {
         $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
                 SET valide = 1 
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['id' => $id]);
+
+        return $reussite;
+    }
+
+    /**
+     * @brief Desactive le compte de l'utilisateur
+     * @author Noah LÉVAL
+     * 
+     * @param $id l'id de l'Utilisateur
+     * @return bool true si en cas de succees, false sinon.
+     */
+    public function desactiverCompte($id) :bool
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
+                SET valide = 0 
                 WHERE idUtilisateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $reussite = $pdoStatement->execute(['id' => $id]);
