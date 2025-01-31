@@ -41,25 +41,35 @@
 						<form id="createWatchlistForm" method="POST" action="index.php?controleur=watchlist&methode=ajouterWatchList">
 							<div class="mb-3">
 								<label for="watchlistTitle" class="form-label">Titre :</label>
-								<input type="text" class="form-control" id="watchlistTitle" name="titre" required>
-							</div>
-							<div class="mb-3">
-								<label for="watchlistGenre" class="form-label">Genre :</label>
-								<small class="form-text text-muted">Optionnel</small>
+								<input type="text" class="form-control" id="watchlistTitle" placeholder="Mes films préférés !" name="titre"  required>
+								<small id="titreErreur" class="text-danger"></small>
 
-								<input type="text" class="form-control" id="watchlistGenre" name="genre">
 							</div>
+								<div class="mb-3">
+									<label for="watchlistGenre" class="form-label">Genre :</label>
+									<select class="form-select" id="genreSelect" name="genre">
+										<option value="">Sélectionner un genre</option>
+									</select>
+									<small id="genreErreur" class="text-danger"></small>
+									<input type="hidden" id="selectedGenre" name="selectedGenre" value="">
+								</div>
+
 							<div class="mb-3">
 								<label for="watchlistDescription" class="form-label">Description :</label>
-								<textarea class="form-control" id="watchlistDescription" name="description" rows="3"></textarea>
+								<textarea class="form-control" id="watchlistDescription" placeholder="Ici décrivez le but de cette watchlist." name="description" rows="3"></textarea>
+								<small id="descErreur" class="text-danger"></small>
+
 							</div>
 							<div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<small class="form-text text-muted"><br><strong>Publique</strong> : visible par tous les utilisateurs.</small>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
 									<label class="form-check-label" for="visibilityPublic">
 										Publique
 									</label>
+								<small id="visibleErreur" class="text-danger"></small>
+
 								</div>
 								<div class="form-check">
 									<input class="form-check-input" type="radio" name="visible" id="visibilityPrivate" value="0">
@@ -72,72 +82,24 @@
 
 							<div class="mb-3">
 								<label for="watchlistSuggestions" class="form-label">Suggestions :</label>
-								<select class="form-select" id="watchlistSuggestions" name="suggestions" onchange="ajouterWatchlist(this)">
-									{% for oa in oas %}
-										<option value="{{ oa.idOa }}" data-poster-path="{{ oa.posterPath }}" data-type={{ oa.type }}>{{ oa.nom }} </option>
-									{% endfor %}
+								<select class="form-select" id="watchlistSuggestions" name="suggestions" onchange="ajouterWatchlist(this)" placeholder="Sélectionner une oeuvre">
+								
+										<option value="" data-poster-path="" data-type="" data-note=""></option>
+									
 								</select>
+							<small id="suggestionsErreur" class="text-warning"></small>
+
 							</div>
 
 							<div id="selectedItemsContainer" class="mt-3"></div>
 
-							<!-- Hidden input to store selected IDs -->
+							
 							<input type="hidden" id="selectedIds" name="OAs" value="">
-
-							{% block script %}
-								<script>
-									let listeOeuvres = [];
-									
-									function ajouterWatchlist(select) {
-										const selectedId = select.value;
-										const selectedType = select.options[select.selectedIndex].getAttribute('data-type');
-										if (!listeOeuvres.includes(selectedId)) {
-											const oa = selectedId + ':' + selectedType;
-											listeOeuvres.push(oa);
-											updateSelectedIds();
-											
-											const selectedOption = select.options[select.selectedIndex];
-											const selectedText = selectedOption.text;
-											const selectedImage = selectedOption.getAttribute('data-poster-path');
-											
-											const selectedItem = document.createElement('div');
-											selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
-											selectedItem.id = 'item-' + selectedId;
-											selectedItem.innerHTML = `
-											<span class="d-flex align-items-center">
-												<img src="${selectedImage}" alt="${selectedText}" class="me-2" style="width: 50px; height: auto;">
-												${selectedText}
-											</span>
-											<button type="button" class="btn-close" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}', '${selectedType}')"></button>
-											`;
-											
-											document.getElementById('selectedItemsContainer').appendChild(selectedItem);
-										}
-									}
-									
-									function supprimerDeWatchlist(id, selectedType) {
-										const index = listeOeuvres.indexOf(id + ':' + selectedType);
-										if (index > -1) {
-											listeOeuvres.splice(index, 1);
-											updateSelectedIds();
-											
-											const item = document.getElementById('item-' + id);
-											if (item) {
-												item.remove();
-											}
-										}
-									}
-									
-									function updateSelectedIds() {
-										document.getElementById('selectedIds').value = JSON.stringify(listeOeuvres);
-									}
-								</script>
-							{% endblock %}
 
 
 							<!-- Bouton de soumission -->
 							<div class="text-center">
-								<button type="submit" class="btn btn-primary">Créer une nouvelle watchlist</button>
+								<button type="submit" class="btn btn-primary" id="boutonCreer">Créer une nouvelle watchlist</button>
 							</div>
 						</form>
 					</div>
@@ -154,8 +116,8 @@
 
 				<div class="container text-center mt-2">
 					<div class="row">
-						<div class="col text-start mb-2">
-							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}">
+						<div class="col text-start mb-2 ">
+							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{watchList.idWatchlist}}" class="text-primary text-decoration-none">
 								<h2>{{watchList.titre}}</h2>
 							</a>
 						</div>
@@ -212,4 +174,10 @@
 		{% endif %}
 	</div>
 
-</div>{% endblock %}
+</div>
+{% block scripts %}
+	<script src="js/formCreaWatchlist.js"></script>
+{% endblock %}
+{% endblock %}
+
+

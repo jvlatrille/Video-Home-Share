@@ -39,18 +39,18 @@ class ControllerWatchList extends Controller
             $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
 
             //Recuperer des OA pour les suggestions
-            $managerOa = new OaDao($this->getPdo());
-            $oas = $managerOa->findRandomOeuvres();
+            // $managerOa = new OaDao($this->getPdo());
+            // $oas = $managerOa->findRandomOeuvres();
 
-            $oas=array_merge($oas, $managerOa->findRandomSeries());
-            $oas=array_slice($oas, 0, 15);
-            shuffle($oas);
+            // $oas=array_merge($oas, $managerOa->findRandomSeries());
+            // $oas=array_slice($oas, 0, 15);
+            // shuffle($oas);
             // Generer la vue
             $template = $this->getTwig()->load('watchlists.html.twig');
 
             echo $template->render([
                 'watchListListe' => $watchListListe,
-                'oas' => $oas
+                // 'oas' => $oas
             ]);
             } 
         else {
@@ -112,12 +112,11 @@ class ControllerWatchList extends Controller
     // Vérifie si un utilisateur est connecté
     if (isset($_SESSION['utilisateur'])) {
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-
         // Récupération des données du formulaire
         $donnees = [
             'idWatchList' => $_POST['idWatchList'] ?? null,
             'titre' => $_POST['titre'] ?? null,
-            'genre' => $_POST['genre'] ?? null,
+            'genre' => explode(':',$_POST['selectedGenre'])[1] ?? $_POST["selectedGenre"] ?? null,
             'description' => $_POST['description'] ?? null,
             'visible' => $_POST['visible'] ?? '0',
             'OAs' => is_string($_POST['OAs']) ? json_decode($_POST['OAs'], true) : $_POST['OAs'],
@@ -131,7 +130,7 @@ class ControllerWatchList extends Controller
                 'longueur_max' => 255,
             ],
             'genre' => [
-                'obligatoire' => false,
+                'obligatoire' => true,
                 'type' => 'string',
                 'longueur_min' => 1,
                 'longueur_max' => 255,
@@ -213,7 +212,7 @@ class ControllerWatchList extends Controller
     {
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        //Recupere les données du formulaire
+        //Recupere les données du formulaire 
         $donnees = [
             'id' => $_GET['id'] ?? null,
             'titre' => $_POST['titre'] ?? null,
@@ -265,8 +264,8 @@ class ControllerWatchList extends Controller
         $watchList->setVisible($visible);
         $managerWatchList->modifierWatchlistComplete($watchList);
 
-        //Redirige vers la liste des watchlists
-        header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur() . ''); 
+        //Redirige vers la watchlist
+        header('Location: index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist=' . $watchList->getIdWatchlist() . ''); 
         }
         else
         {
