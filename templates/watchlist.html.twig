@@ -110,7 +110,7 @@
             </button>
         </div>
     {% else %}
-        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
             <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
             <input type="hidden" name="titre" value="{{ watchList.titre }}">
             <input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">

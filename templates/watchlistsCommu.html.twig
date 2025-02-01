@@ -6,7 +6,7 @@
 		<i class="bi bi-house-door-fill"></i> Accueil
 	</a>
 </div>
-	<h1 class="text-center my-4">Les Watchlists de la Communauté</h1>
+	<h1 class="text-center my-4">Les listes de la Communauté</h1>
 	{% if watchListListe is empty %}
 		<p class="text-center text-muted">Aucune WatchList disponible pour le moment.</p>
 	{% else %}
@@ -24,7 +24,7 @@
 								</div>
 								<div class="mt-auto">
 									<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
-										<i class="bi bi-eye"></i> Voir la WatchList
+										<i class="bi bi-eye"></i> Voir la liste
 									</button>
 								</div>
 							</div>
@@ -62,7 +62,7 @@
 										{% endif %}
 									</ul>
 
-									<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+									<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
 										<input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
 										<input type="hidden" name="titre" value="{{ watchList.titre }}">
 										<input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
@@ -71,7 +71,7 @@
 										{% for oa in watchList.listeOeuvres %}
 											<input type="hidden" name="OAs[]" value="{{ oa.idOA }}{{':'}}{{ oa.type }}">
 										{% endfor %}
-										<button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Enregistrer cette WatchList</button>
+										<button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Enregistrer cette Liste</button>
 									</form>
 								</div>
 								<div class="modal-footer">

@@ -113,9 +113,9 @@
 				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
 					{% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">WatchList</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quizz</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
 					{% endif %}
@@ -185,7 +185,7 @@
 					{# {% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
 						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">Mes listes</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
