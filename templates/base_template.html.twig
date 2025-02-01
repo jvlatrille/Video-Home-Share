@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
+			<script src="js/patientez.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
+        patienterLien(lienALaUne);            // Découvrir plus d'œuvres
+        patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
+		patienterLien(lienCarouselSuggSerie); // Suggestion série
+		patienterLien(lienCarouselSuggFilm);  // Suggestion film
+		patienterLien(lienCarouselWatchList); // Watchlist film
+
+    });
+
+ 
+</script>
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
@@ -61,14 +76,14 @@
 
 		<!-- Google tag (gtag.js) -->
 		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-		
-																						    <script>
-																						        window.dataLayer = window.dataLayer || [];
-																						        function gtag(){dataLayer.push(arguments);}
-																						        gtag('js', new Date());
-																						
-																						        gtag('config', 'G-TJGCV8L5XE');
-																						    </script> #}
+
+																				    <script>
+																				        window.dataLayer = window.dataLayer || [];
+																				        function gtag(){dataLayer.push(arguments);}
+																				        gtag('js', new Date());
+																				
+																				        gtag('config', 'G-TJGCV8L5XE');
+																				    </script> #}
 
 
 		<meta charset="UTF-8">
@@ -94,25 +109,23 @@
 		</title>
 	</head>
 	<body class="d-flex flex-column min-vh-100">
-
+	
 		<header class="header-bg text-light header-sm container-fluid">
 			<nav
 				class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
-
+				
 				<!-- Logo et bouton Menu -->
 				<div class="d-flex align-items-center">
-
+				
 					<a class="navbar-brand d-flex align-items-center" href="index.php">
-						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2">
+						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2" >
 					</a>
 					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
-											Menu
-										</button> #}
+						Menu
+					</button> #}
 				</div>
-
-				<div
-					class="py-2 d-flex justify-content-center flex-wrap ">
-					{#d-flex justify-content-center flex-wrap#}
+				
+				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
 					{% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
 						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
@@ -122,11 +135,10 @@
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
 					{% endif %}
 				</div>
-
+				
 				{# <!-- Barre de recherche -->d-flex justify-content-center flex-grow-1 mt-2 mt-md-0 #}
-				<form
-					class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php?controleur=index&methode=rechercherFilm" method="POST" style="position: relative; margin-right: 413px;">
-					{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
+				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;">
+				{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
 					<input class="form-control" type="search" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
 				</form>
 
@@ -311,7 +323,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 							</form>
 						</div>
 					</div>
-				</div>
+				</div>						
 
 
 				<div class="footer-social mb-2">
@@ -326,20 +338,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block scripts %}
-			<script src="js/patientez.js"></script>
-
-			<script>
-				document.addEventListener('DOMContentLoaded', () => {
-patienterBouton(boutonDecouvrir); // Boutons Découvrir dans le carrousel page d'accueil
-patienterLien(lienALaUne); // Découvrir plus d'œuvres
-patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
-patienterLien(lienCarouselSuggSerie); // Suggestion série
-patienterLien(lienCarouselSuggFilm); // Suggestion film
-patienterLien(lienCarouselWatchList); // Watchlist film
-
-});
-			</script>
-		{% endblock %}
+		{% block scripts %}{% endblock %}
 	</body>
 </html>

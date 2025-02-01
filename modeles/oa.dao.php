@@ -297,23 +297,54 @@ class OADao
      */
     public function findRandomOeuvres(): array
     {
-        $randomPage = rand(1, 100);
-        $results = $this->makeApiRequest('/movie/popular', ['include_adult' => false, 'language' => 'fr-FR', 'page' => $randomPage]);
+        $reponseFilms = $this->makeApiRequest('/discover/movie', [
+            'include_adult'     => false,
+            'language'          => 'fr-FR',
+            'vote_count.gte'    => 70,
+            'vote_average.gte'  => 5,
+            'page'              => rand(1, 100)
+        ]);
 
-        if (!isset($results['results']) || empty($results['results'])) {
-            error_log('Aucune œuvre aléatoire trouvée.');
-            return [];
-        }
+        $reponseSeries = $this->makeApiRequest('/discover/tv', [
+            'include_adult'     => false,
+            'language'          => 'fr-FR',
+            'vote_count.gte'    => 70,
+            'vote_average.gte'  => 5,
+            'page'              => rand(1, 100)
+        ]);
 
-        return array_map(function ($data) {
-            return [
-                'idOa' => $data['id'] ?? null,
-                'nom' => $data['title'] ?? 'Titre inconnu',
-                'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
-                'type' => 'Film',
-            ];
-        }, array_slice($results['results'], 0, 10));
+        $films = isset($reponseFilms['results']) ? $reponseFilms['results'] : [];
+        $series = isset($reponseSeries['results']) ? $reponseSeries['results'] : [];
+
+        shuffle($films);
+        shuffle($series);
+
+        $filmsSelectionnes = array_slice($films, 0, 5);
+        $seriesSelectionnees = array_slice($series, 0, 5);
+
+        $combine = array_merge($filmsSelectionnes, $seriesSelectionnees);
+        shuffle($combine);
+
+        return array_map(function($data) {
+            if (isset($data['title'])) {
+                return [
+                    'idOa'       => $data['id'] ?? null,
+                    'nom'        => $data['title'] ?? 'Titre inconnu',
+                    'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+                    'type'       => 'Film'
+                ];
+            } elseif (isset($data['name'])) {
+                return [
+                    'idOa'       => $data['id'] ?? null,
+                    'nom'        => $data['name'] ?? 'Titre inconnu',
+                    'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
+                    'type'       => 'TV'
+                ];
+            }
+            return null;
+        }, $combine);
     }
+
 
     /**
      * @brief Récupère des séries aléatoires depuis l'API TMDB

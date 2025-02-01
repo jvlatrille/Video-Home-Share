@@ -140,8 +140,6 @@
         </div>
     </div>
 
-
-
     <div class="text-center mt-4">
         <button id="loadRandomBtn" class="btn btn-primary">Découvrir toujours plus !</button>
     </div>
@@ -150,30 +148,49 @@
 
 {% endblock %}
 
-{% block script %} 
+{% block scripts %}
 <script>
-        
-        document.addEventListener('DOMContentLoaded', function () {
-        const loadRandomBtn = document.getElementById('loadRandomBtn');
+document.addEventListener('DOMContentLoaded', function () {
+    const loadRandomBtn = document.getElementById('loadRandomBtn');
+    console.log('Bouton loadRandomBtn : ', loadRandomBtn);
 
-        if (loadRandomBtn) {
-            loadRandomBtn.addEventListener('click', function () {
-                fetch('index.php?controleur=oa&methode=decouvrirPlus')
-                    .then(response => response.json())
-                    .then(data => {
-                        const container = document.querySelector('#decouvrirOaContainer .row');
+    if (loadRandomBtn) {
+        loadRandomBtn.addEventListener('click', function () {
+            console.log('Bouton cliqué !');
+            // Adapte le chemin en fonction du dossier dans lequel se trouve ton projet :
+            const url = window.location.origin + '/PHP/Video-Home-Share/index.php?controleur=oa&methode=decouvrirPlus';
+            fetch(url)
+                .then(response => {
+                    console.log('Statut HTTP:', response.status);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Réponse brute:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('JSON parsé avec succès:', data);
 
-                        if (data.length === 0 || data.error) {
-                            console.error('Erreur :', data.error || 'Aucune œuvre récupérée.');
+                        // On cible le container puis la div .row
+                        const containerEl = document.getElementById('decouvrirOaContainer');
+                        if (!containerEl) {
+                            console.error('Container #decouvrirOaContainer non trouvé.');
+                            return;
+                        }
+                        const row = containerEl.querySelector('.row');
+                        console.log('Row trouvée : ', row);
+
+                        if (!Array.isArray(data) || data.length === 0 || data.error) {
+                            console.error('Erreur dans les données :', data.error || 'Aucune œuvre récupérée.');
                             alert('Impossible de charger de nouvelles œuvres.');
                             return;
                         }
 
+                        // Ajoute chaque œuvre dans le container
                         data.forEach(oa => {
-                            console.log(oa);
-                            container.innerHTML += `
+                            row.innerHTML += `
                                 <div class="col">
-                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">                                    <div class="card h-100 shadow-sm">
+                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
+                                        <div class="card h-100 shadow-sm">
                                             ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
                                             : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
                                             <div class="card-body text-center">
@@ -184,15 +201,17 @@
                                 </div>
                             `;
                         });
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors du chargement des œuvres :', error);
+                    } catch(e) {
+                        console.error('Erreur lors du parsing du JSON:', e);
                         alert('Erreur de connexion avec le serveur.');
-                    });
-            });
-        }
-    });
-
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors du fetch:', error);
+                    alert('Erreur de connexion avec le serveur.');
+                });
+        });
+    }
+});
 </script>
-
 {% endblock %}
