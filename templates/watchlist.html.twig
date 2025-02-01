@@ -14,7 +14,7 @@
 
     {% if watchList is not defined %}
         <div class="alert alert-warning" role="alert">
-            Aucune WatchList
+            Aucune Liste
         </div>
     {% else %}
         <div class="container mt-4">
@@ -22,7 +22,7 @@
                 <h1 class="text-center w-100">{{ watchList.titre }}</h1>
                 {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
                 <div class="btn btn-primary">
-                    <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="text-white text-decoration-none">
+                    <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette liste ?');" class="text-white text-decoration-none">
                         Supprimer
                     </a>
                 </div>
@@ -92,7 +92,7 @@
                 {% endfor %}
 			{% else %}
 				<div class="alert alert-warning" role="alert">
-					Aucune oeuvre dans cette WatchList
+					Aucune oeuvre dans cette Liste
 				</div>
 				{% endif %}
 
@@ -110,7 +110,7 @@
             </button>
         </div>
     {% else %}
-        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
             <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
             <input type="hidden" name="titre" value="{{ watchList.titre }}">
             <input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
@@ -121,7 +121,7 @@
             {% endfor %}
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-save"></i>
-                Enregistrer cette WatchList
+                Enregistrer cette Liste
             </button>
         </form>
     {% endif %}
@@ -130,11 +130,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="shareModalLabel">Partager la WatchList</h5>
+                    <h5 class="modal-title" id="shareModalLabel">Partager la Liste</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Copiez le lien ci-dessous pour partager votre WatchList :</p>
+                    <p>Copiez le lien ci-dessous pour partager votre Liste :</p>
                     <div class="input-group">
                         <input type="text" class="form-control" value="http://lakartxela.iutbayonne.univ-pau.fr/~tchipy/SAE/Video-Home-Share/index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{ watchList.idWatchList }}" id="shareLink" readonly>
                     </div>
@@ -151,7 +151,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editWatchlistModalLabel">Modifier la WatchList</h5>
+                        <h5 class="modal-title" id="editWatchlistModalLabel">Modifier la Liste</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

@@ -113,7 +113,7 @@ class ControllerOA extends Controller
             $oaListe = $this->managerOa->findRandomOeuvres();
             $oaListe = array_merge($oaListe, $this->managerOa->findRandomSeries());
             shuffle($oaListe);
-            array_splice($oaListe, 20);
+            array_splice($oaListe, 10);
             header('Content-Type: application/json');
             echo json_encode($oaListe);
             exit;

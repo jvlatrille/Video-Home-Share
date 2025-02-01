@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
+			<script src="js/patientez.js"></script>
+
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
+        patienterLien(lienALaUne);            // Découvrir plus d'œuvres
+        patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
+		patienterLien(lienCarouselSuggSerie); // Suggestion série
+		patienterLien(lienCarouselSuggFilm);  // Suggestion film
+		patienterLien(lienCarouselWatchList); // Watchlist film
+
+    });
+
+ 
+</script>
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
@@ -113,9 +128,9 @@
 				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
 					{% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">WatchList</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quizz</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
 					{% endif %}
@@ -178,21 +193,6 @@
 					{% endif %}
 				</div>
 			</nav>
-
-			<!-- Menu déroulant sous le bouton "Menu" -->
-			{# <div class="collapse" id="menuBar"> #}
-				{# <div class="container py-2 d-flex justify-content-center flex-wrap"> #}
-					{# {% if utilisateurConnecte %}
-						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1">Forum</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1">Jeux</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1">WatchList</a>
-						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1">Quizz</a>
-					{% else %}
-						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
-					{% endif %} #}
-				{# </div> #}
-
-			{# </div> #}
 		</header>
 
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
@@ -338,22 +338,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block scripts %}
-		<script src="js/patientez.js"></script>
-
-<script>
- document.addEventListener('DOMContentLoaded', () => {
-        patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
-        patienterLien(lienALaUne);            // Découvrir plus d'œuvres
-        patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
-		patienterLien(lienCarouselSuggSerie); // Suggestion série
-		patienterLien(lienCarouselSuggFilm);  // Suggestion film
-		patienterLien(lienCarouselWatchList); // Watchlist film
-
-    });
-
- 
-</script>
-		{% endblock %}
+		{% block scripts %}{% endblock %}
 	</body>
 </html>

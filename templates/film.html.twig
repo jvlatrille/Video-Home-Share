@@ -14,11 +14,10 @@
 {% endblock %}
 
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+    <div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+        <a href="index.php" class="text-white text-decoration-none">
+            <i class="bi bi-house-door-fill"></i> Accueil</a>
+    </div>
     <title>{{ oa.nom }}</title>
 
     {% if oa is defined %}
@@ -77,32 +76,33 @@
                         <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
                             {% for i in 1..5 %}
                                 <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
-                                     alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
+                                    alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
                             {% endfor %}
-                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(0, 'floor') }}</span>
+                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(2, 'common') }}</span>
                         </div>
-                        
-{% if utilisateurConnecte %}
-    <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
-{% endif %}
-{% if utilisateurConnecte %}
-    <div class="mt-2">
-        <p><strong>Votre note :</strong> 
-            {% if utilisateurNote is defined %}
-                {{ utilisateurNote }} / 5
-            {% else %}
-                <em>Vous n'avez pas encore noté ce film.</em>
-            {% endif %}
-        </p>
-    </div>
-{% endif %}
-
+                        {% if utilisateurConnecte %}
+                            <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
+                        {% endif %}
+                        {% if utilisateurConnecte %}
+                            <div class="mt-2">
+                                <p>
+                                    <strong>Votre note :</strong> 
+                                    <span id="user-rating-display">
+                                        {% if utilisateurNote is defined %}
+                                            {{ utilisateurNote }}
+                                        {% else %}
+                                            <em>Vous n'avez pas encore noté ce film.</em>
+                                        {% endif %}
+                                    </span> / 5
+                                </p>
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <div class="d-flex mt-3">
-                        <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un avis</a>
+                        <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un commentaire</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-                            Ajouter le film à une watchlist
+                            Ajouter à une liste
                         </button>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
 							<div class="modal-dialog">
 								<div class="modal-content">
 									<div class="modal-header">
-										<h5 class="modal-title" id="addFilmModalLabel">Ajouter à la WatchList</h5>
+										<h5 class="modal-title" id="addFilmModalLabel">Ajouter à la liste</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
@@ -130,8 +130,8 @@
                                                 <input type="hidden" name="type" value="{{ oa.type }}">
 											<button type="submit" class="btn btn-primary">Ajouter</button>
 											{% else %}
-												<p>Aucune watchlist trouvée.</p>
-												<p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+												<p>Aucune liste trouvée.</p>
+												<p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
 											{% endif %}
 											
 										</form>
@@ -140,7 +140,6 @@
 							</div>
 						</div>
 					
-				
 
             <div class="mt-4 p-3 bg-light rounded">
                 <h4 class="fw-bold">Description</h4>
@@ -359,96 +358,16 @@
         <p>Le film n'existe pas.</p>
     {% endif %}
 {% endblock %}
-{% block script %}
-{% if utilisateurConnecte %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const stars = document.querySelectorAll('#rating-system .star');
-        const ratingDisplay = document.getElementById('rating-display');
-        const ratingSystem = document.getElementById('rating-system');
-        const filmId = ratingSystem.getAttribute('data-id');
+{% block scripts %}
+    {% if utilisateurConnecte %}
+        <script src = "js/noterFilm.js"></script>
+    {% endif %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
 
-        let originalRating = parseFloat(ratingDisplay.textContent); // Note initiale
-        let selectedRating = null;
-
-        // Fonction pour mettre à jour visuellement les étoiles
-        function updateStars(rating) {
-            stars.forEach(star => {
-                const starValue = parseInt(star.getAttribute('data-value'));
-                star.src = starValue <= rating ? 'img/noteRemplie.png' : 'img/noteVide.png';
-            });
-        }
-
-        // Gestion du survol des étoiles
-        stars.forEach(star => {
-            star.addEventListener('mouseover', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                updateStars(value);
-                ratingDisplay.textContent = value; // Affiche la note survolée
-            });
-
-            star.addEventListener('mouseout', () => {
-                // Retour à l'état initial si aucune note n'est sélectionnée
-                updateStars(selectedRating || originalRating);
-                ratingDisplay.textContent = selectedRating || originalRating;
-            });
-
-            // Gestion du clic pour noter
-            star.addEventListener('click', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                selectedRating = value;
-
-                // Envoie les données via fetch
-                fetch('index.php?controleur=oa&methode=noterFilm', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        idFilm: filmId,
-                        note: value
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Note ajoutée avec succès.');
-                        originalRating = selectedRating; // Met à jour la note initiale
-                        fetchMoyenne(); // Recharge la moyenne
-                    } else {
-                        alert('Erreur : ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la requête :', error);
-                    alert('Une erreur est survenue.');
+        <script src="js/patientez.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                    patienterLien(lienCarouselSuggFilm); // Suggestion film
                 });
-            });
-        });
-
-        // Fonction pour récupérer et afficher la moyenne
-        function fetchMoyenne() {
-            fetch(`index.php?controleur=oa&methode=afficherMoyenneNotes&idTMDB=${filmId}&noteTMDB=${originalRating}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    originalRating = data.moyenne;
-                    ratingDisplay.textContent = data.moyenne.toFixed(2);
-                    updateStars(data.moyenne);
-                }
-            });
-        }
-    });
-    </script>
-
-    
-    <script src="js/patientez.js"></script>
-    <script>
-
-    document.addEventListener('DOMContentLoaded', () => {
-            patienterLien(lienCarouselSuggFilm); // Suggestion film
-        });
-    </script>
-
-
-{% endif %}
+        </script>
 {% endblock %}
