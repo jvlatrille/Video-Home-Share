@@ -1,11 +1,8 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+<a href="javascript:history.back()" class="btn btn-primary m">Retour</a>
+
 	<h1 class="text-center my-4">Les listes de la Communauté</h1>
 	{% if watchListListe is empty %}
 		<p class="text-center text-muted">Aucune Liste disponible pour le moment.</p>
