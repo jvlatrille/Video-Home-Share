@@ -82,8 +82,9 @@
 									<div class="d-flex flex-column flex-grow-1">
 										<span class="text-dark fw-bold me-2" style="font-size: 1.25rem;">{{ commentaire.titreOeuvre }}</span>
 										<p class="mb-1">{{ commentaire.contenu }}</p>
-										<small class="text-muted">Posté le {{ commentaire.dateCommentaire }}</small>
+										<small class="text-muted">Posté le {{ commentaire.dateCommentaire|date('d/m/Y') }}</small>
 									</div>
+
 									<!-- Titre et Affiche de l'œuvre -->
 									<div class="d-flex align-items-center">
 										<img src="{{ commentaire.backdropOeuvre|first.small }}" class="card-img-top" style="height: 100px; object-fit: cover;" alt="Capture de {{ commentaire.titreOeuvre }}">

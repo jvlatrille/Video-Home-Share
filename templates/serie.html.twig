@@ -54,7 +54,7 @@
                     <div class="bg-light p-3 rounded">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y') }}</p>
                                 <p><strong>Nombre de saisons :</strong> {{ oa.nbSaison }}</p>
                                 <p><strong>Nombre d'épisodes :</strong> {{ oa.nbEpisode }} </p>
                                 <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>

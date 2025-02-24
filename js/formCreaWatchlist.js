@@ -11,7 +11,7 @@
 
 
 //Suggestion de films et séries
-let listeOeuvres = [];
+var listeOeuvres = [];
 									
 function ajouterWatchlist(select) {
     const selectedId = select.value;

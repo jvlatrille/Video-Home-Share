@@ -107,10 +107,10 @@ class ControllerWatchList extends Controller
      * @brief Methode pour ajouter une watchlist à l'utilisateur
      * @return void
      */
-    public function ajouterWatchList()
-{
+    public function ajouterWatchList(){
+
     // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
+    if (isset($_SESSION['utilisateur'])){
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         // Récupération des données du formulaire
         $donnees = [
@@ -121,6 +121,7 @@ class ControllerWatchList extends Controller
             'visible' => $_POST['visible'] ?? '0',
             'OAs' => is_string($_POST['OAs']) ? json_decode($_POST['OAs'], true) : $_POST['OAs'],
         ];
+   
         // Définition des règles de validation
         $regles = [
             'titre' => [
@@ -143,7 +144,7 @@ class ControllerWatchList extends Controller
             ],
             'visible' => [
                 'obligatoire' => true,
-                'type' => 'boolean',
+                'type' => 'string',
             ],
         ];
 
@@ -161,7 +162,7 @@ class ControllerWatchList extends Controller
         $titre = $donnees['titre'];
         $genre = $donnees['genre'] ?? null;
         $description = $donnees['description'];
-        $visible = (bool)$donnees['visible'];
+        $visible = $donnees['visible'];
         $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
         // Traitement des œuvres (idTMDB et type)
@@ -178,6 +179,7 @@ class ControllerWatchList extends Controller
                 ];
             }
         }
+    
 
         // Création de la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
@@ -190,17 +192,30 @@ class ControllerWatchList extends Controller
         $watchList->setIdUtilisateur($idUtilisateur);
         $managerWatchList->creerWatchlist($watchList);
 
+        var_dump($watchList);
+
         $idNouvelleWatchlist = $watchList->getIdWatchList();
-        
+        var_dump($idNouvelleWatchlist);
+
         // Association des œuvres à la watchlist
         foreach ($oeuvresFormatees as $oeuvre) {
+            var_dump("entree");
             $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
         }
+
+        var_dump("fait addOaToWatchlist");
+        var_dump($watchList);
+
         // Redirection vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);
         exit();
     }
+    else {
+        // Redirection vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
 }
+
 
     //Fonction pour modifier une Watchlist
     /**

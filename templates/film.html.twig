@@ -55,7 +55,7 @@
                 <div class="bg-light p-3 rounded">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                            <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y') }}</p>
                             <p><strong>Durée :</strong> {{ oa.duree }} min</p>
                             <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
                         </div>

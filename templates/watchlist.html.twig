@@ -54,7 +54,7 @@
                                 <div class="modal-body">
                                     <p><strong>Nom :</strong> {{ oa.nom }}</p>
                                     <p><strong>Description :</strong> {{ oa.description }}</p>
-                                    <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                    <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y')}}</p>
                                     <p><strong>Note :</strong>
                                         {% for i in 1..5 %}
                                             {% if i <= (oa.note / 2) %}
