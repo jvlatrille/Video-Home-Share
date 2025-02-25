@@ -75,6 +75,8 @@ class Quizz {
 
     public function setPseudo(?string $pseudo): void {
         $this->pseudo = $pseudo;
+    }
+    
     public function getImage(): ?string {
         return $this->image;
     }
