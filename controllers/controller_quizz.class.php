@@ -27,7 +27,7 @@ class ControllerQuizz extends Controller {
 }
 
 
-    // Fonction pour afficher un quizz spécifique
+    // Fonction pour afficher un quiz spécifique
     public function afficherQuizz() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         
