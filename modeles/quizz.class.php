@@ -7,16 +7,17 @@ class Quizz {
     private ?int $nbQuestion;
     private ?string $difficulte;
     private ?int $idCreateur;
-    private ?string $pseudo;
+    private ?string $image;
 
     // Constructeur
-    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?string $difficulte, ?int $idCreateur) {
+    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?string $difficulte, ?int $idCreateur, ?string $image) {
         $this->idQuizz = $idQuizz;
         $this->nom = $nom;
         $this->theme = $theme;
         $this->nbQuestion = $nbQuestion;
         $this->difficulte = $difficulte;
         $this->idCreateur = $idCreateur;
+        $this->image = $image;
     }
 
     // Getters et Setters
@@ -74,6 +75,12 @@ class Quizz {
 
     public function setPseudo(?string $pseudo): void {
         $this->pseudo = $pseudo;
+    public function getImage(): ?string {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): void {
+        $this->image = $image;
     }
 }
 ?>

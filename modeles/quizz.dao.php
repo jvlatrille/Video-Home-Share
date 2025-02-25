@@ -45,8 +45,9 @@ class QuizzDao {
             $data['nom'],         // nom
             $data['theme'],       // theme
             $data['nbQuestion'],  // nbQuestion
-            $data['difficulte'],  // difficulte
             $data['idCreateur']   // idCreateur
+            $data['difficulte'],   // difficulte
+            $data['image']   // image
         );
         $quizz->setPseudo($data['Pseudo']); // Set the pseudo
         return $quizz;
@@ -60,26 +61,33 @@ class QuizzDao {
         }
         return $quizzListe;
     }
-    public function add(Quizz $quizz): int|false {
-        try {
-            $stmt = $this->pdo->prepare(
-                "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, idCreateur) 
-                 VALUES (:nom, :theme, :nbQuestion, :difficulte, :idCreateur)"
-            );
-            $stmt->execute([
-                ':nom' => $quizz->getNom(),
-                ':theme' => $quizz->getTheme(),
-                ':nbQuestion' => $quizz->getNbQuestion(),
-                ':difficulte' => $quizz->getDifficulte(),
-                ':idCreateur' => $quizz->getIdCreateur()
-            ]);
 
-            // Retourner l'ID généré après l'insertion
-            return $this->pdo->lastInsertId();
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout du quizz : " . $e->getMessage());
-            return false;
-        }
+    public function add(Quizz $quizz): int|false {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, image) 
+                VALUES (:nom, :theme, :nbQuestion, :difficulte, :idCreateur, :image)";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            ':nom' => $quizz->getNom(),
+            ':theme' => $quizz->getTheme(),
+            ':nbQuestion' => $quizz->getNbQuestion(),
+            ':difficulte' => $quizz->getDifficulte(),
+            ':idCreateur' => $quizz->getIdCreateur(),
+            ':image' => $quizz->getImage()
+        ]);
+
+        return $this->pdo->lastInsertId();
+    }
+
+    public function ajoutImage($idQuizz, $fileName)
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "quizz 
+                SET image = :fileName 
+                WHERE idQuizz = :idQuizz";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['fileName' => $fileName, 'idQuizz' => $idQuizz]);
+
+        return $reussite;
     }
     
 }
