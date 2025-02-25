@@ -11,6 +11,7 @@ class ControllerAdmin extends Controller
 {
     /** @var AdminDao $adminDao Instance de la classe AdminDao pour la gestion des utilisateurs. */
     private AdminDao $adminDao;
+    private UtilisateurDao $utilisateurDao;
 
     /**
      * @brief Constructeur du contrôleur d'administration.
@@ -21,6 +22,7 @@ class ControllerAdmin extends Controller
     {
         parent::__construct($twig, $loader);
         $this->adminDao = new AdminDao($this->getPdo());
+        $this->utilisateurDao = new UtilisateurDao($this->getPdo());
     }
 
     /**
@@ -29,7 +31,7 @@ class ControllerAdmin extends Controller
     public function render()
     {
         $this->verifierAdmin();
-        $utilisateurListe = $this->adminDao->getAllUtilisateurs();
+        $utilisateurListe = $this->utilisateurDao->findAll();
 
         echo $this->getTwig()->render('admin.html.twig', [
             'utilisateurListe' => $utilisateurListe
@@ -46,47 +48,156 @@ class ControllerAdmin extends Controller
         $this->verifierAdmin();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            ob_start();  // ➡️ Mise en tampon pour éviter les erreurs de header
+            ob_start();
 
             $idUtilisateur = $_POST['idUtilisateur'];
-            $pseudo = $_POST['pseudo'];
-            $adressMail = $_POST['adressMail'];
-            $motDePasse = $_POST['motDePasse'];
-            $role = $_POST['role'];
+            $pseudo        = $_POST['pseudo'];
+            $role          = $_POST['role'];
 
-            $utilisateurActuel = $this->adminDao->getUtilisateurById($idUtilisateur);
-
+            $utilisateurActuel = $this->utilisateurDao->find($idUtilisateur);
             if (!$utilisateurActuel) {
                 header('Location: index.php?controleur=admin&methode=render&error=user_not_found');
                 ob_end_flush();
-                exit();
+                exit();    {
+                    $this->verifierAdmin();
+            
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        ob_start();
+            
+                        $idUtilisateur = $_POST['idUtilisateur'];
+                        $pseudo        = $_POST['pseudo'];
+                        $role          = $_POST['role'];
+            
+                        $utilisateurActuel = $this->utilisateurDao->find($idUtilisateur);
+                        if (!$utilisateurActuel) {
+                            header('Location: index.php?controleur=admin&methode=render&error=user_not_found');
+                            ob_end_flush();
+                            exit();
+                        }
+            
+                        // Démarrage de la транзакция (tranzaktsiya: transaction)
+                        $pdo = $this->getPdo();
+                        $pdo->beginTransaction();
+            
+                        try {
+                            // Gérer l'upload de la photo de profil
+                            $photoProfil = $this->uploadImage(
+                                'photoProfil',
+                                $_POST['currentPhotoProfil'],
+                                $idUtilisateur,
+                                $pseudo,
+                                'profil'
+                            );
+            
+                            // Gérer l'upload de la bannière de profil
+                            $banniereProfil = $this->uploadImage(
+                                'banniereProfil',
+                                $_POST['currentBanniereProfil'],
+                                $idUtilisateur,
+                                $pseudo,
+                                'banniere'
+                            );
+            
+                            // Mise à jour du pseudo
+                            $okPseudo = $this->utilisateurDao->changerPseudo($idUtilisateur, $pseudo);
+            
+                            // Mettre à jour la photo si elle a changé
+                            $okPhoto = true;
+                            if ($photoProfil !== $utilisateurActuel->getPhotoProfil()) {
+                                $okPhoto = $this->utilisateurDao->updateUserPhoto($idUtilisateur, $photoProfil);
+                            }
+            
+                            // Mettre à jour la bannière si elle a changé
+                            $okBanniere = true;
+                            if ($banniereProfil !== $utilisateurActuel->getBanniereProfil()) {
+                                $okBanniere = $this->utilisateurDao->updateUserBanniere($idUtilisateur, $banniereProfil);
+                            }
+            
+                            // Changer le rôle
+                            $okRole = $this->utilisateurDao->changerRole($idUtilisateur, $role);
+            
+                            // Vérifier que toutes les mises à jour se sont bien déroulées
+                            if ($okPseudo && $okPhoto && $okBanniere && $okRole) {
+                                $pdo->commit();
+                                header('Location: index.php?controleur=admin&methode=render&success=1');
+                            } else {
+                                $pdo->rollBack();
+                                header('Location: index.php?controleur=admin&methode=render&error=1');
+                            }
+                        } catch (Exception $e) {
+                            $pdo->rollBack();
+                            error_log("Erreur lors de la mise à jour utilisateur : " . $e->getMessage());
+                            header('Location: index.php?controleur=admin&methode=render&error=exception');
+                        }
+            
+                        ob_end_flush();
+                        exit();
+                    }
+                }
             }
 
-            $photoProfil = $this->uploadImage('photoProfil', $utilisateurActuel->getPhotoProfil(), $idUtilisateur, $pseudo, 'profil');
-            $banniereProfil = $this->uploadImage('banniereProfil', $utilisateurActuel->getBanniereProfil(), $idUtilisateur, $pseudo, 'banniere');
+            // Démarrage de la транзакция (tranzaktsiya: transaction)
+            $pdo = $this->getPdo();
+            $pdo->beginTransaction();
 
-            $motDePasseFinal = !empty($motDePasse) ? password_hash($motDePasse, PASSWORD_BCRYPT) : null;
+            try {
+                // Gérer l'upload de la photo de profil
+                $photoProfil = $this->uploadImage(
+                    'photoProfil',
+                    $_POST['currentPhotoProfil'],
+                    $idUtilisateur,
+                    $pseudo,
+                    'profil'
+                );
 
-            $resultat = $this->adminDao->adminModifierUtilisateur(
-                $idUtilisateur,
-                $pseudo,
-                $photoProfil,
-                $banniereProfil,
-                $adressMail,
-                $motDePasseFinal,
-                $role
-            );
+                // Gérer l'upload de la bannière de profil
+                $banniereProfil = $this->uploadImage(
+                    'banniereProfil',
+                    $_POST['currentBanniereProfil'],
+                    $idUtilisateur,
+                    $pseudo,
+                    'banniere'
+                );
 
-            if ($resultat) {
-                header('Location: index.php?controleur=admin&methode=render&success=1');
-            } else {
-                header('Location: index.php?controleur=admin&methode=render&error=1');
+                // Mise à jour du pseudo
+                $okPseudo = $this->utilisateurDao->changerPseudo($idUtilisateur, $pseudo);
+
+                // Mettre à jour la photo si elle a changé
+                $okPhoto = true;
+                if ($photoProfil !== $utilisateurActuel->getPhotoProfil()) {
+                    $okPhoto = $this->utilisateurDao->updateUserPhoto($idUtilisateur, $photoProfil);
+                }
+
+                // Mettre à jour la bannière si elle a changé
+                $okBanniere = true;
+                if ($banniereProfil !== $utilisateurActuel->getBanniereProfil()) {
+                    $okBanniere = $this->utilisateurDao->updateUserBanniere($idUtilisateur, $banniereProfil);
+                }
+
+                // Changer le rôle
+                $okRole = $this->utilisateurDao->changerRole($idUtilisateur, $role);
+
+                // Vérifier que toutes les mises à jour se sont bien déroulées
+                if ($okPseudo && $okPhoto && $okBanniere && $okRole) {
+                    $pdo->commit();
+                    header('Location: index.php?controleur=admin&methode=render&success=1');
+                } else {
+                    $pdo->rollBack();
+                    header('Location: index.php?controleur=admin&methode=render&error=1');
+                }
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                error_log("Erreur lors de la mise à jour utilisateur : " . $e->getMessage());
+                header('Location: index.php?controleur=admin&methode=render&error=exception');
             }
 
-            ob_end_flush();  // ➡️ Fin de la mise en tampon
+            ob_end_flush();
             exit();
         }
     }
+
+
+
 
 
     /**
