@@ -328,6 +328,17 @@ class UtilisateurDao
         $utilisateur = $pdoStatement->fetch();
         return $utilisateur ? $this->hydrate($utilisateur) : null;
     }
+
+    public function getPseudo($id): ?string {
+        $sql= "SELECT pseudo 
+               FROM " . PREFIXE_TABLE . "utilisateur 
+               WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['pseudo'] : null;
+    }
     
     /**
      * @brief Creer un utilisateur en base de données

@@ -29,7 +29,9 @@ class QuizzDao {
 
     // Méthode pour récupérer tous les quizz
     public function findAll(): ?array {
-        $sql = "SELECT q.*, u.Pseudo FROM " . PREFIXE_TABLE . "quizz q JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur";
+        $sql = "SELECT q.*, u.pseudo 
+                FROM " . PREFIXE_TABLE . "quizz q 
+                JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -40,6 +42,8 @@ class QuizzDao {
 
     // Méthode pour hydrater un quizz
     public function hydrate(array $data): ?Quizz {
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $pseudo = $managerUtilisateur->getPseudo($data['idCreateur']);
         $quizz = new Quizz(
             $data['idQuizz'],     // idQuizz
             $data['nom'],         // nom
@@ -47,9 +51,9 @@ class QuizzDao {
             $data['nbQuestion'],  // nbQuestion
             $data['difficulte'],   // difficulte
             $data['idCreateur'],   // idCreateur
+            $pseudo,        //pseudo
             $data['image']   // image
         );
-        $quizz->setPseudo($data['Pseudo']); // Set the pseudo
         return $quizz;
     }
 
@@ -63,7 +67,7 @@ class QuizzDao {
     }
 
     public function add(Quizz $quizz): int|false {
-        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, image) 
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, idCreateur, image) 
                 VALUES (:nom, :theme, :nbQuestion, :difficulte, :idCreateur, :image)";
 
         $pdoStatement = $this->pdo->prepare($sql);
