@@ -268,12 +268,12 @@
 
         // Bascule entre sections
         document.addEventListener('DOMContentLoaded', function () {
-            const btnHome    = document.getElementById('btnHome');
-            const btnUsers   = document.getElementById('btnUsers');
-            const btnQuizs   = document.getElementById('btnQuizs');
-            const sectionHome  = document.getElementById('sectionHome');
-            const sectionUsers = document.getElementById('sectionUsers');
-            const sectionQuizs = document.getElementById('sectionQuizs');
+            const btnHome    = document.querySelector('#btnHome');
+            const btnUsers   = document.querySelector('#btnUsers');
+            const btnQuizs   = document.querySelector('#btnQuizs');
+            const sectionHome  = document.querySelector('#sectionHome');
+            const sectionUsers = document.querySelector('#sectionUsers');
+            const sectionQuizs = document.querySelector('#sectionQuizs');
 
             // Accueil affiché par défaut
             sectionHome.style.display  = 'block';
