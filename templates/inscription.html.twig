@@ -11,7 +11,7 @@
 	{% endif %}
 
 	<form action="index.php?controleur=utilisateur&methode=verifInscription" method="POST" class="text-center col-12 col-md-6 col-lg-4 mx-auto my-auto p-4">
-		<div class="bg-mydark rounded p-4 mb-5">
+		<div class="bg-mydark rounded">
 			<h3 class="mb-3 fw-bold">Inscription</h3>
 
 			{% if erreurs is defined %}
@@ -55,7 +55,7 @@
 				<small id="mdpVerifErreur" class="text-danger"></small>
 			</div>
 
-			<input type="submit" class="btn btn-primary my-2 w-50 mx-auto" value="Créer le compte" id="boutonInscription">
+			<input type="submit" class="btn btn-primary" value="Créer le compte" id="boutonInscription">
 		</div>
 
 		<div class="mt-3">
