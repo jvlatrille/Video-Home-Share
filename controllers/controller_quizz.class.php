@@ -8,21 +8,18 @@ class ControllerQuizz extends Controller {
     // Fonction pour lister tous les quizz
     public function listerQuizz() {
         if (isset($_SESSION['utilisateur'])) {
-            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
-        // Récupère tous les quizz
-        $managerQuizz = new QuizzDao($this->getPdo());
-        $quizzListe = $managerQuizz->findAll();
-        
-        // Générer la vue
-        $template = $this->getTwig()->load('listQuizzs.html.twig');
-        
-        echo $template->render(['quizzListe' => $quizzListe]);
+            // Récupère tous les quizz
+            $managerQuizz = new QuizzDao($this->getPdo());
+            $quizzListe = $managerQuizz->findAll();
+            // Générer la vue
+            $template = $this->getTwig()->load('quizzListe.html.twig');
+            
+            echo $template->render(['quizzListe' => $quizzListe]);
+        } else {
+            // Redirige vers la page de connexion
+            header('Location: index.php?controleur=utilisateur&methode=connexion');
+        }
     }
-    else {
-        // Redirige vers la page de connexion
-        header('Location: index.php?controleur=utilisateur&methode=connexion');
-    }
-}
 
     // Fonction pour afficher un quizz spécifique
     public function afficherQuizz() {
@@ -45,8 +42,10 @@ class ControllerQuizz extends Controller {
             $theme = $_POST['theme'] ?? '';
             $nbQuestion = $_POST['nbQuestion'] ?? 1;
             $difficulte = $_POST['difficulte'] ?? 1;
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idCreateur = $utilisateurConnecte->getIdUtilisateur();
         
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte);
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur);
         
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);

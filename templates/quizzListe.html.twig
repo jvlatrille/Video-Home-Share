@@ -7,7 +7,7 @@
         <a href="index.php" class="btn btn-outline-primary d-flex align-items-center">
             <i class="bi bi-house-door-fill me-2"></i>Accueil
         </a>
-        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-success shadow-sm">
+        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-secondary shadow-sm">
             <i class="bi bi-plus-circle me-2"></i>Créer un quizz
         </a>
     </div>
@@ -33,10 +33,10 @@
                 <div>
                     <h4 class="mb-1 text-dark" data-nom="{{ quiz.nom|lower }}" data-theme="{{ quiz.theme|lower }}">{{ quiz.nom }}</h4>
                     <p class="text-muted mb-1"><strong>Thème :</strong> <span class="badge bg-secondary">{{ quiz.theme }}</span></p>
-                    <small class="text-muted">Créé par {{ quiz.auteur }}</small>
+                    <small class="text-muted">Créé par {{ quiz.pseudo }}</small>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quiz.idQuizz }}" class="btn btn-outline-primary">
+                    <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quiz.idQuizz }}" class="btn btn-primary">
                         <i class="bi bi-play-circle"></i> Voir le quiz
                     </a>
                 </div>

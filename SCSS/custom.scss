@@ -6,10 +6,10 @@
 
 // Required
 @import "../node_modules/bootstrap/scss/functions";
-$primary: #C33740; // Orange-red for a cinematic feel
-$secondary: #D97904; // Gold for a touch of glamour
-$light: #E3D5B8; // Light grey for a neutral background
-$dark: #2F4F4F; // Dark slate grey for a dramatic effect
+$primary: #C33740;
+$secondary: #D97904;
+$light: #E3D5B8; 
+$dark: #2F4F4F;
 
 
 // Required
@@ -34,27 +34,27 @@ $theme-colors: (
 
 // Le header
 .header-bg {
-  background-color: $dark; // Dark slate grey for the header background
+  background-color: $dark;
 }
 
 .btn-custom {
-  background-color: $primary !important; // Orange-red for buttons
+  background-color: $primary !important; 
   color: white !important;
 }
 
 .btn-light-custom {
-  background-color: $light !important; // Light grey for light buttons
-  color: $dark !important; // Dark slate grey for text
+  background-color: $light !important;
+  color: $dark !important; 
 }
 
 
 // Le footer
 .footer-bg {
-  background-color: $dark; /* Dark slate grey for the footer background */
+  background-color: $dark;
 }
 
 .footer-nav {
-  color: $light; /* Light grey for navigation links */
+  color: $light; 
   font-size: 1rem;
 }
 
@@ -64,7 +64,7 @@ $theme-colors: (
 }
 
 .footer-link:hover {
-  color: $secondary; /* Gold on hover */
+  color: $secondary; 
 }
 
 .footer-social i {
@@ -73,7 +73,7 @@ $theme-colors: (
 }
 
 .footer-social i:hover {
-  color: $secondary; /* Gold on hover */
+  color: $secondary;
 }
 
 .footer-copyright {
