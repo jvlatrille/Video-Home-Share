@@ -46,7 +46,8 @@ class QuizzDao {
             $data['nom'],         // nom
             $data['theme'],       // theme
             $data['nbQuestion'],  // nbQuestion
-            $data['difficulte']   // difficulte
+            $data['difficulte'],   // difficulte
+            $data['image']   // image
         );
     }
 
@@ -58,25 +59,32 @@ class QuizzDao {
         }
         return $quizzListe;
     }
-    public function add(Quizz $quizz): int|false {
-        try {
-            $stmt = $this->pdo->prepare(
-                "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte) 
-                 VALUES (:nom, :theme, :nbQuestion, :difficulte)"
-            );
-            $stmt->execute([
-                ':nom' => $quizz->getNom(),
-                ':theme' => $quizz->getTheme(),
-                ':nbQuestion' => $quizz->getNbQuestion(),
-                ':difficulte' => $quizz->getDifficulte()
-            ]);
 
-            // Retourner l'ID généré après l'insertion
-            return $this->pdo->lastInsertId();
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout du quizz : " . $e->getMessage());
-            return false;
-        }
+    public function add(Quizz $quizz): int|false {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, image) 
+                VALUES (:nom, :theme, :nbQuestion, :difficulte, :image)";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            ':nom' => $quizz->getNom(),
+            ':theme' => $quizz->getTheme(),
+            ':nbQuestion' => $quizz->getNbQuestion(),
+            ':difficulte' => $quizz->getDifficulte(),
+            ':image' => $quizz->getImage()
+        ]);
+
+        return $this->pdo->lastInsertId();
+    }
+
+    public function ajoutImage($idQuizz, $fileName)
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "quizz 
+                SET image = :fileName 
+                WHERE idQuizz = :idQuizz";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['fileName' => $fileName, 'idQuizz' => $idQuizz]);
+
+        return $reussite;
     }
 }
 
