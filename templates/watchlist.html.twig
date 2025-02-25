@@ -1,6 +1,11 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
+	<a href="index.php" class="text-white text-decoration-none">
+		<i class="bi bi-house-door-fill"></i> Accueil
+	</a>
+</div>
     {% if erreurs is defined %}
         <div class="alert alert-danger" role="alert">
             {{ erreurs|join('<br>') }}
@@ -9,16 +14,18 @@
 
     {% if watchList is not defined %}
         <div class="alert alert-warning" role="alert">
-            Aucune WatchList
+            Aucune Liste
         </div>
     {% else %}
         <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center mb-4">
                 <h1 class="text-center w-100">{{ watchList.titre }}</h1>
                 {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
-                    <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette watchlist ?');" class="btn btn-danger">
+                <div class="btn btn-primary">
+                    <a href="index.php?controleur=watchlist&methode=supprimerWatchList&id={{ watchList.idWatchList }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette liste ?');" class="text-white text-decoration-none">
                         Supprimer
                     </a>
+                </div>
                 {% endif %}
             </div>
             <div class="text-center">
@@ -85,7 +92,7 @@
                 {% endfor %}
 			{% else %}
 				<div class="alert alert-warning" role="alert">
-					Aucune oeuvre dans cette WatchList
+					Aucune oeuvre dans cette Liste
 				</div>
 				{% endif %}
 
@@ -94,19 +101,19 @@
     {% endif %}
 
     {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
-        <div class="d-flex align-items-center mb-4">
-            <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#shareModal">
-                Partager la WatchList
+        <div class="d-flex align-items-center justify-content-around mb-4 ms-3">
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#shareModal">
+            Partager la WatchList
             </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editWatchlistModal">
-                Modifier la WatchList
+            <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#editWatchlistModal">
+            Modifier la WatchList
             </button>
         </div>
     {% else %}
-        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette watchlist ?');">
+        <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
             <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
             <input type="hidden" name="titre" value="{{ watchList.titre }}">
-            <input type="hidden" name="genre" value="{{ watchList.genre }}">
+            <input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
             <input type="hidden" name="description" value="{{ watchList.description }}">
             <input type="hidden" name="visible" value="{{ watchList.visible }}">
             {% for oa in watchList.listeOeuvres %}
@@ -114,7 +121,7 @@
             {% endfor %}
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-save"></i>
-                Enregistrer cette WatchList
+                Enregistrer cette Liste
             </button>
         </form>
     {% endif %}
@@ -123,11 +130,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="shareModalLabel">Partager la WatchList</h5>
+                    <h5 class="modal-title" id="shareModalLabel">Partager la Liste</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Copiez le lien ci-dessous pour partager votre WatchList :</p>
+                    <p>Copiez le lien ci-dessous pour partager votre Liste :</p>
                     <div class="input-group">
                         <input type="text" class="form-control" value="http://lakartxela.iutbayonne.univ-pau.fr/~tchipy/SAE/Video-Home-Share/index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{ watchList.idWatchList }}" id="shareLink" readonly>
                     </div>
@@ -144,7 +151,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editWatchlistModalLabel">Modifier la WatchList</h5>
+                        <h5 class="modal-title" id="editWatchlistModalLabel">Modifier la Liste</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -159,15 +166,26 @@
                             </div>
                             <div class="mb-3">
                                 <label for="genre" class="form-label">Genre</label>
-                                <input type="text" class="form-control" id="genre" name="genre" value="{{ watchList.genre }}">
+                                <input type="text" class="form-control" id="selectedGenre" name="genre" value="{{ watchList.genre }}">
                             </div>
                             <div class="mb-3">
-                                <label for="visible" class="form-label">Visibilité</label>
-                                <select class="form-select" id="visible" name="visible" required>
-                                    <option value="1" {{ watchList.visible == '1' ? 'selected' : '' }}>Publique</option>
-                                    <option value="0" {{ watchList.visible == '0' ? 'selected' : '' }}>Privée</option>
-                                </select>
-                            </div>
+								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilePublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">
+										Publique
+									</label>
+								<small id="visibleErreur" class="text-danger"></small>
+
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilePrive" value="0">
+									<label class="form-check-label" for="visibilityPrivate">
+										Privée
+									</label>
+								</div>
+
+							</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>

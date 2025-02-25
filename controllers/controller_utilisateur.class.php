@@ -11,6 +11,14 @@ use PHPMailer\PHPMailer\Exception;
  * @date 14/11/2024
  */
 
+/**
+ * @file controller_profil.class.php
+ * @author Léval Noah, Thibault Chipy
+ * @brief Controleur des utilisateurs
+ * @version 2.0
+ * @date 14/11/2024
+ */
+
 class ControllerUtilisateur extends Controller
 {
     /**
@@ -300,7 +308,6 @@ class ControllerUtilisateur extends Controller
         // Vérifie si le formulaire a été soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
-
             // Valide que l'email a été soumis et qu'il est correct
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $_SESSION['message'] = "Veuillez entrer une adresse email valide.";
@@ -346,7 +353,6 @@ class ControllerUtilisateur extends Controller
             exit();
         }
     }
-
 
     /**
      * @brief Affiche la page dédié au changement de mot de passe
@@ -592,7 +598,6 @@ class ControllerUtilisateur extends Controller
             htmlspecialchars_decode($donneesFormulaire['role'], ENT_QUOTES),
             htmlspecialchars_decode($donneesFormulaire['bio'], ENT_QUOTES),
             $donneesFormulaire['valide']
-
         );
         
         // Sauvegarde dans la base de données

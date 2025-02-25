@@ -33,10 +33,6 @@ class ControllerOA extends Controller
      * @brief Affiche les détails d'un film spécifique
      * @return void
      */
-    /**
-     * @brief Affiche les détails d'un film spécifique
-     * @return void
-     */
     public function afficherFilm(): void
     {
         $idOa = $_GET['idOa'] ?? null;
@@ -75,6 +71,9 @@ class ControllerOA extends Controller
             // Récupérer les suggestions de films
             $suggestions = $this->managerOa->findSuggestions($oa->getIdOa());
 
+            // Récupérer les fond d'écran
+            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'movie');
+
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
             echo $template->render([
@@ -83,10 +82,12 @@ class ControllerOA extends Controller
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
                 'utilisateurNote' => $utilisateurNote,
-                'suggestions' => $suggestions
+                'suggestions' => $suggestions,
+                'backdrops' => $backdrops
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
+            var_dump($e);
             die('Impossible d\'afficher les détails du film.');
         }
     }
@@ -112,7 +113,7 @@ class ControllerOA extends Controller
             $oaListe = $this->managerOa->findRandomOeuvres();
             $oaListe = array_merge($oaListe, $this->managerOa->findRandomSeries());
             shuffle($oaListe);
-            array_splice($oaListe, 20);
+            array_splice($oaListe, 10);
             header('Content-Type: application/json');
             echo json_encode($oaListe);
             exit;
@@ -237,7 +238,9 @@ class ControllerOA extends Controller
 
             // Récupérer les suggestions de séries
             $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
-            
+
+            $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'tv');
+
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -249,7 +252,8 @@ class ControllerOA extends Controller
                     'oa' => $oa,
                     'commentaires' => $commentaires,
                     'participants' => $participants,
-                    'suggestions' => $suggestions
+                    'suggestions' => $suggestions,
+                    'backdrops' => $backdrops,
                 ]);
                 return;
             }
@@ -259,7 +263,8 @@ class ControllerOA extends Controller
             echo $template->render([
                 'oa' => $oa,
                 'commentaires' => $commentaires,
-                'participants' => $participants
+                'participants' => $participants,
+                'backdrops' => $backdrops,
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());
@@ -290,4 +295,46 @@ class ControllerOA extends Controller
             exit;
         }
     }
+
+    /**
+     * @brief Recupere les genres 
+     * @return void
+     */
+    public function getGenres(): void
+    {
+        try {
+            $genres = $this->managerOa->getGenresFilms();
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'genres' => $genres]);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des genres : ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Impossible de récupérer les genres.']);
+            exit;
+        }
+    }
+
+    /**
+     * @brief Recupere les films en fonction des genres
+     * @return void
+     */
+
+     public function getSuggestionsByGenre():void {
+        $genre = $_GET['genre'] ?? null;
+
+        if (!$genre) {
+            die(json_encode(['success' => false, 'message' => 'Genre invalide ou non spécifié.']));
+        }
+
+        try {
+            $suggestions = $this->managerOa->findSuggestionsByGenre($genre);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+            exit;
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des suggestions : ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Impossible de récupérer les suggestions.']);
+            exit;
+        }
+     }
 }

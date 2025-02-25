@@ -356,7 +356,7 @@ class UtilisateurDao
      * @brief Vérifier si un utilisateur existe en base de données avec son adresse mail
      * @author Thibault CHIPY 
      * 
-     * @param email de l'Utilisateur 
+     * @param $mail de l'Utilisateur 
      * @return bool true si l'email existe, false sinon.
      */
      public function emailExiste(string $mail):bool{

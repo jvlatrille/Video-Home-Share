@@ -71,21 +71,37 @@
 								</div>
 							{% endif %}
                         </div>
-                        <p><strong>Note :</strong>
+                        <p><strong>Note :</strong></p>
+                        <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
                             {% for i in 1..5 %}
-                                {% if i <= (oa.note / 2) %}
-                                    <img src="{{ 'img/noteRemplie.png' }}" alt="Note remplie" width="30" height="30">
-                                {% else %}
-                                    <img src="{{ 'img/noteVide.png' }}" alt="Note vide" width="30" height="30">
-                                {% endif %}
+                                <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
+                                    alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
                             {% endfor %}
-                        </p>
+                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(2, 'common') }}</span>
+                        </div>
+                        {% if utilisateurConnecte %}
+                            <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
+                        {% endif %}
+                        {% if utilisateurConnecte %}
+                            <div class="mt-2">
+                                <p>
+                                    <strong>Votre note :</strong> 
+                                    <span id="user-rating-display">
+                                        {% if utilisateurNote is defined %}
+                                            {{ utilisateurNote }}
+                                        {% else %}
+                                            <em>Vous n'avez pas encore noté ce film.</em>
+                                        {% endif %}
+                                    </span> / 5
+                                </p>
+                            </div>
+                        {% endif %}
                     </div>
                     
                     <div class="d-flex mt-3">
                         <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un avis</a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addoaModal">
-                            Ajouter la série à une watchlist
+                            Ajouter la série à une liste
                         </button>
                     </div>
                 </div>
@@ -95,7 +111,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à la WatchList</h5>
+                                        <h5 class="modal-title" id="addoaModalLabel">Ajouter à la Liste</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -113,8 +129,8 @@
                                                 <input type="hidden" name="type" value={{ oa.type }}>
                                             <button type="submit" class="btn btn-primary">Ajouter</button>
                                             {% else %}
-                                                <p>Aucune watchlist trouvée.</p>
-                                                <p>Vous n'avez pas encore de watchlist ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+                                                <p>Aucune liste trouvée.</p>
+                                                <p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
                                             {% endif %}
                                             
                                         </form>
@@ -151,6 +167,68 @@
 				</p>
 			{% endif %}
 
+			{% if backdrops is defined and backdrops|length > 0 %}
+                <h4 class="fw-bold text-center mb-3">Fonds d'écran</h4> 
+                <div id="carouselBackdrops" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for backdropsChunk in backdrops|batch(3, null) %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="d-flex justify-content-center gap-3">
+                                    {% for backdrop in backdropsChunk %}
+                                        {% if backdrop is not null %}
+                                            <div class="p-2 text-center">
+                                                <img src="{{ backdrop.full }}" 
+                                                    class="img-fluid rounded backdrop-thumbnail shadow"
+                                                    alt="Backdrop de {{ oa.nom }}"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#backdropModal" 
+                                                    data-backdrop-src="{{ backdrop.full }}"
+                                                    style="max-height: 180px; object-fit: cover; width: 100%; cursor: pointer;">
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Contrôles du Carousel -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -75px;">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -75px;">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+
+                <!-- Modal pour afficher l'image en grand -->
+                <div class="modal fade" id="backdropModal" tabindex="-1" aria-labelledby="backdropModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content bg-transparent border-0">
+                            <div class="modal-body d-flex justify-content-center">
+                                <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand">
+                            </div>
+                            <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Script pour gérer le changement d'image dans le modal -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.querySelectorAll(".backdrop-thumbnail").forEach(img => {
+                            img.addEventListener("click", function () {
+                                document.getElementById("backdropFullScreen").src = this.dataset.backdropSrc;
+                            });
+                        });
+                    });
+                </script>
+            {% else %}
+                <p class="text-center"><em>Aucun backdrop trouvé pour cette œuvre.</em></p>
+            {% endif %}
+			
 			{% if suggestions is defined and suggestions|length > 0 %}
 				<div class="mt-5">
 					<h2 class="text-center mb-4">Suggestions de séries</h2>
@@ -249,4 +327,22 @@
     {% else %}
         <p>La série n'existe pas.</p>
     {% endif %}
+
+
+{% block scripts %}
+    {% if utilisateurConnecte %}
+        <script src = "js/noterFilm.js"></script>
+    {% endif %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
+
+        <script src="js/patientez.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                    patienterLien(lienCarouselSuggFilm); // Suggestion film
+                });
+        </script>
+{% endblock %}
+
+    
+
 {% endblock %}

@@ -145,6 +145,12 @@ class CommentaireDAO
 
 
 
+    /**
+     * @brief Affiche les commentaires de l'utilisateur connecté
+     * @author Léa Despré-Hildevert
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @return array
+     */
     public function chargerComm(?int $idUtilisateur): ?array
     {
         $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
@@ -198,5 +204,21 @@ class CommentaireDAO
         }
 
         return $commentaires;
+    }
+
+    /**
+     * @brief Modifie un commentaire existant
+     * @param int $idCom Identifiant du commentaire
+     * @param string $contenu Nouveau contenu du commentaire
+     * @return bool Retourne true si la modification est réussie, sinon false
+     */
+    public function modifier(int $idCom, string $contenu): bool
+    {
+        $sql = "UPDATE vhs_commentaire SET contenu = :contenu WHERE idCom = :idCom";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            'contenu' => $contenu,
+            'idCom' => $idCom
+        ]);
     }
 }

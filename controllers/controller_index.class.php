@@ -29,10 +29,12 @@ class ControllerIndex extends Controller
         $oaListe = array_slice($oaListe, 0, 20);
         $managerMessage = new MessageDAO($this->getPdo());
         $topMessages = $managerMessage->getTopLikedMessages();
+        $randomListe = $managerOa->findRandomOeuvres();
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render([
             'oaListe' => $oaListe,
             'topMessages' => $topMessages,
+            'oaRandomListe'=> $randomListe
         ]);
     }
 
