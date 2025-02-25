@@ -7,16 +7,18 @@ class Quizz {
     private ?int $nbQuestion;
     private ?string $difficulte;
     private ?int $idCreateur;
+    private ?string $pseudo;
     private ?string $image;
 
     // Constructeur
-    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?string $difficulte, ?int $idCreateur, ?string $image) {
+    public function __construct(?int $idQuizz, ?string $nom, ?string $theme, ?int $nbQuestion, ?string $difficulte, ?int $idCreateur, ?string $pseudo, ?string $image) {
         $this->idQuizz = $idQuizz;
         $this->nom = $nom;
         $this->theme = $theme;
         $this->nbQuestion = $nbQuestion;
         $this->difficulte = $difficulte;
         $this->idCreateur = $idCreateur;
+        $this->pseudo = $pseudo;
         $this->image = $image;
     }
 

@@ -52,11 +52,12 @@ class ControllerQuizz extends Controller {
             $difficulte = $_POST['difficulte'] ?? 1;
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $idCreateur = $utilisateurConnecte->getIdUtilisateur();
+            
+            $pseudo = $utilisateurConnecte->getPseudo();
         
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur);
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur, $pseudo, "default.png");
 
             $image = "default.png";
-
         
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);
