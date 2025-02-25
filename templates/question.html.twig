@@ -79,7 +79,7 @@
             </div>
         </div>
 
-    {% block javascripts %}
+    {% block scripts %}
        <script>
 document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.querySelectorAll(".response-button");
@@ -121,37 +121,59 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentQuestion++;
                 document.getElementById("questionText").innerText = data.question;
                 document.getElementById("questionNumber").innerText = currentQuestion;
-                document.getElementById("questionImage").src = data.image;
-                updateDifficultyLevel(data.difficulty);
+                
+                // Mettre à jour l'image si elle existe
+                const imageElement = document.querySelector('.img-fluid');
+                if (imageElement && data.image) {
+                    imageElement.src = `img/quizz/${data.image}`;
+                }
+
+                // Mise à jour du niveau de difficulté
+                document.getElementById("difficultyLevel").innerHTML = `Difficulté : <strong>${data.difficulty}</strong>`;
                 updateProgressBar(currentQuestion, nbQuestions);
 
+                // Reconstruction complète du conteneur de réponses
                 const answersContainer = document.getElementById("answersContainer");
-                answersContainer.innerHTML = "";
+                answersContainer.innerHTML = ''; // Vider le conteneur
+
+                // Ajout des nouvelles réponses
                 data.reponses.forEach(reponse => {
+                    const col = document.createElement("div");
+                    col.className = "col-6 mb-3";
+
                     const button = document.createElement("button");
-                    button.classList.add("btn", "btn-light", "w-100", "py-2", "border", "border-primary", "response-button");
+                    button.className = "btn btn-light w-100 py-2 border border-primary response-button";
                     button.setAttribute("data-correct", reponse.correct);
-                    button.innerText = reponse.text;
+                    button.textContent = reponse.text;
+                    
+                    // Ajouter l'écouteur d'événements directement
                     button.addEventListener("click", handleAnswerClick);
 
-                    const col = document.createElement("div");
-                    col.classList.add("col-6", "mb-3");
                     col.appendChild(button);
                     answersContainer.appendChild(col);
                 });
 
-                document.getElementById("nextQuestionBtn").style.display = "none";
-                document.getElementById("nextQuestionBtn").style.opacity = "0";
+                // Réinitialiser le bouton suivant
+                const nextButton = document.getElementById("nextQuestionBtn");
+                nextButton.style.display = "none";
+                nextButton.style.opacity = "0";
             })
-            .catch(error => console.error("Erreur lors du chargement de la question :", error));
+            .catch(error => console.error("Erreur:", error));
     }
 
     function handleAnswerClick(event) {
         const button = event.target;
         const isCorrect = button.getAttribute("data-correct") === "true";
 
-        document.querySelectorAll(".response-button").forEach(btn => btn.disabled = true);
-        button.classList.add(isCorrect ? "bg-success" : "bg-danger", "text-white");
+        // Disable all buttons and show correct/incorrect answers
+        document.querySelectorAll(".response-button").forEach(btn => {
+            btn.disabled = true;
+            if (btn.getAttribute("data-correct") === "true") {
+                btn.classList.add("bg-success", "text-white");
+            } else if (btn === button && !isCorrect) {
+                btn.classList.add("bg-danger", "text-white");
+            }
+        });
 
         if (isCorrect) {
             score++;
