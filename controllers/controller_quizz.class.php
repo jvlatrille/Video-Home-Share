@@ -16,7 +16,7 @@ class ControllerQuizz extends Controller {
             $quizzListe = $managerQuizz->findAll();
             
             // Générer la vue
-            $template = $this->getTwig()->load('listQuizzs.html.twig');
+            $template = $this->getTwig()->load('quizzListe.html.twig');
             
             echo $template->render(['quizzListe' => $quizzListe]);
         }
@@ -27,7 +27,7 @@ class ControllerQuizz extends Controller {
 }
 
 
-    // Fonction pour afficher un quizz spécifique
+    // Fonction pour afficher un quiz spécifique
     public function afficherQuizz() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         

@@ -45,8 +45,8 @@ class QuizzDao {
             $data['nom'],         // nom
             $data['theme'],       // theme
             $data['nbQuestion'],  // nbQuestion
-            $data['idCreateur']   // idCreateur
             $data['difficulte'],   // difficulte
+            $data['idCreateur'],   // idCreateur
             $data['image']   // image
         );
         $quizz->setPseudo($data['Pseudo']); // Set the pseudo
