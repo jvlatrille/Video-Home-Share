@@ -81,6 +81,7 @@ class ControllerQuestion extends Controller
         $managerQuizz = new QuizzDao($this->getPdo());
         $quizz = $managerQuizz->find($idQuizz);
         $nbTotalQuestions = $quizz->getNbQuestion();
+        $image = $quizz->getImage();
         // Générer la vue
         $template = $this->getTwig()->load('question.html.twig');
         echo $template->render([
@@ -89,7 +90,8 @@ class ControllerQuestion extends Controller
             'idQuizz' => $idQuizz,
             'numero' => $numero,
             'score' => $_SESSION['score'],
-            'nbTotalQuestions' => $nbTotalQuestions  // Ajout de cette ligne
+            'nbTotalQuestions' => $nbTotalQuestions,  // Ajout de cette ligne
+            'image' => $image
         ]);
     }
 
@@ -105,11 +107,16 @@ class ControllerQuestion extends Controller
             die("L'identifiant du quizz est requis !");
         }
 
+        $managerQuizz = new QuizzDao($this->getPdo());
+        $quizz = $managerQuizz->find($idQuizz);
+        $image = $quizz->getImage();
+
         // Appeler le template avec les variables nécessaires
         $template = $this->getTwig()->load('questionAjouter.html.twig');
         echo $template->render([
             'idQuizz' => $idQuizz,
-            'nbQuestion' => $nbQuestion
+            'nbQuestion' => $nbQuestion,
+            'image' => $image
         ]);
     }
 

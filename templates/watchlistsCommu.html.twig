@@ -2,86 +2,129 @@
 
 {% block content %}
 <div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
+    <a href="index.php" class="text-white text-decoration-none">
+        <i class="bi bi-house-door-fill"></i> Accueil
+    </a>
 </div>
-	<h1 class="text-center my-4">Les listes de la Communauté</h1>
-	{% if watchListListe is empty %}
-		<p class="text-center text-muted">Aucune Liste disponible pour le moment.</p>
-	{% else %}
-		<div class="container">
-			<div class="row g-4">
-				{% for watchList in watchListListe %}
-					<div class="col-md-4">
-						<div class="card h-100 shadow-lg border-0 rounded" style="width: 18rem;">
-							<div class="card-body d-flex flex-column">
-								<h5 class="card-title text-primary text-center">{{ watchList.titre }}</h5>
-								<div class="d-flex mb-3">
-									<img src="{{ watchList.listeOeuvres[0].posterPath }}" class="img-fluid rounded me-3" alt="{{ watchList.nom }}" style="width: 100px; height: auto;">
-									<p><strong>Genre :</strong> {{ watchList.genre }}</p>
 
-								</div>
-								<div class="mt-auto">
-									<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
-										<i class="bi bi-eye"></i> Voir la liste
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
+<h1 class="text-center my-4">Les listes de la Communauté</h1>
 
-					<!-- Modal -->
-					<div class="modal fade" id="watchListModal{{ watchList.idWatchList }}" tabindex="-1" aria-labelledby="watchListModalLabel{{ watchList.idWatchList }}" aria-hidden="true">
-						<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="watchListModalLabel{{ watchList.idWatchList }}">{{ watchList.nom }}</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<p><strong>Titre :</strong> {{ watchList.titre }}</p>
-									<p><strong>Description :</strong> {{ watchList.description }}</p>
-									<p><strong>Genre :</strong> {{ watchList.genre }}</p>
-									<h6 class="mt-4">Films associés :</h6>
-									<ul class="list-unstyled">
-										{% if watchList.listeOeuvres is not empty %}
-											{% for oa in watchList.listeOeuvres %}
-												<li class="d-flex align-items-center mb-2">
-													<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOA }}">
-														<img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="rounded me-3" style="width: 50px; height: auto;">
-													</a>
-													<div>
-														<strong>{{ oa.nom }}</strong> <br>
-														<span class="text-muted">Note : {{ oa.note }}/10 - {{ oa.duree }} min</span>
-													</div>
-												</li>
-											{% endfor %}
-										{% else %}
-											<li class="text-muted">Aucun film associé</li>
-										{% endif %}
-									</ul>
+<!-- Barre de recherche avec bouton de réinitialisation -->
+<div class="mb-4 container d-flex align-items-center">
+    <input type="text" id="searchWatchlist" class="form-control me-2" placeholder="Rechercher par titre ou genre...">
+    <button id="clearSearch" class="btn btn-outline-secondary">✖</button>
+</div>
 
-									<form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
-										<input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
-										<input type="hidden" name="titre" value="{{ watchList.titre }}">
-										<input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
-										<input type="hidden" name="description" value="{{ watchList.description }}">
-										<input type="hidden" name="visible" value="{{ watchList.visible }}">
-										{% for oa in watchList.listeOeuvres %}
-											<input type="hidden" name="OAs[]" value="{{ oa.idOA }}{{':'}}{{ oa.type }}">
-										{% endfor %}
-										<button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Enregistrer cette Liste</button>
-									</form>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-	{% endif %}
+<p id="noResultMessage" class="text-muted text-center" style="display: none;">Aucune watchlist trouvée.</p>
+
+{% if watchListListe is empty %}
+    <p class="text-center text-muted">Aucune Liste disponible pour le moment.</p>
+{% else %}
+    <div class="container mb-4">
+        <div id="watchlistContainer" class="row g-4">
+            {% for watchList in watchListListe %}
+                <div class="col-md-4 watchlist-item" data-nom="{{ watchList.titre|lower }}" data-genre="{{ watchList.genre|lower }}">
+                    <div class="card h-100 shadow-lg border-0 rounded" style="width: 18rem;">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-primary text-center">{{ watchList.titre }}</h5>
+                            <div class="d-flex mb-3">
+                                <img src="{{ watchList.listeOeuvres[0].posterPath }}" class="img-fluid rounded me-3" alt="{{ watchList.nom }}" style="width: 100px; height: auto;">
+                                <p><strong>Genre :</strong> {{ watchList.genre }}</p>
+                            </div>
+                            <div class="mt-auto">
+                                <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#watchListModal{{ watchList.idWatchList }}">
+                                    <i class="bi bi-eye"></i> Voir la liste
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="watchListModal{{ watchList.idWatchList }}" tabindex="-1" aria-labelledby="watchListModalLabel{{ watchList.idWatchList }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="watchListModalLabel{{ watchList.idWatchList }}">{{ watchList.nom }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Titre :</strong> {{ watchList.titre }}</p>
+                                <p><strong>Description :</strong> {{ watchList.description }}</p>
+                                <p><strong>Genre :</strong> {{ watchList.genre }}</p>
+                                <h6 class="mt-4">Films associés :</h6>
+                                <ul class="list-unstyled">
+                                    {% if watchList.listeOeuvres is not empty %}
+                                        {% for oa in watchList.listeOeuvres %}
+                                            <li class="d-flex align-items-center mb-2">
+                                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOA }}">
+                                                    <img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="rounded me-3" style="width: 50px; height: auto;">
+                                                </a>
+                                                <div>
+                                                    <strong>{{ oa.nom }}</strong> <br>
+                                                    <span class="text-muted">Note : {{ oa.note }}/10 - {{ oa.duree }} min</span>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="text-muted">Aucun film associé</li>
+                                    {% endif %}
+                                </ul>
+
+                                <form id="watchListForm{{ watchList.idWatchList }}" action="index.php?controleur=watchlist&methode=ajouterWatchList" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir enregistrer cette liste ?');">
+                                    <input type="hidden" name="idWatchList" value="{{ watchList.idWatchList }}">
+                                    <input type="hidden" name="titre" value="{{ watchList.titre }}">
+                                    <input type="hidden" name="selectedGenre" value="{{ watchList.genre }}">
+                                    <input type="hidden" name="description" value="{{ watchList.description }}">
+                                    <input type="hidden" name="visible" value="{{ watchList.visible }}">
+                                    {% for oa in watchList.listeOeuvres %}
+                                        <input type="hidden" name="OAs[]" value="{{ oa.idOA }}{{':'}}{{ oa.type }}">
+                                    {% endfor %}
+                                    <button type="submit" class="btn btn-primary w-100 mt-3"><i class="bi bi-save"></i> Enregistrer cette Liste</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<!-- Script pour la recherche en direct -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let searchInput = document.getElementById("searchWatchlist");
+        let clearSearch = document.getElementById("clearSearch");
+        let watchlistContainer = document.getElementById("watchlistContainer");
+        let watchlistItems = Array.from(watchlistContainer.getElementsByClassName("watchlist-item"));
+        let noResultMessage = document.getElementById("noResultMessage");
+
+        function filterWatchlists() {
+            let filter = searchInput.value.toLowerCase().trim();
+            let found = false;
+
+            watchlistItems.forEach(item => {
+                let watchlistTitle = item.getAttribute("data-nom");
+                let watchlistGenre = item.getAttribute("data-genre");
+                let match = watchlistTitle.includes(filter) || watchlistGenre.includes(filter) || filter === "";
+                
+                item.style.display = match ? "block" : "none";
+                if (match) found = true;
+            });
+
+            noResultMessage.style.display = found ? "none" : "block";
+        }
+
+        searchInput.addEventListener("input", filterWatchlists);
+        clearSearch.addEventListener("click", function () {
+            searchInput.value = "";
+            filterWatchlists();
+        });
+    });
+</script>
+
 {% endblock %}
