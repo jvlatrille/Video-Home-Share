@@ -32,11 +32,24 @@ class ControllerAdmin extends Controller
     {
         $this->verifierAdmin();
         $utilisateurListe = $this->utilisateurDao->findAll();
+        $quizzDao = new QuizzDao($this->getPdo());
+        $quizzListe = $quizzDao->findAll();
+
+        // Récupérer les questions pour chaque quiz
+        $questionDao = new QuestionDao($this->getPdo());
+        $detailedQuestions = [];
+
+        foreach ($quizzListe as $quiz) {
+            $detailedQuestions[$quiz->getIdQuizz()] = $questionDao->findAll($quiz->getIdQuizz());
+        }
 
         echo $this->getTwig()->render('admin.html.twig', [
-            'utilisateurListe' => $utilisateurListe
+            'utilisateurListe'  => $utilisateurListe,
+            'quizzListe'        => $quizzListe,
+            'detailedQuestions' => $detailedQuestions
         ]);
     }
+
 
     /**
      * @brief Permet à l'administrateur de modifier les informations d'un utilisateur.

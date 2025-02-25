@@ -78,5 +78,23 @@ class QuizzDao {
             return false;
         }
     }
+    
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Méthode pour supprimer un quizz par son ID
+     * @param int $id L'ID du quizz à supprimer
+     * @return bool Vrai si la suppression a réussi, faux sinon
+     */
+    public function delete(int $id): bool {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM " . PREFIXE_TABLE . "quizz WHERE idQuizz = :id");
+            $stmt->execute([':id' => $id]);
+            
+            // Retourne vrai si au moins une ligne a été affectée
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la suppression du quizz : " . $e->getMessage());
+            return false;
+        }
+    }
 }
-

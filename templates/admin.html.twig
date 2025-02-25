@@ -1,194 +1,314 @@
 {% extends 'base_template.html.twig' %}
 
-{% block title %}Administration -
-	{{ constant('WEBSITE_TITLE') }}
+{% block title %}
+    Administration - {{ constant('WEBSITE_TITLE') }}
 {% endblock %}
 
 {% block css %}
-	{{ parent() }}
-	<!-- DataTables CSS -->
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    {{ parent() }}
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
 {% endblock %}
 
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
+<div class="container my-4">
+
+    <!-- Barre de navigation interne -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <button id="btnHome" class="btn btn-primary me-2">Accueil</button>
+            <button id="btnUsers" class="btn btn-primary me-2">Utilisateurs</button>
+            <button id="btnQuizs" class="btn btn-primary">Quizs</button>
+        </div>
+    </div>
+
+    <!-- SECTION ACCUEIL -->
+    <div class="row" id="sectionHome">
+        <div class="col text-center">
+            <h2>Bonjour</h2>
+            <p>Bienvenue sur votre interface d'administration.</p>
+        </div>
+    </div>
+
+    <!-- SECTION UTILISATEURS -->
+    <div class="row" id="sectionUsers" style="display: none;">
+        <div class="col">
+            <h1 class="mb-4 text-center">Gestion des Utilisateurs</h1>
+            <div class="table-responsive">
+                <table id="utilisateurTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Photo</th>
+                            <th>Bannière</th>
+                            <th>Id</th>
+                            <th>Pseudo</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if utilisateurListe is not empty %}
+                            {% for user in utilisateurListe %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}"
+                                             alt="Photo de {{ user.getPseudo }}"
+                                             width="50" height="50"
+                                             class="rounded-circle">
+                                    </td>
+                                    <td>
+                                        <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}"
+                                             alt="Bannière de {{ user.getPseudo }}"
+                                             width="100" height="50"
+                                             class="img-thumbnail">
+                                    </td>
+                                    <td>{{ user.getIdUtilisateur }}</td>
+                                    <td>{{ user.getPseudo }}</td>
+                                    <td>{{ user.getAdressMail }}</td>
+                                    <td>
+                                        {% if user.getRole == 'admin' %}
+                                            <span class="badge bg-danger">Admin</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Utilisateur</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}"
+                                           class="btn btn-sm btn-info mb-1">
+                                           Profil
+                                        </a>
+                                        <button class="btn btn-sm btn-warning mb-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                            Modifier
+                                        </button>
+                                        <button class="btn btn-sm btn-danger"
+                                                onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                            Supprimer
+                                        </button>
+                                    </td>
+                                </tr>
+                                {# Modal de modification utilisateur, si besoin #}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucun utilisateur trouvé.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION QUIZ -->
+        <div class="row" id="sectionQuizs" style="display: none;">
+            <div class="col">
+                <h1 class="mb-4 text-center">Gestion des Quizs</h1>
+                <div class="table-responsive mb-4">
+                <table id="quizzTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Thème</th>
+                            <th>Nombre de Questions</th>
+                            <th>Difficulté</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if quizzListe is not empty %}
+                            {% for quizz in quizzListe %}
+                                <tr>
+                                    <td>{{ quizz.getIdQuizz }}</td>
+                                    <td>{{ quizz.getNom }}</td>
+                                    <td>{{ quizz.getTheme }}</td>
+                                    <td>{{ quizz.getNbQuestion }}</td>
+                                    <td>{{ quizz.getDifficulte }}</td>
+                                    <td class="text-center">
+                                        <!-- Bouton Voir plus ouvre la modale -->
+                                        <button class="btn btn-sm btn-info mb-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalQuiz{{ quizz.getIdQuizz }}">
+                                            Voir plus
+                                        </button>
+                                        <!-- Bouton Aller à -->
+                                        <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quizz.getIdQuizz }}"
+                                           class="btn btn-sm btn-success">
+                                           Aller à
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <tr>
+                                                            <td colspan="6" class="text-center">Aucun quiz trouvé.</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <!-- Modales pour chaque quiz -->
+                                {% if quizzListe is not empty %}
+                                    {% for quizz in quizzListe %}
+                                        <div class="modal fade" id="modalQuiz{{ quizz.getIdQuizz }}"
+                                             tabindex="-1"
+                                             aria-labelledby="modalQuizLabel{{ quizz.getIdQuizz }}"
+                                             aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"
+                                                    id="modalQuizLabel{{ quizz.getIdQuizz }}">
+                                                    Détails du Quiz : {{ quizz.getNom }}
+                                                </h5>
+                                                <button type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close">
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                {% set questions = detailedQuestions[quizz.getIdQuizz] ?? [] %}
+                                                {% if questions is not empty %}
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Numéro</th>
+                                                                <th>Contenu</th>
+                                                                <th>Difficulté</th>
+                                                                <th>Bonne réponse</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for question in questions %}
+                                                                <tr>
+                                                                    <td>{{ question.getNumero }}</td>
+                                                                    <td>{{ question.getContenu }}</td>
+                                                                    <td>{{ question.getNvDifficulte }}</td>
+                                                                    <td>{{ question.getBonneReponse }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                {% else %}
+                                                    <p>Aucune question trouvée pour ce quiz.</p>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <!-- Bouton pour supprimer le quiz -->
+                                                <button type="button"
+                                                        class="btn btn-danger me-auto"
+                                                        onclick="confirmDeleteQuiz('{{ quizz.getIdQuizz }}')">
+                                                    Supprimer ce Quiz
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Fermer
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Fin du modal -->
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun quiz trouvé.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-	<div class="container mt-5">
-		<h1 class="mb-4 text-center">Gestion des Utilisateurs</h1>
-
-		<div class="table-responsive">
-			<table id="utilisateurTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
-				<thead class="table-dark">
-					<tr>
-						<th>Photo</th>
-						<th>Bannière</th>
-						<th>Id</th>
-						<th>Pseudo</th>
-						<th>Email</th>
-						<th>Rôle</th>
-						<th class="text-center">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% if utilisateurListe is not empty %}
-						{% for user in utilisateurListe %}
-							<tr>
-								<td>
-									<img src="{{'img/profils/' ~ user.getPhotoProfil }}" alt="Photo de {{ user.getPseudo }}" width="50" height="50" class="rounded-circle mx-auto d-block">
-								</td>
-								<td>
-									<img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière de {{ user.getPseudo }}" width="100" height="50" class="img-thumbnail mx-auto d-block">
-								</td>
-								<td>{{ user.getIdUtilisateur }}</td>
-								<td>{{ user.getPseudo }}</td>
-								<td>{{ user.getAdressMail }}</td>
-								<td>
-									{% if user.getRole == 'admin' %}
-										<span class="badge bg-danger">Admin</span>
-									{% else %}
-										<span class="badge bg-secondary">Utilisateur</span>
-									{% endif %}
-								</td>
-								<td class="text-center">
-									<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1">
-										<i class="fas fa-user"></i>
-										Profil
-									</a>
-									<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
-										<i class="fas fa-edit"></i>
-										Modifier
-									</button>
-									<button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
-										<i class="fas fa-trash-alt"></i>
-										Supprimer
-									</button>
-								</td>
-							</tr>
-
-							{# Modal de modification de l'utilisateur #}
-							<div class="modal fade" id="editUserModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
-								<div class="modal-dialog modal-lg">
-									<div class="modal-content">
-										<form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST" enctype="multipart/form-data">
-											<div class="modal-header">
-												<h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
-												<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-											</div>
-											<div class="modal-body">
-												<input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
-												
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
-														<div class="input-group">
-															<input type="text" class="form-control" id="pseudo{{ user.getIdUtilisateur }}" name="pseudo" value="{{ user.getPseudo }}">
-															<button type="button" class="btn btn-primary" onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
-														</div>
-													</div>
-												</div>
-
-												<script>
-													function genererPseudo(userId) {
-														const pseudoInput = document.getElementById('pseudo' + userId);
-														const newPseudo = 'User' + Math.floor(Math.random() * 10000);
-														pseudoInput.value = newPseudo;
-													}
-												</script>
-
-												<br>
-
-												<div class="row">
-													<div class="col-md-6 mb-3">
-														<label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
-														<input type="file" name="photoProfil" id="photoProfil{{ user.getIdUtilisateur }}" class="form-control">
-														<img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" alt="Photo actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="photoProfilImg{{ user.getIdUtilisateur }}">
-														<button type="button" class="btn btn-primary mt-2" onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-														<input type="hidden" name="currentPhotoProfil" value="{{ user.getPhotoProfil }}" id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
-													</div>
-
-													<div class="col-md-6 mb-3">
-														<label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
-														<input type="file" name="banniereProfil" id="banniereProfil{{ user.getIdUtilisateur }}" class="form-control">
-														<img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="banniereProfilImg{{ user.getIdUtilisateur }}">
-														<button type="button" class="btn btn-primary mt-2" onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-														<input type="hidden" name="currentBanniereProfil" value="{{ user.getBanniereProfil }}" id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
-													</div>
-												</div>
-
-												<script>
-													function resetPhotoProfil(userId) {
-														// Change l'image affichée et indique au serveur de réinitialiser la photo
-														document.getElementById('photoProfilImg' + userId).src = 'img/profils/default.png';
-														document.getElementById('photoProfil' + userId).value = "";
-														document.getElementById('hiddenPhotoProfil' + userId).value = 'default.png';
-													}
-
-													function resetBanniereProfil(userId) {
-														document.getElementById('banniereProfilImg' + userId).src = 'img/banniere/default.png';
-														document.getElementById('banniereProfil' + userId).value = "";
-														document.getElementById('hiddenBanniereProfil' + userId).value = 'default.png';
-													}
-												</script>
-
-												<div class="mb-3">
-													<label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
-													<select class="form-select" id="role{{ user.getIdUtilisateur }}" name="role">
-														<option value="admin" {% if user.getRole == 'admin' %} selected {% endif %}>Admin</option>
-														<option value="user"  {% if user.getRole == 'user' %} selected {% endif %}>Utilisateur</option>
-													</select>
-												</div>
-
-											</div>
-											<div class="modal-footer">
-												<button type="submit" class="btn btn-success">Sauvegarder</button>
-												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						{% endfor %}
-					{% else %}
-						<tr>
-							<td colspan="6" class="text-center text-muted">Aucun utilisateur trouvé.</td>
-						</tr>
-					{% endif %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-
-	<script>
-		function confirmDelete(userId) {
-if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible !")) {
-window.location.href = "index.php?controleur=admin&methode=supprimerUtilisateur&id=" + userId;
-}
-}
-	</script>
 {% endblock %}
 
 {% block scripts %}
-	{{ parent() }}
-	<!-- DataTables JS -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    {{ parent() }}
+    <!-- DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        // Initialisation DataTables
+        $(document).ready(function () {
+            $('#utilisateurTable').DataTable({
+                responsive: true,
+                pageLength: 5,
+                language: {
+                    search: "🔍 Rechercher :",
+                    lengthMenu: "Afficher _MENU_ utilisateurs",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
+                    zeroRecords: "Aucun utilisateur trouvé"
+                }
+            });
 
-	<script>
-		$(document).ready(function () {
-$('#utilisateurTable').DataTable({
-responsive: true,
-pageLength: 5,
-language: {
-search: "🔍 Rechercher :",
-lengthMenu: "Afficher _MENU_ utilisateurs",
-info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
-zeroRecords: "Aucun utilisateur trouvé"
-}
-});
-});
-	</script>
+            $('#quizzTable').DataTable({
+                responsive: true,
+                pageLength: 5,
+                language: {
+                    search: "🔍 Rechercher :",
+                    lengthMenu: "Afficher _MENU_ quizs",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ quizs",
+                    zeroRecords: "Aucun quiz trouvé"
+                }
+            });
+        });
+
+        // Bascule entre sections
+        document.addEventListener('DOMContentLoaded', function () {
+            const btnHome    = document.getElementById('btnHome');
+            const btnUsers   = document.getElementById('btnUsers');
+            const btnQuizs   = document.getElementById('btnQuizs');
+            const sectionHome  = document.getElementById('sectionHome');
+            const sectionUsers = document.getElementById('sectionUsers');
+            const sectionQuizs = document.getElementById('sectionQuizs');
+
+            // Accueil affiché par défaut
+            sectionHome.style.display  = 'block';
+            sectionUsers.style.display = 'none';
+            sectionQuizs.style.display = 'none';
+
+            btnHome.addEventListener('click', function () {
+                sectionHome.style.display  = 'block';
+                sectionUsers.style.display = 'none';
+                sectionQuizs.style.display = 'none';
+            });
+            btnUsers.addEventListener('click', function () {
+                sectionHome.style.display  = 'none';
+                sectionUsers.style.display = 'block';
+                sectionQuizs.style.display = 'none';
+            });
+            btnQuizs.addEventListener('click', function () {
+                sectionHome.style.display  = 'none';
+                sectionUsers.style.display = 'none';
+                sectionQuizs.style.display = 'block';
+            });
+        });
+
+        // Confirmation pour supprimer un utilisateur
+        function confirmDelete(userId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible !")) {
+                window.location.href = "index.php?controleur=admin&methode=supprimerUtilisateur&id=" + userId;
+            }
+        }
+
+        // Confirmation pour supprimer un quiz
+        function confirmDeleteQuiz(quizzId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce quiz ?")) {
+                window.location.href = "index.php?controleur=quizz&methode=supprimerQuizz&id=" + quizzId;
+            }
+        }
+    </script>
 {% endblock %}
