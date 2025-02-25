@@ -6,10 +6,10 @@
 
 // Required
 @import "../node_modules/bootstrap/scss/functions";
-$primary: #A2140A;
-$secondary: #4B99BD;
-$light: #D5D0AF;
-$dark: #73422B;
+$primary: #C33740;
+$secondary: #D97904;
+$light: #E3D5B8; 
+$dark: #2F4F4F;
 
 
 // Required
@@ -17,10 +17,10 @@ $dark: #73422B;
 @import "../node_modules/bootstrap/scss/variables-dark";
 
 $theme-colors: (
-    "primary": $primary,
-    "secondary": $secondary,
-    "light": $light,
-    "dark": $dark,
+  "primary": $primary,
+  "secondary": $secondary,
+  "light": $light,
+  "dark": $dark,
 );
 @import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
@@ -34,49 +34,49 @@ $theme-colors: (
 
 // Le header
 .header-bg {
-  background-color: #73422B; // Couleur de fond du header
+  background-color: $dark;
 }
 
 .btn-custom {
-  background-color: #A2140A !important;
+  background-color: $primary !important; 
   color: white !important;
 }
 
 .btn-light-custom {
-  background-color: #D5D0AF !important;
-  color: #73422B !important;
+  background-color: $light !important;
+  color: $dark !important; 
 }
 
 
 // Le footer
 .footer-bg {
-  background-color: #73422B; /* Couleur de fond pour la section inférieure */
+  background-color: $dark;
 }
 
 .footer-nav {
-  color: #D5D0AF; /* Couleur du texte pour les liens de navigation */
+  color: $light; 
   font-size: 1rem;
 }
 
 .footer-link {
-  color: #D5D0AF;
+  color: $light;
   text-decoration: none;
 }
 
 .footer-link:hover {
-  color: #FFFFFF; /* Couleur au survol */
+  color: $secondary; 
 }
 
 .footer-social i {
-  color: #D5D0AF;
+  color: $light;
   font-size: 1.5rem;
 }
 
 .footer-social i:hover {
-  color: #FFFFFF; /* Couleur des icônes au survol */
+  color: $secondary;
 }
 
 .footer-copyright {
-  color: #D5D0AF;
+  color: $light;
   font-size: 0.875rem;
 }

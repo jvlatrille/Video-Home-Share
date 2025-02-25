@@ -1,21 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
-			<script src="js/patientez.js"></script>
-
-<script>
- document.addEventListener('DOMContentLoaded', () => {
-        patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
-        patienterLien(lienALaUne);            // Découvrir plus d'œuvres
-        patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
-		patienterLien(lienCarouselSuggSerie); // Suggestion série
-		patienterLien(lienCarouselSuggFilm);  // Suggestion film
-		patienterLien(lienCarouselWatchList); // Watchlist film
-
-    });
-
- 
-</script>
+		
+		<!-- Bootstrap JS -->
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
@@ -95,13 +82,68 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		<meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
+		
+		{% block css %}
 		<style>
 			body {
 				background-color: #D5D0AF;
 			}
+			.search-container { 
+				position: relative; 
+				width: 400px; 
+				display: flex;
+				flex-direction: column; /* Aligne verticalement */
+			}
+			#search-input {
+				width: 100%; /* Assure qu'il prend toute la largeur */
+				box-sizing: border-box; /* Évite les débordements */
+			}
+			#search-results {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				width: 100%;
+				background: white;
+				border: 1px solid #ccc;
+				display: none;
+				max-height: 200px;
+				max-width: 400px;
+				overflow-y: auto;
+				z-index: 1000;
+			}
+			.result-item {
+				cursor: pointer;
+			}
+			.result-item:hover { 
+				background: #f0f0f0; 
+			}
 		</style>
+		{% endblock %}
 		<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
-		{% block css %}{% endblock %}
+		{% block script %}
+			<script>
+				const TMDB_API_KEY = "{{ constant('TMDB_CLE_KEY') }}";
+			</script>
+			<script src="js/searchSuggestions.js"></script>
+
+			<script src="js/patientez.js"></script>
+
+			<script>
+			 document.addEventListener('DOMContentLoaded', () => {
+					patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
+					patienterLien(lienALaUne);            // Découvrir plus d'œuvres
+					patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
+					patienterLien(lienCarouselSuggSerie); // Suggestion série
+					patienterLien(lienCarouselSuggFilm);  // Suggestion film
+					patienterLien(lienCarouselWatchList); // Watchlist film
+			
+				});
+			
+			 
+			</script>
+		{% endblock %}
+
+		
 		<title>
 			{% block title %}
 				{{ constant('WEBSITE_TITLE') }}
@@ -137,9 +179,9 @@
 				</div>
 				
 				{# <!-- Barre de recherche -->d-flex justify-content-center flex-grow-1 mt-2 mt-md-0 #}
-				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;">
-				{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
-					<input class="form-control" type="search" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
+				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto search-container" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;">
+					<input class="form-control" type="search" name="requete" id="search-input" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
+					<div id="search-results" class="form-control"></div>
 				</form>
 
 
@@ -338,6 +380,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block scripts %}{% endblock %}
+		
 	</body>
 </html>
