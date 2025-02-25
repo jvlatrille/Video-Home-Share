@@ -85,7 +85,6 @@ class ControllerWatchList extends Controller
      *
      * @return void
      */
-    //Fonction pour lister toutes les watchlists visibles
     public function listerWatchListVisible()
     {
         // Vérifie si un utilisateur est connecté
@@ -118,7 +117,7 @@ class ControllerWatchList extends Controller
             'titre' => $_POST['titre'] ?? null,
             'genre' => explode(':',$_POST['selectedGenre'])[1] ?? $_POST["selectedGenre"] ?? null,
             'description' => $_POST['description'] ?? null,
-            'visible' => $_POST['visible'] ?? '0',
+            'visible' => ($_POST['visible'] == "1") ? 1 : 0,
             'OAs' => is_string($_POST['OAs']) ? json_decode($_POST['OAs'], true) : $_POST['OAs'],
         ];
    
@@ -144,7 +143,7 @@ class ControllerWatchList extends Controller
             ],
             'visible' => [
                 'obligatoire' => true,
-                'type' => 'string',
+                'type' => 'bool',
             ],
         ];
 
@@ -191,20 +190,13 @@ class ControllerWatchList extends Controller
         $watchList->setVisible($visible);
         $watchList->setIdUtilisateur($idUtilisateur);
         $managerWatchList->creerWatchlist($watchList);
-
-        var_dump($watchList);
-
         $idNouvelleWatchlist = $watchList->getIdWatchList();
-        var_dump($idNouvelleWatchlist);
 
         // Association des œuvres à la watchlist
         foreach ($oeuvresFormatees as $oeuvre) {
             var_dump("entree");
             $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
         }
-
-        var_dump("fait addOaToWatchlist");
-        var_dump($watchList);
 
         // Redirection vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);

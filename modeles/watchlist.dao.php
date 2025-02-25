@@ -231,7 +231,7 @@ class WatchListDao {
         FROM ".PREFIXE_TABLE."watchlist AS w
         JOIN ".PREFIXE_TABLE."watchlist_oa AS woa ON w.idWatchlist = woa.idWatchlist
         WHERE 
-            w.idWatchlist != :id and w.visible = 1
+            w.idUtilisateur != :id and w.visible = 1
         GROUP BY 
             w.idWatchlist;
     ";        
@@ -269,8 +269,8 @@ class WatchListDao {
                 'titre' => $watchlist->getTitre(),
                 'genre' => $watchlist->getGenre(),
                 'description' => $watchlist->getDescription(),
-                'visible' => $watchlist->getVisible(),
-                'id'=>$watchlist->getIdUtilisateur()
+                'visible' => $watchlist->getVisible() ? 1 : 0,
+                'id' => $watchlist->getIdUtilisateur()
             ]);
 
             $watchlist->setIdWatchlist($this->pdo->lastInsertId());
