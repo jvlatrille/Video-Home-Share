@@ -14,7 +14,7 @@
 
 
     <!-- Formulaire pour ajouter un quizz -->
-    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST">
+    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="nom" class="form-label">Nom du Quizz</label>
             <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom du quizz" required>
@@ -43,8 +43,9 @@
 
             <!-- Image de quizz -->
             <div class="mb-3">
-                <label for="photo" class="form-label d-none">Changer Image de quizz :</label>
-                <input type="file" class="form-control" id="imageQuizz" name="imageQuizz" aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                <label for="imageQuizz" class="form-label d-none">Changer Image de quizz :</label>
+                <input type="file" class="form-control" id="imageQuizz" name="imageQuizz"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
                 <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
