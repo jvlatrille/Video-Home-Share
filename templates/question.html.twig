@@ -5,13 +5,15 @@
 
     <div class="container py-5">
         <!-- Illustration -->
-        <div class="row justify-content-center mb-4">
-            <div class="col-12 col-md-8">
-                <div class="d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
-                    <img id="questionImage" src="{{ question.getCheminImage() }}" alt="Illustration" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 col-md-8 d-flex justify-content-center">
+                    {% if image is defined and image is not empty %}
+                        <img src="img/quizz/{{ image }}" alt="Image affichée" class="img-fluid d-block mx-auto">
+                    {% else %}
+                        <img src="img/quizz/default.png" alt="Image par défaut" class="img-fluid d-block mx-auto">
+                    {% endif %}
                 </div>
             </div>
-        </div>
 
         <!-- Question -->
         <div class="row justify-content-center">

@@ -29,25 +29,32 @@ class QuizzDao {
 
     // Méthode pour récupérer tous les quizz
     public function findAll(): ?array {
-        $sql = "SELECT * FROM " . PREFIXE_TABLE . "quizz";
+        $sql = "SELECT q.*, u.pseudo 
+                FROM " . PREFIXE_TABLE . "quizz q 
+                JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute();
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
 
         $resultats = $pdoStatement->fetchAll();
-
         return $this->hydrateAll($resultats);
     }
 
     // Méthode pour hydrater un quizz
     public function hydrate(array $data): ?Quizz {
-        return new Quizz(
+        $managerUtilisateur = new UtilisateurDao($this->getPdo());
+        $pseudo = $managerUtilisateur->getPseudo($data['idCreateur']);
+        $quizz = new Quizz(
             $data['idQuizz'],     // idQuizz
             $data['nom'],         // nom
             $data['theme'],       // theme
             $data['nbQuestion'],  // nbQuestion
-            $data['difficulte']   // difficulte
+            $data['difficulte'],   // difficulte
+            $data['idCreateur'],   // idCreateur
+            $pseudo,        //pseudo
+            $data['image']   // image
         );
+        return $quizz;
     }
 
     // Méthode pour hydrater une liste de quizz
@@ -58,25 +65,34 @@ class QuizzDao {
         }
         return $quizzListe;
     }
-    public function add(Quizz $quizz): int|false {
-        try {
-            $stmt = $this->pdo->prepare(
-                "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte) 
-                 VALUES (:nom, :theme, :nbQuestion, :difficulte)"
-            );
-            $stmt->execute([
-                ':nom' => $quizz->getNom(),
-                ':theme' => $quizz->getTheme(),
-                ':nbQuestion' => $quizz->getNbQuestion(),
-                ':difficulte' => $quizz->getDifficulte()
-            ]);
 
-            // Retourner l'ID généré après l'insertion
-            return $this->pdo->lastInsertId();
-        } catch (PDOException $e) {
-            error_log("Erreur lors de l'ajout du quizz : " . $e->getMessage());
-            return false;
-        }
+    public function add(Quizz $quizz): int|false {
+        $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, idCreateur, image) 
+                VALUES (:nom, :theme, :nbQuestion, :difficulte, :idCreateur, :image)";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            ':nom' => $quizz->getNom(),
+            ':theme' => $quizz->getTheme(),
+            ':nbQuestion' => $quizz->getNbQuestion(),
+            ':difficulte' => $quizz->getDifficulte(),
+            ':idCreateur' => $quizz->getIdCreateur(),
+            ':image' => $quizz->getImage()
+        ]);
+
+        return $this->pdo->lastInsertId();
     }
+
+    public function ajoutImage($idQuizz, $fileName)
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "quizz 
+                SET image = :fileName 
+                WHERE idQuizz = :idQuizz";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute(['fileName' => $fileName, 'idQuizz' => $idQuizz]);
+
+        return $reussite;
+    }
+    
 }
 
