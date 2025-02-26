@@ -161,8 +161,7 @@ document.addEventListener('DOMContentLoaded', function () {
         loadRandomBtn.addEventListener('click', function () {
             console.log('Bouton cliqué !');
             // Adapte le chemin en fonction du dossier dans lequel se trouve ton projet :
-            const url = window.location.origin + '/PHP/Video-Home-Share/index.php?controleur=oa&methode=decouvrirPlus';
-            fetch(url)
+            fetch('index.php?controleur=oa&methode=decouvrirPlus')
                 .then(response => {
                     console.log('Statut HTTP:', response.status);
                     return response.text();

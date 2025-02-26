@@ -477,4 +477,25 @@ class UtilisateurDao
             $stmtInsert->execute(['date_save' => date('Y-m-d H:i:s')]);
         }
     }    
+
+    /**
+     * @brief Change le rôle d'un utilisateur (admin ou user)
+     * @author VINET LATRILLE Jules
+     * @param int|null $id Identifiant de l'utilisateur
+     * @param string|null $role Le nouveau rôle ("admin" ou "user")
+     * @return bool Retourne true en cas de succès, false sinon
+     */
+    public function changerRole(?int $id, ?string $role): bool {
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                SET role = :role
+                WHERE idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $reussite = $pdoStatement->execute([
+            'role' => $role,
+            'id'   => $id
+        ]);
+
+        return $reussite;
+    }
+
 }
