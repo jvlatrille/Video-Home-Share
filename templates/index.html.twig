@@ -23,7 +23,7 @@
 
                                 {% if oa.posterPath %}
                                     <a href="index.php?controleur=oa&methode=afficher{{ oa.type == 'Film' ? 'Film' : 'Serie' }}&idOa={{ oa.idOa }}">
-                                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;" loading="lazy">
                                     </a>
 								{% else %}                                
                                     <p><em>Affiche non disponible</em></p>
@@ -36,7 +36,7 @@
                                 <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
                                 <p><strong>Note :</strong>
                                     {% for i in 1..5 %}
-                                        <img src="{{ i <= (oa.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30">
+                                        <img src="{{ i <= (oa.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30" loading="lazy">
                                     {% endfor %}
                                 </p>
                                 {% if oa.type == 'Film' %}
@@ -75,7 +75,7 @@
                 {% endif %}
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
-                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;" loading="lazy">
                             {% else %}
                                 <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
                             {% endif %}
@@ -100,7 +100,7 @@
                                 <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
                                     alt="Photo de profil de {{ message.pseudo }}" 
                                     class="rounded-circle mb-3 border border-3" 
-                                    style="width: 80px; height: 80px; object-fit: cover;">
+                                    style="width: 80px; height: 80px; object-fit: cover;" loading="lazy">
                             </a>
                             <h5 class="text-primary fw-bold">{{ message.pseudo }}</h5>
                             <p class="text-muted small mb-1">Forum : <strong>{{ message.forumNom }}</strong></p>
@@ -129,7 +129,7 @@
                     <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
-                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;" loading="lazy">
                             {% else %}
                                 <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
                             {% endif %}
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="col">
                                     <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
                                         <div class="card h-100 shadow-sm">
-                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
+                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;" loading="lazy">`
                                             : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
                                             <div class="card-body text-center">
                                                 <h6 class="card-title text-truncate">${oa.nom}</h6>
