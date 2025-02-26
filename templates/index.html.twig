@@ -20,15 +20,18 @@
                     <div class="container py-4">
                         <div class="row align-items-center justify-content-center">
                             <div class="col-md-4 text-center">
+
                                 {% if oa.posterPath %}
-                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
-                                {% else %}
+                                    <a href="index.php?controleur=oa&methode=afficher{{ oa.type == 'Film' ? 'Film' : 'Serie' }}&idOa={{ oa.idOa }}">
+                                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
+                                    </a>
+								{% else %}                                
                                     <p><em>Affiche non disponible</em></p>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 text-center">
                                 <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ oa.nom }}</h2>
-                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y') }}</p>
                                 <p><strong>Description :</strong></p>
                                 <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
                                 <p><strong>Note :</strong>
