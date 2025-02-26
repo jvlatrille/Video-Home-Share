@@ -36,7 +36,7 @@
         <div class="col">
             <h1 class="mb-4 text-center">Gestion des Utilisateurs</h1>
             <div class="table-responsive">
-                <table id="utilisateurTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
+                <table id="utilisateurTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
                     <thead class="table-dark">
                         <tr>
                             <th>Photo</th>
@@ -53,16 +53,10 @@
                             {% for user in utilisateurListe %}
                                 <tr>
                                     <td>
-                                        <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}"
-                                             alt="Photo de {{ user.getPseudo }}"
-                                             width="50" height="50"
-                                             class="rounded-circle">
+                                        <img src="{{'img/profils/' ~ user.getPhotoProfil }}" alt="Photo de {{ user.getPseudo }}" width="50" height="50" class="rounded-circle mx-auto d-block">
                                     </td>
                                     <td>
-                                        <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}"
-                                             alt="Bannière de {{ user.getPseudo }}"
-                                             width="100" height="50"
-                                             class="img-thumbnail">
+                                        <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière de {{ user.getPseudo }}" width="100" height="50" class="img-thumbnail mx-auto d-block">
                                     </td>
                                     <td>{{ user.getIdUtilisateur }}</td>
                                     <td>{{ user.getPseudo }}</td>
@@ -75,26 +69,107 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}"
-                                           class="btn btn-sm btn-info mb-1">
-                                           Profil
+                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1">
+                                            <i class="fas fa-user"></i>
+                                            Profil
                                         </a>
-                                        <button class="btn btn-sm btn-warning mb-1"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                        <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                            <i class="fas fa-edit"></i>
                                             Modifier
                                         </button>
-                                        <button class="btn btn-sm btn-danger"
-                                                onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                        <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                            <i class="fas fa-trash-alt"></i>
                                             Supprimer
                                         </button>
                                     </td>
                                 </tr>
-                                {# Modal de modification utilisateur, si besoin #}
+    
+                                {# Modal de modification de l'utilisateur #}
+                                <div class="modal fade" id="editUserModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST" enctype="multipart/form-data">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
+                                                    
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" id="pseudo{{ user.getIdUtilisateur }}" name="pseudo" value="{{ user.getPseudo }}">
+                                                                <button type="button" class="btn btn-primary" onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    
+                                                    <script>
+                                                        function genererPseudo(userId) {
+                                                            const pseudoInput = document.getElementById('pseudo' + userId);
+                                                            const newPseudo = 'User' + Math.floor(Math.random() * 10000);
+                                                            pseudoInput.value = newPseudo;
+                                                        }
+                                                    </script>
+    
+                                                    <br>
+    
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
+                                                            <input type="file" name="photoProfil" id="photoProfil{{ user.getIdUtilisateur }}" class="form-control">
+                                                            <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" alt="Photo actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="photoProfilImg{{ user.getIdUtilisateur }}">
+                                                            <button type="button" class="btn btn-primary mt-2" onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                            <input type="hidden" name="currentPhotoProfil" value="{{ user.getPhotoProfil }}" id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
+                                                        </div>
+    
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
+                                                            <input type="file" name="banniereProfil" id="banniereProfil{{ user.getIdUtilisateur }}" class="form-control">
+                                                            <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="banniereProfilImg{{ user.getIdUtilisateur }}">
+                                                            <button type="button" class="btn btn-primary mt-2" onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                            <input type="hidden" name="currentBanniereProfil" value="{{ user.getBanniereProfil }}" id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
+                                                        </div>
+                                                    </div>
+    
+                                                    <script>
+                                                        function resetPhotoProfil(userId) {
+                                                            // Change l'image affichée et indique au serveur de réinitialiser la photo
+                                                            document.getElementById('photoProfilImg' + userId).src = 'img/profils/default.png';
+                                                            document.getElementById('photoProfil' + userId).value = "";
+                                                            document.getElementById('hiddenPhotoProfil' + userId).value = 'default.png';
+                                                        }
+    
+                                                        function resetBanniereProfil(userId) {
+                                                            document.getElementById('banniereProfilImg' + userId).src = 'img/banniere/default.png';
+                                                            document.getElementById('banniereProfil' + userId).value = "";
+                                                            document.getElementById('hiddenBanniereProfil' + userId).value = 'default.png';
+                                                        }
+                                                    </script>
+    
+                                                    <div class="mb-3">
+                                                        <label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
+                                                        <select class="form-select" id="role{{ user.getIdUtilisateur }}" name="role">
+                                                            <option value="admin" {% if user.getRole == 'admin' %} selected {% endif %}>Admin</option>
+                                                            <option value="user"  {% if user.getRole == 'user' %} selected {% endif %}>Utilisateur</option>
+                                                        </select>
+                                                    </div>
+    
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="7" class="text-center">Aucun utilisateur trouvé.</td>
+                                <td colspan="6" class="text-center text-muted">Aucun utilisateur trouvé.</td>
                             </tr>
                         {% endif %}
                     </tbody>
