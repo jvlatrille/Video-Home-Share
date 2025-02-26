@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			div.classList.add('result-item', 'list-group-item');
 			div.textContent = movie.title;
 			div.onclick = () => {
-				searchInput.value = movie.title;
-				searchResults.style.display = 'none';
+				//redirection vers la page du film
+				window.location.href = `index.php?controleur=oa&methode=afficherFilm&idOa=${movie.id}`;
 			};
 			searchResults.appendChild(div);
 		});

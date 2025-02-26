@@ -1,5 +1,3 @@
-// patientez.js
-
 document.addEventListener('DOMContentLoaded', () => {
     // Fonction pour afficher le loader global et démarrer l'animation
     function showLoader() {
@@ -43,4 +41,3 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 400);
     }
   });
-  
