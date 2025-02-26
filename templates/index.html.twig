@@ -155,22 +155,17 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const loadRandomBtn = document.getElementById('loadRandomBtn');
-    console.log('Bouton loadRandomBtn : ', loadRandomBtn);
 
     if (loadRandomBtn) {
         loadRandomBtn.addEventListener('click', function () {
-            console.log('Bouton cliqué !');
             // Adapte le chemin en fonction du dossier dans lequel se trouve ton projet :
             fetch('index.php?controleur=oa&methode=decouvrirPlus')
                 .then(response => {
-                    console.log('Statut HTTP:', response.status);
                     return response.text();
                 })
                 .then(text => {
-                    console.log('Réponse brute:', text);
                     try {
                         const data = JSON.parse(text);
-                        console.log('JSON parsé avec succès:', data);
 
                         // On cible le container puis la div .row
                         const containerEl = document.getElementById('decouvrirOaContainer');
@@ -179,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
                         const row = containerEl.querySelector('.row');
-                        console.log('Row trouvée : ', row);
 
                         if (!Array.isArray(data) || data.length === 0 || data.error) {
                             console.error('Erreur dans les données :', data.error || 'Aucune œuvre récupérée.');
