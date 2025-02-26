@@ -94,5 +94,18 @@ class QuizzDao {
         return $reussite;
     }
     
+    public function findId($id)
+    {
+        $sql = "SELECT q.*, u.pseudo 
+        FROM " . PREFIXE_TABLE . "quizz q 
+        JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur
+        WHERE u.idUtilisateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+
+        $resultats = $pdoStatement->fetchAll();
+        return $this->hydrateAll($resultats);
+    }
 }
 

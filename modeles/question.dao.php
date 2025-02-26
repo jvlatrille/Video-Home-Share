@@ -74,8 +74,10 @@ class QuestionDao {
 
     // Fonction pour afficher toutes les questions d'un quizz
     public function findAll(int $idQuizz): ?array {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
-        WHERE p.idQuizz = :idQuizz";
+        $sql = "SELECT * 
+                FROM ".PREFIXE_TABLE."question q 
+                INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
+                WHERE p.idQuizz = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['id' => $idQuizz]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);

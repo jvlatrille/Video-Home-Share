@@ -1,0 +1,49 @@
+{% extends 'base_template.html.twig' %}
+
+{% block content %}
+    <div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="index.php?controleur=quizz&methode=afficherModif" class="btn btn-outline-primary d-flex align-items-center">
+            <i class="bi bi-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+        <h1 class="mb-4">Liste des Questions</h1>
+
+        {% if questionListe is not empty %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Contenu</th>
+                        <th>Numéro</th>
+                        <th>Difficulté</th>
+                        <th>Bonne Réponse</th>
+                        <th>Réponse 1</th>
+                        <th>Réponse 2</th>
+                        <th>Réponse 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questionListe %}
+                        <tr>
+                            <td>{{ question.idQuestion }}</td>
+                            <td>{{ question.contenu }}</td>
+                            <td>{{ question.numero }}</td>
+                            <td>{{ question.nvDifficulte }}</td>
+                            <td>{{ question.bonneReponse }}</td>
+                            <td>{{ question.mauvaiseReponse1 }}</td>
+                            <td>{{ question.mauvaiseReponse2 }}</td>
+                            <td>{{ question.mauvaiseReponse3 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                Aucune question disponible.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

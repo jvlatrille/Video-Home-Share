@@ -10,14 +10,14 @@ class ControllerQuestion extends Controller
     // Fonction pour lister toutes les questions d'un quizz
     public function listerQuestion()
     {
-        $idQuizz = isset($_GET['idQuizz']) ? $_GET['idQuizz'] : null;
+        $idQuizz = isset($_GET['id']) ? $_GET['id'] : null;
 
         // Récupère toutes les questions du quizz
         $managerQuestion = new QuestionDao($this->getPdo());
         $questionListe = $managerQuestion->findAll($idQuizz);
 
         // Générer la vue
-        $template = $this->getTwig()->load('questions.html.twig');
+        $template = $this->getTwig()->load('questionListe.html.twig');
         echo $template->render(['questionListe' => $questionListe]);
     }
 
@@ -281,53 +281,52 @@ class ControllerQuestion extends Controller
 }
 
     public function afficherQuestionAjax()
-{
-    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
-    $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
+    {
+        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+        $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
 
-    if (!$idQuizz) {
-        echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
-        return;
+        if (!$idQuizz) {
+            echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
+            return;
+        }
+
+        $managerQuestion = new QuestionDao($this->getPdo());
+        $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+
+        if (!$question) {
+            echo json_encode(["end" => true]);
+            return;
+        }
+
+        $reponses = [
+            ["text" => $question->getBonneReponse(), "correct" => true],
+            ["text" => $question->getMauvaiseReponse1(), "correct" => false],
+            ["text" => $question->getMauvaiseReponse2(), "correct" => false],
+            ["text" => $question->getMauvaiseReponse3(), "correct" => false]
+        ];
+        shuffle($reponses);
+
+        $difficultyClass = '';
+        if ($question->getNvDifficulte() == 'Facile') {
+            $difficultyClass = 'text-success';
+        } elseif ($question->getNvDifficulte() == 'Moyen') {
+            $difficultyClass = 'text-warning';
+        } elseif ($question->getNvDifficulte() == 'Difficile') {
+            $difficultyClass = 'text-danger';
+        }
+
+        // Ajouter le chemin de l'image dans la réponse
+        $cheminImage = $question->getCheminImage();
+
+        echo json_encode([
+            "question" => $question->getContenu(),
+            "reponses" => $reponses,
+            "difficulty" => $question->getNvDifficulte(),
+            "difficultyClass" => $difficultyClass,
+            "numero" => $numero,
+            "image" => $cheminImage // Ajout du chemin de l'image
+        ]);
     }
-
-    $managerQuestion = new QuestionDao($this->getPdo());
-    $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
-
-    if (!$question) {
-        echo json_encode(["end" => true]);
-        return;
-    }
-
-    $reponses = [
-        ["text" => $question->getBonneReponse(), "correct" => true],
-        ["text" => $question->getMauvaiseReponse1(), "correct" => false],
-        ["text" => $question->getMauvaiseReponse2(), "correct" => false],
-        ["text" => $question->getMauvaiseReponse3(), "correct" => false]
-    ];
-    shuffle($reponses);
-
-    $difficultyClass = '';
-    if ($question->getNvDifficulte() == 'Facile') {
-        $difficultyClass = 'text-success';
-    } elseif ($question->getNvDifficulte() == 'Moyen') {
-        $difficultyClass = 'text-warning';
-    } elseif ($question->getNvDifficulte() == 'Difficile') {
-        $difficultyClass = 'text-danger';
-    }
-
-    // Ajouter le chemin de l'image dans la réponse
-    $cheminImage = $question->getCheminImage();
-
-    echo json_encode([
-        "question" => $question->getContenu(),
-        "reponses" => $reponses,
-        "difficulty" => $question->getNvDifficulte(),
-        "difficultyClass" => $difficultyClass,
-        "numero" => $numero,
-        "image" => $cheminImage // Ajout du chemin de l'image
-    ]);
-}
-
     
 }
 

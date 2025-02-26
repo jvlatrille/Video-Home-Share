@@ -108,43 +108,48 @@ class ControllerQuizz extends Controller {
     }  
 
     // Fonction pour modifier un quizz
-    public function modifierQuizz() {
-        $id = isset($_GET['id']) ? $_GET['id'] : null;
-        
-        // Récupère le quizz
-        $managerQuizz = new QuizzDao($this->getPdo());
-        $quizz = $managerQuizz->find($id);
-        
+    public function modifierQuizz()
+    {
+        // Vérifie si les données ont été envoyées via POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupère les données du formulaire
-            $nom = $_POST['nom'] ?? $quizz->getNom();
-            $theme = $_POST['theme'] ?? $quizz->getTheme();
-            $nbQuestion = $_POST['nbQuestion'] ?? $quizz->getNbQuestion();
-            $difficulte = $_POST['difficulte'] ?? $quizz->getDifficulte();
-            $meilleurJ = $_POST['meilleurJ'] ?? $quizz->getMeilleurJ();
+            // Récupération des données du formulaire
+            $idQuizz = $_POST['id'];  // L'id du quiz à modifier
+            $nom = $_POST['nom'];  // Le nom du quiz
+            $theme = $_POST['theme'];  // Le thème du quiz
+            $nbQuestion = $_POST['nbQuestion'];  // Le nombre de questions
+            $difficulte = $_POST['difficulte'];  // La difficulté du quiz
             
-            // Met à jour l'objet Quizz
-            $quizz->setNom($nom);
-            $quizz->setTheme($theme);
-            $quizz->setNbQuestion($nbQuestion);
-            $quizz->setDifficulte($difficulte);
-            $quizz->setMeilleurJ($meilleurJ);
-
-            // Met à jour le quizz dans la base de données
-            if ($managerQuizz->update($quizz)) {
-                // Redirige vers la liste des quizz
-                header('Location: index.php?controller=quizz&action=listerQuizz');
-                exit;
-            } else {
-                // Erreur de mise à jour
-                echo "Erreur lors de la modification du quizz.";
+            // Récupération de l'image (si elle a été modifiée)
+            $image = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                // Image a été téléchargée, on la traite
+                $image = $this->uploadImage($_FILES['image']);  // Méthode pour gérer le téléchargement de l'image
             }
+    
+            // Créer une instance de l'objet Quiz et mettre à jour ses propriétés
+            $quiz = new Quiz();
+            $quiz->setIdQuizz($idQuizz);
+            $quiz->setNom($nom);
+            $quiz->setTheme($theme);
+            $quiz->setNbQuestion($nbQuestion);
+            $quiz->setDifficulte($difficulte);
+            if ($image) {
+                $quiz->setImage($image);  // Met à jour l'image si elle a été modifiée
+            }
+    
+            // Utilisation du DAO (Data Access Object) pour mettre à jour les données dans la base
+            $managerQuiz = new QuizDao($this->getPdo());
+            $managerQuiz->update($quiz);  // Appel à une méthode update dans le DAO
+    
+            // Redirige l'utilisateur vers la page de liste des quiz
+            header('Location: index.php?controleur=quizz&methode=listerQuizz');
+            exit();
+        } else {
+            // Si la méthode n'est pas POST, redirige ou gère une erreur
+            header('Location: index.php?controleur=quizz&methode=listerQuizz');
+            exit();
         }
-
-        // Générer la vue
-        $template = $this->getTwig()->load('quizzModifier.html.twig');
-        echo $template->render(['quizz' => $quizz]);
-    }
+    }    
 
     // Fonction pour supprimer un quizz
     public function supprimerQuizz() {
@@ -162,4 +167,17 @@ class ControllerQuizz extends Controller {
         }
     }
     
+    public function afficherModif()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $this->getTwig()->addGlobal('utilisateurConnecte', $utilisateurConnecte);
+
+            $managerQuizz = new QuizzDao($this->getPdo());
+            $quizzListe = $managerQuizz->findId($utilisateurConnecte->getIdUtilisateur());
+            
+            $template = $this->getTwig()->load('quizzModifier.html.twig');
+            echo $template->render(['quizzListe' => $quizzListe]);
+        }
+    }
 }
