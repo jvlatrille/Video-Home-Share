@@ -44,7 +44,7 @@ class ControllerIndex extends Controller
      *
      * @return void
      */
-    public function rechercherFilm()
+    public function rechercher()
     {
         $requete = htmlspecialchars($_GET['requete']) ?? null;
         $managerOa = new OADao();
