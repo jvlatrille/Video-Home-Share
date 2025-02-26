@@ -168,7 +168,7 @@
             {% if suggestions is defined and suggestions|length > 0 %}
                 <div class="mt-5">
                     <h2 class="text-center mb-4">Suggestions de films</h2>
-                    <div  class="carousel slide" data-bs-ride="carousel">
+                    <div id="carouselSuggestions"  class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {% for suggestionsChunk in suggestions|batch(5, null) %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
