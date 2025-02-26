@@ -57,12 +57,16 @@ class ControllerAdmin extends Controller
             }
         }    
 
+        $commentaires = new CommentaireDAO($this->getPdo());
+        $listeCommentaires = $commentaires->findAll();
+
         // Ajouter à la liste des variables à transmettre au template
         echo $this->getTwig()->render('admin.html.twig', [
             'utilisateurListe'  => $utilisateurListe,
             'quizzListe'        => $quizzListe,
             'detailedQuestions' => $detailedQuestions,
-            'forumListe'        => $allMessages
+            'forumListe'        => $allMessages,
+            'commentaires'      => $listeCommentaires
         ]);
     }
 

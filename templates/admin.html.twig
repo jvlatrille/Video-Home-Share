@@ -19,8 +19,9 @@
         <div class="col text-center">
             <button id="btnHome" class="btn btn-primary me-2">Accueil</button>
             <button id="btnUsers" class="btn btn-primary me-2">Utilisateurs</button>
-            <button id="btnQuizs" class="btn btn-primary">Quizs</button>
+            <button id="btnQuiz" class="btn btn-primary">Quiz</button>
             <button id="btnForum" class="btn btn-primary">Messages</button>
+            <button id="btnCommentaires" class="btn btn-primary me-2">Commentaires</button>
         </div>
     </div>
 
@@ -180,9 +181,9 @@
     </div>
 
     <!-- SECTION QUIZ -->
-        <div class="row" id="sectionQuizs" style="display: none;">
+        <div class="row" id="sectionQuiz" style="display: none;">
             <div class="col">
-                <h1 class="mb-4 text-center">Gestion des Quizs</h1>
+                <h1 class="mb-4 text-center">Gestion des Quiz</h1>
                 <div class="table-responsive mb-4">
                 <table id="quizzTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
                     <thead class="table-dark">
@@ -378,6 +379,49 @@
             </div>
         </div>
     </div>
+
+    <!-- SECTION COMMENTAIRES -->
+    <div class="row" id="sectionCommentaires" style="display: none;">
+        <div class="col">
+            <h1 class="mb-4 text-center">Gestion des Commentaires</h1>
+            <div class="table-responsive">
+                <table id="commentaireTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>ID TMDB</th>
+                            <th>Contenu</th>
+                            <th>Date</th>
+                            <th>Utilisateur</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if commentaires is not empty %}
+                            {% for com in commentaires %}
+                                <tr>
+                                    <td>{{ com.getIdCom }}</td>
+                                    <td>{{ com.getIdTMDB }}</td>
+                                    <td>{{ com.getContenu }}</td>
+                                    <td>{{ com.getDate|date('d/m/Y') }}</td>
+                                    <td>{{ com.getPseudo }}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteComment('{{ com.getIdCom }}')">
+                                            <i class="fas fa-trash-alt"></i> Supprimer
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Aucun commentaire trouvé.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -405,8 +449,8 @@
                 pageLength: 5,
                 language: {
                     search: "🔍 Rechercher :",
-                    lengthMenu: "Afficher _MENU_ quizs",
-                    info: "Affichage de _START_ à _END_ sur _TOTAL_ quizs",
+                    lengthMenu: "Afficher _MENU_ Quiz",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ Quiz",
                     zeroRecords: "Aucun quiz trouvé"
                 }
             });
@@ -423,47 +467,75 @@
                     }
                 });
             });
+
+            $(document).ready(function() {
+                $('#commentaireTable').DataTable({
+                    responsive: true,
+                    pageLength: 5,
+                    language: {
+                        search: "🔍 Rechercher :",
+                        lengthMenu: "Afficher _MENU_ commentaires",
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ commentaires",
+                        zeroRecords: "Aucun commentaire trouvé"
+                    }
+                });
+            });
         });
 
         // Bascule entre sections
         document.addEventListener('DOMContentLoaded', function () {
             const btnHome    = document.querySelector('#btnHome');
             const btnUsers   = document.querySelector('#btnUsers');
-            const btnQuizs   = document.querySelector('#btnQuizs');
+            const btnQuiz   = document.querySelector('#btnQuiz');
             const btnForum   = document.querySelector('#btnForum');
+            const btnCommentaires = document.getElementById('btnCommentaires');
             const sectionHome  = document.querySelector('#sectionHome');
             const sectionUsers = document.querySelector('#sectionUsers');
-            const sectionQuizs = document.querySelector('#sectionQuizs');
+            const sectionQuiz = document.querySelector('#sectionQuiz');
+            const sectionForum = document.querySelector('#sectionForum');
+            const sectionCommentaires = document.getElementById('sectionCommentaires');
 
             // Accueil affiché par défaut
             sectionHome.style.display  = 'block';
             sectionUsers.style.display = 'none';
-            sectionQuizs.style.display = 'none';
+            sectionQuiz.style.display = 'none';
             sectionForum.style.display = 'none';
+            sectionCommentaires.style.display = 'none';
 
             btnHome.addEventListener('click', function () {
                 sectionHome.style.display  = 'block';
                 sectionUsers.style.display = 'none';
-                sectionQuizs.style.display = 'none';
+                sectionQuiz.style.display = 'none';
                 sectionForum.style.display = 'none';
+                sectionCommentaires.style.display = 'none';
             });
             btnUsers.addEventListener('click', function () {
                 sectionHome.style.display  = 'none';
                 sectionUsers.style.display = 'block';
-                sectionQuizs.style.display = 'none';
+                sectionQuiz.style.display = 'none';
                 sectionForum.style.display = 'none';
+                sectionCommentaires.style.display = 'none';
             });
-            btnQuizs.addEventListener('click', function () {
+            btnQuiz.addEventListener('click', function () {
                 sectionHome.style.display  = 'none';
                 sectionUsers.style.display = 'none';
-                sectionQuizs.style.display = 'block';
+                sectionQuiz.style.display = 'block';
                 sectionForum.style.display = 'none';
+                sectionCommentaires.style.display = 'none';
             });
             btnForum.addEventListener('click', function () {
                 sectionHome.style.display  = 'none';
                 sectionUsers.style.display = 'none';
-                sectionQuizs.style.display = 'none';
+                sectionQuiz.style.display = 'none';
                 sectionForum.style.display = 'block';
+                sectionCommentaires.style.display = 'none';
+            });
+            btnCommentaires.addEventListener('click', function () {
+                sectionHome.style.display = 'none';
+                sectionUsers.style.display = 'none';
+                sectionQuiz.style.display = 'none';
+                sectionForum.style.display = 'none';
+                sectionCommentaires.style.display = 'block';
             });
         });
 
@@ -485,6 +557,13 @@
         function confirmDeletePost(postId) {
             if (confirm("Êtes-vous sûr de vouloir supprimer ce post de forum ? Cette action est irréversible !")) {
                 window.location.href = "index.php?controleur=forum&methode=supprimerPost&id=" + postId;
+            }
+        }
+
+        // Fonction de confirmation pour supprimer un commentaire
+        function confirmDeleteComment(idCom) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible !")) {
+                window.location.href = "index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire=" + idCommentaire;
             }
         }
     </script>
