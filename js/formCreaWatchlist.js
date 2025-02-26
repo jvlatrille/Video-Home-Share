@@ -25,7 +25,6 @@ function ajouterWatchlist(select) {
         const selectedOption = select.options[select.selectedIndex];
         const selectedText = selectedOption.text;
         const selectedImage = selectedOption.getAttribute('data-poster-path');
-        const selectedNote = selectedOption.getAttribute('data-note');
         const selectedItem = document.createElement('div');
         selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
         selectedItem.id = 'item-' + selectedId;
@@ -198,7 +197,7 @@ function verifierChamps() {
     }
 }
 
-form.addEventListener('input', function(event) {
+form.addEventListener('input', function() {
     verifierChamps();
 
 

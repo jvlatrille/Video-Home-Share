@@ -45,6 +45,11 @@ class Commentaire
     private ?string $photoProfil;
 
     /**
+     * @brief Type de l'oeuvre commentée
+     */
+    private ?string $type;
+
+    /**
      * @brief Constructeur de la classe Commentaire
      * @param int|null $idCom Identifiant du commentaire
      * @param int|null $idTMDB Identifiant du film associé
@@ -53,6 +58,7 @@ class Commentaire
      * @param int|null $idUtilisateur Identifiant de l'utilisateur
      * @param string|null $pseudo Pseudo de l'utilisateur
      * @param string|null $photoProfil Photo de profil de l'utilisateur
+     * @param string|null $type Type de l'oeuvre commentée
      */
     public function __construct(
         ?int $idCom = null,
@@ -61,7 +67,8 @@ class Commentaire
         ?string $date = null,
         ?int $idUtilisateur = null,
         ?string $pseudo = null,
-        ?string $photoProfil = null
+        ?string $photoProfil = null,
+        ?string $type = null
     ) {
         $this->idCom = $idCom;
         $this->idTMDB = $idTMDB;
@@ -70,6 +77,7 @@ class Commentaire
         $this->idUtilisateur = $idUtilisateur;
         $this->pseudo = $pseudo;
         $this->photoProfil = $photoProfil;
+        $this->type = $type;
     }
 
     /**
@@ -196,5 +204,23 @@ class Commentaire
     public function setPhotoProfil(?string $photoProfil): void
     {
         $this->photoProfil = $photoProfil;
+    }
+
+    /**
+     * @brief Retourne le type de l'oeuvre commentée
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @brief Modifie le type de l'oeuvre commentée
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
     }
 }
