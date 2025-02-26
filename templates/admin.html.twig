@@ -20,6 +20,7 @@
             <button id="btnHome" class="btn btn-primary me-2">Accueil</button>
             <button id="btnUsers" class="btn btn-primary me-2">Utilisateurs</button>
             <button id="btnQuizs" class="btn btn-primary">Quizs</button>
+            <button id="btnForum" class="btn btn-primary">Messages</button>
         </div>
     </div>
 
@@ -307,6 +308,76 @@
             </div>
         </div>
     </div>
+
+    <!-- SECTION FORUM -->
+    <div class="row" id="sectionForum" style="display: none;">
+        <div class="col">
+            <h1 class="mb-4 text-center">Gestion des Messages</h1>
+            <div class="table-responsive">
+                <table id="forumTable" class="table table-striped table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Contenu</th>
+                            <th>Utilisateur</th>
+                            <th>Likes</th>
+                            <th>Dislikes</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if forumListe is not empty %}
+                            {% for message in forumListe %}
+                                <tr>
+                                    <td>{{ message.getIdMessage }}</td>
+                                    <td>{{ message.getContenu }}</td>
+                                    <td>{{ message.getPseudo }}</td>
+                                    <td>{{ message.getNbLikes }}</td>
+                                    <td>{{ message.getNbDislikes }}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editPostModal{{ message.getIdMessage }}">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="confirmDeletePost('{{ message.getIdMessage }}')">
+                                            <i class="fas fa-trash-alt"></i> Supprimer
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Modal de modification du post -->
+                                <div class="modal fade text-dark" id="editPostModal{{ message.getIdMessage }}" tabindex="-1" aria-labelledby="editPostModalLabel{{ message.getIdMessage }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form action="index.php?controleur=forum&methode=modifierMessage" method="POST">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Modifier le post</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="idPost" value="{{ message.getIdMessage }}">
+                                                    <div class="mb-3">
+                                                        <label for="contenu{{ message.getIdMessage }}" class="form-label">Contenu</label>
+                                                        <textarea class="form-control" id="contenu{{ message.getIdMessage }}" name="contenu" rows="5">{{ message.getContenu }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Aucun post de forum trouvé.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -339,6 +410,19 @@
                     zeroRecords: "Aucun quiz trouvé"
                 }
             });
+
+            $(document).ready(function() {
+                $('#forumTable').DataTable({
+                    responsive: true,
+                    pageLength: 5,
+                    language: {
+                        search: "🔍 Rechercher :",
+                        lengthMenu: "Afficher _MENU_ posts",
+                        info: "Affichage de _START_ à _END_ sur _TOTAL_ posts",
+                        zeroRecords: "Aucun post trouvé"
+                    }
+                });
+            });
         });
 
         // Bascule entre sections
@@ -346,6 +430,7 @@
             const btnHome    = document.querySelector('#btnHome');
             const btnUsers   = document.querySelector('#btnUsers');
             const btnQuizs   = document.querySelector('#btnQuizs');
+            const btnForum   = document.querySelector('#btnForum');
             const sectionHome  = document.querySelector('#sectionHome');
             const sectionUsers = document.querySelector('#sectionUsers');
             const sectionQuizs = document.querySelector('#sectionQuizs');
@@ -354,21 +439,31 @@
             sectionHome.style.display  = 'block';
             sectionUsers.style.display = 'none';
             sectionQuizs.style.display = 'none';
+            sectionForum.style.display = 'none';
 
             btnHome.addEventListener('click', function () {
                 sectionHome.style.display  = 'block';
                 sectionUsers.style.display = 'none';
                 sectionQuizs.style.display = 'none';
+                sectionForum.style.display = 'none';
             });
             btnUsers.addEventListener('click', function () {
                 sectionHome.style.display  = 'none';
                 sectionUsers.style.display = 'block';
                 sectionQuizs.style.display = 'none';
+                sectionForum.style.display = 'none';
             });
             btnQuizs.addEventListener('click', function () {
                 sectionHome.style.display  = 'none';
                 sectionUsers.style.display = 'none';
                 sectionQuizs.style.display = 'block';
+                sectionForum.style.display = 'none';
+            });
+            btnForum.addEventListener('click', function () {
+                sectionHome.style.display  = 'none';
+                sectionUsers.style.display = 'none';
+                sectionQuizs.style.display = 'none';
+                sectionForum.style.display = 'block';
             });
         });
 
@@ -383,6 +478,13 @@
         function confirmDeleteQuiz(quizzId) {
             if (confirm("Êtes-vous sûr de vouloir supprimer ce quiz ?")) {
                 window.location.href = "index.php?controleur=quizz&methode=supprimerQuizz&id=" + quizzId;
+            }
+        }
+
+        // Confirmation pour supprimer un post
+        function confirmDeletePost(postId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce post de forum ? Cette action est irréversible !")) {
+                window.location.href = "index.php?controleur=forum&methode=supprimerPost&id=" + postId;
             }
         }
     </script>

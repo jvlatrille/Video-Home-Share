@@ -43,10 +43,26 @@ class ControllerAdmin extends Controller
             $detailedQuestions[$quiz->getIdQuizz()] = $questionDao->findAll($quiz->getIdQuizz());
         }
 
+        // Charger les forums & messages
+        $forumDao = new ForumDao($this->getPdo());
+        $forumCategories = $forumDao->findAll();
+        $messageDao = new MessageDao($this->getPdo());
+        $allMessages = [];
+        foreach ($forumCategories as $categorie) {
+            $msgs = $messageDao->findAll($categorie->getIdForum());
+            if ($msgs) {
+                foreach ($msgs as $msg) {
+                    $allMessages[] = $msg;
+                }
+            }
+        }    
+
+        // Ajouter à la liste des variables à transmettre au template
         echo $this->getTwig()->render('admin.html.twig', [
             'utilisateurListe'  => $utilisateurListe,
             'quizzListe'        => $quizzListe,
-            'detailedQuestions' => $detailedQuestions
+            'detailedQuestions' => $detailedQuestions,
+            'forumListe'        => $allMessages
         ]);
     }
 
