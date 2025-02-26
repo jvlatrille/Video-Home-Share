@@ -125,7 +125,7 @@
 					{% if utilisateurConnecte %}
 						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
 						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
-						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quizz</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quiz</a>
 						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
@@ -133,9 +133,11 @@
 				</div>
 				<div class="my-2"></div> <!-- Espacement ajouté ici -->
 				{# <!-- Barre de recherche -->d-flex justify-content-center flex-grow-1 mt-2 mt-md-0 #}
-				<form class="d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto position-relative max-width-400" action="index.php?controleur=index&methode=rechercherFilm" method="POST">
-					<input class="form-control w-100" type="search" name="requete" id="search-input" placeholder="Rechercher un film ou une série" aria-label="Search">
-					<div id="search-results" class="position-absolute top-100 start-0 w-100 bg-white border d-none overflow-auto max-width-400"></div>
+				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php" method="GET" style="position: relative; margin-right: 413px;">
+				{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
+					<input type="hidden" name="controleur" value="index">
+					<input type="hidden" name="methode" value="rechercherFilm">
+					<input class="form-control" type="text" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
 				</form>
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">

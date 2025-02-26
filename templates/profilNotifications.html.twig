@@ -52,7 +52,7 @@
                                         
                                         <h5 class="card-title">{{ notifs.destinataire}}</h5>
                                         <div>
-                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
+                                            <strong>Date :</strong> {{ notifs.dateNotif|date('d/m/Y') }}<br>
                                             {{ notifs.contenu }}<br>
                                             <div class="d-flex justify-content-between align-items-center my-2">
                                                 <div>
