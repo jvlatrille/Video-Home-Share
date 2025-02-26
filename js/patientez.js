@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 setTimeout(() => {
                     window.location.href = button.href;
+                    overlay.remove();
                 }, 5);
             });
         });
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 setTimeout(() => {
                     window.location.href = button.href;
+                    overlay.remove();
                 }, 5);
 
             });
