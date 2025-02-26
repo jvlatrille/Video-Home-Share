@@ -1,78 +1,72 @@
 <!DOCTYPE html>
-<html lang="{{ constant('WEBSITE_LANGUAGE')}}">
+<html lang="{{ constant('WEBSITE_LANGUAGE') }}">
 	<head>
-		
 		<!-- Bootstrap JS -->
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
 			tarteaucitron.init({
-"privacyUrl": "", /* Privacy policy url */
-"bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
-
-"hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
-"cookieName": "tarteaucitron", /* Cookie name */
-
-"orientation": "middle", /* Banner position (top - bottom) */
-
-"groupServices": false, /* Group services by category */
-"showDetailsOnClick": true, /* Click to expand the description */
-"serviceDefaultState": "wait", /* Default state (true - wait - false) */
-
-"showAlertSmall": false, /* Show the small banner on bottom right */
-"cookieslist": false, /* Show the cookie list */
-
-"closePopup": false, /* Show a close X on the banner */
-
-"showIcon": true,
-/* Show cookie icon to manage cookies */
-"iconSrc": "img/imageCookie.png", /* Optionnal: URL or base64 encoded image */
-"iconPosition": "BottomLeft", /* BottomRight, BottomLeft, TopRight and TopLeft */
-
-"adblocker": false, /* Show a Warning if an adblocker is detected */
-
-"DenyAllCta": true, /* Show the deny all button */
-"AcceptAllCta": true, /* Show the accept all button when highPrivacy on */
-"highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
-"alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
-
-"handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
-
-"removeCredit": false, /* Remove credit link */
-"moreInfoLink": true, /* Show more info link */
-
-"useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
-"useExternalJs": false,
-/* If false, the tarteaucitron.js file will be loaded */
-
-// "cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
-
-"readmoreLink": "", /* Change the default readmore link */
-
-"mandatory": true, /* Show a message about mandatory cookies */
-"mandatoryCta": true,
-/* Show the disabled accept button when mandatory on */
-
-// "customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
-
-"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
-
-"partnersList": false /* Show the number of partners on the popup/middle banner */
-});
+				"privacyUrl": "", /* Privacy policy url */
+				"bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
+				"hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
+				"cookieName": "tarteaucitron", /* Cookie name */
+				"orientation": "middle", /* Banner position (top - bottom) */
+				"groupServices": false, /* Group services by category */
+				"showDetailsOnClick": true, /* Click to expand the description */
+				"serviceDefaultState": "wait", /* Default state (true - wait - false) */
+				"showAlertSmall": false, /* Show the small banner on bottom right */
+				"cookieslist": false, /* Show the cookie list */
+				"closePopup": false, /* Show a close X on the banner */
+				"showIcon": true,
+				/* Show cookie icon to manage cookies */
+				"iconSrc": "img/imageCookie.png", /* Optionnal: URL or base64 encoded image */
+				"iconPosition": "BottomLeft", /* BottomRight, BottomLeft, TopRight and TopLeft */
+				"adblocker": false, /* Show a Warning if an adblocker is detected */
+				"DenyAllCta": true, /* Show the deny all button */
+				"AcceptAllCta": true, /* Show the accept all button when highPrivacy on */
+				"highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
+				"alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
+				"handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
+				"removeCredit": false, /* Remove credit link */
+				"moreInfoLink": true, /* Show more info link */
+				"useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+				"useExternalJs": false,
+				/* If false, the tarteaucitron.js file will be loaded */
+				// "cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
+				"readmoreLink": "", /* Change the default readmore link */
+				"mandatory": true, /* Show a message about mandatory cookies */
+				"mandatoryCta": true,
+				/* Show the disabled accept button when mandatory on */
+				// "customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
+				"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
+				"partnersList": false /* Show the number of partners on the popup/middle banner */
+			});
 		</script>
-
+		<script>
+			const TMDB_API_KEY = "{{ constant('TMDB_CLE_KEY') }}";
+		</script>
+		<script src="js/searchSuggestions.js"></script>
+		<script src="js/patientez.js"></script>
+		<script src="js/animations.js"></script>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
+				patienterLien(lienALaUne);            // Découvrir plus d'œuvres
+				patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
+				patienterLien(lienCarouselSuggSerie); // Suggestion série
+				patienterLien(lienCarouselSuggFilm);  // Suggestion film
+				patienterLien(lienCarouselWatchList); // Watchlist film
+			});
+		</script>
 		<!-- Google tag (gtag.js) -->
 		{# <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJGCV8L5XE"></script>
-
-																				    <script>
-																				        window.dataLayer = window.dataLayer || [];
-																				        function gtag(){dataLayer.push(arguments);}
-																				        gtag('js', new Date());
-																				
-																				        gtag('config', 'G-TJGCV8L5XE');
-																				    </script> #}
-
-
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+				gtag('config', 'G-TJGCV8L5XE');
+			</script> #}
+		<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="icon" href="{{ constant('WEBSITE_LOGO') }}">
@@ -83,59 +77,16 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 		<meta name="description" content="{% if description is defined %} {{ description }} {% else %} {{ constant('WEBSITE_DESCRIPTION') }} {% endif %}">
 		<style>
-			body {
+			.bg-custom {
 				background-color: #D5D0AF;
 			}
-			.search-container { 
-				position: relative; 
-				width: 100%; 
-				max-width: 400px; 
-				margin: 0 auto; 
+			.max-width-400 {
+				max-width: 400px;
 			}
-			#search-results {
-				position: absolute;
-				top: 100%;
-				left: 0;
-				width: 100%;
-				background: white;
-				border: 1px solid #ccc;
-				display: none;
-				max-height: 200px;
-				overflow-y: auto;
-				z-index: 1000;
-			}
-			.result-item {
-				padding: 10px;
-				cursor: pointer;
-			}
-			.result-item:hover { 
-				background: #f0f0f0; 
+			.result-item:hover {
+				background-color: #f0f0f0;
 			}
 		</style>
-		<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
-		{% block scripts %}
-			<script>
-				const TMDB_API_KEY = "{{ constant('TMDB_CLE_KEY') }}";
-			</script>
-			<script src="js/searchSuggestions.js"></script>
-
-			<script src="js/patientez.js"></script>
-
-			<script>
-			 document.addEventListener('DOMContentLoaded', () => {
-					patienterBouton(boutonDecouvrir);     // Boutons Découvrir dans le carrousel page d'accueil
-					patienterLien(lienALaUne);            // Découvrir plus d'œuvres
-					patienterBouton(boutonDecouvrirPlus); // Découvrir plus d'oeuvre
-					patienterLien(lienCarouselSuggSerie); // Suggestion série
-					patienterLien(lienCarouselSuggFilm);  // Suggestion film
-					patienterLien(lienCarouselWatchList); // Watchlist film
-			
-				});
-			
-			 
-			</script>
-		{% endblock %}
-
 		{% block css %}{% endblock %}
 		<title>
 			{% block title %}
@@ -143,26 +94,36 @@
 			{% endblock %}
 		</title>
 	</head>
-	<body class="d-flex flex-column min-vh-100">
-	
+	<body class="d-flex flex-column min-vh-100 bg-custom">
+		<div id="globalLoader" class="d-none">
+			<div class="loader-content d-inline-flex flex-column align-items-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
+			  <div class="d-flex align-items-center">
+				<img src="img/LogoPopCorn.png" alt="Logo" style="max-width: 80px;">
+				<div class="popcorn-animation d-flex align-items-center ms-3">
+				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				</div>
+			  </div>
+			  <div class="mt-2 text-center">Patientez SVP</div>
+			</div>
+		</div>
 		<header class="header-bg text-light header-sm container-fluid">
-			<nav
-				class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
-				
+			<nav class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
 				<!-- Logo et bouton Menu -->
 				<div class="d-flex align-items-center">
-				
 					<a class="navbar-brand d-flex align-items-center" href="index.php">
-						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2" >
+						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2">
 					</a>
 					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
 						Menu
 					</button> #}
 				</div>
-				
-				<div class="py-2 d-flex justify-content-center flex-wrap ">{#d-flex justify-content-center flex-wrap#}
+				<div class="py-2 d-flex justify-content-center flex-wrap">
 					{% if utilisateurConnecte %}
-						<a href="index.php?controleur=forum&methode=listerForum" class=" btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
+						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
 						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
 						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quiz</a>
 						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
@@ -170,9 +131,7 @@
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
 					{% endif %}
 				</div>
-				
 				<div class="my-2"></div> <!-- Espacement ajouté ici -->
-				
 				{# <!-- Barre de recherche -->d-flex justify-content-center flex-grow-1 mt-2 mt-md-0 #}
 				<form class=" d-flex justify-content-center flex-grow-1 my-2 my-lg-0 mx-auto" action="index.php" method="GET" style="position: relative; margin-right: 413px;">
 				{# <form class=" d-flex justify-content-center flex-grow-1 mt-2 mt-md-0" action="index.php?controleur=index&methode=rechercherFilm" method="POST"  style="position: relative; margin-right: 413px;"> #}
@@ -180,8 +139,6 @@
 					<input type="hidden" name="methode" value="rechercherFilm">
 					<input class="form-control" type="text" name="requete" placeholder="Rechercher un film ou une série " aria-label="Search" style="max-width: 400px;">
 				</form>
-
-
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">
 					{% if utilisateurConnecte is null %}
@@ -202,8 +159,8 @@
 										</div>
 										<div class="mt-2">
 											<small>Cliquez pour afficher votre profil</small>
-										</a>
-									</div>
+										</div>
+									</a>
 								</li>
 								<li>
 									<hr class="dropdown-divider">
@@ -233,42 +190,35 @@
 				</div>
 			</nav>
 		</header>
-
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
-		<main
-			class="flex-grow-1">
+		<main class="flex-grow-1">
 			{# affiche le base_template_film #}
 			{% block content1 %}{% endblock %}
-
 			<script type="text/javascript">
 				tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';
-// tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
-tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
-};
-(tarteaucitron.job = tarteaucitron.job || []).push('gtag');
+				// tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
+				tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
+				(tarteaucitron.job = tarteaucitron.job || []).push('gtag');
 			</script>
-
 			<script type="text/javascript">
 				tarteaucitron.user.sharethisPublisher = 'publisher';
-(tarteaucitron.job = tarteaucitron.job || []).push('sharethis');
+				(tarteaucitron.job = tarteaucitron.job || []).push('sharethis');
 			</script>
-
 			{# affiche le base_template_profil #}
 			{% block content2 %}{% endblock %}
-
 			{% block content %}{% endblock %}
 		</main>
-
 		<footer class="footer-bg text-center text-light py-3 mt-auto">
-			<div
-				class="container">
+			<div class="container">
 				<!-- Liens de Navigation -->
 				<div class="footer-nav mb-3">
 					<a href="index.php" class="footer-link mx-2">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
-					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal"><img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">CGU</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal">
+						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">CGU
+					</a>
 				</div>
 				<!-- PopUp pour l'accord TMDB -->
 				<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
@@ -331,7 +281,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 						</div>
 					</div>
 				</div>
-
 				<!-- Modal Contact -->
 				<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-dialog-centered">
@@ -348,7 +297,7 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 									</div>
 									<div class="form-group mb-3">
 										<label for="email" class="form-label">Mail :</label>
-										<input type="email" name="mail" name="email" class="form-control" required placeholder="Exemple : mail@mail.fr">
+										<input type="email" name="mail" class="form-control" required placeholder="Exemple : mail@mail.fr">
 										<small id="emailErreur" class="text-danger"></small>
 									</div>
 									<div class="mb-3">
@@ -362,21 +311,16 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 							</form>
 						</div>
 					</div>
-				</div>						
-
-
+				</div>
 				<div class="footer-social mb-2">
 					<div class="sharethis-inline-share-buttons"></div>
 				</div>
-
 				<span class="tacSharethis"></span>
-
 				<div class="footer-copyright">
 					© Copyright 2024 - IUT de Bayonne et du Pays Basque - BUT2 Groupe 8
 				</div>
 			</div>
 		</footer>
-
-		
+		{% block scripts %}{% endblock %}
 	</body>
 </html>
