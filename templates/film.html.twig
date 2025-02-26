@@ -279,7 +279,7 @@
                                     </a>
                                 {% else %}
                                     <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                                        <img src="/img/default.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
                                     </a>
                                 {% endif %}
                                 <div>
@@ -294,7 +294,7 @@
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCommentModal{{ commentaire.idCom }}">
                                         Modifier
                                     </button>
-                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
+                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}&typeOA={{oa.type}}"
                                        class="btn btn-danger btn-sm"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
                                         Supprimer
@@ -308,6 +308,7 @@
                 <p><em>Aucun commentaire pour ce film.</em></p>
             {% endif %}
             {% for commentaire in commentaires %}
+            
                 <div class="modal fade" id="editCommentModal{{ commentaire.idCom }}" tabindex="-1" aria-labelledby="editCommentModalLabel{{ commentaire.idCom }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -319,11 +320,11 @@
                                 <form action="index.php?controleur=commentaire&methode=modifierCommentaire" method="post">
                                     <div class="mb-3">
                                         <label for="contenu{{ commentaire.idCom }}" class="form-label">Nouveau contenu</label>
-                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" 
-                                            value="{{ commentaire.contenu }}" required>
+                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" value="{{ commentaire.contenu }}" required>
+                                        <input type="hidden" name="typeOA" id="typeOA" value="{{oa.type}}"></input>
                                     </div>
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
-                                    <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script>
+                                    {# // <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script> #}
 
                                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                                 </form>
@@ -341,6 +342,7 @@
                         <textarea class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" rows="3">{{ commentaire.contenu }}</textarea>
                     </div>
                     <input type="hidden" name="film_id" value="{{ oa.idOa }}">
+                    <input type="hidden" name="type" value="{{ oa.type }}">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                 </form>
             {% else %}

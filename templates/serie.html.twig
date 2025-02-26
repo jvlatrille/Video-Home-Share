@@ -191,11 +191,11 @@
 
                     <!-- Contrôles du Carousel -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -75px;">
-                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Précédent</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -75px;">
-                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="carousel-control-next-icon " aria-hidden="true"></span>
                         <span class="visually-hidden">Suivant</span>
                     </button>
                 </div>
@@ -280,7 +280,7 @@
 										</a>
 									{% else %}
 										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-											<img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+											<img src="/img/default.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
 										</a>
 									{% endif %}
 									<div>
@@ -291,12 +291,17 @@
 									</div>
 								</div>
 								{% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
-									<div>
-										<a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idoa={{ oa.idoa }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
-											Supprimer
-										</a>
-									</div>
-								{% endif %}
+                                <div>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCommentModal{{ commentaire.idCom }}">
+                                        Modifier
+                                    </button>
+                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}&typeOA={{oa.type}}"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                        Supprimer
+                                    </a>
+                                </div>
+                            {% endif %}
 							</li>
 						{% endfor %}
 					</ul>
@@ -305,7 +310,32 @@
 						<em>Aucun commentaire pour cette série.</em>
 					</p>
 				{% endif %}
+            {% for commentaire in commentaires %}
+            
+                <div class="modal fade" id="editCommentModal{{ commentaire.idCom }}" tabindex="-1" aria-labelledby="editCommentModalLabel{{ commentaire.idCom }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modifier votre commentaire</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="index.php?controleur=commentaire&methode=modifierCommentaire" method="post">
+                                    <div class="mb-3">
+                                        <label for="contenu{{ commentaire.idCom }}" class="form-label">Nouveau contenu</label>
+                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" value="{{ commentaire.contenu }}" required>
+                                        <input type="hidden" name="typeOA" id="typeOA" value="{{oa.type}}"></input>
+                                    </div>
+                                    <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
+                                    {# // <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script> #}
 
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>           
+            {% endfor %}
             <div id="commentaires" class="mt-4">
             {% if utilisateurConnecte %}
                 <form action="index.php?controleur=commentaire&methode=ajouterCommentaire" method="post">
@@ -313,7 +343,8 @@
                         <label for="contenu" class="form-label">Commentaire</label>
                         <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
                     </div>
-                    <input type="hidden" name="oa_id" value="{{ oa.idoa }}">
+                    <input type="hidden" name="serie_id" value="{{ oa.idoa }}">
+                    <input type="hidden" name="type" value="{{ oa.type }}">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                 </form>
             {% else %}
