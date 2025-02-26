@@ -42,9 +42,7 @@ class ControllerQuizz extends Controller {
     }
 
     // Fonction pour ajouter un nouveau quizz
-    public function ajouterQuizz() {
-        $regles = [];
-
+    public function ajouterQuizz() {    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nom = $_POST['nom'] ?? '';
             $theme = $_POST['theme'] ?? '';
@@ -54,46 +52,21 @@ class ControllerQuizz extends Controller {
             $idCreateur = $utilisateurConnecte->getIdUtilisateur();
             
             $pseudo = $utilisateurConnecte->getPseudo();
-        
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur, $pseudo, "default.png");
-
-            $image = "default.png";
-        
+    
+            // Appel à uploadImage pour gérer l'upload de l'image
+            $image = $this->uploadImage($_FILES['imageQuizz']);
+            if (!$image) {
+                $image = "default.png"; // Si l'image n'est pas valide, on utilise une image par défaut
+            }
+    
+            // Créer le nouvel objet Quizz
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur, $pseudo, $image);
+    
+            // Ajouter le quizz via le manager
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);
             $messages = [];
-
-            // Vérifier si un fichier a été envoyé
-            if (isset($_FILES['imageQuizz']) && $_FILES['imageQuizz']['error'] == 0) {
-                // Valider le fichier photo
-                $validator = new Validator($regles);
-                $photoValide = $validator->validerUploadEtPhoto($_FILES['imageQuizz'], $messages);
-                
-                // Si la photo est valide
-                if ($photoValide) {
-                    // Définir le dossier de destination
-                    $fileExtension = strtolower(pathinfo($_FILES['imageQuizz']['name'], PATHINFO_EXTENSION));
-                    $uploadDir = 'img/quizz/';
-                    $fileName = "$idQuizz" . "_" . "$nom" . ".$fileExtension";
-                    $filePath = $uploadDir . $fileName;
-                    
-                    // Supprimer l'ancienne photo si elle existe
-                    $anciennePhoto = glob($uploadDir . "$idQuizz" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
-                    foreach ($anciennePhoto as $fichier) {
-                        if (is_file($fichier)) {
-                            unlink($fichier);
-                        }
-                    }
-                    
-                    // Déplacer le fichier téléchargé
-                    if (!move_uploaded_file($_FILES['imageQuizz']['tmp_name'], $filePath)) {
-                        $messages[] = "Erreur lors de l'upload de l'image";
-                    }
-
-                    $reussite = $managerQuizz->ajoutImage($idQuizz, $fileName);
-                }
-            }
-        
+    
             if ($idQuizz) {
                 // Rediriger avec l'ID du quizz et son nombre de questions
                 header('Location: index.php?controleur=question&methode=ajouterQuestions&idQuizz=' . $idQuizz . '&nbQuestion=' . $nbQuestion);
@@ -105,51 +78,78 @@ class ControllerQuizz extends Controller {
         
         $template = $this->getTwig()->load('quizzAjouter.html.twig');
         echo $template->render();
-    }  
+    }
+    
+
+    public function uploadImage($image){
+        $regles = [];
+        // Valider le fichier photo
+        $validator = new Validator($regles);
+        $photoValide = $validator->validerUploadEtPhoto($image, $messages);
+        
+        // Si la photo est valide
+        if ($photoValide) {
+            // Définir le dossier de destination
+            $fileExtension = strtolower(pathinfo($image['name'], PATHINFO_EXTENSION));
+            $uploadDir = 'img/quizz/';
+            $fileName = "$idQuizz" . "_" . "$nom" . ".$fileExtension";
+            $filePath = $uploadDir . $fileName;
+            
+            // Supprimer l'ancienne photo si elle existe
+            $anciennePhoto = glob($uploadDir . "$idQuizz" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+            foreach ($anciennePhoto as $fichier) {
+                if (is_file($fichier)) {
+                    unlink($fichier);
+                }
+            }
+            
+            // Déplacer le fichier téléchargé
+            if (!move_uploaded_file($image['tmp_name'], $filePath)) {
+                $messages[] = "Erreur lors de l'upload de l'image";
+            }
+    
+            return $managerQuizz->ajoutImage($idQuizz, $fileName);
+        }
+        return $photoValide;
+    }    
 
     // Fonction pour modifier un quizz
     public function modifierQuizz()
     {
-        // Vérifie si les données ont été envoyées via POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupération des données du formulaire
-            $idQuizz = $_POST['id'];  // L'id du quiz à modifier
-            $nom = $_POST['nom'];  // Le nom du quiz
-            $theme = $_POST['theme'];  // Le thème du quiz
-            $nbQuestion = $_POST['nbQuestion'];  // Le nombre de questions
-            $difficulte = $_POST['difficulte'];  // La difficulté du quiz
             
-            // Récupération de l'image (si elle a été modifiée)
-            $image = null;
+            // Récupération des données du formulaire
+            $idQuizz = $_POST['id'];
+            $nom = $_POST['nom'];
+            $theme = $_POST['theme'];
+            $nbQuestion = $_POST['nbQuestion'];
+            $difficulte = $_POST['difficulte'];
+            
+            $managerQuiz = new QuizzDao($this->getPdo());
+            $quizExistant = $managerQuiz->find($idQuizz);
+            
+            if (!$quizExistant) {
+                header('Location: index.php?controleur=quizz&methode=listerQuizz');
+                exit();
+            }
+            
+            $image = $quizExistant->getImage(); // Garde l'image actuelle par défaut
+            
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                // Image a été téléchargée, on la traite
-                $image = $this->uploadImage($_FILES['image']);  // Méthode pour gérer le téléchargement de l'image
+                $image = $this->uploadImage($_FILES['image']);
             }
-    
-            // Créer une instance de l'objet Quiz et mettre à jour ses propriétés
-            $quiz = new Quiz();
-            $quiz->setIdQuizz($idQuizz);
-            $quiz->setNom($nom);
-            $quiz->setTheme($theme);
-            $quiz->setNbQuestion($nbQuestion);
-            $quiz->setDifficulte($difficulte);
-            if ($image) {
-                $quiz->setImage($image);  // Met à jour l'image si elle a été modifiée
-            }
-    
-            // Utilisation du DAO (Data Access Object) pour mettre à jour les données dans la base
-            $managerQuiz = new QuizDao($this->getPdo());
-            $managerQuiz->update($quiz);  // Appel à une méthode update dans le DAO
-    
-            // Redirige l'utilisateur vers la page de liste des quiz
+            
+            $quiz = new Quizz($idQuizz, $nom, $theme, $nbQuestion, $difficulte, null, null, $image);
+            
+            $managerQuiz->update($quiz);
+            
             header('Location: index.php?controleur=quizz&methode=listerQuizz');
             exit();
         } else {
-            // Si la méthode n'est pas POST, redirige ou gère une erreur
             header('Location: index.php?controleur=quizz&methode=listerQuizz');
             exit();
         }
-    }    
+    }        
 
     // Fonction pour supprimer un quizz
     public function supprimerQuizz() {

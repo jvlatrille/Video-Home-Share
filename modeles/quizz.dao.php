@@ -97,15 +97,37 @@ class QuizzDao {
     public function findId($id)
     {
         $sql = "SELECT q.*, u.pseudo 
-        FROM " . PREFIXE_TABLE . "quizz q 
-        JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur
-        WHERE u.idUtilisateur = :id";
+                FROM " . PREFIXE_TABLE . "quizz q 
+                JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur 
+                WHERE q.idCreateur = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['id' => $id]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
 
         $resultats = $pdoStatement->fetchAll();
         return $this->hydrateAll($resultats);
+    }
+
+    public function update($quiz)
+    {
+        $id = $quiz->getIdQuizz();
+        $nom = $quiz->getNom();
+        $theme = $quiz->getTheme();
+        $nbQuestion = $quiz->getNbQuestion();
+        $difficulte = $quiz->getDifficulte();
+        $image = $quiz->getImage();
+
+        $sql = "UPDATE " . PREFIXE_TABLE . "quizz 
+                SET nom = :nom, theme = :theme, nbQuestion = :nbQuestion, difficulte = :difficulte, image = :image 
+                WHERE idQuizz = :id";
+        $pdoStatement = $this->getPdo()->prepare($sql);
+
+        return $pdoStatement->execute(['nom' => $nom,
+                                       'theme' => $theme,
+                                       'nbQuestion' => $nbQuestion,
+                                       'difficulte' => $difficulte,
+                                       'image' => $image,
+                                       'id' => $id]);
     }
 }
 
