@@ -264,6 +264,7 @@ class ControllerOA extends Controller
                 'oa' => $oa,
                 'commentaires' => $commentaires,
                 'participants' => $participants,
+                'suggestions' => $suggestions,
                 'backdrops' => $backdrops,
             ]);
         } catch (Exception $e) {
