@@ -231,7 +231,12 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl(posterPath: $data['poster_path'] ?? null),
-            $this->getBackdrops($data['id'] ?? null, 'movie'),
+            isset($data['id']) ? $this->getBackdrops((int)$data['id'], 'movie') : [
+                [
+                    'small' => 'https://via.placeholder.com/300x169?text=Image+non+disponible',
+                    'full'  => 'https://via.placeholder.com/1280x720?text=Image+non+disponible'
+                ]
+            ],            
             $this->parseParticipants($data['credits'] ?? []),
             $data['producer'] ?? null,
             null,

@@ -498,4 +498,19 @@ class UtilisateurDao
         return $reussite;
     }
 
+    /**
+     * @brief Recherche un utilisateur par son pseudo
+     * @author VINET LATRILLE Jules
+     * @param string $pseudo Pseudo de l'utilisateur à rechercher
+     * @return array Liste des utilisateurs trouvés
+     */
+    public function rechercherParPseudo(string $pseudo): array {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "utilisateur WHERE pseudo LIKE :pseudo";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['pseudo' => '%' . $pseudo . '%']);
+        $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->hydrateAll($resultats);
+    }
+    
+
 }
