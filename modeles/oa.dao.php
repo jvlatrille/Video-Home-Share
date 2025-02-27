@@ -49,25 +49,25 @@ class OADao
      * @param array $params Paramètres supplémentaires
      * @return array Réponse API sous forme de tableau associatif
      */
-    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false, bool $cache = true, int $cacheDuration = 300): array {
+    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false, bool $cache = false, int $cacheDuration = 300): array {
         // Correction du chemin de cache : passe du dossier modeles à la racine
         $cacheDir = __DIR__ . '/../cache/';
         $cacheFile = null;
     
-        if ($cache) {
-            if (is_dir($cacheDir) && is_writable($cacheDir)) {
-                $cacheKey = md5($endpoint . serialize($params) . ($useAccessToken ? '1' : '0'));
-                $cacheFile = $cacheDir . $cacheKey . '.json';
-                if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheDuration) {
-                    error_log("Utilisation du cache pour l'endpoint : $endpoint"); // (использование кеша, utilisation du cache)
-                    $cachedData = file_get_contents($cacheFile);
-                    return json_decode($cachedData, true);
-                }
-            } else {
-                error_log("Le dossier de cache n'existe pas ou n'est pas accessible, désactivation du cache.");
-                $cache = false;
-            }
-        }        
+        // if ($cache) {
+        //     if (is_dir($cacheDir) && is_writable($cacheDir)) {
+        //         $cacheKey = md5($endpoint . serialize($params) . ($useAccessToken ? '1' : '0'));
+        //         $cacheFile = $cacheDir . $cacheKey . '.json';
+        //         if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheDuration) {
+        //             error_log("Utilisation du cache pour l'endpoint : $endpoint"); // (использование кеша, utilisation du cache)
+        //             $cachedData = file_get_contents($cacheFile);
+        //             return json_decode($cachedData, true);
+        //         }
+        //     } else {
+        //         error_log("Le dossier de cache n'existe pas ou n'est pas accessible, désactivation du cache.");
+        //         $cache = false;
+        //     }
+        // }        
     
         // Construction de l'URL
         $url = $this->apiBaseUrl . $endpoint;
