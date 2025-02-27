@@ -149,10 +149,10 @@
 					{% for participant in participants|slice(0, 6) %}
 						<div class="col-4 col-md-2 text-center mb-3">
 							{% if participant.photo %}
-								<img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-							{% else %}
-								<img src="https://via.placeholder.com/80x80?text=?" class="img-thumbnail rounded-circle" alt="Photo non disponible">
-							{% endif %}
+                                <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" loading="lazy">
+                            {% else %}
+                                <img src="img\profils\acteur_Default.jpg" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="Photo non disponible" loading="lazy">
+                            {% endif %}
 							<p class="mt-2 fw-bold">{{ participant.nom }}</p>
 							<p class="text-muted small">{{ participant.role }}</p>
 						</div>
