@@ -10,7 +10,7 @@ $twig = new Twig\Environment($loader, [
     /*passe en mode debug à enlever en environnement de prod : permet d'utiliser dans un templates {{dump
     (variable)}} pour afficher le contenu d'une variable. Nécessite l'utilisation de l'extension debug*/
     'debug' => true,
-    'cache' => '../cache',
+    // 'cache' => '../cache',
     // Il est possible de définir d'autre variable d'environnement
     //...
 ]);
