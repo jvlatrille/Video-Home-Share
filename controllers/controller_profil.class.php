@@ -435,14 +435,17 @@ class ControllerProfil extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
 
 
             //Recupere les notifications
             $managerNotif=New NotificationDao($this->getPdo());
             $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
+            $nomForum=$managerNotif->recupNomForum($idMessage);
+
             //Generer la vue avec les notifications de l'utilisateur
             $template = $this->getTwig()->load('profilNotifications.html.twig');
-            echo $template->render(['notifListe' => $notifListe]);
+            echo $template->render(['notifListe' => $notifListe, 'nomForum'=>$nomForum]);//, 'nomForum'=>$nomForum
             
         }
         else {
@@ -462,6 +465,7 @@ class ControllerProfil extends Controller
     public function afficherNotif()
     {
         $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
+        
 
         if ($id === null) {
             $template = $this->getTwig()->load('profilNotifications.html.twig');
@@ -472,6 +476,7 @@ class ControllerProfil extends Controller
         //Recupere la notification
         $managerNotif=New NotificationDao($this->getPdo());
         $contenuNotif=$managerNotif->findNotif($id);
+        
     
         //Generer la vue
         $template = $this->getTwig()->load('uneNotification.html.twig');
@@ -586,5 +591,28 @@ class ControllerProfil extends Controller
         }
     }
 
+    public function afficherNomForum()
+    {
+        $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
+
+        // if ($id === null) {
+        //     $template = $this->getTwig()->load('profilNotifications.html.twig');
+        //     echo $template->render();
+
+        // }
+        
+        //Recupere la notification
+        $managerNotif=New NotificationDao($this->getPdo());
+        $nomForum=$managerNotif->recupNomForum($idMessage);
+    
+        //Generer la vue
+        $template = $this->getTwig()->load('profilNotifications.html.twig');
+        
+        echo $template->render(['nomForum'=>$nomForum]);
+
+    }
+
+
+    
   
 }

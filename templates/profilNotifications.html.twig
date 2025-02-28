@@ -30,6 +30,9 @@
 
     {% endif %} 
 
+
+
+
      <!-- Liste des notifications de l'utilisateur -->
     {% if notifListe is not defined  %} <!--or notifListe is empty-->
         <div class="container mt-4">
@@ -50,10 +53,12 @@
                                         <label class="form-check-label" for="idNotif"></label>
                                         </form> #}
                                         
-                                        <h5 class="card-title">{{ notifs.destinataire}}</h5>
+                                        <h5 class="card-title">{{ notifs.contenu}}</h5>
                                         <div>
                                             <strong>Date :</strong> {{ notifs.dateNotif }}<br>
-                                            {{ notifs.contenu }}<br>
+                                            {# <h6><strong>Dans le forum : {{ message.nom }}</strong></h6> #}
+                                            <a href="index.php?controleur=profil&methode=afficherNomForum&idMessage={{notifs.idMessage}}">Dans le forum : {{ notifs.nomForum }} </a>
+
                                             <div class="d-flex justify-content-between align-items-center my-2">
                                                 <div>
                                                     <strong>Vu :</strong> {{ notifs.vu ? 'Oui' : 'Non' }}
@@ -71,6 +76,7 @@
                                     </div>
                             </div>
                     {% endfor %}
+            
             </div>
         </div>
 
