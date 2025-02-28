@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
 	<title>{{ oa.nom }}</title>
 
@@ -109,7 +109,7 @@
                                             <button type="submit" class="btn btn-primary ilFautPatienter">Ajouter</button>
                                             {% else %}
                                                 <p>Aucune liste trouvée.</p>
-                                                <p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+                                                <p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist" class="ilFautPatienter">Créez-en une ici</a>.</p>
                                             {% endif %}
                                             
                                         </form>
@@ -220,9 +220,9 @@
 											{% if suggestion is not null %}
 												<div class="col-md-2">
 													{% if suggestion.type == 'Film' %}
-														<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+														<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none ilFautPatienter">
 														{% else %}
-															<a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+															<a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none ilFautPatienter">
 															{% endif %}
 															<img src="{{ suggestion.posterPath }}" alt="{{ suggestion.nom }}" class="img-fluid rounded mb-2 shadow-sm" style="height: 150px; object-fit: cover;">
 															<p class="text-truncate w-100">{{ suggestion.nom }}</p>
@@ -257,16 +257,16 @@
 							<li class="list-group-item d-flex justify-content-between align-items-center">
 								<div class="d-flex align-items-center">
 									{% if commentaire.photoProfil %}
-										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
 											<img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
 										</a>
 									{% else %}
-										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
 											<img src="/img/default.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
 										</a>
 									{% endif %}
 									<div>
-										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+										<a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
 											<strong>{{ commentaire.pseudo }}</strong>
 										</a>
 										<p>{{ commentaire.contenu }}</p>

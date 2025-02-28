@@ -66,16 +66,16 @@
                                         <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
 
                                         {% if commentaire.photoProfil %}
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
                                                 <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
                                             </a>
                                         {% else %}
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
                                                 <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
                                             </a>
                                         {% endif %}
                                         <div>
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
                                                 <strong>{{ commentaire.pseudo }}</strong>
                                             </a>
                                             <p>{{ commentaire.contenu }}</p>

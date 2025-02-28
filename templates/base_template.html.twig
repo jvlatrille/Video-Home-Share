@@ -100,7 +100,7 @@
 			<nav class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
 				<!-- Logo et bouton Menu -->
 				<div class="d-flex align-items-center">
-					<a class="navbar-brand d-flex align-items-center" href="index.php">
+					<a class="navbar-brand d-flex align-items-center ilFautPatienter" href="index.php">
 						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2">
 					</a>
 					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
@@ -109,12 +109,10 @@
 				</div>
 				<div class="py-2 d-flex justify-content-center flex-wrap">
 					{% if utilisateurConnecte %}
-						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
-						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quiz</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
-					{% else %}
-						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
+						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1 ilFautPatienter" style="font-weight: bold">Forum</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1 ilFautPatienter" style="font-weight: bold">Mes listes</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1 ilFautPatienter" style="font-weight: bold">Quiz</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1 ilFautPatienter" style="font-weight: bold">Jeux</a>
 					{% endif %}
 				</div>
 				<div class="my-2"></div> <!-- Espacement ajouté ici -->
@@ -135,7 +133,7 @@
 				<!-- Bouton Connexion/Déconnexion et Admin -->
 				<div class="me-3 mt-2 mt-md-0">
 					{% if utilisateurConnecte is null %}
-						<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
+						<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Merci de vous connecter</a>
 					{% else %}
 						<div class="dropdown">
 							<button class="btn d-flex align-items-center p-0 border-0" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -144,7 +142,7 @@
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuButton">
 								<li class="dropdown-item">
-									<a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="d-flex align-items-center text-decoration-none">
+									<a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="d-flex align-items-center text-decoration-none ilFautPatienter">
 										<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="50" height="50" class="rounded-circle me-2">
 										<div>
 											<strong>{{ utilisateurConnecte.pseudo }}</strong><br>
@@ -160,22 +158,22 @@
 								</li>
 								{% if utilisateurConnecte.getRole == 'admin' %}
 									<li>
-										<a class="dropdown-item" href="index.php?controleur=admin&methode=render" style="color: #A2140A;">
+										<a class="dropdown-item ilFautPatienter" href="index.php?controleur=admin&methode=render" style="color: #A2140A;">
 											<strong>Administration</strong>
 										</a>
 									</li>
 								{% endif %}
 								<li>
-									<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire" style="color: #A2140A;">Paramètres</a>
+									<a class="dropdown-item ilFautPatienter" href="index.php?controleur=profil&methode=afficherFormulaire" style="color: #A2140A;">Paramètres</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1" style="color: #A2140A;">Mes notifications</a>
+									<a class="dropdown-item ilFautPatienter" href="index.php?controleur=profil&methode=listerNotif&idNotif=1" style="color: #A2140A;">Mes notifications</a>
 								</li>
 								<li>
 									<hr class="dropdown-divider">
 								</li>
 								<li>
-									<a class="dropdown-item text-danger fw-bold" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
+									<a class="dropdown-item text-danger fw-bold ilFautPatienter" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
 								</li>
 							</ul>
 						</div>
@@ -205,7 +203,7 @@
 			<div class="container">
 				<!-- Liens de Navigation -->
 				<div class="footer-nav mb-3">
-					<a href="index.php" class="footer-link mx-2">Accueil</a>
+					<a href="index.php" class="footer-link mx-2 ilFautPatienter">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>

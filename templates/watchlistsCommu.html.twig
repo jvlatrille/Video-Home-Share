@@ -1,7 +1,7 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
 <h1 class="text-center my-4">Les listes de la Communauté</h1>
 
@@ -75,7 +75,7 @@
                                     {% if watchList.listeOeuvres is not empty %}
                                         {% for oa in watchList.listeOeuvres %}
                                             <li class="d-flex align-items-center mb-2">
-                                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOA }}">
+                                                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOA }}" class="ilFautPatienter">
                                                     <img src="{{ oa.posterPath }}" alt="{{ oa.nom }}" class="rounded me-3" style="width: 50px; height: auto;">
                                                 </a>
                                                 <div>

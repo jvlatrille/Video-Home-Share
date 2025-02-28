@@ -22,7 +22,7 @@
                             <div class="col-md-4 text-center">
 
                                 {% if oa.posterPath %}
-                                    <a href="index.php?controleur=oa&methode=afficher{{ oa.type == 'Film' ? 'Film' : 'Serie' }}&idOa={{ oa.idOa }}">
+                                    <a href="index.php?controleur=oa&methode=afficher{{ oa.type == 'Film' ? 'Film' : 'Serie' }}&idOa={{ oa.idOa }}" class="ilFautPatienter">
                                         <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;" loading="lazy">
                                     </a>
 								{% else %}                                
@@ -69,9 +69,9 @@
             {% for oa in oaListe|slice(10,20) %}
                 <div class="col">
                 {% if oa.type == 'Film' %}
-                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                 {% else %}
-                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                 {% endif %}
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
@@ -96,7 +96,7 @@
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}" class="ilFautPatienter">
                                 <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
                                     alt="Photo de profil de {{ message.pseudo }}" 
                                     class="rounded-circle mb-3 border border-3" 
@@ -111,7 +111,7 @@
                                 <i class="fas fa-heart"></i> {{ message.nbLike }} likes
                             </p>
                             <a href="index.php?controleur=message&methode=listerMessage&idForum={{ message.idForum }}" 
-                            class="btn btn-outline-primary btn-sm mt-3">Voir le forum</a>
+                            class="btn btn-outline-primary btn-sm mt-3 ilFautPatienter">Voir le forum</a>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for oa in oaRandomListe %}
                 <div class="col">
-                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
                                 <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;" loading="lazy">
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         data.forEach(oa => {
                             row.innerHTML += `
                                 <div class="col">
-                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
+                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none ilFautPatienter">
                                         <div class="card h-100 shadow-sm">
                                             ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;" loading="lazy">`
                                             : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}

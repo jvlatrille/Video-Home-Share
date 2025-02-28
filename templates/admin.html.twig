@@ -71,7 +71,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1">
+                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1 ilFautPatienter">
                                             <i class="fas fa-user"></i>
                                             Profil
                                         </a>
@@ -214,7 +214,7 @@
                                         </button>
                                         <!-- Bouton Aller à -->
                                         <a href="index.php?controleur=quizz&methode=afficherQuizz&id={{ quizz.getIdQuizz }}"
-                                           class="btn btn-sm btn-success">
+                                           class="btn btn-sm btn-success ilFautPatienter">
                                            Aller à
                                         </a>
                                     </td>

@@ -1,7 +1,7 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-	<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+	<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
 	<div class="container">
 		<div class="row">
@@ -98,7 +98,7 @@
 					<!-- Titre de la Watchlist -->
 					<div class="row">
 						<div class="col text-start mb-2">
-							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{ watchList.idWatchlist }}" class="text-primary text-decoration-none">
+							<a href="index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist={{ watchList.idWatchlist }}" class="text-primary text-decoration-none ilFautPatienter">
 								<h2>{{ watchList.titre }}</h2>
 							</a>
 						</div>
@@ -126,7 +126,7 @@
 													{% if index < totalFilms %}
 														{% set oa = watchList.listeOeuvres[index] %}
 														<div class="col-12 col-md-{{ 12 // filmsParSlide }} d-flex flex-column align-items-center">
-															<a href="index.php?controleur=oa&methode=afficher{% if oa.type == 'Film' %}Film{% else %}Serie{% endif %}&idOa={{ oa.idOa }}">
+															<a href="index.php?controleur=oa&methode=afficher{% if oa.type == 'Film' %}Film{% else %}Serie{% endif %}&idOa={{ oa.idOa }}" class="ilFautPatienter">
 																<img src="{{ oa.posterPath }}" class="d-block img-fluid rounded shadow" alt="{{ oa.nom }}">
 															</a>
 															<p class="mt-2 fw-bold">{{ oa.nom }}</p>
@@ -147,7 +147,7 @@
 
 
 			<div class="text-center mt-4 my-4">
-				<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-primary">Parcourir les listes de la communauté</a>
+				<a href="index.php?controleur=watchlist&methode=listerWatchListVisible&id={{utilisateurConnecte.idUtilisateur}}" class="btn btn-primary ilFautPatienter">Parcourir les listes de la communauté</a>
 			</div>
 		{% endif %}
 	</div>
