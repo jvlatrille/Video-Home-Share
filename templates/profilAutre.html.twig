@@ -5,16 +5,29 @@
 	{% if utilisateur is defined %}
 		{% set banniere = 'img/banniere/' ~ utilisateur.banniereProfil ?? '../img/turtleTestBanniere.png' %}
 		{% set photo = 'img/profils/' ~ utilisateur.photoProfil ?? 'img/tortueProfil.png' %}
-
-		<div class="container-fluid p-0">
-			<div class="position-relative" style="height: 30vh;">
-				<img src="{{ banniere }}" class="img-fluid w-100 h-100" style="object-fit: cover;">
-				<div class="position-absolute top-50 start-20 translate-middle-y ms-5">
-					<img src="{{ photo }}" class="rounded-circle border border-white" style="height: 150px; width: 150px; object-fit: cover;">
-				</div>
-			</div>
-		</div>
-
+  
+        <div class="image-bg container-fluid"
+             style="background-image: url('{{ banniere }}'); 
+             background-size: cover;
+             background-position: center;
+             background-repeat: no-repeat;
+             height: 30vh;
+             position: relative">
+            <div class="rounded-circle" 
+                 style="background-image: url('{{ photo }}');
+                 height: 150px; 
+                 width: 150px; 
+                 background-size: cover; 
+                 background-position: center;
+                 position: absolute;
+                 top: 50%;
+                 left: 8%;
+                 transform: translateY(-50%);
+                 border: 4px solid #fff;">
+            </div>
+  <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
+	
+        </div>
 		<div class="text-center mt-3">
 			<h2>{{ utilisateur.pseudo }}</h2>
 			<p class="text-muted">Grade :
@@ -44,6 +57,7 @@
 											background-size: cover;
 											background-position: center;
 											border: 4px solid #fff;">
+											
 										</div>
 		
 										<!-- Contenu du message -->
@@ -56,8 +70,8 @@
 								<!-- Pied de la carte (likes/dislikes) -->
 								<div class="card-footer d-flex justify-content-between align-items-center">
 									<div>
-										<button type="button" class="btn btn-success btn-sm">👍 {{ message.nbLike }}</button>
-										<button type="button" class="btn btn-danger btn-sm">👎 {{ message.nbDislike }}</button>
+										<span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>                   
+                                		<span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
 									</div>
 								</div>
 							</div>
@@ -82,8 +96,9 @@
 									<div class="d-flex flex-column flex-grow-1">
 										<span class="text-dark fw-bold me-2" style="font-size: 1.25rem;">{{ commentaire.titreOeuvre }}</span>
 										<p class="mb-1">{{ commentaire.contenu }}</p>
-										<small class="text-muted">Posté le {{ commentaire.dateCommentaire }}</small>
+										<small class="text-muted">Posté le {{ commentaire.dateCommentaire|date('d/m/Y') }}</small>
 									</div>
+
 									<!-- Titre et Affiche de l'œuvre -->
 									<div class="d-flex align-items-center">
 										<img src="{{ commentaire.backdropOeuvre|first.small }}" class="card-img-top" style="height: 100px; object-fit: cover;" alt="Capture de {{ commentaire.titreOeuvre }}">

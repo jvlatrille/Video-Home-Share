@@ -65,6 +65,7 @@ class QuizzDao {
         }
         return $quizzListe;
     }
+    
 
     public function add(Quizz $quizz): int|false {
         $sql = "INSERT INTO " . PREFIXE_TABLE . "quizz (nom, theme, nbQuestion, difficulte, idCreateur, image) 

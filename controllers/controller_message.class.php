@@ -11,8 +11,8 @@ class ControllerMessage extends Controller
     {
         // Vérifie si le paramètre idForum est dans l'URL
         if (!isset($_GET['idForum']) || empty($_GET['idForum'])) {
-            die("Paramètre idForum manquant !");
-        }
+            $this->afficherErreur("Le paramètre idForum est manquant.");
+        }        
 
         // Récupère l'identifiant du forum
         $idForum = (int) $_GET['idForum'];
@@ -70,9 +70,20 @@ class ControllerMessage extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
             $idMessage = (int)$_POST['idMessage'];
 
+
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    
+                //Recupere l'id de l'utilisateur'
+                $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+            }
+
             // Récupère et incrémente le like
             $messageDAO = new MessageDAO($this->getPdo());
             $messageDAO->incrementLike($idMessage);
+            
+            $message = $messageDAO->creerNotif($idUtilisateur, $idMessage);
+
 
             // Redirige vers la liste des messages
             header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -80,14 +91,25 @@ class ControllerMessage extends Controller
         }
     }
 
+
+
     public function dislike()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
             $idMessage = (int)$_POST['idMessage'];
 
+            if (isset($_SESSION['utilisateur'])) {
+                $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+    
+                //Recupere l'id de l'utilisateur'
+                $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+            }
+
             // Récupère et incrémente le dislike
             $messageDAO = new MessageDAO($this->getPdo());
             $messageDAO->incrementDislike($idMessage);
+
+            $message = $messageDAO->creerNotif($idUtilisateur);
 
             // Redirige vers la liste des messages
             header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -129,7 +151,117 @@ class ControllerMessage extends Controller
                 'messages' => $messages
             ]);
         } else {
-            echo "Identifiant utilisateur manquant !";
+            $this->afficherErreur("Vous devez être connecté pour ajouter un message.");
         }
     }
+
+    // public function insertMessageDansNotif(){
+    //     // Vérifie si un utilisateur est connecté
+    //     if (isset($_SESSION['utilisateur'])) {
+    //         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+    //         //Recupere l'id de l'utilisateur'
+    //         $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+            
+    //         $managerMessage = new MessageDao($this->getPdo());
+    //         $message = $managerMessage->creerNotif($idUtilisateur);
+
+    //     }
+    // }
+
+
+
+
+    // public function afficherNotifMessage()
+    // {        
+    //     // Vérifie si un utilisateur est connecté
+    //     if (isset($_SESSION['utilisateur'])) {
+    //         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            
+    //         // Récupération des infos utilisateur (optionnel)
+    //         $managerUtilisateur = new UtilisateurDao($this->getPdo());
+    //         $utilisateur = $managerUtilisateur->find($idUtilisateur);
+    //     }
+            
+    //     //     // $managerUtilisateur = new UtilisateurDao($this->getPdo());
+
+    //     //     // Récupère les messages postés par l'utilisateur
+    //     //     $managerMessage = new MessageDao($this->getPdo());
+    //     //     $messageNotifListe = $managerMessage->creerNotif($idUtilisateur);
+
+
+    //     //     $utilisateur = $managerUtilisateur->find($idUtilisateur);
+    //     //     $_SESSION['utilisateur'] = serialize($utilisateur);
+
+    //     //     // Génère la vue 
+    //     //     $template = $this->getTwig()->load('profilAPropos.html.twig');
+    //     //     echo $template->render(['messageNotifListe' => $messageNotifListe, 'utilisateur' => $utilisateurConnecte]); 
+    //     // }
+    //     else {
+    //         // Sinon, affiche la page de connexion
+    //         $template = $this->getTwig()->load('connexion.html.twig');
+    //         echo $template->render();
+    //     }
+
+
+    //     //
+    //     // Traitement des œuvres (idTMDB et type)
+    //     //
+    //     // $listeOeuvres = $donnees['OAs'] ?? [];
+        
+        
+
+    //     // foreach ($listeOeuvres as $oeuvre) {
+    //     //     if (is_string($oeuvre)) {
+    //     //         $idTMDB=explode(':', $oeuvre);
+    //     //         $oeuvresFormatees[] = [
+    //     //             'idTMDB' => $idTMDB[0],
+    //     //             'type' => $idTMDB[1],
+    //     //         ];
+    //     //     }
+    //     // }
+    //     $this->idNotif=$idNotif;
+    //     $this->dateNotif = $dateNotif;
+    //     $this->destinataire = $destinataire;
+    //     $this->contenu = $contenu;
+    //     $this->vu = $vu ??false; //permet que vu ne soit jamais null
+    //     $this->idUtilisateur=$idUtilisateur;
+
+
+    //     $messageNotif = [];
+
+    //     // Création de la notification
+    //     $managerNotification = new NotificationDao($this->getPdo());
+    //     $notif = new Notification();
+    //     $notif->setIdNotif($idNotif);
+    //     $notif->setDateNotif($dateNotif);
+    //     $notif->setDestinataire($destinataire);
+    //     $notif->setContenu($contenu);
+    //     $notif->setVu($vu);
+    //     $notif->setIdUtilisateur($idUtilisateur);
+    //     $managerNotification->creerNotif($notification);
+
+    //     $idNouvelleNotif = $notif->getIdNotif();
+        
+    //     // Association des œuvres à la watchlist
+    //     foreach ($messageNotif as $message) {
+    //         $managerNotification->addMessageToNotification($idNouvelleNotif, $message['idNotif']);
+    //     }
+    //     // Redirection vers la liste des watchlists
+    //     // header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);
+    //     // exit();
+    // }
+
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Affiche une page d'erreur
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        $erreurController = new ErreurController($this->getTwig(), $this->getLoader());
+        $erreurController->renderErreur($message);
+        exit();
+    }
+
 }

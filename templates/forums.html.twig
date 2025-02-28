@@ -1,10 +1,7 @@
 {% extends 'base_template.html.twig' %}
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
+
     <div class="text-center mb4">
         <h1>Liste des forums</h1>
     </div>
@@ -47,7 +44,7 @@
 
                         <!-- Bouton de soumission -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success">Créer un nouveau forum</button>
+                            <button type="submit" class="btn btn-success ilFautPatienter">Créer un nouveau forum</button>
                         </div>
                     </form>
                 </div>
@@ -66,7 +63,7 @@
                         <h5 class="card-title">{{ forumList.nom }}</h5>
                         <h5 class="card-title">Thème : {{ forumList.theme }}</h5>
 						<p class="card-text">{{ forumList.description }}</p>
-                        <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary">Voir en détail</a>            
+                        <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary ilFautPatienter">Voir en détail</a>            
                     </div>
                 </div>
             {% endfor %}

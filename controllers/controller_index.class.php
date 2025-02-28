@@ -44,14 +44,28 @@ class ControllerIndex extends Controller
      *
      * @return void
      */
-    public function rechercherFilm()
+    public function rechercher()
     {
-        $requete = htmlspecialchars($_POST['requete']) ?? null;
-
+        $requete = htmlspecialchars($_GET['requete']) ?? null;
         $managerOa = new OADao();
         $oas = $managerOa->rechercheFilmParNom($requete);
 
+        // Rechercher forums dont le nom ressemble à la requête
+        $forumDao = new ForumDao($this->getPdo());
+        // La méthode 'rechercherParNom' doit être implémentée dans ForumDao
+        $forums = $forumDao->rechercherParNom($requete);
+
+        // Rechercher utilisateurs par pseudo similaire
+        $utilisateurDao = new UtilisateurDao($this->getPdo());
+        // La méthode 'rechercherParPseudo' doit être implémentée dans UtilisateurDao
+        $users = $utilisateurDao->rechercherParPseudo($requete);
+
         $template = $this->getTwig()->load('recherche.html.twig');
-        echo $template->render(['oas' => $oas, 'requete' => $requete]);
+        echo $template->render([
+            'oas'      => $oas,
+            'requete'  => $requete,
+            'forums'   => $forums,
+            'users'    => $users
+        ]);
     }
 }

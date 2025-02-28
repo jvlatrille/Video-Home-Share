@@ -104,7 +104,8 @@ class ControllerQuestion extends Controller
 
         // Vérification si les paramètres existent
         if ($idQuizz === null) {
-            die("L'identifiant du quizz est requis !");
+            $this->afficherErreur("L'identifiant du quizz est requis !");
+            exit();            
         }
 
         $managerQuizz = new QuizzDao($this->getPdo());
@@ -133,7 +134,8 @@ class ControllerQuestion extends Controller
 
     // Si l'ID du quizz est manquant
     if (!$idQuizz) {
-        die("L'identifiant du quizz est requis !");
+        $this->afficherErreur("L'identifiant du quizz est requis !");
+        exit();
     }
 
     $managerQuestion = new QuestionDao($this->getPdo());
@@ -177,7 +179,8 @@ class ControllerQuestion extends Controller
             ]);
         } else {
             // Si l'ajout échoue, afficher une erreur
-            die("Erreur lors de l'ajout de la question.");
+            $this->afficherErreur("Erreur lors de l'ajout de la question.");
+            exit();
         }
     }
 
@@ -249,7 +252,8 @@ class ControllerQuestion extends Controller
                 exit;
             } else {
                 // Erreur de mise à jour
-                echo "Erreur lors de la modification de la question.";
+                $this->afficherErreur("Erreur lors de la modification de la question.");
+                exit();
             }
         }
 
@@ -278,7 +282,8 @@ class ControllerQuestion extends Controller
             exit;
         } else {
             // Erreur de suppression
-            echo "Erreur lors de la suppression de la question.";
+            $this->afficherErreur("Erreur lors de la suppression de la question.");
+            exit();
         }
     }
 
@@ -290,10 +295,10 @@ class ControllerQuestion extends Controller
         // Récupère l'ID du quizz
         $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
 
-        if (!$idQuizz) {
-            echo "ID du quizz manquant.";
-            return;
-        }
+    if (!$idQuizz) {
+        $this->afficherErreur("ID du quizz manquant.");
+        exit();
+    }
 
         // Récupère le nombre total de questions du quizz
         $managerQuizz = new QuizzDao($this->getPdo());
@@ -350,15 +355,16 @@ class ControllerQuestion extends Controller
         // Ajouter le chemin de l'image dans la réponse
         $cheminImage = $question->getCheminImage();
 
-        echo json_encode([
-            "question" => $question->getContenu(),
-            "reponses" => $reponses,
-            "difficulty" => $question->getNvDifficulte(),
-            "difficultyClass" => $difficultyClass,
-            "numero" => $numero,
-            "image" => $cheminImage // Ajout du chemin de l'image
-        ]);
-    }
+    echo json_encode([
+        "question" => $question->getContenu(),
+        "reponses" => $reponses,
+        "difficulty" => $question->getNvDifficulte(),
+        "difficultyClass" => $difficultyClass,
+        "numero" => $numero,
+        "image" => $cheminImage // Ajout du chemin de l'image
+    ]);
+}
+
     
 }
 
