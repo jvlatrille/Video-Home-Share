@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (loadRandomBtn) {
         loadRandomBtn.addEventListener('click', function () {
-            // Adapte le chemin en fonction du dossier dans lequel se trouve ton projet :
             fetch('index.php?controleur=oa&methode=decouvrirPlus')
                 .then(response => {
                     return response.text();
@@ -166,8 +165,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(text => {
                     try {
                         const data = JSON.parse(text);
-
-                        // On cible le container puis la div .row
                         const containerEl = document.getElementById('decouvrirOaContainer');
                         if (!containerEl) {
                             console.error('Container #decouvrirOaContainer non trouvé.');
@@ -181,21 +178,32 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        // Ajoute chaque œuvre dans le container
                         data.forEach(oa => {
-                            row.innerHTML += `
-                                <div class="col">
-                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
-                                        <div class="card h-100 shadow-sm">
-                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;" loading="lazy">`
-                                            : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-                                            <div class="card-body text-center">
-                                                <h6 class="card-title text-truncate">${oa.nom}</h6>
-                                            </div>
+                            const newCol = document.createElement('div');
+                            newCol.className = 'col';
+                            newCol.style.opacity = '0';
+                            newCol.style.transform = 'translateY(20px)';
+                            newCol.style.transition = 'all 0.5s ease-out';
+                            
+                            newCol.innerHTML = `
+                                <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;" loading="lazy">`
+                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                             `;
+                            
+                            row.appendChild(newCol);
+                            
+                            
+                            setTimeout(() => {
+                                newCol.style.opacity = '1';
+                                newCol.style.transform = 'translateY(0)';
+                            }, 50);
                         });
                     } catch(e) {
                         console.error('Erreur lors du parsing du JSON:', e);

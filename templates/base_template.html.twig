@@ -123,10 +123,10 @@
 				</div>
 				<div class="py-2 d-flex justify-content-center flex-wrap">
 					{% if utilisateurConnecte %}
-						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
-						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quiz</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
+						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: 500">Forum</a>
+						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: 500">Mes listes</a>
+						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: 500">Quiz</a>
+						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: 500">Jeux</a>
 					{% else %}
 						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
 					{% endif %}
