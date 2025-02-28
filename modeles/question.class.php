@@ -9,7 +9,9 @@ class question{
 	private ?string $mauvaiseReponse1;
 	private ?string $mauvaiseReponse2;
 	private ?string $mauvaiseReponse3;
-	public function __construct(?int $idQuestion, ?string $contenu, ?int $numero, ?string $nvDifficulte, ?string $bonneReponse, ?string $cheminImage, ?string $mauvaiseReponse1,?string $mauvaiseReponse2, ?string $mauvaiseReponse3) {
+	private ?int $idQuizz;
+
+	public function __construct(?int $idQuestion, ?string $contenu, ?int $numero, ?string $nvDifficulte, ?string $bonneReponse, ?string $cheminImage, ?string $mauvaiseReponse1,?string $mauvaiseReponse2, ?string $mauvaiseReponse3, ?int $idQuizz) {
 
 		$this->idQuestion = $idQuestion;
 		$this->contenu = $contenu;
@@ -20,6 +22,7 @@ class question{
 		$this->mauvaiseReponse1 = $mauvaiseReponse1;
 		$this->mauvaiseReponse2 = $mauvaiseReponse2;
 		$this->mauvaiseReponse3 = $mauvaiseReponse3;
+		$this->idQuizz = $idQuizz;
 	}
 
 	public function getIdQuestion() : ?int {
@@ -88,5 +91,13 @@ class question{
 
 	public function setMauvaiseReponse3(?string $value) {
 		$this->mauvaiseReponse3 = $value;
+	}
+
+	public function getIdQuizz() : ?int {
+		return $this->idQuizz;
+	}
+
+	public function setIdQuizz(?int $id) {
+		$this->idQuizz = $id;
 	}
 }

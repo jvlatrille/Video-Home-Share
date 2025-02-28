@@ -186,6 +186,25 @@ class ControllerQuestion extends Controller
 }
 
 
+public function afficherModifierQuestion()
+{
+    $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+    if ($id === null) {
+        $template = $this->getTwig()->load('quizzModifier.html.twig');
+        echo $template->render();
+
+    }
+    
+    //Recupere la notification
+    $managerQuestion=New QuestionDao($this->getPdo());
+    $questionListe=$managerQuestion->findAll($id);
+
+    //Generer la vue
+    $template = $this->getTwig()->load('questionModifier.html.twig');
+    
+    echo $template->render(['questionListe'=>$questionListe]);
+}
 
 
     // Fonction pour modifier une question
@@ -221,7 +240,7 @@ class ControllerQuestion extends Controller
             // Met à jour la question dans la base de données
             if ($managerQuestion->update($question)) {
                 // Redirige vers la liste des questions
-                header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $question->getIdQuizz());
+                header('Location: index.php?controleur=question&methode=afficherModifierQuestion&id=' . $question->getIdQuizz());
                 exit;
             } else {
                 // Erreur de mise à jour

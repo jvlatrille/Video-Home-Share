@@ -56,7 +56,10 @@ class QuestionDao {
     
     // Fonction pour afficher une question
     public function find(int $id): ?question {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."question q WHERE q.idQuestion = :id";
+        $sql = "SELECT * 
+                FROM ".PREFIXE_TABLE."question q 
+                INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
+                WHERE p.idQuestion = :id";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['id' => $id]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
@@ -104,7 +107,8 @@ class QuestionDao {
             $data['cheminImage'],
             $data['mauvaiseReponse1'],
             $data['mauvaiseReponse2'],
-            $data['mauvaiseReponse3']
+            $data['mauvaiseReponse3'],
+            $data['idQuizz']
         );
     }
 

@@ -143,7 +143,7 @@ class ControllerQuizz extends Controller {
             
             $managerQuiz->update($quiz);
             
-            header('Location: index.php?controleur=quizz&methode=listerQuizz');
+            header('Location: index.php?controleur=question&methode=afficherModifierQuestion&id=' . $idQuizz);
             exit();
         } else {
             header('Location: index.php?controleur=quizz&methode=listerQuizz');
