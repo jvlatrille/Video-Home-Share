@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ constant('WEBSITE_LANGUAGE')}}">
 	<head>
-			<script src="js/patientez.js"></script>
+
+
+{% block scripts %} 
+
+<script src="js/patientez.js"></script>
 
 <script>
  document.addEventListener('DOMContentLoaded', () => {
@@ -14,7 +18,8 @@
 
     });
 
- 
+ {% endblock %}
+
 </script>
 		<script src="node_modules/tarteaucitronjs/tarteaucitron.js"></script>
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -338,6 +343,6 @@ tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */
 			</div>
 		</footer>
 
-		{% block scripts %}{% endblock %}
+		{# {% block scripts %}{% endblock %} #}
 	</body>
 </html>

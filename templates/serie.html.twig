@@ -329,7 +329,7 @@
     {% endif %}
 
 
-{% block scripts %}
+{# {% block scripts %}
     {% if utilisateurConnecte %}
         <script src = "js/noterFilm.js"></script>
     {% endif %}
@@ -338,11 +338,20 @@
         <script src="js/patientez.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
-                    patienterLien(lienCarouselSuggFilm); // Suggestion film
+                    patienterLien(lienCarouselSuggFilm); // Suggestion serie
                 });
         </script>
-{% endblock %}
+{% endblock %} #}
 
+{% block script %} 
+<script src="js/patientez.js"></script>
+<script>
+
+ document.addEventListener('DOMContentLoaded', () => {
+        patienterLien(lienCarouselSuggSerie); // Suggestion série
+    });
+</script>
+{% endblock %}
     
 
 {% endblock %}
