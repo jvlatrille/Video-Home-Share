@@ -35,8 +35,7 @@ class OADao
                 $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                error_log('Erreur PDO : ' . $e->getMessage());
-                throw $e;
+                $this->afficherErreur("Impossible de se connecter à la base de données.");
             }
         }
 
@@ -517,8 +516,8 @@ class OADao
     public function ajouterNote(int $idUtilisateur, int $idTMDB, int $note): bool
     {
         if ($note < 1 || $note > 5) {
-            die('La note doit être comprise entre 1 et 5.');
-        }
+            $this->afficherErreur("La note doit être comprise entre 1 et 5.");
+        }        
 
         $pdo = $this->getConnection();
         $query = 'INSERT INTO ' . PREFIXE_TABLE . 'notes (idUtilisateur, idTMDB, note) 
@@ -635,5 +634,17 @@ class OADao
             return [];
         }
         return array_slice($results['results'], 0, 10);
+    }
+
+    /**
+     * @brief Affiche une page d'erreur proprement
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        require_once __DIR__ . '/../controllers/controller_erreur.class.php';
+        $erreurController = new ErreurController();
+        $erreurController->renderErreur($message);
+        exit();
     }
 }

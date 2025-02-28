@@ -33,7 +33,7 @@ function ajouterWatchlist(select) {
             <img src="${selectedImage}" alt="${selectedText}" class="me-2" style="width: 50px; height: auto;">
             ${selectedText}
         </span>
-        <button type="button" class="btn-close" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}', '${selectedType}')"></button>
+        <button type="button" class="btn-close ilFautPatienter" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}', '${selectedType}')"></button>
         `;
         
         document.getElementById('selectedItemsContainer').appendChild(selectedItem);
