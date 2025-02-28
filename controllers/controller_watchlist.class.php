@@ -194,7 +194,6 @@ class ControllerWatchList extends Controller
 
         // Association des œuvres à la watchlist
         foreach ($oeuvresFormatees as $oeuvre) {
-            var_dump("entree");
             $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
         }
 
@@ -225,7 +224,7 @@ class ControllerWatchList extends Controller
             'titre' => $_POST['titre'] ?? null,
             'genre' => $_POST['genre'] ?? null,
             'description' => $_POST['description'] ?? null,
-            'visible' => $_POST['visible'] ?? null,
+            'visible' => ($_POST['visible'] == "1") ? 1 : 0
         ];
         $regles = [
             'titre' => [
@@ -246,7 +245,12 @@ class ControllerWatchList extends Controller
                 'longueur_min' => 1,
                 'longueur_max' => 255,
             ],
+            'visible' => [
+                'obligatoire' => true,
+                'type' => 'bool',
+            ],
         ];
+
         $validation = new Validator($regles);
         if(!$validation->valider($donnees)){
             $erreurs = $validation->getMessagesErreurs();
@@ -259,7 +263,6 @@ class ControllerWatchList extends Controller
         $genre = $donnees['genre'];
         $description = $donnees['description'];
         $visible = $donnees['visible'];
-        
 
         //Modifie la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
@@ -269,8 +272,8 @@ class ControllerWatchList extends Controller
         $watchList->setGenre($genre);
         $watchList->setDescription($description);
         $watchList->setVisible($visible);
+        $watchList->setIdUtilisateur($utilisateurConnecte->getIdUtilisateur());
         $managerWatchList->modifierWatchlistComplete($watchList);
-
         //Redirige vers la watchlist
         header('Location: index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist=' . $watchList->getIdWatchlist() . ''); 
         }

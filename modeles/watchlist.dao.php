@@ -314,19 +314,24 @@ class WatchListDao {
             $sql = "UPDATE ".PREFIXE_TABLE."watchlist SET titre = :titre, genre = :genre, description = :description, visible = :visible WHERE idWatchlist = :idWatchlist";
             
             try {
-            $pdoStatement = $this->pdo->prepare($sql);
-            $pdoStatement->execute([
-                'titre' => $watchlist->getTitre(),
-                'genre' => $watchlist->getGenre(),
-                'description' => $watchlist->getDescription(),
-                'visible' => $watchlist->getVisible(),
-                'idWatchlist' => $watchlist->getIdWatchlist()
-            ]);
-            return true;
+                $pdoStatement = $this->pdo->prepare($sql);
+                $result = $pdoStatement->execute([
+                    'titre' => $watchlist->getTitre(),
+                    'genre' => $watchlist->getGenre(),
+                    'description' => $watchlist->getDescription(),
+                    'visible' => (int)$watchlist->getVisible(),
+                    'idWatchlist' => $watchlist->getIdWatchlist()
+                ]);
+                if (!$result) {
+                    error_log("Échec de la mise à jour de la watchlist.");
+                }
+                return $result;
             } catch (Exception $e) {
-            error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
-            return false;
+                error_log("Erreur lors de la modification de la watchlist : " . $e->getMessage());
+                var_dump($e->getMessage());
+                return false;
             }
+            
         }
 
     /**
