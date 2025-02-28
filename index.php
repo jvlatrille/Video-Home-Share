@@ -34,5 +34,7 @@ try  {
   
     $controller->call($methode);
 }catch (Exception $e) {
-   die('Erreur : ' . $e->getMessage());
+    $erreurController = new ErreurController($twig, $loader);
+    $erreurController->renderErreur($e->getMessage());
+    exit;
 }

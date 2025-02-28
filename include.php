@@ -29,6 +29,7 @@ require_once 'controllers/controller_profil.class.php';
 require_once 'controllers/controller_commentaire.class.php';
 require_once 'controllers/controller_newsletter.class.php';
 require_once 'controllers/controller_admin.class.php';
+require_once 'controllers/controller_erreur.class.php';
 
 
 

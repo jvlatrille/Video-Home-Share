@@ -1,0 +1,12 @@
+{% extends 'base_template.html.twig' %}
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-danger text-center">Une erreur est survenue</h1>
+        <div class="alert alert-danger mt-4 text-center" role="alert">
+            {{ message }}
+        </div>
+        <div class="text-center">
+            <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Revenir à la page précédente</a>
+        </div>
+    </div>
+{% endblock %}
