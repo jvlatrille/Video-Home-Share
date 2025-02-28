@@ -1,11 +1,8 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="card p-4 shadow-lg" style="width: 50%;">
@@ -14,7 +11,7 @@
 
 
     <!-- Formulaire pour ajouter un quizz -->
-    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST">
+    <form action="index.php?controleur=quizz&methode=ajouterQuizz" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="nom" class="form-label">Nom du Quizz</label>
             <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez le nom du quizz" required>
@@ -39,6 +36,14 @@
             <div class="mb-3">
                 <label for="nbQuestion" class="form-label">Nombre de questions</label>
                 <input type="number" class="form-control" id="nbQuestion" name="nbQuestion" min="1" placeholder="Entrez le nombre de questions" required>
+            </div>
+
+            <!-- Image de quizz -->
+            <div class="mb-3">
+                <label for="imageQuizz" class="form-label d-none">Changer Image de quizz :</label>
+                <input type="file" class="form-control" id="imageQuizz" name="imageQuizz"
+                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
             </div>
 
             <div class="mb-4 d-flex align-items-center justify-content-center">

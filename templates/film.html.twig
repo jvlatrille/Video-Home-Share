@@ -14,120 +14,118 @@
 {% endblock %}
 
 {% block content %}
-    <div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-        <a href="index.php" class="text-white text-decoration-none">
-            <i class="bi bi-house-door-fill"></i> Accueil</a>
-    </div>
-    <title>{{ oa.nom }}</title>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
 
-    {% if oa is defined %}
-        <div id="film-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
-            <div class="row">
-                <div class="col-md-4">
-                    {% if oa.posterPath %}
-                        <img src="{{ oa.posterPath }}" 
-                             alt="Affiche de {{ oa.nom }}" 
-                             class="img-fluid rounded mb-3" 
-                             style="max-height: 500px; object-fit: cover; cursor: pointer;"
-                             data-bs-toggle="modal" 
-                             data-bs-target="#afficheModal">
-                    {% else %}
-                        <p><em>Affiche non disponible</em></p>
-                    {% endif %}
-                </div>
+<title>{{ oa.nom }}</title>
 
-                <div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-transparent border-0">
-                            <div class="modal-body d-flex align-items-center p-0 position-relative">
-                                {% if oa.posterPath %}
-                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;">
-                                {% else %}
-                                    <p><em>Affiche non disponible</em></p>
-                                {% endif %}
-                                <h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
-                                <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{% if oa is defined %}
+    <div id="film-container" class="container mt-4 p-4 bg-light bg-opacity-75 border rounded shadow-sm">
+        <div class="row">
+            <div class="col-md-4">
+                {% if oa.posterPath %}
+                    <img src="{{ oa.posterPath }}" 
+                         alt="Affiche de {{ oa.nom }}" 
+                         class="img-fluid rounded mb-3" 
+                         style="max-height: 500px; object-fit: cover; cursor: pointer;"
+                         data-bs-toggle="modal" 
+                         data-bs-target="#afficheModal" loading="lazy">
+                {% else %}
+                    <p><em>Affiche non disponible</em></p>
+                {% endif %}
+            </div>
 
-                <div class="col-md-8">
-                    <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
-                    <div class="bg-light p-3 rounded">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
-                                <p><strong>Durée :</strong> {{ oa.duree }} min</p>
-                                <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
-                            </div>
-                            <div>
-                                
-                                <p><strong>Producteur :</strong> 
-                                    {% if oa.producteur %}
-                                        {{ oa.producteur }}
-                                    {% else %}
-                                        <em>Non spécifié</em>
-                                    {% endif %}
-                                </p>                                
-                            </div>
+            <div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content bg-transparent border-0">
+                        <div class="modal-body d-flex align-items-center p-0 position-relative">
+                            {% if oa.posterPath %}
+                                <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;" loading="lazy">
+                            {% else %}
+                                <p><em>Affiche non disponible</em></p>
+                            {% endif %}
+                            <h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
+                            <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
-                        <p><strong>Note :</strong></p>
-                        <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
-                            {% for i in 1..5 %}
-                                <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
-                                    alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;">
-                            {% endfor %}
-                            <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(2, 'common') }}</span>
-                        </div>
-                        {% if utilisateurConnecte %}
-                            <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
-                        {% endif %}
-                        {% if utilisateurConnecte %}
-                            <div class="mt-2">
-                                <p>
-                                    <strong>Votre note :</strong> 
-                                    <span id="user-rating-display">
-                                        {% if utilisateurNote is defined %}
-                                            {{ utilisateurNote }}
-                                        {% else %}
-                                            <em>Vous n'avez pas encore noté ce film.</em>
-                                        {% endif %}
-                                    </span> / 5
-                                </p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="d-flex mt-3">
-                        <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un commentaire</a>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
-                            Ajouter à une liste
-                        </button>
                     </div>
                 </div>
             </div>
-                         <!-- Modal pour ajouter le film à une watchlist -->
-						<div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="addFilmModalLabel">Ajouter à la liste</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<form action="index.php?controleur=watchlist&methode=ajouterOaWatchList" method="post">
-											{% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
-												{% for watchlist in watchListListe %}
-													<div class="mb-3">
-														<div class="form-check">
-															<input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
-															<label class="form-check-label">{{ watchlist.titre }}</label>
-														</div>
-													</div>
-												{% endfor %}
-												<input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
-                                                <input type="hidden" name="type" value="{{ oa.type }}">
+
+            <div class="col-md-8">
+                <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
+                <div class="bg-light p-3 rounded">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y') }}</p>
+                            <p><strong>Durée :</strong> {{ oa.duree }} min</p>
+                            <p><strong>Genre :</strong> {{ oa.genres|join(', ') }}</p>
+                        </div>
+                        <div>
+                            <p><strong>Producteur :</strong> 
+                                {% if oa.producteur %}
+                                    {{ oa.producteur }}
+                                {% else %}
+                                    <em>Non spécifié</em>
+                                {% endif %}
+                            </p>                                
+                        </div>
+                    </div>
+                    <p><strong>Note :</strong></p>
+                    <div id="rating-system" data-id="{{ oa.idOa }}" class="d-flex align-items-center">
+                        {% for i in 1..5 %}
+                            <img src="{{ 'img/' ~ (i <= (oa.note / 2) ? 'noteRemplie.png' : 'noteVide.png') }}" 
+                                alt="{{ i <= (oa.note / 2) ? 'Note remplie' : 'Note vide' }}" width="30" height="30" data-value="{{ i }}" class="star me-1" style="cursor: pointer;" loading="lazy">
+                        {% endfor %}
+                        <span id="rating-display" class="ms-2 fs-5">{{ (oa.note / 2)|round(2, 'common') }}</span>
+                    </div>
+                    {% if utilisateurConnecte %}
+                        <div id="rating-feedback" class="mt-2 text-muted">Survolez un popCorn pour noter</div>
+                    {% endif %}
+                    {% if utilisateurConnecte %}
+                        <div class="mt-2">
+                            <p>
+                                <strong>Votre note :</strong> 
+                                <span id="user-rating-display">
+                                    {% if utilisateurNote is defined %}
+                                        {{ utilisateurNote }}
+                                    {% else %}
+                                        <em>Vous n'avez pas encore noté ce film.</em>
+                                    {% endif %}
+                                </span> / 5
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="d-flex mt-3">
+                    <a href="#commentaires" class="btn btn btn-primary me-2">Ajouter un commentaire</a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFilmModal">
+                        Ajouter à une liste
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Modal pour ajouter le film à une watchlist -->
+        <div class="modal fade" id="addFilmModal" tabindex="-1" aria-labelledby="addFilmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addFilmModalLabel">Ajouter à la liste</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="index.php?controleur=watchlist&methode=ajouterOaWatchList" method="post">
+                            {% if watchListListe is defined and watchListListe is not empty and utilisateurConnecte is not null %}
+                                {% for watchlist in watchListListe %}
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="idWatchList" value="{{ watchlist.idWatchlist }}" id="idWatchList">
+                                            <label class="form-check-label">{{ watchlist.titre }}</label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
+                                <input type="hidden" name="type" value="{{ oa.type }}">
+                                <button type
 											<button type="submit" class="btn btn-primary">Ajouter</button>
 											{% else %}
 												<p>Aucune liste trouvée.</p>
@@ -152,9 +150,9 @@
                     {% for participant in participants|slice(0, 12) %}
                         <div class="col-4 col-md-2 text-center mb-3">
                             {% if participant.photo %}
-                                <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                                <img src="{{ participant.photo }}" alt="Photo de {{ participant.nom }}" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" loading="lazy">
                             {% else %}
-                                <img src="img\profils\acteur_Default.jpg" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="Photo non disponible">
+                                <img src="img\profils\acteur_Default.jpg" class="img-thumbnail rounded-circle" style="width: 80px; height: 80px; object-fit: cover;" alt="Photo non disponible" loading="lazy">
                             {% endif %}
                             <p class="mt-2 fw-bold">{{ participant.nom }}</p>
                             <p class="text-muted small">{{ participant.role }}</p>
@@ -168,7 +166,7 @@
             {% if suggestions is defined and suggestions|length > 0 %}
                 <div class="mt-5">
                     <h2 class="text-center mb-4">Suggestions de films</h2>
-                    <div  class="carousel slide" data-bs-ride="carousel">
+                    <div id="carouselSuggestions"  class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             {% for suggestionsChunk in suggestions|batch(5, null) %}
                                 <div class="carousel-item {% if loop.first %}active{% endif %}">
@@ -184,7 +182,7 @@
                                                             <img src="{{ suggestion.posterPath }}" 
                                                                 alt="{{ suggestion.nom }}" 
                                                                 class="img-fluid rounded mb-2 shadow-sm"
-                                                                style="height: 150px; object-fit: cover;">
+                                                                style="height: 150px; object-fit: cover;" loading="lazy">
                                                             <p class="text-truncate w-100">{{ suggestion.nom }}</p>
                                                         </a>
                                                 </div>
@@ -222,7 +220,7 @@
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#backdropModal" 
                                                     data-backdrop-src="{{ backdrop.full }}"
-                                                    style="max-height: 180px; object-fit: cover; width: 100%; cursor: pointer;">
+                                                    style="max-height: 180px; object-fit: cover; width: 100%; cursor: pointer;" loading="lazy">
                                             </div>
                                         {% endif %}
                                     {% endfor %}
@@ -247,7 +245,7 @@
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content bg-transparent border-0">
                             <div class="modal-body d-flex justify-content-center">
-                                <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand">
+                                <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand" loading="lazy">
                             </div>
                             <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
@@ -277,11 +275,11 @@
                             <div class="d-flex align-items-center">
                                 {% if commentaire.photoProfil %}
                                     <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+                                        <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50" loading="lazy">
                                     </a>
                                 {% else %}
                                     <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
-                                        <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                                        <img src="/img/default.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
                                     </a>
                                 {% endif %}
                                 <div>
@@ -296,7 +294,7 @@
                                     <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCommentModal{{ commentaire.idCom }}">
                                         Modifier
                                     </button>
-                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
+                                    <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}&typeOA={{oa.type}}"
                                        class="btn btn-danger btn-sm"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
                                         Supprimer
@@ -310,6 +308,7 @@
                 <p><em>Aucun commentaire pour ce film.</em></p>
             {% endif %}
             {% for commentaire in commentaires %}
+            
                 <div class="modal fade" id="editCommentModal{{ commentaire.idCom }}" tabindex="-1" aria-labelledby="editCommentModalLabel{{ commentaire.idCom }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -321,11 +320,11 @@
                                 <form action="index.php?controleur=commentaire&methode=modifierCommentaire" method="post">
                                     <div class="mb-3">
                                         <label for="contenu{{ commentaire.idCom }}" class="form-label">Nouveau contenu</label>
-                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" 
-                                            value="{{ commentaire.contenu }}" required>
+                                        <input type="text" class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" value="{{ commentaire.contenu }}" required>
+                                        <input type="hidden" name="typeOA" id="typeOA" value="{{oa.type}}"></input>
                                     </div>
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
-                                    <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script>
+                                    {# // <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script> #}
 
                                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                                 </form>
@@ -343,6 +342,7 @@
                         <textarea class="form-control" id="contenu{{ commentaire.idCom }}" name="contenu" rows="3">{{ commentaire.contenu }}</textarea>
                     </div>
                     <input type="hidden" name="film_id" value="{{ oa.idOa }}">
+                    <input type="hidden" name="type" value="{{ oa.type }}">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                 </form>
             {% else %}
@@ -364,11 +364,4 @@
         <script src = "js/noterFilm.js"></script>
     {% endif %}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
-
-        <script src="js/patientez.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                    patienterLien(lienCarouselSuggFilm); // Suggestion film
-                });
-        </script>
 {% endblock %}

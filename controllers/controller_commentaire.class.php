@@ -28,15 +28,16 @@ class ControllerCommentaire extends Controller
      */
     public function ajouterCommentaire()
     {
-        $idTMDB = $_POST['film_id'] ?? null;
+        $idTMDB = $_POST['film_id'] ?? $_POST["serie_id"] ?? null;
         $contenu = $_POST['contenu'] ?? null;
+        $type = $_POST['type'] ?? null;
 
         if (!$this->utilisateurConnecte()) {
             die("ERREUR : Merci de vous connecter.");
         }
 
-        if (!$idTMDB || !$contenu) {
-            error_log("ERREUR - Champs manquants : idTMDB ou contenu");
+        if (!$idTMDB || !$contenu || !$type) {
+            error_log("ERREUR - Champs manquants : idTMDB,contenu ou type");
             $this->redirectAvecErreur($idTMDB);
         }
 
@@ -51,21 +52,27 @@ class ControllerCommentaire extends Controller
                 $idTMDB,
                 $contenu,
                 date('Y-m-d'),
-                $idUtilisateur
+                $idUtilisateur,
+                null,
+                null,
+                $type
             );
-
+// var_dump($commentaire);
+// exit;
             if ($dao->ajouter($commentaire)) {
-                error_log("Commentaire ajouté avec succès pour le film ID : $idTMDB par utilisateur ID : $idUtilisateur");
-                $this->redirectAvecSucces($idTMDB);
+                error_log("Commentaire ajouté avec succès pour l'oeuvre , $type, ID : $idTMDB par utilisateur ID : $idUtilisateur");
+                $this->redirectAvecSucces($idTMDB, $type);
             } else {
                 error_log("ERREUR - Échec de l'ajout du commentaire.");
-                $this->redirectAvecErreur($idTMDB);
+                $this->redirectAvecErreur($idTMDB,$type);
             }
         } catch (PDOException $e) {
             error_log("ERREUR PDO : " . $e->getMessage());
-            $this->redirectAvecErreur($idTMDB);
+            $this->redirectAvecErreur($idTMDB,$type);
         }
     }
+
+
 
     /**
      * @brief Supprime un commentaire existant
@@ -79,6 +86,7 @@ class ControllerCommentaire extends Controller
 
         $idCommentaire = $_GET['idCommentaire'] ?? null;
         $idOa = $_GET['idOa'] ?? null;
+        $type = $_GET["typeOA"] ?? null;
 
         if (!$idCommentaire || !$idOa) {
             die("ERREUR : ID du commentaire ou ID du film invalide.");
@@ -94,7 +102,7 @@ class ControllerCommentaire extends Controller
 
         $managerCommentaire->supprimer($idCommentaire);
 
-        $this->redirectAvecSucces($idOa);
+        $this->redirectAvecSucces($idOa,$type);
     }
 
     /**
@@ -108,8 +116,9 @@ class ControllerCommentaire extends Controller
 
         $idCommentaire = $_POST['idCommentaire'] ?? null;
         $nouveauContenu = $_POST['contenu'] ?? null;
+        $type = $_POST["typeOA"] ?? null;
 
-        if (!$idCommentaire || !$nouveauContenu) {
+        if (!$idCommentaire || !$nouveauContenu || !$type) {
             die("ERREUR : Données invalides.");
         }
 
@@ -122,9 +131,9 @@ class ControllerCommentaire extends Controller
         }
 
         if ($managerCommentaire->modifier($idCommentaire, $nouveauContenu)) {
-            $this->redirectAvecSucces($commentaire->getIdTMDB());
+            $this->redirectAvecSucces($commentaire->getIdTMDB(),$type);
         } else {
-            $this->redirectAvecErreur($commentaire->getIdTMDB());
+            $this->redirectAvecErreur($commentaire->getIdTMDB(),$type);
         }
     }
 
@@ -152,9 +161,14 @@ class ControllerCommentaire extends Controller
      * @brief Redirige avec un message d'erreur
      * @param int|null $idTMDB Identifiant du film
      */
-    private function redirectAvecErreur(?int $idTMDB): void
+    private function redirectAvecErreur(?int $idTMDB, ?string $type): void
     {
+        if ($type == "TV") {
+            header("Location: index.php?controleur=oa&methode=afficherSerie&idOa=$idTMDB&erreur=1");
+        } else{
+
         header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&erreur=1");
+        }
         exit();
     }
 
@@ -162,9 +176,14 @@ class ControllerCommentaire extends Controller
      * @brief Redirige avec un message de succès
      * @param int|null $idTMDB Identifiant du film
      */
-    private function redirectAvecSucces(?int $idTMDB): void
+    private function redirectAvecSucces(?int $idTMDB, ?string $type): void
     {
-        header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&succes=1");
+        if ($type == "TV") {
+            header("Location: index.php?controleur=oa&methode=afficherSerie&idOa=$idTMDB&succes=1");
+        } else {
+            header("Location: index.php?controleur=oa&methode=afficherFilm&idOa=$idTMDB&succes=1");
+        }
+        
         exit();
     }
 }

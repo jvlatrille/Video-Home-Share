@@ -77,7 +77,7 @@ class QuestionDao {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."question q INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
         WHERE p.idQuizz = :idQuizz";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['id' => $idQuizz]);
+        $pdoStatement->execute(['idQuizz' => $idQuizz]); 
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 

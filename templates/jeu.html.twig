@@ -2,11 +2,8 @@
     {% block title %}Le jeu : {{jeu.nom}} - {{ constant('WEBSITE_TITLE')}} {% endblock %}
 
     {% block content %}
-       <div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+
        <div class="container text-center p-5">
             <h1 class="">Morpion</h1>
             <div id="board" class="board justify-content-md-center">

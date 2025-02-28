@@ -1,11 +1,8 @@
 {% extends "base_template.html.twig" %}
 
 {% block content %}
-<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3 ">
-	<a href="index.php" class="text-white text-decoration-none">
-		<i class="bi bi-house-door-fill"></i> Accueil
-	</a>
-</div>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+
     <div class="container py-5 text-center">
 
         <div class="row justify-content-center">
@@ -13,7 +10,7 @@
                 <h2 class="mb-4">Résultats du Quizz</h2>
                 
                 <div class="bg-white p-5 shadow rounded">
-                    <h3 class="mb-3 text-primary">Votre Score : <strong id="score-display" class="text-dark">{{ score }}</strong> / {{ nbTotalQuestions }}</h3>
+                    <h3 class="mb-3 text-primary">Votre Score : <strong id="score-display">{{ score }}</strong> / {{ nbTotalQuestions }}</h3>
                     
                     <p id="feedback-message" class="fw-bold"></p>
                     

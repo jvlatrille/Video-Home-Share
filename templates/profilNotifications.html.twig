@@ -55,7 +55,7 @@
                                         
                                         <h5 class="card-title">{{ notifs.contenu}}</h5>
                                         <div>
-                                            <strong>Date :</strong> {{ notifs.dateNotif }}<br>
+                                            <strong>Date :</strong> {{ notifs.dateNotif|date('d/m/Y') }}<br>
                                             {# <h6><strong>Dans le forum : {{ message.nom }}</strong></h6> #}
                                             <a href="index.php?controleur=profil&methode=afficherNomForum&idMessage={{notifs.idMessage}}">Dans le forum : {{ notifs.nomForum }} </a>
 
