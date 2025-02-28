@@ -565,6 +565,16 @@ class ControllerProfil extends Controller
             $managerMessage = new MessageDao($this->getPdo());
             $messageListe = $managerMessage->chargerAPropos($idUtilisateur);
 
+            // // Grouper les messages par forumNom
+            // $groupedMessages = [];
+            // foreach ($messages as $message) {
+            //     $forumNom = $message['forumNom'];
+            //     if (!isset($groupedMessages[$forumNom])) {
+            //         $groupedMessages[$forumNom] = [];
+            //     }
+            //     $groupedMessages[$forumNom][] = $message;
+            // }
+
 
             // Récupère les commenataires postés par l'utilisateur
             $managerComm = new CommentaireDao($this->getPdo());
@@ -575,8 +585,8 @@ class ControllerProfil extends Controller
             // $titreOA =$managerOa->find();
 
 
-            $utilisateur = $managerUtilisateur->find($idUtilisateur);
-            $_SESSION['utilisateur'] = serialize($utilisateur);
+            // $utilisateur = $managerUtilisateur->find($idUtilisateur);
+            // $_SESSION['utilisateur'] = serialize($utilisateur);
 
             // Génère la vue 
             $template = $this->getTwig()->load('profilAPropos.html.twig');
@@ -590,6 +600,42 @@ class ControllerProfil extends Controller
             echo $template->render();
         }
     }
+
+    // public function afficherAPropos() //essaie avec le controler de jules
+    // {
+    //     // Vérifie si un utilisateur est connecté
+    //     if (isset($_SESSION['utilisateur'])) {
+    //         $pseudoUtilisateur = isset($_GET['pseudo']) ? $_GET['pseudo'] : null;
+
+    //         $managerUtilisateur = new UtilisateurDao($this->getPdo());
+    //         $autreUtilisateur = $managerUtilisateur->findByPseudo($pseudoUtilisateur);
+
+    //         $managerMessage = new MessageDAO($this->getPdo());
+    //         $messages = $managerMessage->getMessagesByUser($autreUtilisateur->getIdUtilisateur());
+
+    //         // Grouper les messages par forumNom
+    //         $groupedMessages = [];
+    //         foreach ($messages as $message) {
+    //             $forumNom = $message['forumNom'];
+    //             if (!isset($groupedMessages[$forumNom])) {
+    //                 $groupedMessages[$forumNom] = [];
+    //             }
+    //             $groupedMessages[$forumNom][] = $message;
+    //         }
+
+    //         $managerCommentaire = new CommentaireDAO($this->getPdo());
+    //         $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($autreUtilisateur->getIdUtilisateur());
+
+
+    //         $template = $this->getTwig()->load('profilAutre.html.twig');
+    //         echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,]);
+    //         return; // Arrête l'exécution de la méthode sinon on a un double affichage
+    //     }
+
+    //     // Sinon, affiche la page de connexion
+    //     $template = $this->getTwig()->load('connexion.html.twig');
+    //     echo $template->render();
+    // }
 
     public function afficherNomForum()
     {

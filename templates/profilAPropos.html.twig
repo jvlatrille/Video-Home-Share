@@ -23,6 +23,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                             <div class="d-flex align-items-center">
+                            {#Affichage de la photo de profil#}
                                 <div class="rounded-circle" 
                                     style="background-image: url('{{ photo }}');
                                     height: 70px;
@@ -54,8 +55,8 @@
 
 
     <!-- Affichage des commentaires -->
-    {% if commentaires is defined and commentaires is not empty %}
-                <div class="container">
+    {# {% if commentaires is defined and commentaires is not empty %} #}
+                {# <div class="container">
                     <h2>Commentaires</h2>
                         <ul class="list-group mb-4">
                             {% for commentaire in commentaires %}
@@ -64,7 +65,8 @@
                                         
                                         {# <a href="index.php?controleur=commentaire&methode=afficherAPropos&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}">
                                         
-                                        <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
+                                        <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> 
+                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
 
                                         {% if commentaire.photoProfil %}
                                             <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
@@ -90,11 +92,42 @@
                                                 Supprimer
                                             </a>
                                         </div>
-                                    {% endif %} #}
+                                    {% endif %} 
                                 </li>
                             {% endfor %}
                         </ul>
-                </div>    
-    {% endif %}
+                </div>     #}
+
+                
+		<div class="container mt-4">
+			<h2>Mes commentaires</h2>
+		
+			{% if commentaires is empty %}
+				<p class="text-center">Cet utilisateur n'a pas encore rédigé de commentaires.</p>
+			{% else %}
+				<div class="container">
+					{% for commentaire in commentaires %}
+						<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
+							<div class="card mb-3 shadow-sm">		
+								<div class="card-body d-flex align-items-center">
+									<img src="img/profils/{{ utilisateur.photoProfil }}" class="rounded-circle border shadow-sm me-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Photo de {{ utilisateur.pseudo }}">
+									<div class="d-flex flex-column flex-grow-1">
+										<span class="text-dark fw-bold me-2" style="font-size: 1.25rem;">{{ commentaire.titreOeuvre }}</span>
+										<p class="mb-1">{{ commentaire.contenu }}</p>
+										<small class="text-muted">Posté le {{ commentaire.dateCommentaire|date('d/m/Y') }}</small>
+									</div>
+
+									<!-- Titre et Affiche de l'œuvre -->
+									<div class="d-flex align-items-center">
+										<img src="{{ commentaire.backdropOeuvre|first.small }}" class="card-img-top" style="height: 100px; object-fit: cover;" alt="Capture de {{ commentaire.titreOeuvre }}">
+									</div>
+								</div>
+							</div>
+						</a>
+					{% endfor %}
+				</div>
+			{% endif %}
+		</div>	
+    {# {% endif %} #}
     
 {% endblock %}

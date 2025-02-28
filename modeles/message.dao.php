@@ -119,9 +119,7 @@ class messageDAO
             if (empty($resultats)) {
                 return null; // Aucun message trouvé
             }
-
             return $resultats;
-
            
         } catch (Exception $e) {
             error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
@@ -141,11 +139,11 @@ class messageDAO
                  VALUES ( :dateNotif, :destinataire, :contenu, :vu, :idUtilisateur, :idMessage)";
 
         $contenu = '';
-        // if ($name === 'like') {
-        //     $contenu = 'Message like';
-        // } elseif ($name === 'dislike') {
-        //     $contenu = 'Message dislike';
-        // }
+        if ($name === 'like') {
+            $contenu = 'Message like';
+        } elseif ($name === 'dislike') {
+            $contenu = 'Message dislike';
+        }
 
         $currentDate = date('Y-m-d H:i:s'); //date et heure actuelle
 
