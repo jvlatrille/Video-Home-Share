@@ -87,7 +87,6 @@ class ControllerOA extends Controller
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
-            var_dump($e);
             die('Impossible d\'afficher les détails du film.');
         }
     }

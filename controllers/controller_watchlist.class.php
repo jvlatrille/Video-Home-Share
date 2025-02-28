@@ -194,7 +194,6 @@ class ControllerWatchList extends Controller
 
         // Association des œuvres à la watchlist
         foreach ($oeuvresFormatees as $oeuvre) {
-            var_dump("entree");
             $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
         }
 

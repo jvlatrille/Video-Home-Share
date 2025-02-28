@@ -123,7 +123,6 @@ class NotificationDao{
         }
         // Hydrater et retourner l'objet Notification
         $resultat =  $this->hydrate($nomForum);
-        //var_dump($resultat);
         return $resultat;
     
     }

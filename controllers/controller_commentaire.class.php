@@ -57,7 +57,6 @@ class ControllerCommentaire extends Controller
                 null,
                 $type
             );
-// var_dump($commentaire);
 // exit;
             if ($dao->ajouter($commentaire)) {
                 error_log("Commentaire ajouté avec succès pour l'oeuvre , $type, ID : $idTMDB par utilisateur ID : $idUtilisateur");
