@@ -11,8 +11,8 @@ class ControllerMessage extends Controller
     {
         // Vérifie si le paramètre idForum est dans l'URL
         if (!isset($_GET['idForum']) || empty($_GET['idForum'])) {
-            die("Paramètre idForum manquant !");
-        }
+            $this->afficherErreur("Le paramètre idForum est manquant.");
+        }        
 
         // Récupère l'identifiant du forum
         $idForum = (int) $_GET['idForum'];
@@ -151,7 +151,7 @@ class ControllerMessage extends Controller
                 'messages' => $messages
             ]);
         } else {
-            echo "Identifiant utilisateur manquant !";
+            $this->afficherErreur("Vous devez être connecté pour ajouter un message.");
         }
     }
 
@@ -251,4 +251,17 @@ class ControllerMessage extends Controller
     //     // header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);
     //     // exit();
     // }
+
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Affiche une page d'erreur
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        $erreurController = new ErreurController($this->getTwig(), $this->getLoader());
+        $erreurController->renderErreur($message);
+        exit();
+    }
+
 }

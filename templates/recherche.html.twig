@@ -1,7 +1,7 @@
 {% extends "base_template.html.twig" %}
 
 {% block content1 %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
 {# Filtrer les œuvres sans posterPath #}
 {% set oasFiltered = [] %}
@@ -32,9 +32,9 @@
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
               {% if oa.type == 'Film' %}
-                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none">
+                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
               {% else %}
-                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none">
+                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
               {% endif %}
                   <img src="{{ oa.posterPath }}" class="card-img-top" alt="{{ oa.nom }}">
                   <div class="card-body d-flex flex-column">
@@ -56,7 +56,7 @@
         {% for forum in forumsGeneral %}
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none">
+              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none ilFautPatienter">
                 <div class="card-body d-flex flex-column">
                   <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
                   <p class="card-text text-center">{{ forum.getDescription }}</p>
@@ -77,7 +77,7 @@
         {% for user in usersGeneral %}
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none">
+              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none ilFautPatienter">
                 <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top" alt="{{ user.getPseudo }}">
                 <div class="card-body d-flex flex-column">
                   <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
@@ -101,9 +101,9 @@
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
               {% if oa.type == 'Film' %}
-                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none">
+                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
               {% else %}
-                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none">
+                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
               {% endif %}
                   <img src="{{ oa.posterPath }}" class="card-img-top" alt="{{ oa.nom }}">
                   <div class="card-body d-flex flex-column">
@@ -127,7 +127,7 @@
         {% for forum in forums %}
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none">
+              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none ilFautPatienter">
                 <div class="card-body d-flex flex-column">
                   <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
                   <p class="card-text text-center">{{ forum.getDescription }}</p>
@@ -150,7 +150,7 @@
         {% for user in users %}
           <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none">
+              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none ilFautPatienter">
                 <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top" alt="{{ user.getPseudo }}">
                 <div class="card-body d-flex flex-column">
                   <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
