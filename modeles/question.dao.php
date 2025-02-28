@@ -108,7 +108,7 @@ class QuestionDao {
             $data['mauvaiseReponse1'],
             $data['mauvaiseReponse2'],
             $data['mauvaiseReponse3'],
-            $data['idQuizz']
+            $data['idQuizz'] ?? null
         );
     }
 

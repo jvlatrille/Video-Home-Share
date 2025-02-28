@@ -159,7 +159,8 @@ class ControllerQuestion extends Controller
             $cheminImage,
             $mauvaiseReponse1,
             $mauvaiseReponse2,
-            $mauvaiseReponse3
+            $mauvaiseReponse3,
+            $idQuizz
         );
 
         // Ajout de la question

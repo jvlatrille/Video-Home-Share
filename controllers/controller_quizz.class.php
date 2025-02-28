@@ -48,16 +48,12 @@ class ControllerQuizz extends Controller {
             $theme = $_POST['theme'] ?? '';
             $nbQuestion = $_POST['nbQuestion'] ?? 1;
             $difficulte = $_POST['difficulte'] ?? 1;
+            $image = 'default.png';
+
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $idCreateur = $utilisateurConnecte->getIdUtilisateur();
             
             $pseudo = $utilisateurConnecte->getPseudo();
-    
-            // Appel à uploadImage pour gérer l'upload de l'image
-            $image = $this->uploadImage($_FILES['imageQuizz']);
-            if (!$image) {
-                $image = "default.png"; // Si l'image n'est pas valide, on utilise une image par défaut
-            }
     
             // Créer le nouvel objet Quizz
             $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur, $pseudo, $image);
@@ -65,7 +61,14 @@ class ControllerQuizz extends Controller {
             // Ajouter le quizz via le manager
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);
-            $messages = [];
+    
+            // Appel à uploadImage pour gérer l'upload de l'image
+            $info = [$idQuizz, $nom];
+            $image = $this->uploadImage($_FILES['imageQuizz'], $info);
+            if ($image) {
+                $quizz->setImage($image);
+                $managerQuizz->update($quizz);
+            }
     
             if ($idQuizz) {
                 // Rediriger avec l'ID du quizz et son nombre de questions
@@ -81,8 +84,11 @@ class ControllerQuizz extends Controller {
     }
     
 
-    public function uploadImage($image){
+    public function uploadImage($image, $info){
+        $messages = [];
         $regles = [];
+        $idQuizz = $info[0];
+        $nom = $info[1];
         // Valider le fichier photo
         $validator = new Validator($regles);
         $photoValide = $validator->validerUploadEtPhoto($image, $messages);
@@ -94,7 +100,6 @@ class ControllerQuizz extends Controller {
             $uploadDir = 'img/quizz/';
             $fileName = "$idQuizz" . "_" . "$nom" . ".$fileExtension";
             $filePath = $uploadDir . $fileName;
-            
             // Supprimer l'ancienne photo si elle existe
             $anciennePhoto = glob($uploadDir . "$idQuizz" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
             foreach ($anciennePhoto as $fichier) {
@@ -108,7 +113,9 @@ class ControllerQuizz extends Controller {
                 $messages[] = "Erreur lors de l'upload de l'image";
             }
     
-            return $managerQuizz->ajoutImage($idQuizz, $fileName);
+            $managerQuizz = new QuizzDao($this->getPdo());
+            $managerQuizz->ajoutImage($idQuizz, $fileName);
+            return $fileName;
         }
         return $photoValide;
     }    
@@ -124,6 +131,7 @@ class ControllerQuizz extends Controller {
             $theme = $_POST['theme'];
             $nbQuestion = $_POST['nbQuestion'];
             $difficulte = $_POST['difficulte'];
+            $info = [$idQuizz, $nom];
             
             $managerQuiz = new QuizzDao($this->getPdo());
             $quizExistant = $managerQuiz->find($idQuizz);
@@ -136,7 +144,7 @@ class ControllerQuizz extends Controller {
             $image = $quizExistant->getImage(); // Garde l'image actuelle par défaut
             
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $image = $this->uploadImage($_FILES['image']);
+                $image = $this->uploadImage($_FILES['image'], $info);
             }
             
             $quiz = new Quizz($idQuizz, $nom, $theme, $nbQuestion, $difficulte, null, null, $image);
