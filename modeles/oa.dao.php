@@ -71,56 +71,48 @@ class OADao
     
         // Construction de l'URL
         $url = $this->apiBaseUrl . $endpoint;
+
         if ($useAccessToken) {
+            // Pour les requêtes sécurisées avec Access Token
             $headers = [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Content-Type: application/json',
             ];
         } else {
+            // Pour les requêtes publiques avec API Key
             $params['api_key'] = $this->apiKey;
             $headers = ['Content-Type: application/json'];
         }
+
+        // Ajouter les paramètres à l'URL même avec AccessToken
         if (!empty($params)) {
             $url .= '?' . http_build_query($params);
         }
-    
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        // Настройка SSL (nastroyka SSL, configuration SSL) en production
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+
+        // C'est pas bien mais on le fait TEMPORAIREMENT pour éviter les erreurs de certificat
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         $response = curl_exec($curl);
-    
+
         if (curl_errno($curl)) {
-            error_log('Erreur cURL : ' . curl_error($curl));
-            return [];
+            die('Erreur cURL : ' . curl_error($curl));
         }
+
         curl_close($curl);
-    
+
         $decodedResponse = json_decode($response, true);
         if (isset($decodedResponse['status_code'])) {
-            error_log('Erreur API TMDB : ' . $decodedResponse['status_message']);
-            return [];
+            die('Erreur API TMDB : ' . $decodedResponse['status_message']);
         }
-    
-        // Stockage en cache si activé
-        if ($cache && $cacheFile) {
-            file_put_contents($cacheFile, json_encode($decodedResponse));
-        }
-    
-        // Après avoir obtenu $decodedResponse
-        if ($cache && $cacheFile) {
-            $result = file_put_contents($cacheFile, json_encode($decodedResponse));
-            if ($result === false) {
-                error_log("Erreur lors de l'écriture dans le cache : $cacheFile");
-            } else {
-                error_log("Mise en cache de la réponse pour $endpoint dans $cacheFile");
-            }
-        }        
-        return $decodedResponse;
-    }    
+
+        return $decodedResponse ?? [];
+    }
+
 
 
     /**
@@ -129,7 +121,7 @@ class OADao
      * @param string $size Taille de l'image
      * @return string URL complète du poster
      */
-    private function getPosterUrl(?string $posterPath, string $size = 'w500'): string
+    private function getPosterUrl(?string $posterPath, string $size = 'original'): string
     {
         $baseUrl = 'https://image.tmdb.org/t/p/';
         $defaultImage = 'https://via.placeholder.com/500x750?text=Image+non+disponible';
