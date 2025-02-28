@@ -88,8 +88,7 @@ class QuestionDao {
 
         if (!$resultats) {
             // Si aucune question n'est trouvée pour ce quizz
-            var_dump("Aucune question trouvée pour ce quizz.");
-            return null;
+            return $resultats;
         }
 
         // Hydrate toutes les questions récupérées
@@ -184,14 +183,41 @@ class QuestionDao {
     }
 
     public function delete(int $id): bool {
-        $sql = "DELETE FROM ".PREFIXE_TABLE."question WHERE idQuestion = :id";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute(['id' => $id]);
+        $sql = "DELETE q, p
+                FROM  ".PREFIXE_TABLE."question AS q
+                LEFT JOIN  ".PREFIXE_TABLE."portersur AS p ON q.idQuestion = p.idQuestion
+                WHERE q.idQuestion = :id;";
+        $pdoStatement = $this->pdo->prepare($sql);
+        return $pdoStatement->execute(['id' => $id]);
     }
+
+    public function findQuizByQuestion(int $id)
+    {
+        $sql = "SELECT idQuizz
+                FROM  ".PREFIXE_TABLE."portersur
+                WHERE idQuestion = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result['idQuizz'];
+    }    
+
+    public function nbQuestion(int $id) {
+        $sql = "SELECT COUNT(idQuestion) AS nombre_questions
+                FROM  ".PREFIXE_TABLE."portersur AS p
+                WHERE p.idQuizz = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+        
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result['nombre_questions'];
+    }
+
     public function getLastInsertId(): int
-{
-    return $this->pdo->lastInsertId();
-}
+    {
+        return $this->pdo->lastInsertId();
+    }
 }
 
 

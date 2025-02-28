@@ -12,6 +12,15 @@
 <div class="container mt-5">
     <h1 class="mb-4 text-center">Gestion des Questions</h1>
 
+    <!-- Affichage du message d'erreur -->
+    {% if message is defined %}
+        <div class="alert alert-danger" role="alert">
+            {{ message|join(', ') }}
+        </div>
+    {% endif %}
+
+    {% if idQuiz is defined %}
+    {% endif %}
     <!-- Barre de recherche -->
     <div class="mb-4">
         <input type="text" id="searchQuestion" class="form-control" placeholder="Rechercher une question...">
@@ -43,6 +52,12 @@
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editQuestionModal{{ question.idQuestion }}">
                                 <i class="fas fa-edit"></i> Modifier
                             </button>
+
+                             <!-- Bouton Supprimer -->
+                            <a href="index.php?controleur=question&methode=supprimerQuestion&id={{ question.idQuestion }}" class="btn btn-danger ms-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+                                <i class="fas fa-trash-alt"></i>
+                                Supprimer
+                            </a>
                         </td>
                     </tr>
 

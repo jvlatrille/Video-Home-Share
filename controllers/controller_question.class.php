@@ -258,12 +258,22 @@ public function afficherModifierQuestion()
     public function supprimerQuestion()
     {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
+        $managerQuestion = new QuestionDao($this->getPdo());
+
+        $idQuiz = $managerQuestion->findQuizByQuestion($id);
+        if((int)$managerQuestion->nbQuestion($idQuiz) == 1)
+        {
+            $message = ["Vous devez avoir au moins une question"];
+            $template = $this->getTwig()->load('questionModifier.html.twig');
+            echo $template->render(['message' => $message,
+                                    'idQuiz' => $idQuiz]);
+            return ;
+        }
 
         // Supprime la question
-        $managerQuestion = new QuestionDao($this->getPdo());
         if ($managerQuestion->delete($id)) {
             // Redirige vers la liste des questions
-            header('Location: index.php?controleur=question&methode=listerQuestion&idQuizz=' . $_GET['idQuizz']);
+            header('Location: index.php?controleur=question&methode=afficherModifierQuestion&id=' . $idQuiz);
             exit;
         } else {
             // Erreur de suppression

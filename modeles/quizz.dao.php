@@ -129,5 +129,17 @@ class QuizzDao {
                                        'image' => $image,
                                        'id' => $id]);
     }
+
+    public function delete($id)
+    {
+        $sql = "DELETE q, p, t
+                FROM  ".PREFIXE_TABLE."quizz AS q
+                LEFT JOIN  ".PREFIXE_TABLE."portersur AS p ON q.idQuizz = p.idQuizz
+                LEFT JOIN  ".PREFIXE_TABLE."question AS t ON p.idQuestion = t.idQuestion
+                WHERE q.idQuizz = :id;";
+        
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        return $pdoStatement->execute(['id' => $id]);
+    }
 }
 

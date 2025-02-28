@@ -38,13 +38,19 @@
                         <td>{{ quiz.nom }}</td>
                         <td>{{ quiz.theme }}</td>
                         <td>{{ quiz.pseudo }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editQuizModal{{ quiz.idQuizz }}">
-                                <i class="fas fa-edit"></i>
-                                Modifier
-                            </button>
+                            <td class="text-center">
+                                <!-- Bouton Modifier -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editQuizModal{{ quiz.idQuizz }}">
+                                    <i class="fas fa-edit"></i>
+                                    Modifier
+                                </button>
 
-                        </td>
+                                <!-- Bouton Supprimer -->
+                                <a href="index.php?controleur=quizz&methode=supprimerQuizz&id={{ quiz.idQuizz }}" class="btn btn-danger ms-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Supprimer
+                                </a>
+                            </td>
                     </tr>
 
                     <!-- Modal de modification du quiz -->

@@ -165,9 +165,17 @@ class ControllerQuizz extends Controller {
         
         // Supprime le quizz
         $managerQuizz = new QuizzDao($this->getPdo());
+
+        $uploadDir = 'img/quizz/';
+        $image = glob($uploadDir . "$id" . "_*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+        foreach ($image as $fichier) {
+            if (is_file($fichier)) {
+                unlink($fichier);
+            }
+        }
         if ($managerQuizz->delete($id)) {
             // Redirige vers la liste des quizz
-            header('Location: index.php?controller=quizz&action=listerQuizz');
+            header('Location: index.php?controleur=quizz&methode=afficherModif');
             exit;
         } else {
             // Erreur de suppression
