@@ -49,8 +49,27 @@ class OADao
      * @param array $params Paramètres supplémentaires
      * @return array Réponse API sous forme de tableau associatif
      */
-    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false): array
-    {
+    private function makeApiRequest(string $endpoint, array $params = [], bool $useAccessToken = false, bool $cache = false, int $cacheDuration = 300): array {
+        // Correction du chemin de cache : passe du dossier modeles à la racine
+        $cacheDir = __DIR__ . '/../cache/';
+        $cacheFile = null;
+    
+        // if ($cache) {
+        //     if (is_dir($cacheDir) && is_writable($cacheDir)) {
+        //         $cacheKey = md5($endpoint . serialize($params) . ($useAccessToken ? '1' : '0'));
+        //         $cacheFile = $cacheDir . $cacheKey . '.json';
+        //         if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheDuration) {
+        //             error_log("Utilisation du cache pour l'endpoint : $endpoint"); // (использование кеша, utilisation du cache)
+        //             $cachedData = file_get_contents($cacheFile);
+        //             return json_decode($cachedData, true);
+        //         }
+        //     } else {
+        //         error_log("Le dossier de cache n'existe pas ou n'est pas accessible, désactivation du cache.");
+        //         $cache = false;
+        //     }
+        // }        
+    
+        // Construction de l'URL
         $url = $this->apiBaseUrl . $endpoint;
 
         if ($useAccessToken) {
@@ -204,7 +223,12 @@ class OADao
             isset($data['genres']) ? array_column($data['genres'], 'name') : [],
             null,
             $this->getPosterUrl(posterPath: $data['poster_path'] ?? null),
-            $this->getBackdrops($data['id'] ?? null, 'movie'),
+            isset($data['id']) ? $this->getBackdrops((int)$data['id'], 'movie') : [
+                [
+                    'small' => 'https://via.placeholder.com/300x169?text=Image+non+disponible',
+                    'full'  => 'https://via.placeholder.com/1280x720?text=Image+non+disponible'
+                ]
+            ],            
             $this->parseParticipants($data['credits'] ?? []),
             $data['producer'] ?? null,
             null,

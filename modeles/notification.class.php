@@ -41,6 +41,16 @@ class Notification{
     */
     private ?int $idUtilisateur;
 
+    /**
+    * @brief Identifiant du message lié à la notification
+    */
+    private ?int $idMessage;
+
+    /**
+    * @brief Nom du forum d'où vient le message lié à la notification
+    */
+    private ?string $nomForum;
+
     
     /**
      * @brief Constructeur de la classe Notification
@@ -48,17 +58,21 @@ class Notification{
      * @param string|null $dateNotif Date de la notification
      * @param string|null $destinataire Pseudo de l'expéditeur de la notification
      * @param string|null $contenu Contenu de la notification
-     * @param bool|null $vu Indique si la notification a été vu oui ou non
-     * @param string|null $idUtilisateur Identifiant de l'utilisateur
+     * @param bool|false $vu Indique si la notification a été vu oui ou non
+     * @param int|null $idUtilisateur Identifiant de l'utilisateur
+     * @param int|null $idMessage Identifiant du message
+     * @param string|null $nomForum Nom du forum
      */
     //Constructeur de la classe Notification
-    public function __construct(?int $idNotif=null, ?string $dateNotif=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null, ?int $idUtilisateur=null){
+    public function __construct(?int $idNotif=null, ?string $dateNotif=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null, ?int $idUtilisateur=null, ?int $idMessage=null, ?string $nomForum=null){
         $this->idNotif=$idNotif;
         $this->dateNotif = $dateNotif;
         $this->destinataire = $destinataire;
         $this->contenu = $contenu;
-        $this->vu = $vu;
+        $this->vu = $vu ??false; //permet que vu ne soit jamais null
         $this->idUtilisateur=$idUtilisateur;
+        $this->idMessage=$idMessage;
+        $this->nomForum=$nomForum;
     }
 
 
@@ -69,7 +83,7 @@ class Notification{
      * @brief Retourne l'identifiant de la notification
      * @return int|null
      */
-    public function getIdNotif(): ?string{
+    public function getIdNotif(): ?int{
         return $this->idNotif;
     }
 
@@ -77,7 +91,7 @@ class Notification{
      * @brief Modifie l'identifiant de la notification
      * @param int|null $idNotif
      */
-    public function setIdNotif(?string $idNotif): void{
+    public function setIdNotif(?int $idNotif): void{
         $this->idNotif = $idNotif;
     }
 
@@ -131,15 +145,15 @@ class Notification{
 
     /**
      * @brief Retourne si oui ou non le notification a été vu
-     * @return bool|null
+     * @return bool|false
      */
     public function getVu(): ?bool{
-        return $this->vu;
+        return $this->vu ??false;
     }
 
         /**
      * @brief Modifie si oui ou non le notification a été vu
-     * @param bool|null $vu
+     * @param bool|false $vu
      */
     public function setVu(?bool $vu): void{
         $this->vu = $vu;
@@ -159,6 +173,40 @@ class Notification{
      */
     public function setIdUtilisateur(?int $idUtilisateur): void{
         $this->idUtilisateur = $idUtilisateur;
+    }
+
+    
+    /**
+     * @brief Retourne l'identifiant du message
+     * @return int|null
+     */
+    public function getIdMessage(): ?int{
+        return $this->idMessage;
+    }
+
+        /**
+     * @brief Modifie l'identifiant du message
+     * @param int|null $idMessage
+     */
+    public function setIdMessage(?int $idMessage): void{
+        $this->idMessage = $idMessage;
+    }
+
+     
+    /**
+     * @brief Retourne le nom du forum
+     * @return string|null
+     */
+    public function getNomForum(): ?string{
+        return $this->nomForum;
+    }
+
+        /**
+     * @brief Modifie le nom du forum
+     * @param string|null $nomForum
+     */
+    public function setNomForum(?string $nomForum): void{
+        $this->nomForum = $nomForum;
     }
 
 }

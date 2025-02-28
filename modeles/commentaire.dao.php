@@ -40,7 +40,9 @@ class CommentaireDAO
             $data['dateCommentaire'] ?? null,
             (int)($data['idUtilisateur'] ?? null),
             $data['pseudo'] ?? null,
-            $data['photoProfil'] ?? null
+            $data['photoProfil'] ?? null,
+            $date["type"] ?? null
+
         );
     }
 
@@ -59,19 +61,19 @@ class CommentaireDAO
     }
 
     /**
-     * @brief Récupère les commentaires pour un film donné
+     * @brief Récupère les commentaires pour une oeuvre donnée
      * @param int $idTMDB Identifiant TMDB du film
      * @return array Tableau d'objets Commentaire
      */
-    public function findByTMDB(int $idTMDB): array
+    public function findByTMDB(int $idTMDB,string $typeOA): array
     {
-        $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
-                FROM vhs_commentaire c
-                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
-                WHERE c.idTMDB = :idTMDB";
+        $sql = "SELECT c.idCom, c.idTMDB,c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil,c.typeOA
+                FROM ".PREFIXE_TABLE."commentaire c
+                JOIN ".PREFIXE_TABLE."utilisateur u ON c.idUtilisateur = u.idUtilisateur
+                WHERE c.idTMDB = :idTMDB and c.typeOA = :typeOA"; ;
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['idTMDB' => $idTMDB]);
+        $stmt->execute(['idTMDB' => $idTMDB,'typeOA' => $typeOA]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $this->hydrateAll($rows);
@@ -84,8 +86,8 @@ class CommentaireDAO
      */
     public function ajouter(Commentaire $commentaire): bool
     {
-        $sql = "INSERT INTO vhs_commentaire (idTMDB, contenu, dateCommentaire, idUtilisateur) 
-                VALUES (:idTMDB, :contenu, :dateCommentaire, :idUtilisateur)";
+        $sql = "INSERT INTO ".PREFIXE_TABLE."commentaire (idTMDB, contenu, dateCommentaire, idUtilisateur,typeOA) 
+                VALUES (:idTMDB, :contenu, :dateCommentaire, :idUtilisateur,:typeOA)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -93,7 +95,8 @@ class CommentaireDAO
             'idTMDB' => $commentaire->getIdTMDB(),
             'contenu' => $commentaire->getContenu(),
             'dateCommentaire' => date('Y-m-d'),
-            'idUtilisateur' => $commentaire->getIdUtilisateur()
+            'idUtilisateur' => $commentaire->getIdUtilisateur(),
+            'typeOA' => $commentaire->getType()
         ]);
     }
 
@@ -104,9 +107,9 @@ class CommentaireDAO
      */
     public function find(int $idCommentaire): ?Commentaire
     {
-        $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
-                FROM vhs_commentaire c
-                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
+        $sql = "SELECT c.idCom, c.idTMDB,c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil,c.typeOA
+                FROM ".PREFIXE_TABLE."commentaire c
+                JOIN ".PREFIXE_TABLE."utilisateur u ON c.idUtilisateur = u.idUtilisateur
                 WHERE c.idCom = :idCom";
 
         $stmt = $this->pdo->prepare($sql);
@@ -122,9 +125,9 @@ class CommentaireDAO
      */
     public function findAll(): array
     {
-        $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
-                FROM vhs_commentaire c
-                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur";
+        $sql = "SELECT c.idCom, c.idTMDB,c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil,c.typeOA
+                FROM ".PREFIXE_TABLE."commentaire c
+                JOIN ".PREFIXE_TABLE."utilisateur u ON c.idUtilisateur = u.idUtilisateur";
 
         $stmt = $this->pdo->query($sql);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -138,7 +141,7 @@ class CommentaireDAO
      */
     public function supprimer(int $idCommentaire): bool
     {
-        $sql = "DELETE FROM vhs_commentaire WHERE idCom = :idCom";
+        $sql = "DELETE FROM ".PREFIXE_TABLE."commentaire WHERE idCom = :idCom";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['idCom' => $idCommentaire]);
     }
@@ -153,9 +156,9 @@ class CommentaireDAO
      */
     public function chargerComm(?int $idUtilisateur): ?array
     {
-        $sql = "SELECT c.idCom, c.idTMDB, c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil
-                FROM vhs_commentaire c
-                JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
+        $sql = "SELECT c.idCom, c.idTMDB,c.contenu, c.dateCommentaire, c.idUtilisateur, u.pseudo, u.photoProfil,c.typeOA
+                FROM ".PREFIXE_TABLE."commentaire c
+                JOIN ".PREFIXE_TABLE."utilisateur u ON c.idUtilisateur = u.idUtilisateur
                 WHERE c.idUtilisateur = :idUtilisateur";
 
 
@@ -178,14 +181,14 @@ class CommentaireDAO
 
     public function findCommentairesByIdUtilisateur(int $idUtilisateur): array
     {
-        $sql = "SELECT c.idCom, c.idTMDB, 
+        $sql = "SELECT c.idCom, c.idTMDB,
                 c.contenu, 
                 c.dateCommentaire, 
                 c.idUtilisateur, 
                 u.pseudo, 
-                u.photoProfil
-            FROM vhs_commentaire c
-            JOIN vhs_utilisateur u ON c.idUtilisateur = u.idUtilisateur
+                u.photoProfil,c.typeOA
+            FROM ".PREFIXE_TABLE."commentaire c
+            JOIN ".PREFIXE_TABLE."utilisateur u ON c.idUtilisateur = u.idUtilisateur
             WHERE c.idUtilisateur = :idUtilisateur
             ORDER BY c.dateCommentaire DESC";
 
@@ -194,12 +197,21 @@ class CommentaireDAO
 
         $commentaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Charger les infos des œuvres via OADao
+        // Charger les infos des œuvres via OADao selon le type TV pour une série ou film
         $oaDao = new OADao($this->pdo);
+
         foreach ($commentaires as &$commentaire) {
             $tmdbId = $commentaire['idTMDB'];
-            $oeuvre = $oaDao->find($tmdbId); // Utilisation de OADao pour récupérer l'œuvre
-            $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Titre inconnu";
+            $type = $commentaire['type'];
+            
+            if ($type === 'TV') {
+                $oeuvre = $oaDao->findSerie($tmdbId);
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Série inconnue";
+            } else { 
+                $oeuvre = $oaDao->find($tmdbId);
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Titre inconnu";
+            }
+            
             $commentaire['backdropOeuvre'] = $oeuvre ? $oeuvre->getBackdropPath() : null;
         }
 
@@ -214,7 +226,7 @@ class CommentaireDAO
      */
     public function modifier(int $idCom, string $contenu): bool
     {
-        $sql = "UPDATE vhs_commentaire SET contenu = :contenu WHERE idCom = :idCom";
+        $sql = "UPDATE ".PREFIXE_TABLE."commentaire SET contenu = :contenu WHERE idCom = :idCom";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             'contenu' => $contenu,

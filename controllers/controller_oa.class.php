@@ -50,7 +50,7 @@ class ControllerOA extends Controller
             }
 
             // Récupérer les commentaires du film
-            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa(),$oa->getType());
             error_log("Nombre de commentaires : " . count($commentaires));
 
             // Récupérer les participants du film
@@ -229,9 +229,8 @@ class ControllerOA extends Controller
             }
 
             // Récupérer les commentaires de la série
-            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa(),$oa->getType());
             error_log("Nombre de commentaires : " . count($commentaires));
-
             // Récupérer les participants de la série
             $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
@@ -264,6 +263,7 @@ class ControllerOA extends Controller
                 'oa' => $oa,
                 'commentaires' => $commentaires,
                 'participants' => $participants,
+                'suggestions' => $suggestions,
                 'backdrops' => $backdrops,
             ]);
         } catch (Exception $e) {
