@@ -100,7 +100,7 @@
 			<nav class="navbar navbar-expand-lg container-fluid py-1">
 			<!-- Logo Section -->
 			<div class="navbar-brand me-1">
-				<a href="index.php" class="d-flex align-items-center text-decoration-none">
+				<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter">
 				<img src="img/LogoPopCorn.png" alt="Logo" width="60" height="50" class="me-1">
 				</a>
 			</div>
@@ -108,18 +108,20 @@
 			<!-- Main Navigation -->
 			<div class="d-flex flex-grow-1 justify-content-start">
 				{% if utilisateurConnecte %}
+
 				<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
 					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light">
 					<i class="fas fa-comments me-1"></i> Forum
+
 					</a>
 					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light">
-					<i class="fas fa-list me-1"></i> Mes listes
+					<i class="fas fa-list me-1 ilFautPatienter"></i> Mes listes
 					</a>
 					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light">
-					<i class="fas fa-question-circle me-1"></i> Quiz
+					<i class="fas fa-question-circle me-1 ilFautPatienter"></i> Quiz
 					</a>
 					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light">
-					<i class="fas fa-gamepad me-1"></i> Jeux
+					<i class="fas fa-gamepad me-1 ilFautPatienter"></i> Jeux
 					</a>
 				</div>
 				{% endif %}
@@ -131,7 +133,7 @@
 				<div class="position-relative flex-grow-1 me-3">
 				<form class="d-flex" action="index.php" method="GET">
 					<input type="hidden" name="controleur" value="index">
-					<input type="hidden" name="methode" value="rechercherFilm">
+					<input type="hidden" name="methode" value="rechercher">
 					<div class="input-group">
 					<input class="form-control" type="search" name="requete" id="recherche" 
 						placeholder="Rechercher..." aria-label="Search">
@@ -221,7 +223,7 @@
 			<div class="container">
 				<!-- Liens de Navigation -->
 				<div class="footer-nav mb-3">
-					<a href="index.php" class="footer-link mx-2">Accueil</a>
+					<a href="index.php" class="footer-link mx-2 ilFautPatienter">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>

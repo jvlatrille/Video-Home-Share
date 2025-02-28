@@ -26,7 +26,7 @@
                                 {# Affichage des boutons seulement si le contenu est "Game invite" #}
                                 {% if contenuNotif.contenu == 'Game invite' %}
                                     <div class="text-center my-3">
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=profil&methode=accepterJeux&methode=supprimerUneNotif&id={{ contenuNotif.idNotif }}'">Accepter</button>
+                                        <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=profil&methode=accepterJeux&methode=supprimerUneNotif&id={{ contenuNotif.idNotif }}'">Accepter</button>
                                         <!-- Suppression de toutes les notifications -->
                                         <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=profil&methode=refuserJeux&id={{contenuNotif.destinataire}}'">Refuser</button>
                                     </div>

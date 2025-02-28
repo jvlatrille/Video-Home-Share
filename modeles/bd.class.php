@@ -11,9 +11,8 @@ class Bd{
 
     }
     catch (PDOException $e){
-        $message = 'Problème de connexion à la base de données'. $e->getMessage();
-        echo $message;
-        die();
+        $this->afficherErreur('Problème de connexion à la base de données : ' . $e->getMessage());
+        exit();
     }}
 
     public static function getInstance(): Bd {
@@ -34,4 +33,17 @@ class Bd{
     public function __wakeup() {
         throw new Exception("Un singleton ne dois pas être deserialisé.");
     }
+
+    /**
+     * @brief Affiche une page d'erreur proprement
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        require_once __DIR__ . '/../controllers/controller_erreur.class.php';
+        $erreurController = new ErreurController();
+        $erreurController->renderErreur($message);
+        exit();
+    }
+
 }

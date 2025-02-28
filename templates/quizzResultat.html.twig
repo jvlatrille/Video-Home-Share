@@ -1,7 +1,7 @@
 {% extends "base_template.html.twig" %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
     <div class="container py-5 text-center">
 
@@ -18,8 +18,8 @@
                     <img id="score-image" src="" alt="Résultat du quizz" class="img-fluid mt-3 rounded shadow" style="max-width: 300px; opacity: 0; transition: opacity 0.5s ease-in-out;"/>
                     
                     <div class="mt-4 d-flex justify-content-center gap-3">
-                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-primary px-4">Rejouer</a>
-                        <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-outline-secondary px-4">Accueil</a>
+                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-primary px-4 ilFautPatienter">Rejouer</a>
+                        <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-outline-secondary px-4 ilFautPatienter">Accueil</a>
                     </div>
                 </div>
             </div>

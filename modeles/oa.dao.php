@@ -35,8 +35,7 @@ class OADao
                 $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                error_log('Erreur PDO : ' . $e->getMessage());
-                throw $e;
+                $this->afficherErreur("Impossible de se connecter à la base de données.");
             }
         }
 
@@ -71,47 +70,56 @@ class OADao
     
         // Construction de l'URL
         $url = $this->apiBaseUrl . $endpoint;
-
         if ($useAccessToken) {
-            // Pour les requêtes sécurisées avec Access Token
             $headers = [
                 'Authorization: Bearer ' . $this->accessToken,
                 'Content-Type: application/json',
             ];
         } else {
-            // Pour les requêtes publiques avec API Key
             $params['api_key'] = $this->apiKey;
             $headers = ['Content-Type: application/json'];
         }
-
-        // Ajouter les paramètres à l'URL même avec AccessToken
         if (!empty($params)) {
             $url .= '?' . http_build_query($params);
         }
-
+    
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-        // C'est pas bien mais on le fait TEMPORAIREMENT pour éviter les erreurs de certificat
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        // Настройка SSL (nastroyka SSL, configuration SSL) en production
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         $response = curl_exec($curl);
-
+    
         if (curl_errno($curl)) {
-            die('Erreur cURL : ' . curl_error($curl));
+            error_log('Erreur cURL : ' . curl_error($curl));
+            return [];
         }
-
         curl_close($curl);
-
+    
         $decodedResponse = json_decode($response, true);
         if (isset($decodedResponse['status_code'])) {
-            die('Erreur API TMDB : ' . $decodedResponse['status_message']);
+            error_log('Erreur API TMDB : ' . $decodedResponse['status_message']);
+            return [];
         }
-
-        return $decodedResponse ?? [];
-    }
+    
+        // Stockage en cache si activé
+        if ($cache && $cacheFile) {
+            file_put_contents($cacheFile, json_encode($decodedResponse));
+        }
+    
+        // Après avoir obtenu $decodedResponse
+        if ($cache && $cacheFile) {
+            $result = file_put_contents($cacheFile, json_encode($decodedResponse));
+            if ($result === false) {
+                error_log("Erreur lors de l'écriture dans le cache : $cacheFile");
+            } else {
+                error_log("Mise en cache de la réponse pour $endpoint dans $cacheFile");
+            }
+        }        
+        return $decodedResponse;
+    }  
 
 
 
@@ -517,8 +525,8 @@ class OADao
     public function ajouterNote(int $idUtilisateur, int $idTMDB, int $note): bool
     {
         if ($note < 1 || $note > 5) {
-            die('La note doit être comprise entre 1 et 5.');
-        }
+            $this->afficherErreur("La note doit être comprise entre 1 et 5.");
+        }        
 
         $pdo = $this->getConnection();
         $query = 'INSERT INTO ' . PREFIXE_TABLE . 'notes (idUtilisateur, idTMDB, note) 
@@ -635,5 +643,17 @@ class OADao
             return [];
         }
         return array_slice($results['results'], 0, 10);
+    }
+
+    /**
+     * @brief Affiche une page d'erreur proprement
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        require_once __DIR__ . '/../controllers/controller_erreur.class.php';
+        $erreurController = new ErreurController();
+        $erreurController->renderErreur($message);
+        exit();
     }
 }
