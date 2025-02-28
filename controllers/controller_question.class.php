@@ -187,25 +187,29 @@ class ControllerQuestion extends Controller
 }
 
 
-public function afficherModifierQuestion()
-{
-    $id = isset($_GET['id']) ? $_GET['id'] : null;
+    public function afficherModifierQuestion(?array $message = [], ?int $id = null)
+    {
+        if ($id === null)
+        {
+            $id = isset($_GET['id']) ? $_GET['id'] : null;
+        }
 
-    if ($id === null) {
-        $template = $this->getTwig()->load('quizzModifier.html.twig');
-        echo $template->render();
+        if ($id === null) {
+            $template = $this->getTwig()->load('quizzModifier.html.twig');
+            echo $template->render(['message' => $message]);
 
+        }
+        
+        //Recupere la notification
+        $managerQuestion=New QuestionDao($this->getPdo());
+        $questionListe=$managerQuestion->findAll($id);
+
+        //Generer la vue
+        $template = $this->getTwig()->load('questionModifier.html.twig');
+        
+        echo $template->render(['questionListe'=>$questionListe,
+                                'message' => $message]);
     }
-    
-    //Recupere la notification
-    $managerQuestion=New QuestionDao($this->getPdo());
-    $questionListe=$managerQuestion->findAll($id);
-
-    //Generer la vue
-    $template = $this->getTwig()->load('questionModifier.html.twig');
-    
-    echo $template->render(['questionListe'=>$questionListe]);
-}
 
 
     // Fonction pour modifier une question
@@ -264,10 +268,7 @@ public function afficherModifierQuestion()
         if((int)$managerQuestion->nbQuestion($idQuiz) == 1)
         {
             $message = ["Vous devez avoir au moins une question"];
-            $template = $this->getTwig()->load('questionModifier.html.twig');
-            echo $template->render(['message' => $message,
-                                    'idQuiz' => $idQuiz]);
-            return ;
+            return $this->afficherModifierQuestion($message, $idQuiz);
         }
 
         // Supprime la question
@@ -280,35 +281,36 @@ public function afficherModifierQuestion()
             echo "Erreur lors de la suppression de la question.";
         }
     }
+
     public function afficherScore()
-{
-    // Récupère le score de la session
-    $score = $_SESSION['score'] ?? 0;
+    {
+        // Récupère le score de la session
+        $score = $_SESSION['score'] ?? 0;
 
-    // Récupère l'ID du quizz
-    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+        // Récupère l'ID du quizz
+        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
 
-    if (!$idQuizz) {
-        echo "ID du quizz manquant.";
-        return;
+        if (!$idQuizz) {
+            echo "ID du quizz manquant.";
+            return;
+        }
+
+        // Récupère le nombre total de questions du quizz
+        $managerQuizz = new QuizzDao($this->getPdo());
+        $quizz = $managerQuizz->find($idQuizz);
+        $nbTotalQuestions = $quizz->getNbQuestion();
+
+        // Générer la vue pour afficher le score
+        $template = $this->getTwig()->load('quizzResultat.html.twig');
+        echo $template->render([
+            'score' => $score,
+            'nbTotalQuestions' => $nbTotalQuestions, // Passage du nombre total de questions à la vue
+            'idQuizz' => $idQuizz
+        ]);
+
+        // Réinitialiser le score pour un futur quizz
+        unset($_SESSION['score']);
     }
-
-    // Récupère le nombre total de questions du quizz
-    $managerQuizz = new QuizzDao($this->getPdo());
-    $quizz = $managerQuizz->find($idQuizz);
-    $nbTotalQuestions = $quizz->getNbQuestion();
-
-    // Générer la vue pour afficher le score
-    $template = $this->getTwig()->load('quizzResultat.html.twig');
-    echo $template->render([
-        'score' => $score,
-        'nbTotalQuestions' => $nbTotalQuestions, // Passage du nombre total de questions à la vue
-        'idQuizz' => $idQuizz
-    ]);
-
-    // Réinitialiser le score pour un futur quizz
-    unset($_SESSION['score']);
-}
 
     public function afficherQuestionAjax()
     {

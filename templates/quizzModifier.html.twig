@@ -89,10 +89,7 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="nbQuestion{{ quiz.getIdQuizz }}" class="form-label">Nombre de questions</label>
-                                                <input type="number" class="form-control" id="nbQuestion{{ quiz.getIdQuizz }}" name="nbQuestion" min="1" value="{{ quiz.getNbQuestion }}" placeholder="Entrez le nombre de questions" required>
-                                            </div>
+                                        <input type="hidden" name="nbQuestion" value="{{ quiz.getNbQuestion }}">
 
                                             <div class="col-md-6 mb-3">
                                                 <label for="difficulte{{ quiz.getIdQuizz }}" class="form-label">Difficulté</label>
@@ -102,9 +99,7 @@
                                                     <option value="Difficile" {% if quiz.getDifficulte == 'Difficile' %} selected {% endif %}>Difficile</option>
                                                 </select>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
+                                            
                                             <div class="col-md-6 mb-3">
                                                 <label for="image{{ quiz.getIdQuizz }}" class="form-label">Image</label>
                                                 <input type="file" class="form-control" id="image{{ quiz.getIdQuizz }}" name="image">

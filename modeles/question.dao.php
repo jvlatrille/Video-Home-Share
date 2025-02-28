@@ -183,6 +183,14 @@ class QuestionDao {
     }
 
     public function delete(int $id): bool {
+        $idQuiz = $this->findQuizByQuestion($id);
+
+        $sql = "UPDATE ".PREFIXE_TABLE."quizz 
+                           SET nbQuestion = nbQuestion - 1 
+                           WHERE idQuizz = :idQuiz";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idQuiz' => $idQuiz]);
+
         $sql = "DELETE q, p
                 FROM  ".PREFIXE_TABLE."question AS q
                 LEFT JOIN  ".PREFIXE_TABLE."portersur AS p ON q.idQuestion = p.idQuestion
