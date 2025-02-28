@@ -167,20 +167,19 @@
                             </div>
                             <div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<small class="form-text text-muted">
+									<br><strong>Publique</strong>
+									: visible par tous les utilisateurs.
+								</small>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="visible" id="visibilePublic" value="1" checked>
-									<label class="form-check-label" for="visibilityPublic">
-										Publique
-									</label>
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">Publique</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPrivate" value="0">
+									<label class="form-check-label" for="visibilityPrivate">Privée</label>
+								</div>
 								<small id="visibleErreur" class="text-danger"></small>
-
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="visible" id="visibilePrive" value="0">
-									<label class="form-check-label" for="visibilityPrivate">
-										Privée
-									</label>
-								</div>
 
 							</div>
                             <div class="modal-footer">
