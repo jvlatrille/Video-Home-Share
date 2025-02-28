@@ -31,24 +31,6 @@
 					{% endif %}
 				</div>
 
-				<div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered modal-lg">
-						<div class="modal-content bg-transparent border-0">
-							<div class="modal-body d-flex align-items-center p-0 position-relative">
-								{% if oa.posterPath %}
-									<img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;">
-								{% else %}
-									<p>
-										<em>Affiche non disponible</em>
-									</p>
-								{% endif %}
-								<h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
-								<button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
-							</div>
-						</div>
-					</div>
-				</div>
-
                 <div class="col-md-8">
                     <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1>
                     <div class="bg-light p-3 rounded">
@@ -124,7 +106,7 @@
                                                 {% endfor %}
                                                 <input type="hidden" name="idOeuvre" value="{{ oa.idoa }}">
                                                 <input type="hidden" name="type" value={{ oa.type }}>
-                                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                                            <button type="submit" class="btn btn-primary ilFautPatienter">Ajouter</button>
                                             {% else %}
                                                 <p>Aucune liste trouvée.</p>
                                                 <p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
@@ -329,7 +311,7 @@
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
                                     {# // <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script> #}
 
-                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                    <button type="submit" class="btn btn-primary ilFautPatienter">Enregistrer</button>
                                 </form>
                             </div>
                         </div>
@@ -345,7 +327,7 @@
                     </div>
                     <input type="hidden" name="serie_id" value="{{ oa.idoa }}">
                     <input type="hidden" name="type" value="{{ oa.type }}">
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <button type="submit" class="btn btn-primary ilFautPatienter">Envoyer</button>
                 </form>
             {% else %}
                 <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>

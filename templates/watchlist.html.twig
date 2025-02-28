@@ -71,12 +71,12 @@
                                     </p>
                                     <div class="d-flex justify-content-between mt-3">
                                     {% if oa.type == 'Film' %}
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
+                                        <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
                                     {% else %}
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}'">Y aller</button>
+                                        <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}'">Y aller</button>
                                     {% endif %}
                                         {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
-                                            <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
+                                            <button type="button" class="btn btn-danger ilFautPatienter" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
             {% for oa in watchList.listeOeuvres %}
                 <input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}">
             {% endfor %}
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary ilFautPatienter">
                 <i class="bi bi-save"></i>
                 Enregistrer cette Liste
             </button>
@@ -185,7 +185,7 @@
 							</div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                                <button type="submit" class="btn btn-primary ilFautPatienter">Enregistrer les modifications</button>
                             </div>
                         </form>
                     </div>

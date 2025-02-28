@@ -79,7 +79,7 @@
                                             <i class="fas fa-edit"></i>
                                             Modifier
                                         </button>
-                                        <button class="btn btn-sm btn-danger" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                        <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
                                             <i class="fas fa-trash-alt"></i>
                                             Supprimer
                                         </button>
@@ -284,7 +284,7 @@
                                             <div class="modal-footer">
                                                 <!-- Bouton pour supprimer le quiz -->
                                                 <button type="button"
-                                                        class="btn btn-danger me-auto"
+                                                        class="btn btn-danger me-auto ilFautPatienter"
                                                         onclick="confirmDeleteQuiz('{{ quizz.getIdQuizz }}')">
                                                     Supprimer ce Quiz
                                                 </button>
@@ -340,7 +340,7 @@
                                             <i class="fas fa-edit"></i> Modifier
                                         </button>
                                         <button class="btn btn-sm btn-danger" onclick="confirmDeletePost('{{ message.getIdMessage }}')">
-                                            <i class="fas fa-trash-alt"></i> Supprimer
+                                            <i class="fas fa-trash-alt ilFautPatienter"></i> Supprimer
                                         </button>
                                     </td>
                                 </tr>
@@ -406,7 +406,7 @@
                                     <td>{{ com.getDate|date('d/m/Y') }}</td>
                                     <td>{{ com.getPseudo }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-danger" onclick="confirmDeleteComment('{{ com.getIdCom }}')">
+                                        <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDeleteComment('{{ com.getIdCom }}')">
                                             <i class="fas fa-trash-alt"></i> Supprimer
                                         </button>
                                     </td>

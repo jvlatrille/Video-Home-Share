@@ -40,9 +40,9 @@
                                     {% endfor %}
                                 </p>
                                 {% if oa.type == 'Film' %}
-                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
+                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2 ilFautPatienter">Découvrir</a>
                                 {% else %}
-                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
+                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2 ilFautPatienter">Découvrir</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -144,7 +144,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <button id="loadRandomBtn" class="btn btn-primary">Découvrir toujours plus !</button>
+        <button id="loadRandomBtn" class="btn btn-primary ilFautPatienter">Découvrir toujours plus !</button>
     </div>
 	<br><br>
 {% endif %}
