@@ -49,6 +49,12 @@
 	 	<script src="js/searchSuggestions.js"></script>
 		<script type="module" src"js/main.js"></script>
 		<script src="js/patientez.js"></script>
+		
+		<script>
+			window.utilisateurConnecte = {% if utilisateurConnecte is not null %}{{ utilisateurConnecte|json_encode|raw }}{% else %}null{% endif %};
+		</script>
+		<script src="js/raccourcis.js"></script>		
+		
 
 
 		<!-- ShareThis -->
