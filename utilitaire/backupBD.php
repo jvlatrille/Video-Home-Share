@@ -108,7 +108,7 @@ file_put_contents($backupFile, $backupSql);
 $conn->query("INSERT INTO vhs_derniereSave (date_save) VALUES ('$date')");
 
 // Terminer le script
-echo "Sauvegarde complète des tables avec préfixe \"$prefixeTable\" terminée dans : $backupFile\n";
+// echo "Sauvegarde complète des tables avec préfixe \"$prefixeTable\" terminée dans : $backupFile\n";
 
 // Fermer la connexion
 $conn->close();

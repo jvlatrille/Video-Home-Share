@@ -33,6 +33,31 @@
         </div>
         <div class="container mt-4">
             <h3>Dernières sauvegardes de la base de données</h3>
+            <div class="mb-4">
+                <button id="backupButton" class="btn btn-primary">
+                    <i class="fas fa-database me-2"></i>Lancer une sauvegarde
+                </button>
+                <span id="backupStatus" class="ms-2"></span>
+            </div>
+            <script>
+                document.getElementById('backupButton').addEventListener('click', function() {
+                    const statusElement = document.getElementById('backupStatus');
+                    statusElement.innerHTML = '<span class="text-warning"><i class="fas fa-spinner fa-spin"></i> Sauvegarde en cours...</span>';
+                    
+                    fetch('utilitaire/backupBD.php')
+                        .then(response => response.text())
+                        .then(data => {
+                            statusElement.innerHTML = '<span class="text-success"><i class="fas fa-check-circle"></i> Sauvegarde terminée avec succès!</span>';
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            statusElement.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle"></i> Erreur lors de la sauvegarde</span>';
+                            console.error('Erreur:', error);
+                        });
+                });
+            </script>
             <div class="table-responsive">
                 <table id="backupLogsTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
                     <thead class="table-dark">
