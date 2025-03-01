@@ -16,3 +16,27 @@
     font-size: 2em;
     cursor: pointer;
 }
+
+
+/* Animations */
+.animate {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation quand on passe sur les cartes */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+

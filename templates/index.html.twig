@@ -62,9 +62,9 @@
         </button>
     </div>
 
-    <h2 class="text-center mt-5">À la une</h2>
+    <div class="animate">
+    <h2 class="text-center mt-5 ">À la une</h2>
     <div class="container mt-4">
-
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for oa in oaListe|slice(10,20) %}
                 <div class="col">
@@ -87,8 +87,9 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
+    <div class="animate">
     <h2 class="text-center mt-5">Messages les plus likés</h2>
     <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -117,10 +118,10 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
 
-
+    <div class="animate">
     <h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
     <div id="decouvrirOaContainer" class="container mt-4">
         <div class="row row-cols-1 row-cols-md-5 g-4">
@@ -141,7 +142,7 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
     <div class="text-center mt-4">
         <button id="loadRandomBtn" class="btn btn-primary">Découvrir toujours plus !</button>
