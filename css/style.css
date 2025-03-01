@@ -25,6 +25,11 @@
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Animation quand on passe sur les cartes */
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
