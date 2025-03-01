@@ -89,8 +89,11 @@
 			{% else %}
 				<div class="container">
 					{% for commentaire in commentaires %}
-						<a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
-							<div class="card mb-3 shadow-sm">		
+						{# Définir le type de l’œuvre en vérifiant si "type" est défini, sinon utiliser "typeOA" #}
+						{% set oaType = commentaire.type is defined and commentaire.type ? commentaire.type : commentaire.typeOA %}
+						
+						<a href="index.php?controleur=oa&methode=afficher{{ oaType == 'TV' ? 'Serie' : 'Film' }}&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
+							<div class="card mb-3 shadow-sm">
 								<div class="card-body d-flex align-items-center">
 									<img src="img/profils/{{ utilisateur.photoProfil }}" class="rounded-circle border shadow-sm me-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Photo de {{ utilisateur.pseudo }}">
 									<div class="d-flex flex-column flex-grow-1">
@@ -98,8 +101,6 @@
 										<p class="mb-1">{{ commentaire.contenu }}</p>
 										<small class="text-muted">Posté le {{ commentaire.dateCommentaire|date('d/m/Y') }}</small>
 									</div>
-
-									<!-- Titre et Affiche de l'œuvre -->
 									<div class="d-flex align-items-center">
 										<img src="{{ commentaire.backdropOeuvre|first.small }}" class="card-img-top" style="height: 100px; object-fit: cover;" alt="Capture de {{ commentaire.titreOeuvre }}">
 									</div>
