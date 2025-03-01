@@ -31,6 +31,31 @@
             <h2>Bonjour</h2>
             <p>Bienvenue sur votre interface d'administration.</p>
         </div>
+        <div class="container mt-4">
+            <h3>Dernières sauvegardes de la base de données</h3>
+            <div class="table-responsive">
+                <table id="backupLogsTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date de sauvegarde</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in backupLogs %}
+                            <tr>
+                                <td>{{ log.id }}</td>
+                                <td>{{ log.date_save | date('d/m/Y H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">Aucune sauvegarde trouvée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>             
     </div>
 
     <!-- SECTION UTILISATEURS -->
@@ -519,6 +544,16 @@
                     }
                 });
             });
+            $('#backupLogsTable').DataTable({
+                responsive: true,
+                pageLength: 5,
+                language: {
+                     search: "🔍 Rechercher :",
+                     lengthMenu: "Afficher _MENU_ sauvegardes",
+                     info: "Affichage de _START_ à _END_ sur _TOTAL_ sauvegardes",
+                     zeroRecords: "Aucune sauvegarde trouvée"
+                }
+           });
         });
 
         // Bascule entre sections
