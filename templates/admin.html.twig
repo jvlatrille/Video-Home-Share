@@ -56,10 +56,16 @@
                                 {% if user.getIdUtilisateur != utilisateurConnecte.idUtilisateur %}
                                     <tr>
                                         <td>
-                                            <img src="{{'img/profils/' ~ user.getPhotoProfil }}" alt="Photo de {{ user.getPseudo }}" width="50" height="50" class="rounded-circle mx-auto d-block">
+                                            <img src="{{'img/profils/' ~ user.getPhotoProfil }}" 
+                                                 alt="Photo de {{ user.getPseudo }}" 
+                                                 width="50" height="50" 
+                                                 class="rounded-circle mx-auto d-block">
                                         </td>
                                         <td>
-                                            <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière de {{ user.getPseudo }}" width="100" height="50" class="img-thumbnail mx-auto d-block">
+                                            <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" 
+                                                 alt="Bannière de {{ user.getPseudo }}" 
+                                                 width="100" height="50" 
+                                                 class="img-thumbnail mx-auto d-block">
                                         </td>
                                         <td>{{ user.getIdUtilisateur }}</td>
                                         <td>{{ user.getPseudo }}</td>
@@ -72,26 +78,33 @@
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1 ilFautPatienter">
-                                                <i class="fas fa-user"></i>
-                                                Profil
+                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" 
+                                               class="btn btn-sm btn-info me-1 ilFautPatienter">
+                                                <i class="fas fa-user"></i> Profil
                                             </a>
-                                            <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
-                                                <i class="fas fa-edit"></i>
-                                                Modifier
+                                            <button class="btn btn-sm btn-warning me-1" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                                <i class="fas fa-edit"></i> Modifier
                                             </button>
-                                            <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
-                                                <i class="fas fa-trash-alt"></i>
-                                                Supprimer
+                                            <button class="btn btn-sm btn-danger ilFautPatienter" 
+                                                    onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
                                             </button>
                                         </td>
                                     </tr>
-        
+
                                     {# Modal de modification de l'utilisateur #}
-                                    <div class="modal fade" id="editUserModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
+                                    <div class="modal fade" 
+                                         id="editUserModal{{ user.getIdUtilisateur }}" 
+                                         tabindex="-1" 
+                                         aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" 
+                                         aria-hidden="true">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
-                                                <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST" enctype="multipart/form-data">
+                                                <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" 
+                                                      method="POST" 
+                                                      enctype="multipart/form-data">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -103,12 +116,19 @@
                                                             <div class="col-md-6 mb-3">
                                                                 <label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" id="pseudo{{ user.getIdUtilisateur }}" name="pseudo" value="{{ user.getPseudo }}">
-                                                                    <button type="button" class="btn btn-primary" onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
+                                                                    <input type="text" 
+                                                                           class="form-control" 
+                                                                           id="pseudo{{ user.getIdUtilisateur }}" 
+                                                                           name="pseudo" 
+                                                                           value="{{ user.getPseudo }}" 
+                                                                           readonly>
+                                                                    <button type="button" 
+                                                                            class="btn btn-primary" 
+                                                                            onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
                                                                 </div>
                                                             </div>
                                                         </div>
-        
+                                                        
                                                         <script>
                                                             function genererPseudo(userId) {
                                                                 const pseudoInput = document.getElementById('pseudo' + userId);
@@ -116,27 +136,43 @@
                                                                 pseudoInput.value = newPseudo;
                                                             }
                                                         </script>
-        
+
                                                         <br>
-        
+
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
                                                                 <label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
-                                                                <input type="file" name="photoProfil" id="photoProfil{{ user.getIdUtilisateur }}" class="form-control">
-                                                                <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" alt="Photo actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="photoProfilImg{{ user.getIdUtilisateur }}">
-                                                                <button type="button" class="btn btn-primary mt-2" onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-                                                                <input type="hidden" name="currentPhotoProfil" value="{{ user.getPhotoProfil }}" id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
+                                                                <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" 
+                                                                     alt="Photo actuelle de {{ user.getPseudo }}" 
+                                                                     width="50%" 
+                                                                     class="img-fluid mt-2" 
+                                                                     id="photoProfilImg{{ user.getIdUtilisateur }}">
+                                                                <button type="button" 
+                                                                        class="btn btn-primary mt-2" 
+                                                                        onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                                <input type="hidden" 
+                                                                       name="currentPhotoProfil" 
+                                                                       value="{{ user.getPhotoProfil }}" 
+                                                                       id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
                                                             </div>
-        
+
                                                             <div class="col-md-6 mb-3">
                                                                 <label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
-                                                                <input type="file" name="banniereProfil" id="banniereProfil{{ user.getIdUtilisateur }}" class="form-control">
-                                                                <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="banniereProfilImg{{ user.getIdUtilisateur }}">
-                                                                <button type="button" class="btn btn-primary mt-2" onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-                                                                <input type="hidden" name="currentBanniereProfil" value="{{ user.getBanniereProfil }}" id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
+                                                                <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" 
+                                                                     alt="Bannière actuelle de {{ user.getPseudo }}" 
+                                                                     width="50%" 
+                                                                     class="img-fluid mt-2" 
+                                                                     id="banniereProfilImg{{ user.getIdUtilisateur }}">
+                                                                <button type="button" 
+                                                                        class="btn btn-primary mt-2" 
+                                                                        onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                                <input type="hidden" 
+                                                                       name="currentBanniereProfil" 
+                                                                       value="{{ user.getBanniereProfil }}" 
+                                                                       id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
                                                             </div>
                                                         </div>
-        
+
                                                         <script>
                                                             function resetPhotoProfil(userId) {
                                                                 // Change l'image affichée et indique au serveur de réinitialiser la photo
@@ -144,22 +180,23 @@
                                                                 document.getElementById('photoProfil' + userId).value = "";
                                                                 document.getElementById('hiddenPhotoProfil' + userId).value = 'default.png';
                                                             }
-        
+
                                                             function resetBanniereProfil(userId) {
                                                                 document.getElementById('banniereProfilImg' + userId).src = 'img/banniere/default.png';
                                                                 document.getElementById('banniereProfil' + userId).value = "";
                                                                 document.getElementById('hiddenBanniereProfil' + userId).value = 'default.png';
                                                             }
                                                         </script>
-        
+
                                                         <div class="mb-3">
                                                             <label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
-                                                            <select class="form-select" id="role{{ user.getIdUtilisateur }}" name="role">
+                                                            <select class="form-select" 
+                                                                    id="role{{ user.getIdUtilisateur }}" 
+                                                                    name="role">
                                                                 <option value="admin" {% if user.getRole == 'admin' %} selected {% endif %}>Admin</option>
                                                                 <option value="user"  {% if user.getRole == 'user' %} selected {% endif %}>Utilisateur</option>
                                                             </select>
                                                         </div>
-        
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="btn btn-success">Sauvegarder</button>
