@@ -133,4 +133,16 @@ class AdminDao
         $utilisateur->setRole($donnee['role']);
         return $utilisateur;
     }
+
+    /**
+     * @brief Récupère les logs de sauvegarde de la base de données.
+     * @return array Tableau de logs de sauvegarde.
+     */
+    public function getBackupLogs(): array {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "derniereSave ORDER BY date_save DESC";
+        $stmt = $this->pdo->query($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
+    }
+    
 }

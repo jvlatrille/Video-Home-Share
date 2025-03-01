@@ -39,6 +39,12 @@ document.addEventListener("keydown", function (event) {
                 case "d":
                     urlParDefault = "index.php?controleur=utilisateur&methode=deconnexion";
                     break;
+                case "y": // Par ce que c'est Jules qui à fait les raccourcis (libre arbitre tu connais)
+                    urlParDefault = "index.php?controleur=oa&methode=afficherFilm&idOa=372058";
+                    break;
+                case "t":
+                    urlParDefault = "index.php?controleur=oa&methode=afficherSerie&idOa=37305";
+                    break;
             }
         } else {
             if (event.key.toLowerCase() === "f") {

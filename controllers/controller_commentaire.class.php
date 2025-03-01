@@ -94,13 +94,13 @@ class ControllerCommentaire extends Controller
         $managerCommentaire = new CommentaireDAO($this->getPdo());
         $commentaire = $managerCommentaire->find($idCommentaire);
 
-        if (!$commentaire || $commentaire->getPseudo() !== $utilisateur->getPseudo()) {
+        if (!$commentaire || ($commentaire->getIdUtilisateur() !== $utilisateur->getIdUtilisateur() && $utilisateur->getRole() !== 'admin')) {
             $this->afficherErreur("Vous n'êtes pas autorisé à supprimer ce commentaire.");
         }        
 
         $managerCommentaire->supprimer($idCommentaire);
 
-        $this->redirectAvecSucces($idOa,$type);
+        $this->redirectAvecSucces($idOa, $type);
     }
 
     /**

@@ -31,6 +31,37 @@
             <h2>Bonjour</h2>
             <p>Bienvenue sur votre interface d'administration.</p>
         </div>
+        <div class="container mt-4">
+            <h3>Dernières sauvegardes de la base de données</h3>
+            <div class="mb-4">
+                <button id="backupButton" class="btn btn-primary">
+                    <i class="fas fa-database me-2"></i>Lancer une sauvegarde
+                </button>
+                <span id="backupStatus" class="ms-2"></span>
+            </div>
+            <div class="table-responsive">
+                <table id="backupLogsTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date de sauvegarde</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in backupLogs %}
+                            <tr>
+                                <td>{{ log.id }}</td>
+                                <td>{{ log.date_save | date('d/m/Y H:i') }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="2" class="text-center">Aucune sauvegarde trouvée.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>             
     </div>
 
     <!-- SECTION UTILISATEURS -->
@@ -53,121 +84,137 @@
                     <tbody>
                         {% if utilisateurListe is not empty %}
                             {% for user in utilisateurListe %}
-                                <tr>
-                                    <td>
-                                        <img src="{{'img/profils/' ~ user.getPhotoProfil }}" alt="Photo de {{ user.getPseudo }}" width="50" height="50" class="rounded-circle mx-auto d-block">
-                                    </td>
-                                    <td>
-                                        <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière de {{ user.getPseudo }}" width="100" height="50" class="img-thumbnail mx-auto d-block">
-                                    </td>
-                                    <td>{{ user.getIdUtilisateur }}</td>
-                                    <td>{{ user.getPseudo }}</td>
-                                    <td>{{ user.getAdressMail }}</td>
-                                    <td>
-                                        {% if user.getRole == 'admin' %}
-                                            <span class="badge bg-danger">Admin</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Utilisateur</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="btn btn-sm btn-info me-1 ilFautPatienter">
-                                            <i class="fas fa-user"></i>
-                                            Profil
-                                        </a>
-                                        <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
-                                            <i class="fas fa-edit"></i>
-                                            Modifier
-                                        </button>
-                                        <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
-                                            <i class="fas fa-trash-alt"></i>
-                                            Supprimer
-                                        </button>
-                                    </td>
-                                </tr>
-    
-                                {# Modal de modification de l'utilisateur #}
-                                <div class="modal fade" id="editUserModal{{ user.getIdUtilisateur }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" method="POST" enctype="multipart/form-data">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
-                                                    
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
-                                                            <div class="input-group">
-                                                                <input type="text" class="form-control" id="pseudo{{ user.getIdUtilisateur }}" name="pseudo" value="{{ user.getPseudo }}">
-                                                                <button type="button" class="btn btn-primary" onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
+                                {% if user.getIdUtilisateur != utilisateurConnecte.idUtilisateur %}
+                                    <tr>
+                                        <td>
+                                            <img src="{{'img/profils/' ~ user.getPhotoProfil }}" 
+                                                 alt="Photo de {{ user.getPseudo }}" 
+                                                 width="50" height="50" 
+                                                 class="rounded-circle mx-auto d-block">
+                                        </td>
+                                        <td>
+                                            <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" 
+                                                 alt="Bannière de {{ user.getPseudo }}" 
+                                                 width="100" height="50" 
+                                                 class="img-thumbnail mx-auto d-block">
+                                        </td>
+                                        <td>{{ user.getIdUtilisateur }}</td>
+                                        <td>{{ user.getPseudo }}</td>
+                                        <td>{{ user.getAdressMail }}</td>
+                                        <td>
+                                            {% if user.getRole == 'admin' %}
+                                                <span class="badge bg-danger">Admin</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Utilisateur</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" 
+                                               class="btn btn-sm btn-info me-1 ilFautPatienter">
+                                                <i class="fas fa-user"></i> Profil
+                                            </a>
+                                            <button class="btn btn-sm btn-warning me-1" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editUserModal{{ user.getIdUtilisateur }}">
+                                                <i class="fas fa-edit"></i> Modifier
+                                            </button>
+                                            <button class="btn btn-sm btn-danger ilFautPatienter" 
+                                                    onclick="confirmDelete('{{ user.getIdUtilisateur }}')">
+                                                <i class="fas fa-trash-alt"></i> Supprimer
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    {# Modal de modification de l'utilisateur #}
+                                    <div class="modal fade" 
+                                         id="editUserModal{{ user.getIdUtilisateur }}" 
+                                         tabindex="-1" 
+                                         aria-labelledby="editUserModalLabel{{ user.getIdUtilisateur }}" 
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <form action="index.php?controleur=admin&methode=adminModifierUtilisateur" 
+                                                      method="POST" 
+                                                      enctype="multipart/form-data">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Modifier l'utilisateur : {{ user.getPseudo }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="idUtilisateur" value="{{ user.getIdUtilisateur }}">
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="pseudo{{ user.getIdUtilisateur }}" class="form-label">Pseudo</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" 
+                                                                           class="form-control" 
+                                                                           id="pseudo{{ user.getIdUtilisateur }}" 
+                                                                           name="pseudo" 
+                                                                           value="{{ user.getPseudo }}" 
+                                                                           readonly>
+                                                                    <button type="button" 
+                                                                            class="btn btn-primary" 
+                                                                            onclick="genererPseudo('{{ user.getIdUtilisateur }}')">Générer</button>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-    
-                                                    <script>
-                                                        function genererPseudo(userId) {
-                                                            const pseudoInput = document.getElementById('pseudo' + userId);
-                                                            const newPseudo = 'User' + Math.floor(Math.random() * 10000);
-                                                            pseudoInput.value = newPseudo;
-                                                        }
-                                                    </script>
-    
-                                                    <br>
-    
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
-                                                            <input type="file" name="photoProfil" id="photoProfil{{ user.getIdUtilisateur }}" class="form-control">
-                                                            <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" alt="Photo actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="photoProfilImg{{ user.getIdUtilisateur }}">
-                                                            <button type="button" class="btn btn-primary mt-2" onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-                                                            <input type="hidden" name="currentPhotoProfil" value="{{ user.getPhotoProfil }}" id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
+
+                                                        <br>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="photoProfil{{ user.getIdUtilisateur }}" class="form-label">Photo de profil</label>
+                                                                <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" 
+                                                                     alt="Photo actuelle de {{ user.getPseudo }}" 
+                                                                     width="50%" 
+                                                                     class="img-fluid mt-2" 
+                                                                     id="photoProfilImg{{ user.getIdUtilisateur }}">
+                                                                <button type="button" 
+                                                                        class="btn btn-primary mt-2" 
+                                                                        onclick="resetPhotoProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                                <input type="hidden" 
+                                                                       name="currentPhotoProfil" 
+                                                                       value="{{ user.getPhotoProfil }}" 
+                                                                       id="hiddenPhotoProfil{{ user.getIdUtilisateur }}">
+                                                            </div>
+
+                                                            <div class="col-md-6 mb-3">
+                                                                <label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
+                                                                <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" 
+                                                                     alt="Bannière actuelle de {{ user.getPseudo }}" 
+                                                                     width="50%" 
+                                                                     class="img-fluid mt-2" 
+                                                                     id="banniereProfilImg{{ user.getIdUtilisateur }}">
+                                                                <button type="button" 
+                                                                        class="btn btn-primary mt-2" 
+                                                                        onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
+                                                                <input type="hidden" 
+                                                                       name="currentBanniereProfil" 
+                                                                       value="{{ user.getBanniereProfil }}" 
+                                                                       id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
+                                                            </div>
                                                         </div>
-    
-                                                        <div class="col-md-6 mb-3">
-                                                            <label for="banniereProfil{{ user.getIdUtilisateur }}" class="form-label">Bannière de profil</label>
-                                                            <input type="file" name="banniereProfil" id="banniereProfil{{ user.getIdUtilisateur }}" class="form-control">
-                                                            <img src="{{ 'img/banniere/' ~ user.getBanniereProfil }}" alt="Bannière actuelle de {{ user.getPseudo }}" width="50%" class="img-fluid mt-2" id="banniereProfilImg{{ user.getIdUtilisateur }}">
-                                                            <button type="button" class="btn btn-primary mt-2" onclick="resetBanniereProfil('{{ user.getIdUtilisateur }}')">Réinitialiser</button>
-                                                            <input type="hidden" name="currentBanniereProfil" value="{{ user.getBanniereProfil }}" id="hiddenBanniereProfil{{ user.getIdUtilisateur }}">
+
+                                                        <div class="mb-3">
+                                                            <label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
+                                                            <select class="form-select" 
+                                                                    id="role{{ user.getIdUtilisateur }}" 
+                                                                    name="role">
+                                                                <option value="admin" {% if user.getRole == 'admin' %} selected {% endif %}>Admin</option>
+                                                                <option value="user"  {% if user.getRole == 'user' %} selected {% endif %}>Utilisateur</option>
+                                                            </select>
                                                         </div>
                                                     </div>
-    
-                                                    <script>
-                                                        function resetPhotoProfil(userId) {
-                                                            // Change l'image affichée et indique au serveur de réinitialiser la photo
-                                                            document.getElementById('photoProfilImg' + userId).src = 'img/profils/default.png';
-                                                            document.getElementById('photoProfil' + userId).value = "";
-                                                            document.getElementById('hiddenPhotoProfil' + userId).value = 'default.png';
-                                                        }
-    
-                                                        function resetBanniereProfil(userId) {
-                                                            document.getElementById('banniereProfilImg' + userId).src = 'img/banniere/default.png';
-                                                            document.getElementById('banniereProfil' + userId).value = "";
-                                                            document.getElementById('hiddenBanniereProfil' + userId).value = 'default.png';
-                                                        }
-                                                    </script>
-    
-                                                    <div class="mb-3">
-                                                        <label for="role{{ user.getIdUtilisateur }}" class="form-label">Rôle</label>
-                                                        <select class="form-select" id="role{{ user.getIdUtilisateur }}" name="role">
-                                                            <option value="admin" {% if user.getRole == 'admin' %} selected {% endif %}>Admin</option>
-                                                            <option value="user"  {% if user.getRole == 'user' %} selected {% endif %}>Utilisateur</option>
-                                                        </select>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                                     </div>
-    
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-success">Sauvegarder</button>
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         {% else %}
                             <tr>
@@ -406,9 +453,9 @@
                                     <td>{{ com.getDate|date('d/m/Y') }}</td>
                                     <td>{{ com.getPseudo }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDeleteComment('{{ com.getIdCom }}')">
+                                        <button class="btn btn-sm btn-danger ilFautPatienter" onclick="confirmDeleteComment('{{ com.getIdCom }}', '{{ com.getIdTMDB }}', '{{ com.getType() }}')">
                                             <i class="fas fa-trash-alt"></i> Supprimer
-                                        </button>
+                                        </button>                                        
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -430,141 +477,6 @@
     <!-- DataTables JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script>
-        // Initialisation DataTables
-        $(document).ready(function () {
-            $('#utilisateurTable').DataTable({
-                responsive: true,
-                pageLength: 5,
-                language: {
-                    search: "🔍 Rechercher :",
-                    lengthMenu: "Afficher _MENU_ utilisateurs",
-                    info: "Affichage de _START_ à _END_ sur _TOTAL_ utilisateurs",
-                    zeroRecords: "Aucun utilisateur trouvé"
-                }
-            });
-
-            $('#quizzTable').DataTable({
-                responsive: true,
-                pageLength: 5,
-                language: {
-                    search: "🔍 Rechercher :",
-                    lengthMenu: "Afficher _MENU_ Quiz",
-                    info: "Affichage de _START_ à _END_ sur _TOTAL_ Quiz",
-                    zeroRecords: "Aucun quiz trouvé"
-                }
-            });
-
-            $(document).ready(function() {
-                $('#forumTable').DataTable({
-                    responsive: true,
-                    pageLength: 5,
-                    language: {
-                        search: "🔍 Rechercher :",
-                        lengthMenu: "Afficher _MENU_ posts",
-                        info: "Affichage de _START_ à _END_ sur _TOTAL_ posts",
-                        zeroRecords: "Aucun post trouvé"
-                    }
-                });
-            });
-
-            $(document).ready(function() {
-                $('#commentaireTable').DataTable({
-                    responsive: true,
-                    pageLength: 5,
-                    language: {
-                        search: "🔍 Rechercher :",
-                        lengthMenu: "Afficher _MENU_ commentaires",
-                        info: "Affichage de _START_ à _END_ sur _TOTAL_ commentaires",
-                        zeroRecords: "Aucun commentaire trouvé"
-                    }
-                });
-            });
-        });
-
-        // Bascule entre sections
-        document.addEventListener('DOMContentLoaded', function () {
-            const btnHome    = document.querySelector('#btnHome');
-            const btnUsers   = document.querySelector('#btnUsers');
-            const btnQuiz   = document.querySelector('#btnQuiz');
-            const btnForum   = document.querySelector('#btnForum');
-            const btnCommentaires = document.getElementById('btnCommentaires');
-            const sectionHome  = document.querySelector('#sectionHome');
-            const sectionUsers = document.querySelector('#sectionUsers');
-            const sectionQuiz = document.querySelector('#sectionQuiz');
-            const sectionForum = document.querySelector('#sectionForum');
-            const sectionCommentaires = document.getElementById('sectionCommentaires');
-
-            // Accueil affiché par défaut
-            sectionHome.style.display  = 'block';
-            sectionUsers.style.display = 'none';
-            sectionQuiz.style.display = 'none';
-            sectionForum.style.display = 'none';
-            sectionCommentaires.style.display = 'none';
-
-            btnHome.addEventListener('click', function () {
-                sectionHome.style.display  = 'block';
-                sectionUsers.style.display = 'none';
-                sectionQuiz.style.display = 'none';
-                sectionForum.style.display = 'none';
-                sectionCommentaires.style.display = 'none';
-            });
-            btnUsers.addEventListener('click', function () {
-                sectionHome.style.display  = 'none';
-                sectionUsers.style.display = 'block';
-                sectionQuiz.style.display = 'none';
-                sectionForum.style.display = 'none';
-                sectionCommentaires.style.display = 'none';
-            });
-            btnQuiz.addEventListener('click', function () {
-                sectionHome.style.display  = 'none';
-                sectionUsers.style.display = 'none';
-                sectionQuiz.style.display = 'block';
-                sectionForum.style.display = 'none';
-                sectionCommentaires.style.display = 'none';
-            });
-            btnForum.addEventListener('click', function () {
-                sectionHome.style.display  = 'none';
-                sectionUsers.style.display = 'none';
-                sectionQuiz.style.display = 'none';
-                sectionForum.style.display = 'block';
-                sectionCommentaires.style.display = 'none';
-            });
-            btnCommentaires.addEventListener('click', function () {
-                sectionHome.style.display = 'none';
-                sectionUsers.style.display = 'none';
-                sectionQuiz.style.display = 'none';
-                sectionForum.style.display = 'none';
-                sectionCommentaires.style.display = 'block';
-            });
-        });
-
-        // Confirmation pour supprimer un utilisateur
-        function confirmDelete(userId) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible !")) {
-                window.location.href = "index.php?controleur=admin&methode=supprimerUtilisateur&id=" + userId;
-            }
-        }
-
-        // Confirmation pour supprimer un quiz
-        function confirmDeleteQuiz(quizzId) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce quiz ?")) {
-                window.location.href = "index.php?controleur=quizz&methode=supprimerQuizz&id=" + quizzId;
-            }
-        }
-
-        // Confirmation pour supprimer un post
-        function confirmDeletePost(postId) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce post de forum ? Cette action est irréversible !")) {
-                window.location.href = "index.php?controleur=forum&methode=supprimerPost&id=" + postId;
-            }
-        }
-
-        // Fonction de confirmation pour supprimer un commentaire
-        function confirmDeleteComment(idCom) {
-            if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible !")) {
-                window.location.href = "index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire=" + idCommentaire;
-            }
-        }
+    <script src="js/admin.js"> 
     </script>
 {% endblock %}

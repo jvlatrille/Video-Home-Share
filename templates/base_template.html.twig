@@ -165,16 +165,18 @@
 						class="rounded-circle border border-2">
 					</button>
 					<ul class="dropdown-menu dropdown-menu-end shadow">
-					<li class="dropdown-item">
-						<div class="d-flex align-items-center">
-						<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
-							alt="Profile" width="32" height="32" 
-							class="rounded-circle me-2">
-						<div>
-							<strong>{{ utilisateurConnecte.pseudo }}</strong>
-							<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
-						</div>
-						</div>
+					<li>
+						<a href="index.php?controleur=profil&methode=afficherAPropos&id={{ utilisateurConnecte.idUtilisateur }}" class="dropdown-item">
+							<div class="d-flex align-items-center">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+									alt="Profile" width="32" height="32" 
+									class="rounded-circle me-2">
+								<div>
+									<strong>{{ utilisateurConnecte.pseudo }}</strong>
+									<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
+								</div>
+							</div>
+						</a>
 					</li>
 					<li><hr class="dropdown-divider"></li>
 					{% if utilisateurConnecte.getRole == 'admin' %}
@@ -235,7 +237,9 @@
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal">
 						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">TMDB
 					</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#cguModal">CGU</a>
 				</div>
+				
 				<!-- PopUp pour l'accord TMDB -->
 				<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -328,6 +332,127 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- Modal CGU -->
+				<div class="modal fade" id="cguModal" tabindex="-1" aria-labelledby="cguModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<h5 class="modal-title fw-bold text-dark" id="cguModalLabel">
+									Conditions Générales d’Utilisation
+								</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark" style="max-height: 70vh; overflow-y: auto;">
+								<h4>1. Objet</h4>
+								<p>
+									Les présentes Conditions Générales d’Utilisation (CGU) ont pour objet de définir les
+									droits et obligations des utilisateurs (ci-après « Utilisateur(s) ») lors de leur
+									accès et de leur utilisation de l’application web <strong>VHS (Video Home Share)</strong>.
+									Toute utilisation de l’application implique l’acceptation pleine et entière des
+									présentes CGU.
+								</p>
+
+								<h4>2. Mentions légales</h4>
+								<p>
+									<strong>Éditeur de l’application :</strong> Groupe 8 (IUT de Bayonne, BUT Informatique)
+									<br>Nom de l’application : Video Home Share
+									<br>Statut : Projet pédagogique non commercial
+									<br>Email : videohomeshare8@gmail.com
+								</p>
+								<p>
+									<strong>Hébergeur :</strong> lakartxela
+									<br>Adresse : lakjarxela.fr
+								</p>
+
+								<h4>3. Accès à l’application</h4>
+								<p>
+									L’accès à l’application est gratuit et se fait en ligne. Tous les
+									frais afférents à l’accès (matériel informatique, logiciels, connexion internet, etc.)
+									sont à la charge de l’Utilisateur. L’éditeur met en œuvre tous les moyens raisonnables
+									pour assurer un accès de qualité mais n’est tenu à aucune obligation de résultat.
+								</p>
+
+								<h4>4. Création de compte</h4>
+								<p>
+									Pour accéder à certaines fonctionnalités (quizz, forums, mini-jeux), l’Utilisateur peut
+									être amené à créer un compte. L’Utilisateur s’engage à fournir des informations exactes
+									et à jour, et à préserver la confidentialité de ses identifiants.
+								</p>
+
+								<h4>5. Responsabilité et contenu</h4>
+								<p>
+									<strong>5.1 Responsabilité de l’éditeur</strong><br>
+									L’éditeur s’efforce de mettre à disposition des informations fiables, mais ne garantit
+									pas l’exactitude ou l’exhaustivité. L’éditeur ne saurait être tenu responsable de tout
+									dommage direct ou indirect résultant de l’utilisation de l’application.
+								</p>
+								<p>
+									<strong>5.2 Responsabilité de l’Utilisateur</strong><br>
+									L’Utilisateur est seul responsable de l’utilisation qu’il fait des informations et
+									contenus présents sur VHS. Il s’engage à respecter la loi et à ne pas publier de
+									contenus illicites, contraires à l’ordre public ou aux bonnes mœurs.
+								</p>
+
+								<h4>6. Droits de propriété intellectuelle</h4>
+								<p>
+									Le contenu de l’application (code, textes, images, base de données) est protégé par
+									le Code de la Propriété Intellectuelle. L’application étant une œuvre de collaboration
+									entre les membres
+									du Groupe 8, toute utilisation commerciale du projet ou diffusion exige l’accord
+									préalable des co-auteurs et/ou de l’IUT, selon les cas. La marque « VHS » n’est pas
+									déposée à l’INPI mais reste la propriété exclusive des co-auteurs pour un usage
+									pédagogique.
+								</p>
+
+								<h4>7. Protection de la base de données</h4>
+								<p>
+									La base de données est produite dans le cadre du projet pédagogique avec le soutien
+									de l’IUT. Conformément au droit « sui generis », l’extraction ou la réutilisation
+									substantielle du contenu de la base est interdite sans autorisation préalable.
+								</p>
+
+								<h4>8. Données personnelles et Newsletter</h4>
+								<p>
+									Les données personnelles collectées via la Newsletter ou
+									lors de la création de compte sont traitées conformément au RGPD. L’Utilisateur
+									est informé qu’il dispose d’un droit d’accès, de rectification et de suppression
+									de ses données. Toute demande relative aux données personnelles doit être adressée
+									à l’éditeur (coordonnées ci-dessus).
+								</p>
+
+								<h4>9. Utilisation de l’API TMDB</h4>
+								<p>
+									VHS récupère certaines données (notamment les affiches et informations sur les œuvres)
+									via l’API de TMDB, sous condition d’en respecter les règles. Cet usage est non
+									commercial, et le logo TMDB est affiché dans l’application.
+								</p>
+
+								<h4>10. Modification des CGU</h4>
+								<p>
+									L’éditeur se réserve le droit de modifier les présentes CGU à tout moment. Toute
+									modification prend effet dès sa mise en ligne. L’Utilisateur est donc invité à
+									consulter régulièrement les CGU pour se tenir informé des évolutions.
+								</p>
+
+								<h4>11. Loi applicable et juridiction compétente</h4>
+								<p>
+									Les présentes CGU sont régies par la loi française. En cas de litige, les tribunaux
+									compétents du ressort de [Lieu du siège social] seront seuls compétents, sous
+									réserve d’une attribution de compétence spécifique découlant d’un texte de loi
+									ou réglementaire particulier.
+								</p>
+
+								<p class="mt-4">
+									<em>Dernière mise à jour : 01/03/2025</em><br>
+									<em>Ces CGU sont fournies à titre indicatif et doivent être validées par un
+									professionnel du droit.</em>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="footer-social mb-2">
 					<div class="sharethis-inline-share-buttons"></div>
 				</div>
