@@ -165,16 +165,18 @@
 						class="rounded-circle border border-2">
 					</button>
 					<ul class="dropdown-menu dropdown-menu-end shadow">
-					<li class="dropdown-item">
-						<div class="d-flex align-items-center">
-						<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
-							alt="Profile" width="32" height="32" 
-							class="rounded-circle me-2">
-						<div>
-							<strong>{{ utilisateurConnecte.pseudo }}</strong>
-							<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
-						</div>
-						</div>
+					<li>
+						<a href="index.php?controleur=profil&methode=afficherAPropos&id={{ utilisateurConnecte.idUtilisateur }}" class="dropdown-item">
+							<div class="d-flex align-items-center">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+									alt="Profile" width="32" height="32" 
+									class="rounded-circle me-2">
+								<div>
+									<strong>{{ utilisateurConnecte.pseudo }}</strong>
+									<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
+								</div>
+							</div>
+						</a>
 					</li>
 					<li><hr class="dropdown-divider"></li>
 					{% if utilisateurConnecte.getRole == 'admin' %}
