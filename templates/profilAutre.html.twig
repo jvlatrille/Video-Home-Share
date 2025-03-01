@@ -43,43 +43,88 @@
 				<p class="text-center">Cet utilisateur n'a pas encore envoyé de messages.</p>
 			{% else %}
 				<div class="container">
-					{% for forumNom, messages in groupedMessages %}
-						<h3 class="mt-4">{{ forumNom }}</h3> <!-- Nom du forum -->
-						{% for message in messages %}
-							<div class="card mb-4">
-								<div class="card-body">
-									<div class="d-flex align-items-center">
-										<!-- Affichage de la photo de profil -->
-										<div class="rounded-circle" 
-											style="background-image: url('{{ photo }}');
-											height: 70px;
-											width: 70px;
-											background-size: cover;
-											background-position: center;
-											border: 4px solid #fff;">
-											
-										</div>
-		
-										<!-- Contenu du message -->
-										<div class="ml-3">
-											<p>{{ message.contenu }}</p>
-										</div>
+					{% set firstForumName = groupedMessages|keys|first %}
+					{% set firstForumMessages = groupedMessages[firstForumName] %}
+					
+					<!-- Affichage du premier forum -->
+					<h3 class="mt-4">{{ firstForumName }}</h3>
+					{% for message in firstForumMessages %}
+						<div class="card mb-4">
+							<div class="card-body">
+								<div class="d-flex align-items-center">
+									<div class="rounded-circle" 
+										style="background-image: url('{{ photo }}');
+										height: 70px;
+										width: 70px;
+										background-size: cover;
+										background-position: center;
+										border: 4px solid #fff;">
 									</div>
-								</div>
-		
-								<!-- Pied de la carte (likes/dislikes) -->
-								<div class="card-footer d-flex justify-content-between align-items-center">
-									<div>
-										<span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>                   
-                                		<span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
+									<div class="ml-3">
+										<p>{{ message.contenu }}</p>
 									</div>
 								</div>
 							</div>
-						{% endfor %}
+							<div class="card-footer d-flex justify-content-between align-items-center">
+								<div>
+									<span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>                   
+									<span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
+								</div>
+							</div>
+						</div>
 					{% endfor %}
+
+					<!-- Calcul du nombre de forums restants -->
+					{% set remainingForums = groupedMessages|length - 1 %}
+					
+					{% if remainingForums > 0 %}
+						<div id="forums-supplementaires" style="display: none;">
+							{% for forumNom, messages in groupedMessages %}
+								{% if forumNom != firstForumName %}
+									<h3 class="mt-4">{{ forumNom }}</h3>
+									{% for message in messages %}
+										<div class="card mb-4">
+											<div class="card-body">
+												<div class="d-flex align-items-center">
+													<div class="rounded-circle" 
+														style="background-image: url('{{ photo }}');
+														height: 70px;
+														width: 70px;
+														background-size: cover;
+														background-position: center;
+														border: 4px solid #fff;">
+													</div>
+													<div class="ml-3">
+														<p>{{ message.contenu }}</p>
+													</div>
+												</div>
+											</div>
+											<div class="card-footer d-flex justify-content-between align-items-center">
+												<div>
+													<span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>                   
+													<span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
+												</div>
+											</div>
+										</div>
+									{% endfor %}
+								{% endif %}
+							{% endfor %}
+						</div>
+						
+						<div class="text-center mt-3 mb-4">
+							<button id="voir-plus-forums" class="btn btn-primary">Voir plus ({{ remainingForums }} forums)</button>
+						</div>
+						
+						<script>
+							document.getElementById('voir-plus-forums').addEventListener('click', function() {
+								document.getElementById('forums-supplementaires').style.display = 'block';
+								this.style.display = 'none';
+							});
+						</script>
+					{% endif %}
 				</div>
 			{% endif %}
-		</div>	
+		</div>
 		
 		<div class="container mt-4">
 			<h2>Commentaires de {{ utilisateur.pseudo }}</h2>
@@ -88,8 +133,10 @@
 				<p class="text-center">Cet utilisateur n'a pas encore rédigé de commentaires.</p>
 			{% else %}
 				<div class="container">
-					{% for commentaire in commentaires %}
-						{# Définir le type de l’œuvre en vérifiant si "type" est défini, sinon utiliser "typeOA" #}
+					{% set commentaires_count = commentaires|length %}
+					{% set nombreComAffiches = 3 %}
+
+					{% for commentaire in commentaires|slice(0, nombreComAffiches) %}
 						{% set oaType = commentaire.type is defined and commentaire.type ? commentaire.type : commentaire.typeOA %}
 						
 						<a href="index.php?controleur=oa&methode=afficher{{ oaType == 'TV' ? 'Serie' : 'Film' }}&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
@@ -108,6 +155,41 @@
 							</div>
 						</a>
 					{% endfor %}
+
+					{% if commentaires_count > nombreComAffiches %}
+						<div id="commentaires-supplementaires" style="display: none;">
+							{% for commentaire in commentaires|slice(nombreComAffiches) %}
+								{% set oaType = commentaire.type is defined and commentaire.type ? commentaire.type : commentaire.typeOA %}
+								
+								<a href="index.php?controleur=oa&methode=afficher{{ oaType == 'TV' ? 'Serie' : 'Film' }}&idOa={{ commentaire.idTMDB }}#commentaires" class="text-decoration-none">
+									<div class="card mb-3 shadow-sm">
+										<div class="card-body d-flex align-items-center">
+											<img src="img/profils/{{ utilisateur.photoProfil }}" class="rounded-circle border shadow-sm me-3" style="width: 60px; height: 60px; object-fit: cover;" alt="Photo de {{ utilisateur.pseudo }}">
+											<div class="d-flex flex-column flex-grow-1">
+												<span class="text-dark fw-bold me-2" style="font-size: 1.25rem;">{{ commentaire.titreOeuvre }}</span>
+												<p class="mb-1">{{ commentaire.contenu }}</p>
+												<small class="text-muted">Posté le {{ commentaire.dateCommentaire|date('d/m/Y') }}</small>
+											</div>
+											<div class="d-flex align-items-center">
+												<img src="{{ commentaire.backdropOeuvre|first.small }}" class="card-img-top" style="height: 100px; object-fit: cover;" alt="Capture de {{ commentaire.titreOeuvre }}">
+											</div>
+										</div>
+									</div>
+								</a>
+							{% endfor %}
+						</div>
+						
+						<div class="text-center mt-3 mb-4">
+							<button id="voir-plus" class="btn btn-primary">Voir plus ({{ commentaires_count - nombreComAffiches }} commentaires)</button>
+						</div>
+						
+						<script>
+							document.getElementById('voir-plus').addEventListener('click', function() {
+								document.getElementById('commentaires-supplementaires').style.display = 'block';
+								this.style.display = 'none';
+							});
+						</script>
+					{% endif %}
 				</div>
 			{% endif %}
 		</div>		
