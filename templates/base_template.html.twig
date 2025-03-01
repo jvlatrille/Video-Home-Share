@@ -49,6 +49,11 @@
 		<script type="module" src"js/main.js"></script>
 		<script src="js/patientez.js"></script>
 		<script src="js/animations.js"></script>
+		<script>
+			window.utilisateurConnecte = {% if utilisateurConnecte is not null %}{{ utilisateurConnecte|json_encode|raw }}{% else %}null{% endif %};
+		</script>
+		<script src="js/raccourcis.js"></script>		
+		
 
 
 		<!-- ShareThis -->
@@ -100,7 +105,7 @@
 			<nav class="navbar navbar-expand-lg container-fluid py-1">
 			<!-- Logo Section -->
 			<div class="navbar-brand me-1">
-				<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter">
+				<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter" title="Alt + Shift + A">
 				<img src="img/LogoPopCorn.png" alt="Logo" width="60" height="50" class="me-1">
 				</a>
 			</div>
@@ -110,17 +115,17 @@
 				{% if utilisateurConnecte %}
 
 				<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
-					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light">
+					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light" title="Alt + Shift + F">
 					<i class="fas fa-comments me-1"></i> Forum
 
 					</a>
-					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light">
+					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light" title="Alt + Shift + L">
 					<i class="fas fa-list me-1 ilFautPatienter"></i> Mes listes
 					</a>
-					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light">
+					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light" title="Alt + Shift + Q">
 					<i class="fas fa-question-circle me-1 ilFautPatienter"></i> Quiz
 					</a>
-					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light">
+					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light "title="Alt + Shift + J">
 					<i class="fas fa-gamepad me-1 ilFautPatienter"></i> Jeux
 					</a>
 				</div>
@@ -130,7 +135,7 @@
 			<!-- Right Side Elements -->
 			<div class="d-flex align-items-center gap-2 flex-grow-1 ms-2">
 				<!-- Search Bar -->
-				<div class="position-relative flex-grow-1 me-3">
+				<div class="position-relative flex-grow-1 me-3" title="Alt + Shift + S">
 				<form class="d-flex" action="index.php" method="GET">
 					<input type="hidden" name="controleur" value="index">
 					<input type="hidden" name="methode" value="rechercher">
@@ -148,13 +153,13 @@
 
 				<!-- User Menu -->
 				{% if utilisateurConnecte is null %}
-				<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion">
+				<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion"  title="Alt + Shift + C">
 					<i class="fas fa-sign-in-alt me-1"></i> Connexion
 				</a>
 				{% else %}
 				<div class="dropdown me-3">
 					<button class="btn btn-link text-light p-0 border-0 mr-2" type="button" id="userMenuButton" 
-					data-bs-toggle="dropdown" aria-expanded="false">
+					data-bs-toggle="dropdown" aria-expanded="false"  title="Alt + Shift + P">
 					<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
 						alt="Profile" width="40" height="40" 
 						class="rounded-circle border border-2">
@@ -228,7 +233,7 @@
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal">
-						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">CGU
+						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">TMDB
 					</a>
 				</div>
 				<!-- PopUp pour l'accord TMDB -->
