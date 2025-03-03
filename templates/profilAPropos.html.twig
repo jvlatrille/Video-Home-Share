@@ -1,99 +1,73 @@
-{% extends 'base_template_profil.html.twig' %}   
-    
+{% extends 'base_template_profil.html.twig' %}
+
 {% block title %}
-    A Propos - {{ constant('WEBSITE_TITLE')}} 
+    A Propos - {{ constant('WEBSITE_TITLE') }}
 {% endblock %}
-    
 
 {% set photo = 'img/profils/' ~ (utilisateurConnecte.photoProfil) %}
 
-{% block content %}    
-    <!-- Titre de la partie notification -->
-    <div class="container mt-2">
-        <h1>Mes messages </h1><br>
-    </div>
-    
-    <!-- Affichage des messages -->
-    {% if messageListe is empty %}
-        <p class="text-center">Aucun message posté.</p>
-    {% else %}
-        <div class="container">
-            {% for message in messageListe %}
-            <h6><strong>Dans le forum : {{ message.nom }}</strong></h6>
-                <div class="card mb-4">
-                    <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="rounded-circle" 
-                                    style="background-image: url('{{ photo }}');
-                                    height: 70px;
-                                    width: 70px;
-                                    background-size: cover;
-                                    background-position: center;
-                                    border: 4px solid #fff;">
-                                </div>
-       
-                                <div class="ml-3 ">
-                                    <p>{{ message.contenu }}</p>
-                                </div>
-                            </div>
-                    </div>
+{% block content %}
+<div class="container mt-2">
+    <h1 class="text-center">Mes messages</h1>
+    <br>
+</div>
 
+{% if messageListe is empty %}
+    <p class="text-center">Aucun message posté.</p>
+{% else %}
+    <div class="container">
+        {% for message in messageListe %}
+            <div class="mb-4">
+                <h6 class="fw-bold">Dans le forum : {{ message.nom }}</h6>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row align-items-center">
+                            <div class="rounded-circle"
+                                 style="background-image: url('{{ photo }}'); height: 70px; width: 70px; background-size: cover; background-position: center; border: 4px solid #fff;">
+                            </div>
+                            <div class="ms-md-3 mt-3 mt-md-0">
+                                <p class="mb-0">{{ message.contenu }}</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div>
-                                <span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>
-                                                            
-                                <span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
+                            <span class="btn btn-success btn-sm disabled">👍 {{ message.nbLike }}</span>
+                            <span class="btn btn-danger btn-sm disabled">👎 {{ message.nbDislike }}</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if commentaires is defined and commentaires is not empty %}
+    <div class="container">
+        <h2 class="mb-3">Commentaires</h2>
+        <ul class="list-group mb-4">
+            {% for commentaire in commentaires %}
+                <li class="list-group-item">
+                    <div class="d-flex align-items-start">
+                        {% if commentaire.photoProfil %}
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
+                                <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+                            </a>
+                        {% else %}
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
+                                <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
+                            </a>
+                        {% endif %}
+                        <div>
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
+                                <strong>{{ commentaire.pseudo }}</strong>
+                            </a>
+                            <p class="mb-0">{{ commentaire.contenu }}</p>
+                        </div>
+                    </div>
+                </li>
             {% endfor %}
-        </div>
-    {% endif %}
-
-
-
-    <!-- Affichage des commentaires -->
-    {% if commentaires is defined and commentaires is not empty %}
-                <div class="container">
-                    <h2>Commentaires</h2>
-                        <ul class="list-group mb-4">
-                            {% for commentaire in commentaires %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        
-                                        {# <a href="index.php?controleur=commentaire&methode=afficherAPropos&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}">
-                                        
-                                        <h1 class="text-uppercase" style="color: #5c3d1e; font-size: 2rem; font-weight: bold;">{{ oa.nom }}</h1> #}
-
-                                        {% if commentaire.photoProfil %}
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
-                                                <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50">
-                                            </a>
-                                        {% else %}
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
-                                                <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
-                                            </a>
-                                        {% endif %}
-                                        <div>
-                                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
-                                                <strong>{{ commentaire.pseudo }}</strong>
-                                            </a>
-                                            <p>{{ commentaire.contenu }}</p>
-                                        </div>
-                                    </div>
-                                    {# {% if utilisateurConnecte and commentaire.pseudo == utilisateurConnecte.pseudo %}
-                                        <div>
-                                            <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
-                                                Supprimer
-                                            </a>
-                                        </div>
-                                    {% endif %} #}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                </div>    
-    {% endif %}
-    
+        </ul>
+    </div>
+{% endif %}
 {% endblock %}
