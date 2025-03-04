@@ -76,12 +76,13 @@
                                         <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}'">Y aller</button>
                                     {% endif %}
                                         {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
-                                            <button type="button" class="btn btn-danger ilFautPatienter" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
+                                        <br>
+                                            <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
                                         {% endif %}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +138,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -183,7 +184,7 @@
 
 							</div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
                                 <button type="submit" class="btn btn-primary ilFautPatienter">Enregistrer les modifications</button>
                             </div>
                         </form>
