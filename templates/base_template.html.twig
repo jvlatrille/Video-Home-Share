@@ -45,8 +45,7 @@
 		<script>
 			const TMDB_API_KEY = "{{ constant('TMDB_CLE_KEY') }}";
 		</script>
-	 	<script src="js/searchSuggestions.js"></script>
-		<script type="module" src"js/main.js"></script>
+		<script src="js/searchSuggestions.js"></script>
 		<script src="js/patientez.js"></script>
 		<script src="js/animations.js"></script>
 		<script>
@@ -206,6 +205,21 @@
 				</div>
 				{% endif %}
 			</div>
+			</nav>
+			<nav aria-label="breadcrumb" class="container-fluid bg-light text-dark shadow-sm" style="--bs-breadcrumb-divider: '>';">
+				<ol class="breadcrumb m-0">
+					{% if breadcrumb is defined and breadcrumb is not empty %}
+						{% for item in breadcrumb %}
+							{% if loop.last %}
+								<li class="breadcrumb-item active" aria-current="page">{{ item.title }}</li>
+							{% else %}
+								<li class="breadcrumb-item"><a href="{{ item.url }}" class="ilFautPatienter">{{ item.title }}</a></li>
+							{% endif %}
+						{% endfor %}
+					{% else %}
+						<li class="breadcrumb-item"><a href="index.php">Accueil</a></li>
+					{% endif %}
+				</ol>
 			</nav>
 		</header>
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->

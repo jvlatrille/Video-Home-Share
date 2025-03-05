@@ -38,19 +38,17 @@ class ControllerWatchList extends Controller
             $managerWatchList = new WatchListDao($this->getPdo());
             $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
 
-            //Recuperer des OA pour les suggestions
-            // $managerOa = new OaDao($this->getPdo());
-            // $oas = $managerOa->findRandomOeuvres();
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()]
+            ];
 
-            // $oas=array_merge($oas, $managerOa->findRandomSeries());
-            // $oas=array_slice($oas, 0, 15);
-            // shuffle($oas);
             // Generer la vue
             $template = $this->getTwig()->load('watchlists.html.twig');
 
             echo $template->render([
                 'watchListListe' => $watchListListe,
-                // 'oas' => $oas
+                'breadcrumb' => $breadcrumb
             ]);
             } 
         else {
@@ -67,18 +65,33 @@ class ControllerWatchList extends Controller
     //Fonction pour afficher une watchlist
     public function afficherWatchList()
     {
-        $id = $_GET['idWatchlist'] ?? null;
-      //Recupere la watchlist
-        $managerWatchList = new WatchListDao($this->getPdo());
-        
-        
-        $watchList = $managerWatchList->findWithFilms($id);
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        //Generer la vue
-        $template = $this->getTwig()->load('watchlist.html.twig');
+            $id = $_GET['idWatchlist'] ?? null;
+            //Recupere la watchlist
+            $managerWatchList = new WatchListDao($this->getPdo());
+            
+            
+            $watchList = $managerWatchList->findWithFilms($id);
 
-        echo $template->render(['watchList' => $watchList]);
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()],
+                ['title' => $watchList->getTitre(), 'url' => '']
+            ];
+
+            //Generer la vue
+            $template = $this->getTwig()->load('watchlist.html.twig');
+
+            echo $template->render(['watchList' => $watchList, 'breadcrumb' => $breadcrumb]);
     }
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
+}
 
     /**
      * @brief Methode pour lister toutes les watchlists visibles qui ne sont pas à l'utilisateur connecté
@@ -96,9 +109,16 @@ class ControllerWatchList extends Controller
 
             // Récupère toutes les watchlists visibles
             $watchListListe = $managerWatchList->findAllVisibleWithFilm($utilisateurConnecte->getIdUtilisateur());  
+
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()],
+                ['title' => 'Liste de la communauté', 'url' => 'index.php?controleur=watchlist&methode=listerWatchListVisible&id=' . $utilisateurConnecte->getIdUtilisateur()]                
+            ];
+
             // Génère la vue
             $template = $this->getTwig()->load('watchlistsCommu.html.twig');
-            echo $template->render(['watchListListe' => $watchListListe]);
+            echo $template->render(['watchListListe' => $watchListListe, 'breadcrumb' => $breadcrumb]);
         }
     }
     //Fonction pour ajouter une Watchlist
