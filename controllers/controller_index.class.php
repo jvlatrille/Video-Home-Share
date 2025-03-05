@@ -30,11 +30,16 @@ class ControllerIndex extends Controller
         $managerMessage = new MessageDAO($this->getPdo());
         $topMessages = $managerMessage->getTopLikedMessages();
         $randomListe = $managerOa->findRandomOeuvres();
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php']
+        ];
+
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render([
             'oaListe' => $oaListe,
             'topMessages' => $topMessages,
-            'oaRandomListe'=> $randomListe
+            'oaRandomListe'=> $randomListe,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
@@ -60,12 +65,18 @@ class ControllerIndex extends Controller
         // La méthode 'rechercherParPseudo' doit être implémentée dans UtilisateurDao
         $users = $utilisateurDao->rechercherParPseudo($requete);
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Recherche', 'url' => 'index.php?controleur=index&methode=rechercher']
+        ];
+
         $template = $this->getTwig()->load('recherche.html.twig');
         echo $template->render([
             'oas'      => $oas,
             'requete'  => $requete,
             'forums'   => $forums,
-            'users'    => $users
+            'users'    => $users,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 }

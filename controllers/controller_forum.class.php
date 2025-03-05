@@ -16,9 +16,14 @@ class ControllerForum extends Controller
             $managerForum = new ForumDAO($this->getPdo());
             $forumsListe = $managerForum->findAll();
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Liste des forums', 'url' => 'index.php?controleur=forum&methode=listerForum']
+            ];
+
             // Génère la vue
             $template = $this->getTwig()->load('forums.html.twig');
-            echo $template->render(['forumListe' => $forumsListe]);
+            echo $template->render(['forumListe' => $forumsListe, 'breadcrumb' => $breadcrumb]);
         } else {
             // Redirige vers la page de connexion
             header('Location: index.php?controleur=utilisateur&methode=connexion');

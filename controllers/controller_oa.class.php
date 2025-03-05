@@ -74,16 +74,27 @@ class ControllerOA extends Controller
             // Récupérer les fond d'écran
             $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'movie');
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $oa->getNom(), 'url' => 'index.php?controleur=oa&methode=afficherFilm&idOa=' . $oa->getIdOa()]
+            ];
+
+
+
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
+            
+
             echo $template->render([
                 'oa' => $oa,
+                'breadcrumb' => $breadcrumb,
                 'commentaires' => $commentaires,
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
                 'utilisateurNote' => $utilisateurNote,
                 'suggestions' => $suggestions,
-                'backdrops' => $backdrops
+                'backdrops' => $backdrops,
+                
             ]);
         } catch (Exception $e) {
             $this->afficherErreur("Impossible d'afficher les détails du film.");
@@ -246,6 +257,11 @@ class ControllerOA extends Controller
 
             $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'tv');
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $oa->getNom(), 'url' => 'index.php?controleur=oa&methode=afficherSerie&idOa=' . $oa->getIdOa()]
+            ];
+
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
                 $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
@@ -259,6 +275,7 @@ class ControllerOA extends Controller
                     'participants' => $participants,
                     'suggestions' => $suggestions,
                     'backdrops' => $backdrops,
+                    'breadcrumb' => $breadcrumb
                 ]);
                 return;
             }
@@ -271,6 +288,8 @@ class ControllerOA extends Controller
                 'participants' => $participants,
                 'suggestions' => $suggestions,
                 'backdrops' => $backdrops,
+                'breadcrumb' => $breadcrumb
+                
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());

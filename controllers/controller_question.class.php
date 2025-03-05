@@ -112,12 +112,20 @@ class ControllerQuestion extends Controller
         $quizz = $managerQuizz->find($idQuizz);
         $image = $quizz->getImage();
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+            ['title' => 'Ajouter un quiz', 'url' => 'index.php?controleur=Quizz&methode=ajouterQuizz'],
+            ['title' => 'Ajouter des questions', 'url' => 'index.php?controleur=question&methode=ajouterQuestions&idQuizz='.$idQuizz.'&nbQuestion='.$nbQuestion]
+        ];
+
         // Appeler le template avec les variables nécessaires
         $template = $this->getTwig()->load('questionAjouter.html.twig');
         echo $template->render([
             'idQuizz' => $idQuizz,
             'nbQuestion' => $nbQuestion,
-            'image' => $image
+            'image' => $image,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 

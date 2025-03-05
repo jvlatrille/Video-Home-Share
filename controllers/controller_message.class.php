@@ -24,11 +24,18 @@ class ControllerMessage extends Controller
         $managerMessage = new MessageDAO($this->getPdo());
         $messagesListe = $managerMessage->findAll($idForum);
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des forums', 'url' => 'index.php?controleur=forum&methode=listerForum'],
+            ['title' => $forum->getNom(), 'url' => 'index.php?controleur=message&methode=listerMessage&idForum=' . $idForum]
+        ];
+
         // Génère la vue
         $template = $this->getTwig()->load('forum_detail.html.twig');
         echo $template->render([
             'messageListe' => $messagesListe,
-            'forum' => $forum
+            'forum' => $forum,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
