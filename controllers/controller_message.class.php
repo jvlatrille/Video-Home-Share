@@ -74,7 +74,6 @@ class ControllerMessage extends Controller
 
             // Récupération des données
             $idMessage = $_POST['idMessage'] ?? $_GET['idMessage'] ?? null;
-            $idMessage = (int) $idMessage;
             $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
             
             // Récupère le message via le DAO
