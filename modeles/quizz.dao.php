@@ -95,23 +95,75 @@ class QuizzDao {
         return $reussite;
     }
     
-    /**
-     * @author VINET LATRILLE Jules
-     * @brief Méthode pour supprimer un quizz par son ID
-     * @param int $id L'ID du quizz à supprimer
-     * @return bool Vrai si la suppression a réussi, faux sinon
-     */
-    public function delete(int $id): bool {
-        try {
-            $stmt = $this->pdo->prepare("DELETE FROM " . PREFIXE_TABLE . "quizz WHERE idQuizz = :id");
-            $stmt->execute([':id' => $id]);
-            
-            // Retourne vrai si au moins une ligne a été affectée
-            return $stmt->rowCount() > 0;
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la suppression du quizz : " . $e->getMessage());
-            return false;
-        }
+    public function findId($id)
+    {
+        $sql = "SELECT q.*, u.pseudo 
+                FROM " . PREFIXE_TABLE . "quizz q 
+                JOIN " . PREFIXE_TABLE . "utilisateur u on q.idCreateur = u.idUtilisateur 
+                WHERE q.idCreateur = :id";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['id' => $id]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+
+        $resultats = $pdoStatement->fetchAll();
+        return $this->hydrateAll($resultats);
+    }
+
+    public function update($quiz)
+    {
+        $id = $quiz->getIdQuizz();
+        $nom = $quiz->getNom();
+        $theme = $quiz->getTheme();
+        $nbQuestion = $quiz->getNbQuestion();
+        $difficulte = $quiz->getDifficulte();
+        $image = $quiz->getImage();
+
+        $sql = "UPDATE " . PREFIXE_TABLE . "quizz 
+                SET nom = :nom, theme = :theme, nbQuestion = :nbQuestion, difficulte = :difficulte, image = :image 
+                WHERE idQuizz = :id";
+        $pdoStatement = $this->getPdo()->prepare($sql);
+
+        return $pdoStatement->execute(['nom' => $nom,
+                                       'theme' => $theme,
+                                       'nbQuestion' => $nbQuestion,
+                                       'difficulte' => $difficulte,
+                                       'image' => $image,
+                                       'id' => $id]);
+    }
+
+    public function delete($id)
+    {
+        $sql = "DELETE q, p, t
+                FROM  ".PREFIXE_TABLE."quizz AS q
+                LEFT JOIN  ".PREFIXE_TABLE."portersur AS p ON q.idQuizz = p.idQuizz
+                LEFT JOIN  ".PREFIXE_TABLE."question AS t ON p.idQuestion = t.idQuestion
+                WHERE q.idQuizz = :id;";
+        
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        return $pdoStatement->execute(['id' => $id]);
+    }
+    
+    public function nbQuestion($idQuizz)
+    {
+        $sql = "SELECT COUNT(idQuestion) AS total
+                FROM ".PREFIXE_TABLE."portersur 
+                WHERE idQuizz = :idQuizz";
+
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        $pdoStatement->execute(['idQuizz'=> $idQuizz]);
+        
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function ajoutQuestion($idQuiz)
+    {
+        $sql = "UPDATE ".PREFIXE_TABLE."quizz 
+                SET nbQuestion = nbQuestion + 1 
+                WHERE idQuizz = :id";
+
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        return $pdoStatement->execute(['id'=> $idQuiz]);
     }
 }
 
