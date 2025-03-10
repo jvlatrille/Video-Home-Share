@@ -5,20 +5,18 @@ class question{
     private ?int $numero;
     private ?string $nvDifficulte;
     private ?string $bonneReponse;
-	private ?string $cheminImage;
 	private ?string $mauvaiseReponse1;
 	private ?string $mauvaiseReponse2;
 	private ?string $mauvaiseReponse3;
 	private ?int $idQuizz;
 
-	public function __construct(?int $idQuestion, ?string $contenu, ?int $numero, ?string $nvDifficulte, ?string $bonneReponse, ?string $cheminImage, ?string $mauvaiseReponse1,?string $mauvaiseReponse2, ?string $mauvaiseReponse3, ?int $idQuizz) {
+	public function __construct(?int $idQuestion, ?string $contenu, ?int $numero, ?string $nvDifficulte, ?string $bonneReponse, ?string $mauvaiseReponse1,?string $mauvaiseReponse2, ?string $mauvaiseReponse3, ?int $idQuizz) {
 
 		$this->idQuestion = $idQuestion;
 		$this->contenu = $contenu;
 		$this->numero = $numero;
 		$this->nvDifficulte = $nvDifficulte;
 		$this->bonneReponse = $bonneReponse;
-		$this->cheminImage = $cheminImage;
 		$this->mauvaiseReponse1 = $mauvaiseReponse1;
 		$this->mauvaiseReponse2 = $mauvaiseReponse2;
 		$this->mauvaiseReponse3 = $mauvaiseReponse3;
@@ -63,13 +61,6 @@ class question{
 
 	public function setBonneReponse(?string $value) {
 		$this->bonneReponse = $value;
-	}
-	public function getcheminImage() : ?string {
-		return $this->cheminImage;
-	}
-
-	public function setcheminImage(?string $value) {
-		$this->cheminImage = $value;
 	}
 	public function getMauvaiseReponse1() : ?string {
 		return $this->mauvaiseReponse1;

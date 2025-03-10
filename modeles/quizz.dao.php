@@ -142,5 +142,28 @@ class QuizzDao {
         $pdoStatement = $this->getPdo()->prepare($sql);
         return $pdoStatement->execute(['id' => $id]);
     }
+    
+    public function nbQuestion($idQuizz)
+    {
+        $sql = "SELECT COUNT(idQuestion) AS total
+                FROM ".PREFIXE_TABLE."portersur 
+                WHERE idQuizz = :idQuizz";
+
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        $pdoStatement->execute(['idQuizz'=> $idQuizz]);
+        
+        $result = $pdoStatement->fetch(PDO::FETCH_ASSOC);
+        return $result['total'] ?? 0;
+    }
+
+    public function ajoutQuestion($idQuiz)
+    {
+        $sql = "UPDATE ".PREFIXE_TABLE."quizz 
+                SET nbQuestion = nbQuestion + 1 
+                WHERE idQuizz = :id";
+
+        $pdoStatement = $this->getPdo()->prepare($sql);
+        return $pdoStatement->execute(['id'=> $idQuiz]);
+    }
 }
 

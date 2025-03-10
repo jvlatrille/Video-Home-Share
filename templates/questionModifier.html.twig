@@ -115,8 +115,7 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-
+                    </div><div class="text-center mt-4">
                 {% else %}
                     <tr>
                         <td colspan="5" class="text-center text-muted">Aucune question disponible pour l'instant.</td>
@@ -124,6 +123,68 @@
                 {% endfor %}
             </tbody>
         </table>
+
+    <div class="d-flex justify-content-end mt-4">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+            <i class="fas fa-plus"></i> Ajouter une question
+        </button>
+    </div>
+
+    <!-- Modal d'ajout de question -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <form action="index.php?controleur=question&methode=rajoutQuestion&idQuiz={{ idQuiz }}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une nouvelle question</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    <input type="hidden" name="idQuiz" value="{{ idQuiz }}">
+
+                        <div class="mb-3">
+                            <label for="contenu" class="form-label">Contenu</label>
+                            <input type="text" class="form-control" id="contenu" name="contenu" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nvDifficulte" class="form-label">Difficulté</label>
+                            <select class="form-select" id="nvDifficulte" name="nvDifficulte" required>
+                                <option value="Facile">Facile</option>
+                                <option value="Moyen">Moyen</option>
+                                <option value="Difficile">Difficile</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bonneReponse" class="form-label">Bonne Réponse</label>
+                            <input type="text" class="form-control" id="bonneReponse" name="bonneReponse" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse1" class="form-label">Mauvaise Réponse 1</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse1" name="mauvaiseReponse1" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse2" class="form-label">Mauvaise Réponse 2</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse2" name="mauvaiseReponse2" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse3" class="form-label">Mauvaise Réponse 3</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse3" name="mauvaiseReponse3" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Ajouter</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
