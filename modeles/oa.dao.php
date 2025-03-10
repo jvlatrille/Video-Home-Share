@@ -158,7 +158,7 @@ class OADao
         return array_map(fn($img) => [
             'small' => 'https://image.tmdb.org/t/p/w300' . $img['file_path'],
             'full' => 'https://image.tmdb.org/t/p/original' . $img['file_path']
-        ], array_slice($response['backdrops'], 0, 10)); // Limite à 10 images max
+        ], array_slice($response['backdrops'], 0, 21)); // Limite à 10 images max
     }
 
     

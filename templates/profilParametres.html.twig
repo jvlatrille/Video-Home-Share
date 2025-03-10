@@ -1,105 +1,122 @@
 {% extends "base_template_profil.html.twig" %}
 
 {% block content %}
-<!-- Couleur des marges -->
-<div style="background-color: #AA8463;">
-    <!-- Bloc principal avec des marges -->
-    <div class="container-fluid min-vh-100 ms-* me-*m-auto" style="background-color: #D5D0AF; border: none; width: 70%;">
-        <!-- Bloc principal avec bordures personnalisées -->
-
-        <!-- Formulaires de modification -->
-        <div class="p-5">
-            <h4>Paramètres utilisateur</h4>
-
-            <!-- Changer pseudo -->
-            <div class="mb-4">
-                <label class="form-label">Changer de Pseudo :</label>
-                <form id="changerPseudo" action="index.php?controleur=profil&methode=changerPseudo" method="POST" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="pseudo" class="form-label d-none">Changer de pseudo :</label>
-                        <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required
-                            maxlength="50" minlength="5" title="Entrez un pseudo entre 5 et 50 caractères.">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer Pseudo</button>
-                </form>
+<div class="container-fluid p-3" style="background-color: #AA8463;">
+    <div class="container py-4" style="background-color: #D5D0AF; border-radius: 8px;">
+        <h4 class="mb-4 text-center">Paramètres utilisateur</h4>
+        
+        <!-- Changer pseudo -->
+        <div class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Changer de Pseudo</h5>
+                    <form id="changerPseudo" action="index.php?controleur=profil&methode=changerPseudo" method="POST" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <label for="pseudo" class="form-label visually-hidden">Changer de pseudo :</label>
+                            <input type="text" class="form-control" id="pseudo" name="pseudo" placeholder="Votre pseudo" required maxlength="50" minlength="5" title="Entrez un pseudo entre 5 et 50 caractères.">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                            <button type="submit" class="btn btn-primary w-100">Changer Pseudo</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <!-- Changer bio -->
-            <div class="mb-4">
-                <label class="form-label">Changer de bio :</label>
-                <form id="changerBio" action="index.php?controleur=profil&methode=changerBio" method="POST" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="bio" class="form-label d-none">Changer de bio :</label>
-                        <input type="text" class="form-control" id="bio" name="bio" placeholder="Votre bio" required
-                            maxlength="255" minlength="0" title="Entrez un pseudo entre 0 et 255 caractères.">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer bio</button>
-                </form>
-            </div>
-
-            <!-- Changer photo de profil -->
-            <div class="mb-4">
-                <label for="photo" class="form-label">Photo de Profil</label>
-                <form id="changerPhotoProfil" action="index.php?controleur=profil&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="photo" class="form-label d-none">Changer Photo de Profil :</label>
-                        <input type="file" class="form-control" id="photo" name="photo"
-                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer Photo de Profil</button>
-                </form>
-                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
-            </div>
-
-            <!-- Changer banniere -->
-            <div class="mb-4">
-                <label for="banniere" class="form-label">Banniere</label>
-                <form id="changerBanniere" action="index.php?controleur=profil&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="banniere" class="form-label d-none">Changer Banniere :</label>
-                        <input type="file" class="form-control" id="banniere" name="banniere"
-                            aria-describedby="fileHelp" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer Banniere</button>
-                </form>
-                <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
-            </div>
-
-            <!-- Changer mail -->
-            <div class="mb-4">
-                <label class="form-label">Changer d'Adresse Mail :</label>
-                <form action="index.php?controleur=profil&methode=boutonChangerMail" method="POST" class="d-flex align-items-center">
-                    <div class="me-2 flex-grow-1">
-                        <label for="mail" class="form-label d-none">Changer d'adresse mail :</label>
-                        <input type="text" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com"
-                            required title="Entrez une adresse email valide, comme pierre@gmail.com">
-                    </div>
-                    <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
-                    <button type="submit" class="btn btn-primary">Changer Mail</button>
-                </form>
-            </div>
-
-            
-			{% if erreurs is defined %}
-				<div class="alert alert-danger text-center">
-					<h3>Erreurs :</h3>
-					<ul >
-						{% for erreur in erreurs %}
-							<li>{{ erreur }}</li>
-						{% endfor %}
-					</ul>
-				</div>
-			{% endif %}
-
-            {% if message is defined %}
-                <div class="alert alert-danger text-danger">{{ message }}</div>
-            {% endif %}
         </div>
+        
+        <!-- Changer bio -->
+        <div class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Changer de Bio</h5>
+                    <form id="changerBio" action="index.php?controleur=profil&methode=changerBio" method="POST" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <label for="bio" class="form-label visually-hidden">Changer de bio :</label>
+                            <input type="text" class="form-control" id="bio" name="bio" placeholder="Votre bio" required maxlength="255" title="Entrez une bio entre 0 et 255 caractères.">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                            <button type="submit" class="btn btn-primary w-100">Changer Bio</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Changer photo de profil -->
+        <div class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Photo de Profil</h5>
+                    <form id="changerPhotoProfil" action="index.php?controleur=profil&methode=changerPhotoProfil" method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <label for="photo" class="form-label visually-hidden">Changer Photo de Profil :</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                            <button type="submit" class="btn btn-primary w-100">Changer Photo</button>
+                        </div>
+                    </form>
+                    <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Changer banniere -->
+        <div class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Banniere</h5>
+                    <form id="changerBanniere" action="index.php?controleur=profil&methode=changerBanniere" method="POST" enctype="multipart/form-data" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <label for="banniere" class="form-label visually-hidden">Changer Banniere :</label>
+                            <input type="file" class="form-control" id="banniere" name="banniere" accept=".jpg, .png" title="Téléchargez une image au format JPG ou PNG ne dépassant pas 2Mo.">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                            <button type="submit" class="btn btn-primary w-100">Changer Banniere</button>
+                        </div>
+                    </form>
+                    <div id="fileHelp" class="form-text">Formats autorisés : .jpg, .png. Taille maximale : 2 Mo.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Changer mail -->
+        <div class="mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Changer d'Adresse Mail</h5>
+                    <form action="index.php?controleur=profil&methode=boutonChangerMail" method="POST" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <label for="mail" class="form-label visually-hidden">Changer d'adresse mail :</label>
+                            <input type="email" class="form-control" id="mail" name="mail" placeholder="identifiant@domaine.com" required title="Entrez une adresse email valide, comme pierre@gmail.com">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
+                            <button type="submit" class="btn btn-primary w-100">Changer Mail</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Affichage des erreurs et messages -->
+        {% if erreurs is defined %}
+            <div class="alert alert-danger text-center">
+                <h3>Erreurs :</h3>
+                <ul>
+                    {% for erreur in erreurs %}
+                        <li>{{ erreur }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if message is defined %}
+            <div class="alert alert-danger text-danger">{{ message }}</div>
+        {% endif %}
     </div>
 </div>
-
 {% endblock %}
