@@ -104,19 +104,28 @@ class ControllerQuestion extends Controller
 
         // Vérification si les paramètres existent
         if ($idQuizz === null) {
-            die("L'identifiant du quizz est requis !");
+            $this->afficherErreur("L'identifiant du quizz est requis !");
+            exit();            
         }
 
         $managerQuizz = new QuizzDao($this->getPdo());
         $quizz = $managerQuizz->find($idQuizz);
         $image = $quizz->getImage();
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+            ['title' => 'Ajouter un quiz', 'url' => 'index.php?controleur=Quizz&methode=ajouterQuizz'],
+            ['title' => 'Ajouter des questions', 'url' => 'index.php?controleur=question&methode=ajouterQuestions&idQuizz='.$idQuizz.'&nbQuestion='.$nbQuestion]
+        ];
+
         // Appeler le template avec les variables nécessaires
         $template = $this->getTwig()->load('questionAjouter.html.twig');
         echo $template->render([
             'idQuizz' => $idQuizz,
             'nbQuestion' => $nbQuestion,
-            'image' => $image
+            'image' => $image,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
@@ -133,7 +142,8 @@ class ControllerQuestion extends Controller
 
     // Si l'ID du quizz est manquant
     if (!$idQuizz) {
-        die("L'identifiant du quizz est requis !");
+        $this->afficherErreur("L'identifiant du quizz est requis !");
+        exit();
     }
 
     $managerQuestion = new QuestionDao($this->getPdo());
@@ -176,7 +186,8 @@ class ControllerQuestion extends Controller
             ]);
         } else {
             // Si l'ajout échoue, afficher une erreur
-            die("Erreur lors de l'ajout de la question.");
+            $this->afficherErreur("Erreur lors de l'ajout de la question.");
+            exit();
         }
     }
 
@@ -225,7 +236,8 @@ class ControllerQuestion extends Controller
                 exit;
             } else {
                 // Erreur de mise à jour
-                echo "Erreur lors de la modification de la question.";
+                $this->afficherErreur("Erreur lors de la modification de la question.");
+                exit();
             }
         }
 
@@ -247,7 +259,8 @@ class ControllerQuestion extends Controller
             exit;
         } else {
             // Erreur de suppression
-            echo "Erreur lors de la suppression de la question.";
+            $this->afficherErreur("Erreur lors de la suppression de la question.");
+            exit();
         }
     }
     public function afficherScore()
@@ -259,8 +272,8 @@ class ControllerQuestion extends Controller
     $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
 
     if (!$idQuizz) {
-        echo "ID du quizz manquant.";
-        return;
+        $this->afficherErreur("ID du quizz manquant.");
+        exit();
     }
 
     // Récupère le nombre total de questions du quizz
@@ -281,54 +294,63 @@ class ControllerQuestion extends Controller
 }
 
     public function afficherQuestionAjax()
-{
-    $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
-    $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
+    {
+        $idQuizz = isset($_GET['idQuizz']) ? (int)$_GET['idQuizz'] : null;
+        $numero = isset($_GET['numero']) ? (int)$_GET['numero'] : 1;
 
-    if (!$idQuizz) {
-        echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
-        return;
+        if (!$idQuizz) {
+            echo json_encode(["error" => "ID du quizz manquant ou invalide."]);
+            return;
+        }
+
+        $managerQuestion = new QuestionDao($this->getPdo());
+        $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
+
+        if (!$question) {
+            echo json_encode(["end" => true]);
+            return;
+        }
+
+        $reponses = [
+            ["text" => $question->getBonneReponse(), "correct" => true],
+            ["text" => $question->getMauvaiseReponse1(), "correct" => false],
+            ["text" => $question->getMauvaiseReponse2(), "correct" => false],
+            ["text" => $question->getMauvaiseReponse3(), "correct" => false]
+        ];
+        shuffle($reponses);
+
+        $difficultyClass = '';
+        if ($question->getNvDifficulte() == 'Facile') {
+            $difficultyClass = 'text-success';
+        } elseif ($question->getNvDifficulte() == 'Moyen') {
+            $difficultyClass = 'text-warning';
+        } elseif ($question->getNvDifficulte() == 'Difficile') {
+            $difficultyClass = 'text-danger';
+        }
+
+        // Ajouter le chemin de l'image dans la réponse
+        $cheminImage = $question->getCheminImage();
+
+        echo json_encode([
+            "question" => $question->getContenu(),
+            "reponses" => $reponses,
+            "difficulty" => $question->getNvDifficulte(),
+            "difficultyClass" => $difficultyClass,
+            "numero" => $numero,
+            "image" => $cheminImage // Ajout du chemin de l'image
+        ]);
     }
 
-    $managerQuestion = new QuestionDao($this->getPdo());
-    $question = $managerQuestion->findQuestionByQuizzAndNumero($idQuizz, $numero);
-
-    if (!$question) {
-        echo json_encode(["end" => true]);
-        return;
+    /**
+     * @brief Affiche une page d'erreur propre
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        $erreurController = new ErreurController($this->getTwig(), $this->getLoader());
+        $erreurController->renderErreur($message);
+        exit();
     }
-
-    $reponses = [
-        ["text" => $question->getBonneReponse(), "correct" => true],
-        ["text" => $question->getMauvaiseReponse1(), "correct" => false],
-        ["text" => $question->getMauvaiseReponse2(), "correct" => false],
-        ["text" => $question->getMauvaiseReponse3(), "correct" => false]
-    ];
-    shuffle($reponses);
-
-    $difficultyClass = '';
-    if ($question->getNvDifficulte() == 'Facile') {
-        $difficultyClass = 'text-success';
-    } elseif ($question->getNvDifficulte() == 'Moyen') {
-        $difficultyClass = 'text-warning';
-    } elseif ($question->getNvDifficulte() == 'Difficile') {
-        $difficultyClass = 'text-danger';
-    }
-
-    // Ajouter le chemin de l'image dans la réponse
-    $cheminImage = $question->getCheminImage();
-
-    echo json_encode([
-        "question" => $question->getContenu(),
-        "reponses" => $reponses,
-        "difficulty" => $question->getNvDifficulte(),
-        "difficultyClass" => $difficultyClass,
-        "numero" => $numero,
-        "image" => $cheminImage // Ajout du chemin de l'image
-    ]);
-}
-
-    
 }
 
 

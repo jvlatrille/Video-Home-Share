@@ -104,7 +104,28 @@ class NotificationDao{
                 return false;
             }      
     }
+
     
+    public function recupNomForum(?int $idMessage){
+        $sql = "SELECT f.nom FROM ".PREFIXE_TABLE."notification n 
+        JOIN ".PREFIXE_TABLE."message m ON n.idMessage = m.idMessage
+        JOIN ".PREFIXE_TABLE."forum f ON f.idForum = m.idForum
+        WHERE n.idMessage = :idMessage";
+        
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idMessage' => $idMessage]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        
+        $nomForum = $pdoStatement->fetch();
+        
+        if ($nomForum === false) {
+            return null;  // Si aucune donnée n'est trouvée
+        }
+        // Hydrater et retourner l'objet Notification
+        $resultat =  $this->hydrate($nomForum);
+        return $resultat;
+    
+    }
 
     /**
      * @brief Hydrate un objet Notification à partir d'un tableau associatif
@@ -119,6 +140,8 @@ class NotificationDao{
         $notif->setContenu($tableauAssoc['contenu']);
         $notif->setVu($tableauAssoc['vu']);
         $notif->setIdUtilisateur($tableauAssoc['idUtilisateur']);
+        $notif->setIdMessage($tableauAssoc['idMessage']);
+        //$notif->setNomForum($tableauAssoc['nomForum']);
         return $notif;
     }
 

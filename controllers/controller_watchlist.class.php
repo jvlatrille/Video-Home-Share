@@ -38,19 +38,17 @@ class ControllerWatchList extends Controller
             $managerWatchList = new WatchListDao($this->getPdo());
             $watchListListe = $managerWatchList->findAll($utilisateurConnecte->getIdUtilisateur());
 
-            //Recuperer des OA pour les suggestions
-            // $managerOa = new OaDao($this->getPdo());
-            // $oas = $managerOa->findRandomOeuvres();
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()]
+            ];
 
-            // $oas=array_merge($oas, $managerOa->findRandomSeries());
-            // $oas=array_slice($oas, 0, 15);
-            // shuffle($oas);
             // Generer la vue
             $template = $this->getTwig()->load('watchlists.html.twig');
 
             echo $template->render([
                 'watchListListe' => $watchListListe,
-                // 'oas' => $oas
+                'breadcrumb' => $breadcrumb
             ]);
             } 
         else {
@@ -67,25 +65,39 @@ class ControllerWatchList extends Controller
     //Fonction pour afficher une watchlist
     public function afficherWatchList()
     {
-        $id = $_GET['idWatchlist'] ?? null;
-      //Recupere la watchlist
-        $managerWatchList = new WatchListDao($this->getPdo());
-        
-        
-        $watchList = $managerWatchList->findWithFilms($id);
+        // Vérifie si un utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
-        //Generer la vue
-        $template = $this->getTwig()->load('watchlist.html.twig');
+            $id = $_GET['idWatchlist'] ?? null;
+            //Recupere la watchlist
+            $managerWatchList = new WatchListDao($this->getPdo());
+            
+            
+            $watchList = $managerWatchList->findWithFilms($id);
 
-        echo $template->render(['watchList' => $watchList]);
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()],
+                ['title' => $watchList->getTitre(), 'url' => '']
+            ];
+
+            //Generer la vue
+            $template = $this->getTwig()->load('watchlist.html.twig');
+
+            echo $template->render(['watchList' => $watchList, 'breadcrumb' => $breadcrumb]);
     }
+    else {
+        // Redirige vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
+}
 
     /**
      * @brief Methode pour lister toutes les watchlists visibles qui ne sont pas à l'utilisateur connecté
      *
      * @return void
      */
-    //Fonction pour lister toutes les watchlists visibles
     public function listerWatchListVisible()
     {
         // Vérifie si un utilisateur est connecté
@@ -97,9 +109,16 @@ class ControllerWatchList extends Controller
 
             // Récupère toutes les watchlists visibles
             $watchListListe = $managerWatchList->findAllVisibleWithFilm($utilisateurConnecte->getIdUtilisateur());  
+
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mes listes', 'url' => 'index.php?controleur=watchlist&methode=listerWatchList&id=' . $utilisateurConnecte->getIdUtilisateur()],
+                ['title' => 'Liste de la communauté', 'url' => 'index.php?controleur=watchlist&methode=listerWatchListVisible&id=' . $utilisateurConnecte->getIdUtilisateur()]                
+            ];
+
             // Génère la vue
             $template = $this->getTwig()->load('watchlistsCommu.html.twig');
-            echo $template->render(['watchListListe' => $watchListListe]);
+            echo $template->render(['watchListListe' => $watchListListe, 'breadcrumb' => $breadcrumb]);
         }
     }
     //Fonction pour ajouter une Watchlist
@@ -107,10 +126,10 @@ class ControllerWatchList extends Controller
      * @brief Methode pour ajouter une watchlist à l'utilisateur
      * @return void
      */
-    public function ajouterWatchList()
-{
+    public function ajouterWatchList(){
+
     // Vérifie si un utilisateur est connecté
-    if (isset($_SESSION['utilisateur'])) {
+    if (isset($_SESSION['utilisateur'])){
         $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
         // Récupération des données du formulaire
         $donnees = [
@@ -118,9 +137,10 @@ class ControllerWatchList extends Controller
             'titre' => $_POST['titre'] ?? null,
             'genre' => explode(':',$_POST['selectedGenre'])[1] ?? $_POST["selectedGenre"] ?? null,
             'description' => $_POST['description'] ?? null,
-            'visible' => $_POST['visible'] ?? '0',
+            'visible' => ($_POST['visible'] == "1") ? 1 : 0,
             'OAs' => is_string($_POST['OAs']) ? json_decode($_POST['OAs'], true) : $_POST['OAs'],
         ];
+   
         // Définition des règles de validation
         $regles = [
             'titre' => [
@@ -143,7 +163,7 @@ class ControllerWatchList extends Controller
             ],
             'visible' => [
                 'obligatoire' => true,
-                'type' => 'boolean',
+                'type' => 'bool',
             ],
         ];
 
@@ -161,7 +181,7 @@ class ControllerWatchList extends Controller
         $titre = $donnees['titre'];
         $genre = $donnees['genre'] ?? null;
         $description = $donnees['description'];
-        $visible = (bool)$donnees['visible'];
+        $visible = $donnees['visible'];
         $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
 
         // Traitement des œuvres (idTMDB et type)
@@ -178,6 +198,7 @@ class ControllerWatchList extends Controller
                 ];
             }
         }
+    
 
         // Création de la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
@@ -189,18 +210,23 @@ class ControllerWatchList extends Controller
         $watchList->setVisible($visible);
         $watchList->setIdUtilisateur($idUtilisateur);
         $managerWatchList->creerWatchlist($watchList);
-
         $idNouvelleWatchlist = $watchList->getIdWatchList();
-        
+
         // Association des œuvres à la watchlist
         foreach ($oeuvresFormatees as $oeuvre) {
             $managerWatchList->addOaToWatchlist($idNouvelleWatchlist, $oeuvre['idTMDB'], $oeuvre['type']);
         }
+
         // Redirection vers la liste des watchlists
         header('Location: index.php?controleur=watchlist&methode=listerWatchList&id=' . $idUtilisateur);
         exit();
     }
+    else {
+        // Redirection vers la page de connexion
+        header('Location: index.php?controleur=utilisateur&methode=connexion');
+    }
 }
+
 
     //Fonction pour modifier une Watchlist
     /**
@@ -218,7 +244,7 @@ class ControllerWatchList extends Controller
             'titre' => $_POST['titre'] ?? null,
             'genre' => $_POST['genre'] ?? null,
             'description' => $_POST['description'] ?? null,
-            'visible' => $_POST['visible'] ?? null,
+            'visible' => ($_POST['visible'] == "1") ? 1 : 0
         ];
         $regles = [
             'titre' => [
@@ -239,7 +265,12 @@ class ControllerWatchList extends Controller
                 'longueur_min' => 1,
                 'longueur_max' => 255,
             ],
+            'visible' => [
+                'obligatoire' => true,
+                'type' => 'bool',
+            ],
         ];
+
         $validation = new Validator($regles);
         if(!$validation->valider($donnees)){
             $erreurs = $validation->getMessagesErreurs();
@@ -252,7 +283,6 @@ class ControllerWatchList extends Controller
         $genre = $donnees['genre'];
         $description = $donnees['description'];
         $visible = $donnees['visible'];
-        
 
         //Modifie la watchlist
         $managerWatchList = new WatchListDao($this->getPdo());
@@ -262,8 +292,8 @@ class ControllerWatchList extends Controller
         $watchList->setGenre($genre);
         $watchList->setDescription($description);
         $watchList->setVisible($visible);
+        $watchList->setIdUtilisateur($utilisateurConnecte->getIdUtilisateur());
         $managerWatchList->modifierWatchlistComplete($watchList);
-
         //Redirige vers la watchlist
         header('Location: index.php?controleur=watchlist&methode=afficherWatchlist&idWatchlist=' . $watchList->getIdWatchlist() . ''); 
         }

@@ -145,7 +145,10 @@ class messageDAO
         $sql = "UPDATE ".PREFIXE_TABLE."message SET nbLike = nbLike + 1 WHERE idMessage = :idMessage";
         $query = $this->pdo->prepare($sql);
         $query->execute(['idMessage' => $idMessage]);
+
     }
+
+       
 
     public function incrementDislike(int $idMessage): void
     {
@@ -179,6 +182,45 @@ class messageDAO
         }
     }
 
+    
+    public function creerNotif(?int $idUtilisateur, ?int $idMessage): ?Notification
+    {
+        // Créer une nouvelle instance de Notification avec l'idUtilisateur
+        $notification = new Notification();
+        $notification->setIdUtilisateur($idUtilisateur);
+
+        // Insérer la notification
+        $sql = "INSERT INTO ".PREFIXE_TABLE."notification ( dateNotif, destinataire, contenu, vu, idUtilisateur, idMessage)
+                 VALUES ( :dateNotif, :destinataire, :contenu, :vu, :idUtilisateur, :idMessage)";
+
+        $contenu = '';
+        // if ($name === 'like') {
+        //     $contenu = 'Message like';
+        // } elseif ($name === 'dislike') {
+        //     $contenu = 'Message dislike';
+        // }
+
+        $currentDate = date('Y-m-d H:i:s'); //date et heure actuelle
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute([
+            'dateNotif' => $currentDate,
+            'destinataire' =>NULL,
+            'contenu' => $contenu,
+            'vu' => 0,
+            'idUtilisateur' => $notification->getIdUtilisateur(),
+            'idMessage' => $idMessage
+        ]);
+
+        // Récupérer l'ID de la notification insérée
+        $notification->setIdNotif($this->pdo->lastInsertId());
+       
+        return $notification;
+        
+    }
+
+
+    
     /**
      * @author VINET LATRILLE Jules
      * @brief Cette méthode récupère les messages les plus likés.

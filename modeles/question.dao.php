@@ -12,9 +12,9 @@ class QuestionDao {
  
                 $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                // Gestion des erreurs de connexion
-                die("Erreur de connexion à la base de données : " . $e->getMessage());
-            }
+                error_log("Erreur de connexion à la base de données : " . $e->getMessage());
+                $this->afficherErreur("Impossible de se connecter à la base de données.");
+            }            
         } else {
             $this->pdo = $pdo;
         }
@@ -45,9 +45,8 @@ class QuestionDao {
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
     
         if (!$resultat) {
-            // Si aucune question n'est trouvée
-            return null;
-        }
+            $this->afficherErreur("Aucune première question trouvée pour ce quizz.");
+        }          
     
         // Hydrate l'objet question avec les données récupérées
         return $this->hydrate($resultat);
@@ -63,10 +62,8 @@ class QuestionDao {
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
 
         if (!$resultat) {
-            // Si aucune question n'est trouvée
-            var_dump("Aucune question trouvée.");
-            return null;
-        }
+            $this->afficherErreur("Aucune question trouvée.");
+        }        
 
         // Hydrate l'objet question avec les données récupérées
         return $this->hydrate($resultat);
@@ -77,15 +74,13 @@ class QuestionDao {
         $sql = "SELECT * FROM ".PREFIXE_TABLE."question q INNER JOIN ".PREFIXE_TABLE."portersur p ON p.idQuestion = q.idQuestion
         WHERE p.idQuizz = :idQuizz";
         $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute(['id' => $idQuizz]);
+        $pdoStatement->execute(['idQuizz' => $idQuizz]); 
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$resultats) {
-            // Si aucune question n'est trouvée pour ce quizz
-            var_dump("Aucune question trouvée pour ce quizz.");
-            return null;
-        }
+            $this->afficherErreur("Aucune question trouvée pour ce quizz.");
+        }        
 
         // Hydrate toutes les questions récupérées
         return $this->hydrateAll($resultats);
@@ -127,9 +122,8 @@ class QuestionDao {
         $resultat = $pdoStatement->fetch(PDO::FETCH_ASSOC);
     
         if (!$resultat) {
-            // Si aucune question n'est trouvée
-            return null;
-        }
+            $this->afficherErreur("Aucune première question trouvée pour ce quizz.");
+        }        
     
         // Hydrate l'objet question avec les données récupérées
         return $this->hydrate($resultat);
@@ -182,10 +176,25 @@ class QuestionDao {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
+
     public function getLastInsertId(): int
-{
-    return $this->pdo->lastInsertId();
-}
+    {
+        return $this->pdo->lastInsertId();
+    }
+
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Affiche une page d'erreur proprement
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        require_once __DIR__ . '/../controllers/controller_erreur.class.php';
+        $erreurController = new ErreurController();
+        $erreurController->renderErreur($message);
+        exit();
+    }
+
 }
 
 

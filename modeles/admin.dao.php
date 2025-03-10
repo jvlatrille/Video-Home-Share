@@ -51,56 +51,44 @@ class AdminDao
     }
 
     /**
-     * @brief Met à jour les informations d'un utilisateur.
+     * @brief Met à jour les informations d'un utilisateur
+     *        (Uniquement pseudo, photo, bannière).
      *
-     * @param int $idUtilisateur ID de l'utilisateur.
-     * @param string $pseudo Nouveau pseudo.
-     * @param string $photoProfil Nouveau chemin de la photo de profil.
-     * @param string $banniereProfil Nouveau chemin de la bannière de profil.
-     * @param string $adressMail Nouvelle adresse mail.
-     * @param string|null $motDePasse Nouveau mot de passe (null si inchangé).
-     * @param string $role Nouveau rôle de l'utilisateur.
-     * @return bool Retourne true si la mise à jour a réussi, sinon false.
+     * @param int $idUtilisateur ID de l'utilisateur
+     * @param string $pseudo Nouveau pseudo
+     * @param string $photoProfil Nouveau chemin photo
+     * @param string $banniereProfil Nouveau chemin bannière
+     * @param string $role Nouveau rôle
+     * @return bool True si la mise à jour a réussi, sinon false
      */
     public function adminModifierUtilisateur(
         int $idUtilisateur,
         string $pseudo,
         string $photoProfil,
         string $banniereProfil,
-        string $adressMail,
-        ?string $motDePasse,
         string $role
     ): bool {
-        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur 
-                SET pseudo = :pseudo, 
-                    photoProfil = :photoProfil, 
-                    banniereProfil = :banniereProfil, 
-                    adressMail = :adressMail, 
-                    role = :role";
-
-        if ($motDePasse !== null) {
-            $sql .= ", motDePasse = :motDePasse";
-        }
-
-        $sql .= " WHERE idUtilisateur = :idUtilisateur";
-
+        $sql = "UPDATE " . PREFIXE_TABLE . "utilisateur
+                SET pseudo         = :pseudo,
+                    photoProfil    = :photoProfil,
+                    banniereProfil = :banniereProfil,
+                    role           = :role
+                WHERE idUtilisateur = :idUtilisateur";
+    
         $stmt = $this->pdo->prepare($sql);
-
+    
         $params = [
-            'pseudo' => $pseudo,
-            'photoProfil' => $photoProfil,
+            'pseudo'         => $pseudo,
+            'photoProfil'    => $photoProfil,
             'banniereProfil' => $banniereProfil,
-            'adressMail' => $adressMail,
-            'role' => $role,
-            'idUtilisateur' => $idUtilisateur
+            'role'           => $role,
+            'idUtilisateur'  => $idUtilisateur
         ];
-
-        if ($motDePasse !== null) {
-            $params['motDePasse'] = $motDePasse;
-        }
-
+    
         return $stmt->execute($params);
     }
+        
+
 
     /**
      * @brief Supprime un utilisateur par son ID.
@@ -145,4 +133,16 @@ class AdminDao
         $utilisateur->setRole($donnee['role']);
         return $utilisateur;
     }
+
+    /**
+     * @brief Récupère les logs de sauvegarde de la base de données.
+     * @return array Tableau de logs de sauvegarde.
+     */
+    public function getBackupLogs(): array {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "derniereSave ORDER BY date_save DESC";
+        $stmt = $this->pdo->query($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
+    }
+    
 }

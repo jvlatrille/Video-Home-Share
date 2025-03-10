@@ -38,19 +38,19 @@ class ControllerOA extends Controller
         $idOa = $_GET['idOa'] ?? null;
 
         if (!$this->validerId($idOa)) {
-            die('ID du film invalide ou non spécifié.');
-        }
+            $this->afficherErreur("ID du film invalide ou non spécifié.");
+        }        
 
         try {
             $idOa = (int)$idOa;
             $oa = $this->managerOa->find($idOa);
 
             if (!$oa) {
-                die('Film non trouvé.');
-            }
+                $this->afficherErreur("Film non trouvé.");
+            }            
 
             // Récupérer les commentaires du film
-            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa(),$oa->getType());
             error_log("Nombre de commentaires : " . count($commentaires));
 
             // Récupérer les participants du film
@@ -74,21 +74,30 @@ class ControllerOA extends Controller
             // Récupérer les fond d'écran
             $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'movie');
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $oa->getNom(), 'url' => 'index.php?controleur=oa&methode=afficherFilm&idOa=' . $oa->getIdOa()]
+            ];
+
+
+
             // Affichage avec Twig
             $template = $this->getTwig()->load('film.html.twig');
+            
+
             echo $template->render([
                 'oa' => $oa,
+                'breadcrumb' => $breadcrumb,
                 'commentaires' => $commentaires,
                 'participants' => $participants,
                 'watchListListe' => $watchListListe,
                 'utilisateurNote' => $utilisateurNote,
                 'suggestions' => $suggestions,
-                'backdrops' => $backdrops
+                'backdrops' => $backdrops,
+                
             ]);
         } catch (Exception $e) {
-            error_log('Erreur lors de l\'affichage du film : ' . $e->getMessage());
-            var_dump($e);
-            die('Impossible d\'afficher les détails du film.');
+            $this->afficherErreur("Impossible d'afficher les détails du film.");
         }
     }
 
@@ -128,7 +137,8 @@ class ControllerOA extends Controller
     public function noterFilm(): void
     {
         if (!isset($_SESSION['utilisateur'])) {
-            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
+            echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']);
+            exit();
         }
 
         $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
@@ -138,14 +148,16 @@ class ControllerOA extends Controller
         $note = $input['note'] ?? null;
 
         if (!$idTMDB || !$note) {
-            die(json_encode(['success' => false, 'message' => 'Données invalides reçues : ' . json_encode($input)]));
-        }
+            echo json_encode(['success' => false, 'message' => 'Données invalides reçues : ' . json_encode($input)]);
+            exit();
+        }        
 
         try {
             $result = $this->managerOa->ajouterNote((int)$idUtilisateur, (int)$idTMDB, (int)$note);
             echo json_encode(['success' => $result]);
         } catch (Exception $e) {
-            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit();
         }
     }
 
@@ -156,36 +168,41 @@ class ControllerOA extends Controller
         $noteTMDB = $_GET['noteTMDB'] ?? null;
 
         if (!$idTMDB || !$noteTMDB) {
-            die(json_encode(['success' => false, 'message' => 'Données invalides.']));
-        }
+            echo json_encode(['success' => false, 'message' => 'Données invalides.']);
+            exit();
+        }        
 
         try {
             $moyenne = $this->managerOa->calculerMoyenneNotes((int)$idTMDB, (float)$noteTMDB);
             echo json_encode(['success' => true, 'moyenne' => $moyenne]);
         } catch (Exception $e) {
-            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit();
         }
     }
 
     public function afficherNoteUtilisateur(): void
     {
         if (!isset($_SESSION['utilisateur'])) {
-            die(json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']));
-        }
+            echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté.']);
+            exit();
+        }        
 
         $idUtilisateur = unserialize($_SESSION['utilisateur'])->getIdUtilisateur();
         $idOa = $_GET['idOa'] ?? null;
 
         if (!$this->validerId($idOa)) {
-            die(json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']));
-        }
+            echo json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']);
+            exit();
+        }        
 
         try {
             $idOa = (int)$idOa;
             $note = $this->managerOa->getNoteUtilisateur($idUtilisateur, $idOa);
             echo json_encode(['success' => true, 'note' => $note]);
         } catch (Exception $e) {
-            die(json_encode(['success' => false, 'message' => $e->getMessage()]));
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit();
         }
     }
 
@@ -204,7 +221,7 @@ class ControllerOA extends Controller
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors du listing des séries : ' . $e->getMessage());
-            die('Impossible d\'afficher la liste des séries.');
+            $this->afficherErreur("Impossible d'afficher la liste des séries.");
         }
     }
 
@@ -217,21 +234,20 @@ class ControllerOA extends Controller
         $idOa = $_GET['idOa'] ?? null;
 
         if (!$this->validerId($idOa)) {
-            die('ID de la série invalide ou non spécifié.');
-        }
+            $this->afficherErreur("ID de la série invalide ou non spécifié.");
+        }        
 
         try {
             $idOa = (int)$idOa;
             $oa = $this->managerOa->findSerie($idOa);
 
             if (!$oa) {
-                die('Série non trouvée.');
-            }
+                $this->afficherErreur("Série non trouvée.");
+            }            
 
             // Récupérer les commentaires de la série
-            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa());
+            $commentaires = $this->managerCommentaire->findByTMDB($oa->getIdOa(),$oa->getType());
             error_log("Nombre de commentaires : " . count($commentaires));
-
             // Récupérer les participants de la série
             $participants = $this->managerOa->getParticipantsBySerieId($oa->getIdOa());
             error_log("Nombre de participants : " . count($participants));
@@ -240,6 +256,11 @@ class ControllerOA extends Controller
             $suggestions = $this->managerOa->findSuggestionsSerie($oa->getIdOa());
 
             $backdrops = $this->managerOa->getBackdrops($oa->getIdOa(), 'tv');
+
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $oa->getNom(), 'url' => 'index.php?controleur=oa&methode=afficherSerie&idOa=' . $oa->getIdOa()]
+            ];
 
             //Recuperer les watchlist de l'utilisateur
             if (isset($_SESSION['utilisateur'])) {
@@ -254,6 +275,7 @@ class ControllerOA extends Controller
                     'participants' => $participants,
                     'suggestions' => $suggestions,
                     'backdrops' => $backdrops,
+                    'breadcrumb' => $breadcrumb
                 ]);
                 return;
             }
@@ -264,11 +286,14 @@ class ControllerOA extends Controller
                 'oa' => $oa,
                 'commentaires' => $commentaires,
                 'participants' => $participants,
+                'suggestions' => $suggestions,
                 'backdrops' => $backdrops,
+                'breadcrumb' => $breadcrumb
+                
             ]);
         } catch (Exception $e) {
             error_log('Erreur lors de l\'affichage de la série : ' . $e->getMessage());
-            die('Impossible d\'afficher les détails de la série.');
+            $this->afficherErreur("Impossible d'afficher les détails de la série.");
         }
     }
 
@@ -281,8 +306,9 @@ class ControllerOA extends Controller
         $idFilm = $_GET['idFilm'] ?? null;
 
         if (!$this->validerId($idFilm)) {
-            die(json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']));
-        }
+            echo json_encode(['success' => false, 'message' => 'ID du film invalide ou non spécifié.']);
+            exit();
+        }        
 
         try {
             $suggestions = $this->managerOa->findSuggestions((int)$idFilm);
@@ -323,8 +349,9 @@ class ControllerOA extends Controller
         $genre = $_GET['genre'] ?? null;
 
         if (!$genre) {
-            die(json_encode(['success' => false, 'message' => 'Genre invalide ou non spécifié.']));
-        }
+            echo json_encode(['success' => false, 'message' => 'Genre invalide ou non spécifié.']);
+            exit();
+        }        
 
         try {
             $suggestions = $this->managerOa->findSuggestionsByGenre($genre);
@@ -337,4 +364,15 @@ class ControllerOA extends Controller
             exit;
         }
      }
+
+     /**
+     * @brief Affiche une page d'erreur
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        $erreurController = new ErreurController($this->getTwig(), $this->getLoader());
+        $erreurController->renderErreur($message);
+        exit();
+    }
 }

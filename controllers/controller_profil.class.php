@@ -32,8 +32,13 @@ class ControllerProfil extends Controller
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mon profil', 'url' => 'index.php?controleur=profil&methode=afficherApropos'],
+                ['title' => 'Paramètres', 'url' => 'index.php?controleur=profil&methode=afficherFormulaire']
+            ];
             $template = $this->getTwig()->load('profilParametres.html.twig');
-            echo $template->render(['utilisateur' => $utilisateurConnecte]);
+            echo $template->render(['utilisateur' => $utilisateurConnecte, 'breadcrumb' => $breadcrumb]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
@@ -435,14 +440,23 @@ class ControllerProfil extends Controller
         // Vérifie si un utilisateur est connecté
         if (isset($_SESSION['utilisateur'])) {
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
 
 
             //Recupere les notifications
             $managerNotif=New NotificationDao($this->getPdo());
             $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
+            $nomForum=$managerNotif->recupNomForum($idMessage);
+
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mon profil', 'url' => 'index.php?controleur=profil&methode=afficherApropos'],
+                ['title' => 'Notifications', 'url' => 'index.php?controleur=profil&methode=listerNotif']
+            ];
+
             //Generer la vue avec les notifications de l'utilisateur
             $template = $this->getTwig()->load('profilNotifications.html.twig');
-            echo $template->render(['notifListe' => $notifListe]);
+            echo $template->render(['notifListe' => $notifListe, 'nomForum'=>$nomForum,'breadcrumb'=>$breadcrumb]);//, 'nomForum'=>$nomForum
             
         }
         else {
@@ -462,6 +476,7 @@ class ControllerProfil extends Controller
     public function afficherNotif()
     {
         $id = isset($_GET['idNotif']) ? $_GET['idNotif'] : null;
+        
 
         if ($id === null) {
             $template = $this->getTwig()->load('profilNotifications.html.twig');
@@ -472,11 +487,17 @@ class ControllerProfil extends Controller
         //Recupere la notification
         $managerNotif=New NotificationDao($this->getPdo());
         $contenuNotif=$managerNotif->findNotif($id);
-    
+        
+    $breadcrumb = [
+        ['title' => 'Accueil', 'url' => 'index.php'],
+        ['title' => 'Mon profil', 'url' => 'index.php?controleur=profil&methode=afficherApropos'],
+        ['title' => 'Notifications', 'url' => 'index.php?controleur=profil&methode=listerNotif'],
+        ['title' => 'Notification', 'url' => 'index.php?controleur=profil&methode=afficherNotif&idNotif='.$id.'']
+    ];
         //Generer la vue
         $template = $this->getTwig()->load('uneNotification.html.twig');
         
-        echo $template->render(['contenuNotif'=>$contenuNotif]);
+        echo $template->render(['contenuNotif'=>$contenuNotif,'breadcrumb'=>$breadcrumb]);
 
     }
 
@@ -573,9 +594,14 @@ class ControllerProfil extends Controller
             $utilisateur = $managerUtilisateur->find($idUtilisateur);
             $_SESSION['utilisateur'] = serialize($utilisateur);
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Mon profil', 'url' => 'index.php?controleur=profil&methode=afficherFormulaire'],
+            ];
+
             // Génère la vue 
             $template = $this->getTwig()->load('profilAPropos.html.twig');
-            echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte]); //'titreOA'=>$titreOA
+            echo $template->render(['messageListe' => $messageListe, 'commentaires' => $commentaires, 'utilisateur' => $utilisateurConnecte,'breadcrumb' => $breadcrumb]); //'titreOA'=>$titreOA
 
             
         }
@@ -586,5 +612,28 @@ class ControllerProfil extends Controller
         }
     }
 
+    public function afficherNomForum()
+    {
+        $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
+
+        // if ($id === null) {
+        //     $template = $this->getTwig()->load('profilNotifications.html.twig');
+        //     echo $template->render();
+
+        // }
+        
+        //Recupere la notification
+        $managerNotif=New NotificationDao($this->getPdo());
+        $nomForum=$managerNotif->recupNomForum($idMessage);
+    
+        //Generer la vue
+        $template = $this->getTwig()->load('profilNotifications.html.twig');
+        
+        echo $template->render(['nomForum'=>$nomForum]);
+
+    }
+
+
+    
   
 }
