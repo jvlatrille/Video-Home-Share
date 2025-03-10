@@ -126,7 +126,20 @@ class messageDAO
         }
     }
 
-
+    public function supprimerMessageDAO(Message $message): ?Message
+    {
+        $sql = "DELETE FROM ".PREFIXE_TABLE."message WHERE idMessage = :idMessage";
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->execute(['idMessage' => $message->getIdMessage()]);
+            return $message;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la suppression du message : " . $e->getMessage());
+            return null;
+        }
+    }
+    
     public function incrementLike(int $idMessage): void
     {
         $sql = "UPDATE ".PREFIXE_TABLE."message SET nbLike = nbLike + 1 WHERE idMessage = :idMessage";

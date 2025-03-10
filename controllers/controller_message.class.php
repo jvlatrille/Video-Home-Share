@@ -94,6 +94,26 @@ class ControllerMessage extends Controller
         }
     }
 
+    public function supprimerMessage()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupération de l'identifiant du message
+            $idMessage = $_GET['idMessage'] ?? null;
+
+            // Récupère le message via le DAO
+            $managerMessage = new MessageDAO($this->getPdo());
+            $message = $managerMessage->find($idMessage);
+            $managerMessage->supprimerMessageDAO($message);
+
+            // Redirige vers la liste des messages du forum
+            header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $message->getIdForum());
+            exit;
+        }
+    }
+
     public function like()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
