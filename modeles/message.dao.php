@@ -39,6 +39,23 @@ class messageDAO
         $dataMessage = $this->hydrateAll($resultats);
         return $dataMessage;
     }
+
+    public function find(int $idMessage): ?Message
+    {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "message WHERE idMessage = :idMessage";
+
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idMessage' => $idMessage]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultat = $pdoStatement->fetch();
+
+        if (!$resultat) {
+            return null;
+        }
+
+        return $this->hydrate($resultat);
+    }
+
     public function hydrateAll(array $resultats): ?array
     {
         $messageListe = [];
@@ -86,6 +103,29 @@ class messageDAO
         }
     }
 
+    public function modifierMessageDAO(Message $message): ?Message
+    {
+        $sql = "UPDATE ".PREFIXE_TABLE."message SET contenu = :contenu, nbLike = :nbLike, nbDislike = :nbDislike, pseudo = :pseudo, photoProfil = :photoProfil, idUtilisateur = :idUtilisateur, idForum = :idForum WHERE idMessage = :idMessage";
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->execute([
+                'contenu' => $message->getContenu(),
+                'nbLike' => $message->getNbLikes(),
+                'nbDislike' => $message->getNbDislikes(),
+                'pseudo' => $message->getPseudo(),
+                'photoProfil' => $message->getPhotoProfil(),
+                'idUtilisateur' => $message->getIdUtilisateur(),
+                'idForum' => $message->getIdForum(),
+                'idMessage' => $message->getIdMessage()
+            ]);
+            return $message;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la modification du message : " . $e->getMessage());
+            return null;
+        }
+    }
+
 
     public function incrementLike(int $idMessage): void
     {
@@ -106,7 +146,7 @@ class messageDAO
 
     public function chargerAPropos(?int $idUtilisateur): ?array
     {
-        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, m.pseudo, m.photoProfil, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
+        $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
         try {
             $pdoStatement = $this->pdo->prepare($sql);
             $pdoStatement->execute(['idUtilisateur' => $idUtilisateur]);

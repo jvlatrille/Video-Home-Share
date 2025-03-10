@@ -65,6 +65,36 @@ class ControllerMessage extends Controller
     }
     }
 
+    public function modifierMessage()
+    {
+        // Vérifie si l'utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupération des données
+            $idMessage = $_POST['idMessage'] ?? $_GET['idMessage'] ?? null;
+            $idMessage = (int) $idMessage;
+            $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
+            
+            // Récupère le message via le DAO
+            $managerMessage = new MessageDAO($this->getPdo());
+            $message = $managerMessage->find($idMessage);
+
+            // Modifie le contenu du message
+            $message->setContenu($contenu);
+            $managerMessage->modifierMessageDAO($message);
+
+            // Redirige vers la liste des messages du forum
+            header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $message->getIdForum());
+            exit;
+            
+            
+        } else {
+            echo "Vous devez être connecté pour modifier un message.";
+        }
+    }
+
     public function like()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idMessage'])) {
