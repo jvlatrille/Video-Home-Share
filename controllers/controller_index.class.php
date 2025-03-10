@@ -30,11 +30,16 @@ class ControllerIndex extends Controller
         $managerMessage = new MessageDAO($this->getPdo());
         $topMessages = $managerMessage->getTopLikedMessages();
         $randomListe = $managerOa->findRandomOeuvres();
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php']
+        ];
+
         $template = $this->getTwig()->load('index.html.twig');
         echo $template->render([
             'oaListe' => $oaListe,
             'topMessages' => $topMessages,
-            'oaRandomListe'=> $randomListe
+            'oaRandomListe'=> $randomListe,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
@@ -44,14 +49,34 @@ class ControllerIndex extends Controller
      *
      * @return void
      */
-    public function rechercherFilm()
+    public function rechercher()
     {
-        $requete = htmlspecialchars($_POST['requete']) ?? null;
-
+        $requete = htmlspecialchars($_GET['requete']) ?? null;
         $managerOa = new OADao();
         $oas = $managerOa->rechercheFilmParNom($requete);
 
+        // Rechercher forums dont le nom ressemble à la requête
+        $forumDao = new ForumDao($this->getPdo());
+        // La méthode 'rechercherParNom' doit être implémentée dans ForumDao
+        $forums = $forumDao->rechercherParNom($requete);
+
+        // Rechercher utilisateurs par pseudo similaire
+        $utilisateurDao = new UtilisateurDao($this->getPdo());
+        // La méthode 'rechercherParPseudo' doit être implémentée dans UtilisateurDao
+        $users = $utilisateurDao->rechercherParPseudo($requete);
+
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Recherche', 'url' => 'index.php?controleur=index&methode=rechercher']
+        ];
+
         $template = $this->getTwig()->load('recherche.html.twig');
-        echo $template->render(['oas' => $oas, 'requete' => $requete]);
+        echo $template->render([
+            'oas'      => $oas,
+            'requete'  => $requete,
+            'forums'   => $forums,
+            'users'    => $users,
+            'breadcrumb' => $breadcrumb
+        ]);
     }
 }

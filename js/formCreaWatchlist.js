@@ -11,7 +11,7 @@
 
 
 //Suggestion de films et séries
-let listeOeuvres = [];
+var listeOeuvres = [];
 									
 function ajouterWatchlist(select) {
     const selectedId = select.value;
@@ -25,7 +25,6 @@ function ajouterWatchlist(select) {
         const selectedOption = select.options[select.selectedIndex];
         const selectedText = selectedOption.text;
         const selectedImage = selectedOption.getAttribute('data-poster-path');
-        const selectedNote = selectedOption.getAttribute('data-note');
         const selectedItem = document.createElement('div');
         selectedItem.className = 'selected-item alert alert-secondary d-flex justify-content-between align-items-center mt-2';
         selectedItem.id = 'item-' + selectedId;
@@ -34,7 +33,7 @@ function ajouterWatchlist(select) {
             <img src="${selectedImage}" alt="${selectedText}" class="me-2" style="width: 50px; height: auto;">
             ${selectedText}
         </span>
-        <button type="button" class="btn-close" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}', '${selectedType}')"></button>
+        <button type="button" class="btn-close ilFautPatienter" aria-label="Remove" onclick="supprimerDeWatchlist('${selectedId}', '${selectedType}')"></button>
         `;
         
         document.getElementById('selectedItemsContainer').appendChild(selectedItem);
@@ -117,21 +116,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Gérer le formulaire
-const form = document.getElementById('createWatchlistForm');
-const boutonSubmit = document.getElementById('boutonCreer');
-const titre = document.getElementById('watchlistTitle');
-const genreSelect = document.getElementById('genreSelect');  
-const description = document.getElementById('watchlistDescription');
-const selectedIds = document.getElementById('selectedIds');
+var form = document.getElementById('createWatchlistForm');
+var boutonSubmit = document.getElementById('boutonCreer');
+var titre = document.getElementById('watchlistTitle');
+var genreSelect = document.getElementById('genreSelect');  
+var description = document.getElementById('watchlistDescription');
+var selectedIds = document.getElementById('selectedIds');
 
 // Si bouton de soumission désactivé au début
 boutonSubmit.disabled = true;
 
 // Vérifier si tous les champs obligatoires sont remplis
-const titreErreur = document.getElementById('titreErreur');
-const genreErreur = document.getElementById('genreErreur');
-const descErreur = document.getElementById('descErreur');
-const suggestionErreur = document.getElementById('suggestionsErreur');
+var titreErreur = document.getElementById('titreErreur');
+var genreErreur = document.getElementById('genreErreur');
+var descErreur = document.getElementById('descErreur');
+var suggestionErreur = document.getElementById('suggestionsErreur');
 
 // Vérifier le titre
 function verifierTitre() {
@@ -198,7 +197,7 @@ function verifierChamps() {
     }
 }
 
-form.addEventListener('input', function(event) {
+form.addEventListener('input', function() {
     verifierChamps();
 
 

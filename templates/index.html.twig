@@ -20,26 +20,29 @@
                     <div class="container py-4">
                         <div class="row align-items-center justify-content-center">
                             <div class="col-md-4 text-center">
+
                                 {% if oa.posterPath %}
-                                    <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;">
-                                {% else %}
+                                    <a href="index.php?controleur=oa&methode=afficher{{ oa.type == 'Film' ? 'Film' : 'Serie' }}&idOa={{ oa.idOa }}" class="ilFautPatienter">
+                                        <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid rounded shadow-sm" style="max-height: 400px; object-fit: cover;" loading="lazy">
+                                    </a>
+								{% else %}                                
                                     <p><em>Affiche non disponible</em></p>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 text-center">
                                 <h2 class="text-uppercase text-dark fs-3 fw-bold">{{ oa.nom }}</h2>
-                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie }}</p>
+                                <p><strong>Date de sortie :</strong> {{ oa.dateSortie|date('d/m/Y') }}</p>
                                 <p><strong>Description :</strong></p>
                                 <p class="text-muted">{{ oa.description|slice(0, 200) }}...</p>
                                 <p><strong>Note :</strong>
                                     {% for i in 1..5 %}
-                                        <img src="{{ i <= (oa.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30">
+                                        <img src="{{ i <= (oa.note / 2) ? 'img/noteRemplie.png' : 'img/noteVide.png' }}" alt="Note" width="30" height="30" loading="lazy">
                                     {% endfor %}
                                 </p>
                                 {% if oa.type == 'Film' %}
-                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
+                                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="btn btn-primary mt-2 ilFautPatienter">Découvrir</a>
                                 {% else %}
-                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2">Découvrir</a>
+                                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="btn btn-primary mt-2 ilFautPatienter">Découvrir</a>
                                 {% endif %}
                             </div>
                         </div>
@@ -59,20 +62,20 @@
         </button>
     </div>
 
-    <h2 class="text-center mt-5">À la une</h2>
+    <div class="animate">
+    <h2 class="text-center mt-5 ">À la une</h2>
     <div class="container mt-4">
-
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for oa in oaListe|slice(10,20) %}
                 <div class="col">
                 {% if oa.type == 'Film' %}
-                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                 {% else %}
-                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                 {% endif %}
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
-                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;" loading="lazy">
                             {% else %}
                                 <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
                             {% endif %}
@@ -84,8 +87,9 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
+    <div class="animate">
     <h2 class="text-center mt-5">Messages les plus likés</h2>
     <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -93,11 +97,11 @@
                 <div class="col">
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center">
-                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}" class="ilFautPatienter">
                                 <img src="{{ 'img/profils/' ~ message.photoProfil }}" 
                                     alt="Photo de profil de {{ message.pseudo }}" 
                                     class="rounded-circle mb-3 border border-3" 
-                                    style="width: 80px; height: 80px; object-fit: cover;">
+                                    style="width: 80px; height: 80px; object-fit: cover;" loading="lazy">
                             </a>
                             <h5 class="text-primary fw-bold">{{ message.pseudo }}</h5>
                             <p class="text-muted small mb-1">Forum : <strong>{{ message.forumNom }}</strong></p>
@@ -108,25 +112,25 @@
                                 <i class="fas fa-heart"></i> {{ message.nbLike }} likes
                             </p>
                             <a href="index.php?controleur=message&methode=listerMessage&idForum={{ message.idForum }}" 
-                            class="btn btn-outline-primary btn-sm mt-3">Voir le forum</a>
+                            class="btn btn-outline-primary btn-sm mt-3 ilFautPatienter">Voir le forum</a>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
 
-
+    <div class="animate">
     <h2 class="text-center mt-5">Découvrir plus d'œuvres</h2>
     <div id="decouvrirOaContainer" class="container mt-4">
         <div class="row row-cols-1 row-cols-md-5 g-4">
             {% for oa in oaRandomListe %}
                 <div class="col">
-                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none">
+                    <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}" class="text-decoration-none ilFautPatienter">
                         <div class="card h-100 shadow-sm">
                             {% if oa.posterPath %}
-                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;">
+                                <img src="{{ oa.posterPath }}" class="card-img-top" alt="Affiche de {{ oa.nom }}" style="height: 250px; object-fit: cover;" loading="lazy">
                             {% else %}
                                 <div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>
                             {% endif %}
@@ -138,7 +142,7 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+    </div></div>
 
     <div class="text-center mt-4">
         <button id="loadRandomBtn" class="btn btn-primary">Découvrir toujours plus !</button>
@@ -152,32 +156,22 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const loadRandomBtn = document.getElementById('loadRandomBtn');
-    console.log('Bouton loadRandomBtn : ', loadRandomBtn);
 
     if (loadRandomBtn) {
         loadRandomBtn.addEventListener('click', function () {
-            console.log('Bouton cliqué !');
-            // Adapte le chemin en fonction du dossier dans lequel se trouve ton projet :
-            const url = window.location.origin + '/PHP/Video-Home-Share/index.php?controleur=oa&methode=decouvrirPlus';
-            fetch(url)
+            fetch('index.php?controleur=oa&methode=decouvrirPlus')
                 .then(response => {
-                    console.log('Statut HTTP:', response.status);
                     return response.text();
                 })
                 .then(text => {
-                    console.log('Réponse brute:', text);
                     try {
                         const data = JSON.parse(text);
-                        console.log('JSON parsé avec succès:', data);
-
-                        // On cible le container puis la div .row
                         const containerEl = document.getElementById('decouvrirOaContainer');
                         if (!containerEl) {
                             console.error('Container #decouvrirOaContainer non trouvé.');
                             return;
                         }
                         const row = containerEl.querySelector('.row');
-                        console.log('Row trouvée : ', row);
 
                         if (!Array.isArray(data) || data.length === 0 || data.error) {
                             console.error('Erreur dans les données :', data.error || 'Aucune œuvre récupérée.');
@@ -185,21 +179,32 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
 
-                        // Ajoute chaque œuvre dans le container
                         data.forEach(oa => {
-                            row.innerHTML += `
-                                <div class="col">
-                                    <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
-                                        <div class="card h-100 shadow-sm">
-                                            ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;">`
-                                            : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
-                                            <div class="card-body text-center">
-                                                <h6 class="card-title text-truncate">${oa.nom}</h6>
-                                            </div>
+                            const newCol = document.createElement('div');
+                            newCol.className = 'col';
+                            newCol.style.opacity = '0';
+                            newCol.style.transform = 'translateY(20px)';
+                            newCol.style.transition = 'all 0.5s ease-out';
+                            
+                            newCol.innerHTML = `
+                                <a href="index.php?controleur=oa&methode=${oa.type == 'Film' ? 'afficherFilm' : 'afficherSerie'}&idOa=${oa.idOa}" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm">
+                                        ${oa.posterPath ? `<img src="${oa.posterPath}" class="card-img-top" alt="Affiche de ${oa.nom}" style="height: 250px; object-fit: cover;" loading="lazy">`
+                                        : `<div class="card-img-top text-center py-5 bg-light" style="height: 250px;">Affiche non disponible</div>`}
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-truncate">${oa.nom}</h6>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                             `;
+                            
+                            row.appendChild(newCol);
+                            
+                            
+                            setTimeout(() => {
+                                newCol.style.opacity = '1';
+                                newCol.style.transform = 'translateY(0)';
+                            }, 50);
                         });
                     } catch(e) {
                         console.error('Erreur lors du parsing du JSON:', e);

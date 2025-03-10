@@ -3,8 +3,6 @@
 //Ajout du code commun à toutes les pages
 require_once 'include.php';
 
-
-
 try  {
     if (isset($_GET['controleur'])){
         $controllerName=$_GET['controleur'];
@@ -36,6 +34,7 @@ try  {
   
     $controller->call($methode);
 }catch (Exception $e) {
-   die('Erreur : ' . $e->getMessage());
+    $erreurController = new ErreurController($twig, $loader);
+    $erreurController->renderErreur($e->getMessage());
+    exit;
 }
-

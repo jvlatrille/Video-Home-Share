@@ -35,33 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function verifierMdp() {
         const messages = [];
-        if (!mdp.value) {
-            messages.push('Veuillez renseigner votre mot de passe');
-        } else {
-            if (mdp.value.length < 8) {
-                messages.push('Le mot de passe doit contenir au moins 8 caractères');
-            }
-            if (!/[A-Z]/.test(mdp.value)) {
-                messages.push('Le mot de passe doit contenir au moins une majuscule');
-            }
-            if (!/[a-z]/.test(mdp.value)) {
-                messages.push('Le mot de passe doit contenir au moins une minuscule');
-            }
-            if (!/\d/.test(mdp.value)) {
-                messages.push('Le mot de passe doit contenir au moins un chiffre');
-            }
-            if (!/[@$!%*?&]/.test(mdp.value)) {
-                messages.push('Le mot de passe doit contenir au moins un caractère spécial');
-            }
-        }
-
-        if (messages.length > 0) {
-            erreurMdp.style.padding = '10px';
-            erreurMdp.innerHTML = '<ul>' + messages.map(msg => `<li>${msg}</li>`).join('') + '</ul>';
-            erreurMdp.style.display = 'block';
+       if(mdp.value.length === 0 || mdp.value.length < 8) {
+            messages.push('Veuillez renseigner un mot de passe');
+            erreurMdp.textContent = messages;
             mdp.style.border = '3px solid red';
             return false;
-        } else {
+        }
+        else{
             erreurMdp.style.display = 'none';
             mdp.style.border = '3px solid green';
             return true;

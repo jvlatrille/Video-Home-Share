@@ -8,16 +8,23 @@ class ControllerQuizz extends Controller {
     // Fonction pour lister tous les quizz
     public function listerQuizz() {
         if (isset($_SESSION['utilisateur'])) {
+
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
 
             // Récupère tous les quizz
             $managerQuizz = new QuizzDao($this->getPdo());
             $quizzListe = $managerQuizz->findAll();
             
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz']
+            ];
+
+
             // Générer la vue
-            $template = $this->getTwig()->load('listQuizzs.html.twig');
+            $template = $this->getTwig()->load('quizzListe.html.twig');
             
-            echo $template->render(['quizzListe' => $quizzListe]);
+            echo $template->render(['quizzListe' => $quizzListe, 'breadcrumb' => $breadcrumb]);
         }
         else {
             // Redirige vers la page de connexion
@@ -25,7 +32,8 @@ class ControllerQuizz extends Controller {
         }
 }
 
-    // Fonction pour afficher un quizz spécifique
+
+    // Fonction pour afficher un quiz spécifique
     public function afficherQuizz() {
         $id = isset($_GET['id']) ? $_GET['id'] : null;
         
@@ -33,10 +41,16 @@ class ControllerQuizz extends Controller {
         $managerQuizz = new QuizzDao($this->getPdo());
         $quizz = $managerQuizz->find($id);
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+            ['title' => $quizz->getNom(), 'url' => 'index.php?controleur=Quizz&methode=afficherQuizz&id=' . $id]
+        ];
+
         // Générer la vue
         $template = $this->getTwig()->load('quizz.html.twig');
         
-        echo $template->render(['quizz' => $quizz]);
+        echo $template->render(['quizz' => $quizz, 'breadcrumb' => $breadcrumb]);
     }
 
     // Fonction pour ajouter un nouveau quizz
@@ -48,9 +62,14 @@ class ControllerQuizz extends Controller {
             $theme = $_POST['theme'] ?? '';
             $nbQuestion = $_POST['nbQuestion'] ?? 1;
             $difficulte = $_POST['difficulte'] ?? 1;
-            $image = "default.png";
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idCreateur = $utilisateurConnecte->getIdUtilisateur();
+            
+            $pseudo = $utilisateurConnecte->getPseudo();
         
-            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $image);
+            $quizz = new Quizz(null, $nom, $theme, $nbQuestion, $difficulte, $idCreateur, $pseudo, "default.png");
+
+            $image = "default.png";
         
             $managerQuizz = new QuizzDao($this->getPdo());
             $idQuizz = $managerQuizz->add($quizz);
@@ -95,9 +114,15 @@ class ControllerQuizz extends Controller {
                 echo "Erreur lors de l'ajout du quizz.";
             }
         }
+
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+            ['title' => 'Ajouter un quiz', 'url' => 'index.php?controleur=Quizz&methode=ajouterQuizz']
+        ];
         
         $template = $this->getTwig()->load('quizzAjouter.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }  
 
     // Fonction pour modifier un quizz

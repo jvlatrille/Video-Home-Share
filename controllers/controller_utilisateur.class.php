@@ -101,9 +101,13 @@ class ControllerUtilisateur extends Controller
             $managerCommentaire = new CommentaireDAO($this->getPdo());
             $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($autreUtilisateur->getIdUtilisateur());
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $autreUtilisateur->getPseudo(), 'url' => 'index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo=' . $pseudoUtilisateur]
+            ];
 
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,'breadcrumb' => $breadcrumb]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 
@@ -515,7 +519,7 @@ class ControllerUtilisateur extends Controller
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
             'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
             'valide' => $_POST['valide'] ?? 0
-
+            
         ];
         
         // Définition des règles de validation
@@ -582,6 +586,7 @@ class ControllerUtilisateur extends Controller
             echo $template->render(['message' => 'L\'adresse mail est déjà utilisée', 'donnees' => $donneesFormulaire]);
             return;
         }
+        //Verif en plus (pseudo)
 
         // Hachage du mot de passe
         $donneesFormulaire['mdp'] = password_hash($donneesFormulaire['mdp'], PASSWORD_BCRYPT);

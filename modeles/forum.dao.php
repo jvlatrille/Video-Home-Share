@@ -105,5 +105,18 @@ class forumDAO
         }
     }
 
+    /*
+    * @brief Recherche un forum par son nom
+    * @author VINET LATRILLE Jules
+    */
+    public function rechercherParNom(string $nom): array {
+        $sql = "SELECT * FROM " . PREFIXE_TABLE . "forum WHERE nom LIKE :nom";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['nom' => '%' . $nom . '%']);
+        $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->hydrateAll($resultats);
+    }
+    
+
     
 }
