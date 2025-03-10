@@ -8,12 +8,6 @@
         <h4>{{ forum.description }}</h4>
     </div>
 
-    <div class="container text-center my-4">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMessageModal">
-			Ajouter un message
-		</button>
-	</div>
-
     <!-- Modal de création de message -->
     <div class="modal fade" id="createMessageModal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -36,6 +30,35 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de modification de message -->
+    <div class="modal fade" id="modifierMessageModal" tabindex="-1" aria-labelledby="modifierMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Formulaire de modification de message -->
+                    <form id="modifierMessageForm" method="POST" action="index.php?controleur=message&methode=modifierMessage&idForum={{forum.idForum}}">
+                        <input type="hidden" id="idMessageInput" name="idMessage" value="">
+                        <!-- Contenu du message -->
+                        <div class="mb-3">
+                            <label for="modifierMessageContenu" class="form-label">Nouveau message :</label>
+                            <textarea class="form-control" id="modifierMessageContenu" name="contenu" rows="3" required></textarea>
+                        </div>
+                        <!-- Bouton de soumission -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-secondary">Modifier le message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container text-center my-4">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMessageModal">
+			Ajouter un message
+		</button>
+	</div>
 
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
@@ -71,6 +94,11 @@
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
                                 <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
                             </form>
+                            {% if utilisateurConnecte and message.idUtilisateur == utilisateurConnecte.idUtilisateur %}
+                                <button type="button" class="btn btn-primary" value="{{message.idMessage}}" data-bs-toggle="modal" data-bs-target="#modifierMessageModal">
+			                        Modifier le message
+		                        </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -78,4 +106,7 @@
         </div>
     <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-primary">Retour</a>
     {% endif %}
+{% block scripts %}
+	<script src="js/messageModifier.js"></script>
+{% endblock %}
 {% endblock %}
