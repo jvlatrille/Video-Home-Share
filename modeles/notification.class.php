@@ -51,6 +51,11 @@ class Notification{
     */
     private ?string $nomForum;
 
+    /**
+    * @brief Identifiant du forum d'où vient le message lié à la notification
+    */
+    private ?int $idForum;
+
     
     /**
      * @brief Constructeur de la classe Notification
@@ -62,9 +67,10 @@ class Notification{
      * @param int|null $idUtilisateur Identifiant de l'utilisateur
      * @param int|null $idMessage Identifiant du message
      * @param string|null $nomForum Nom du forum
+     * @param int|null $idForum Identifiant du forum
      */
     //Constructeur de la classe Notification
-    public function __construct(?int $idNotif=null, ?string $dateNotif=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null, ?int $idUtilisateur=null, ?int $idMessage=null, ?string $nomForum=null){
+    public function __construct(?int $idNotif=null, ?string $dateNotif=null, ?string $destinataire=null, ?string $contenu=null, ?bool $vu=null, ?int $idUtilisateur=null, ?int $idMessage=null, ?string $nomForum=null, ?int $idForum=null){
         $this->idNotif=$idNotif;
         $this->dateNotif = $dateNotif;
         $this->destinataire = $destinataire;
@@ -73,6 +79,7 @@ class Notification{
         $this->idUtilisateur=$idUtilisateur;
         $this->idMessage=$idMessage;
         $this->nomForum=$nomForum;
+        $this->idForum=$idForum;
     }
 
 
@@ -192,6 +199,21 @@ class Notification{
         $this->idMessage = $idMessage;
     }
 
+     /**
+     * @brief Retourne l'id du forum
+     * @return int|null
+     */
+    public function getIdForum(): ?int{
+        return $this->idForum;
+    }
+
+        /**
+     * @brief Modifie l'id du forum
+     * @param int|null $idForum
+     */
+    public function setIdForum(?int $idForum): void{
+        $this->idForum = $idForum;
+    }
      
     /**
      * @brief Retourne le nom du forum

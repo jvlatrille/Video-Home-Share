@@ -82,7 +82,7 @@ class ControllerMessage extends Controller
             $messageDAO = new MessageDAO($this->getPdo());
             $messageDAO->incrementLike($idMessage);
             
-            $message = $messageDAO->creerNotif($idUtilisateur, $idMessage);
+            $message = $messageDAO->creerNotif($idMessage, $idForum, "Message like");
 
 
             // Redirige vers la liste des messages
@@ -109,7 +109,7 @@ class ControllerMessage extends Controller
             $messageDAO = new MessageDAO($this->getPdo());
             $messageDAO->incrementDislike($idMessage);
 
-            $message = $messageDAO->creerNotif($idUtilisateur);
+            $message = $messageDAO->creerNotif( $idMessage, $idForum, "Message dislike");
 
             // Redirige vers la liste des messages
             header('Location: ' . $_SERVER['HTTP_REFERER']);

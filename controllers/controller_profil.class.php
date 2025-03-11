@@ -13,6 +13,7 @@ class ControllerProfil extends Controller
 {
     /**
      * @brief Constructeur du controler de profil
+     * @author Despré-Hildevert Léa
      * @param \Twig\Environment $twig Environnement Twig
      * @param \Twig\Loader\FilesystemLoader $loader Loader Twig
      */
@@ -426,7 +427,7 @@ class ControllerProfil extends Controller
     
     /**
      * @brief Affiche toutes les notifications de l'utilisateur connecté sur la page notification
-     *
+     * @author Despré-Hildevert Léa
      * @return void
      */
     //Fonction pour afficher toutes les notif d'une personne 
@@ -441,11 +442,11 @@ class ControllerProfil extends Controller
             //Recupere les notifications
             $managerNotif=New NotificationDao($this->getPdo());
             $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
-            $nomForum=$managerNotif->recupNomForum($idMessage);
+            // $nomForum=$managerNotif->recupNomForum($idMessage);
 
             //Generer la vue avec les notifications de l'utilisateur
             $template = $this->getTwig()->load('profilNotifications.html.twig');
-            echo $template->render(['notifListe' => $notifListe, 'nomForum'=>$nomForum]);//, 'nomForum'=>$nomForum
+            echo $template->render(['notifListe' => $notifListe]);//, 'nomForum'=>$nomForum
             
         }
         else {
@@ -458,7 +459,7 @@ class ControllerProfil extends Controller
     
     /**
      * @brief Affiche une notification 
-     *
+     * @author Despré-Hildevert Léa
      * @return void
      */
     //Fonction pour afficher une notification
@@ -488,7 +489,7 @@ class ControllerProfil extends Controller
     
     /**
      * @brief Supprime une notification de l'utilisateur connecté
-     *
+     * @author Despré-Hildevert Léa
      * @return void
      */
     //Fonction pour supprimer une notification
@@ -516,7 +517,7 @@ class ControllerProfil extends Controller
 
     /**
      * @brief Supprime toutes les notifications de l'utilisateur connecté
-     *
+     * @author Despré-Hildevert Léa
      * @return void
      */
     //Fonction pour supprimer toutes les notifications d'une personne
@@ -543,7 +544,7 @@ class ControllerProfil extends Controller
 
     /**
      * @brief Affiche les messages postés par l'utilisateur connecté sur la page APropos
-     *
+     * @author Despré-Hildevert Léa
      * @return void
      */
 
@@ -635,30 +636,6 @@ class ControllerProfil extends Controller
     //     // Sinon, affiche la page de connexion
     //     $template = $this->getTwig()->load('connexion.html.twig');
     //     echo $template->render();
-    // }
-
-    public function afficherNomForum()
-    {
-        $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
-
-        // if ($id === null) {
-        //     $template = $this->getTwig()->load('profilNotifications.html.twig');
-        //     echo $template->render();
-
-        // }
-        
-        //Recupere la notification
-        $managerNotif=New NotificationDao($this->getPdo());
-        $nomForum=$managerNotif->recupNomForum($idMessage);
-    
-        //Generer la vue
-        $template = $this->getTwig()->load('profilNotifications.html.twig');
-        
-        echo $template->render(['nomForum'=>$nomForum]);
-
-    }
-
-
-    
+    // }   
   
 }
