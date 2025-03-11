@@ -1,18 +1,12 @@
 {% extends 'base_template.html.twig' %}
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
     <!-- Titre principal de la page -->
     <div class="container text-center my-4">
         <h1>{{ forum.nom }}</h1>
         <h4>{{ forum.description }}</h4>
     </div>
-
-    <div class="container text-center my-4">
-		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMessageModal">
-			Ajouter un message
-		</button>
-	</div>
 
     <!-- Modal de création de message -->
     <div class="modal fade" id="createMessageModal" tabindex="-1" aria-labelledby="createMessageModalLabel" aria-hidden="true">
@@ -29,13 +23,42 @@
 
                         <!-- Bouton de soumission -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-secondary">Ajouter un nouveau message</button>
+                            <button type="submit" class="btn btn-primary ilFautPatienter">Ajouter un nouveau message</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal de modification de message -->
+    <div class="modal fade" id="modifierMessageModal" tabindex="-1" aria-labelledby="modifierMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Formulaire de modification de message -->
+                    <form id="modifierMessageForm" method="POST" action="index.php?controleur=message&methode=modifierMessage&idForum={{forum.idForum}}">
+                        <input type="hidden" id="idMessageInput" name="idMessage" value="">
+                        <!-- Contenu du message -->
+                        <div class="mb-3">
+                            <label for="modifierMessageContenu" class="form-label">Nouveau message :</label>
+                            <textarea class="form-control" id="modifierMessageContenu" name="contenu" rows="3" required></textarea>
+                        </div>
+                        <!-- Bouton de soumission -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-secondary">Modifier le message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container text-center my-4">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMessageModal">
+			Ajouter un message
+		</button>
+	</div>
 
     <!-- Affichage des messages -->
     {% if messageListe is empty %}
@@ -47,11 +70,11 @@
                     <div class="card-body d-flex align-items-center">
                         <!-- Photo de profil -->
                         {% if message.photoProfil %}
-                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}" class="ilFautPatienter">
                                 <img src="{{ 'img/profils/' ~ message.photoProfil }}" alt="Photo de {{ message.pseudo }}" class="rounded-circle me-3" width="50" height="50">
                             </a>
                         {% else %}
-                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}">
+                            <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ message.pseudo }}" class="ilFautPatienter">
                                 <img src="/img/tortueProfil.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
                             </a>
                         {% endif %}
@@ -71,6 +94,16 @@
                                 <input type="hidden" name="idMessage" value="{{ message.idMessage }}">
                                 <button type="submit" class="btn btn-danger btn-sm">👎 {{ message.nbDislikes }}</button>
                             </form>
+                            {% if utilisateurConnecte and message.idUtilisateur == utilisateurConnecte.idUtilisateur %}
+                                <button type="button" class="btn btn-primary" value="{{message.idMessage}}" data-bs-toggle="modal" data-bs-target="#modifierMessageModal">
+			                        Modifier le message
+		                        </button>
+
+                                    <a href="index.php?controleur=message&methode=supprimerMessage&idMessage={{ message.idMessage }}" class="btn btn-primary" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le message ?');">
+                                    Supprimer le message
+                                    </a>
+
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -78,4 +111,7 @@
         </div>
     <a href="index.php?controleur=forum&methode=listerForum" class="btn btn-primary">Retour</a>
     {% endif %}
+{% block scripts %}
+	<script src="js/messageModifier.js"></script>
+{% endblock %}
 {% endblock %}

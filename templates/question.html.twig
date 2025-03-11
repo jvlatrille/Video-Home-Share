@@ -1,7 +1,7 @@
 {% extends "base_template.html.twig" %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
     <div class="container py-5">
         <!-- Illustration -->
@@ -36,6 +36,13 @@
             <div class="col-12 col-md-8 text-center">
                 <p id="difficultyLevel" style="margin-top: 0;">
                     Difficulté : <strong>{{ question.getNvDifficulte() }}</strong>
+                    {% if question.getNvDifficulte() == 'Facile' %}
+                        <style>#difficultyLevel { color: green; }</style>
+                    {% elseif question.getNvDifficulte() == 'Moyen' %}
+                        <style>#difficultyLevel { color: orange; }</style>
+                    {% elseif question.getNvDifficulte() == 'Difficile' %}
+                        <style>#difficultyLevel { color: red; }</style>
+                    {% endif %}
                 </p>
             </div>
         </div>
@@ -107,6 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function loadNextQuestion() {
+        if (currentQuestion >= nbQuestions) {
+            window.location.href = `index.php?controleur=question&methode=afficherScore&idQuizz=${idQuizz}`;
+            return;
+        }
         fetch(`index.php?controleur=question&methode=afficherQuestionAjax&idQuizz=${idQuizz}&numero=${currentQuestion + 1}`)
             .then(response => response.json())
             .then(data => {
@@ -119,14 +130,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("questionText").innerText = data.question;
                 document.getElementById("questionNumber").innerText = currentQuestion;
                 
-                // Mettre à jour l'image si elle existe
-                const imageElement = document.querySelector('.img-fluid');
-                if (imageElement && data.image) {
-                    imageElement.src = `img/quizz/${data.image}`;
+                // Mise à jour du niveau de difficulté
+                const difficultyElement = document.getElementById("difficultyLevel");
+                difficultyElement.innerHTML = `Difficulté : <strong>${data.difficulty}</strong>`;
+
+                // Changer la couleur en fonction de la difficulté
+                difficultyElement.style.color = "";
+                if (data.difficulty === "Facile") {
+                    difficultyElement.style.color = "green";
+                } else if (data.difficulty === "Moyen") {
+                    difficultyElement.style.color = "orange";
+                } else if (data.difficulty === "Difficile") {
+                    difficultyElement.style.color = "red";
                 }
 
-                // Mise à jour du niveau de difficulté
-                document.getElementById("difficultyLevel").innerHTML = `Difficulté : <strong>${data.difficulty}</strong>`;
                 updateProgressBar(currentQuestion, nbQuestions);
 
                 // Reconstruction complète du conteneur de réponses
@@ -162,7 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.target;
         const isCorrect = button.getAttribute("data-correct") === "true";
 
-        // Disable all buttons and show correct/incorrect answers
         document.querySelectorAll(".response-button").forEach(btn => {
             btn.disabled = true;
             if (btn.getAttribute("data-correct") === "true") {

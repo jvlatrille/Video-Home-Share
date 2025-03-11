@@ -1,0 +1,158 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Gestion des Quiz - {{ constant('WEBSITE_TITLE') }}{% endblock %}
+
+{% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3">
+    <a href="index.php?controleur=quizz&methode=listerQuizz" class="text-white text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Gestion des Quiz</h1>
+
+    <!-- Barre de recherche -->
+    <div class="mb-4">
+        <input type="text" id="searchQuiz" class="form-control" placeholder="Rechercher un quiz...">
+    </div>
+
+    <!-- Message de non-résultat -->
+    <p id="noResultMessage" class="text-muted text-center" style="display: none;">Aucun quiz trouvé.</p>
+
+    <!-- Table des Quiz -->
+    <div class="table-responsive">
+        <table id="quizTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nom</th>
+                    <th>Thème</th>
+                    <th>Créateur</th>
+                    <th></th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="quizList">
+                {% for quiz in quizzListe %}
+                    <tr class="quiz-item" data-nom="{{ quiz.nom|lower }}" data-theme="{{ quiz.theme|lower }}">
+                        <td>{{ quiz.nom }}</td>
+                        <td>{{ quiz.theme }}</td>
+                        <td>{{ quiz.pseudo }}</td>
+                            <td class="text-center">
+                                <!-- Bouton Modifier -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editQuizModal{{ quiz.idQuizz }}">
+                                    <i class="fas fa-edit"></i>
+                                    Modifier
+                                </button>
+
+                                <!-- Bouton Supprimer -->
+                                <a href="index.php?controleur=quizz&methode=supprimerQuizz&id={{ quiz.idQuizz }}" class="btn btn-danger ms-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Supprimer
+                                </a>
+                            </td>
+                    </tr>
+
+                    <!-- Modal de modification du quiz -->
+                    <div class="modal fade" id="editQuizModal{{ quiz.idQuizz }}" tabindex="-1" aria-labelledby="editQuizModalLabel{{ quiz.idQuizz }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="index.php?controleur=quizz&methode=modifierQuizz" method="POST" enctype="multipart/form-data">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Modifier le quiz : {{ quiz.nom }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="{{ quiz.getIdQuizz }}">
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="nom{{ quiz.getIdQuizz }}" class="form-label">Nom</label>
+                                                <input type="text" class="form-control" id="nom{{ quiz.getIdQuizz }}" name="nom" value="{{ quiz.getNom }}" required>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="theme{{ quiz.getIdQuizz }}" class="form-label">Thème</label>
+                                                <select class="form-select" id="theme" name="theme" required>
+                                                    <option value="Films cultes" {% if quiz.getTheme == 'Films cultes' %} selected {% endif %}>Films cultes</option>
+                                                    <option value="Réalisateurs célèbres" {% if quiz.getTheme == 'Réalisateurs célèbres' %} selected {% endif %}>Réalisateurs célèbres</option>
+                                                    <option value="Acteurs et actrices" {% if quiz.getTheme == 'Acteurs et actrices' %} selected {% endif %}>Acteurs et actrices</option>
+                                                    <option value="Oscars et récompenses" {% if quiz.getTheme == 'Oscars et récompenses' %} selected {% endif %}>Oscars et récompenses</option>
+                                                    <option value="Films d'animation" {% if quiz.getTheme == 'Films d\'animation' %} selected {% endif %}>Films d'animation</option>
+                                                    <option value="Sagas et franchises" {% if quiz.getTheme == 'Sagas et franchises' %} selected {% endif %}>Sagas et franchises</option>
+                                                    <option value="Films d'horreur" {% if quiz.getTheme == 'Films d\'horreur' %} selected {% endif %}>Films d'horreur</option>
+                                                    <option value="Films de science-fiction" {% if quiz.getTheme == 'Films de science-fiction' %} selected {% endif %}>Films de science-fiction</option>
+                                                    <option value="Films français" {% if quiz.getTheme == 'Films français' %} selected {% endif %}>Films français</option>
+                                                    <option value="Bandes originales" {% if quiz.getTheme == 'Bandes originales' %} selected {% endif %}>Bandes originales</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                        <input type="hidden" name="nbQuestion" value="{{ quiz.getNbQuestion }}">
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="difficulte{{ quiz.getIdQuizz }}" class="form-label">Difficulté</label>
+                                                <select class="form-select" id="difficulte" name="difficulte" required>
+                                                    <option value="Facile" {% if quiz.getDifficulte == 'Facile' %} selected {% endif %}>Facile</option>
+                                                    <option value="Moyen" {% if quiz.getDifficulte == 'Moyen' %} selected {% endif %}>Moyen</option>
+                                                    <option value="Difficile" {% if quiz.getDifficulte == 'Difficile' %} selected {% endif %}>Difficile</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="image{{ quiz.getIdQuizz }}" class="form-label">Image</label>
+                                                <input type="file" class="form-control" id="image{{ quiz.getIdQuizz }}" name="image">
+                                                <img src="{{ 'img/quizz/' ~ quiz.getImage }}" alt="Photo actuelle de {{ quiz.getNom }}" width="50%" class="img-fluid">
+                                            </div>
+                                        </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Aucun quiz disponible pour l'instant.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Script pour la recherche en direct -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let searchInput = document.getElementById("searchQuiz");
+        let quizList = document.getElementById("quizList");
+        let quizItems = Array.from(quizList.getElementsByClassName("quiz-item"));
+        let noResultMessage = document.getElementById("noResultMessage");
+
+        searchInput.addEventListener("input", function () {
+            let filter = this.value.toLowerCase();
+            let found = false;
+
+            quizList.innerHTML = "";
+
+            quizItems.forEach(quiz => {
+                let quizTitle = quiz.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                let quizTheme = quiz.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                
+                if (quizTitle.includes(filter) || quizTheme.includes(filter) || filter === "") {
+                    quizList.appendChild(quiz.cloneNode(true));
+                    found = true;
+                }
+            });
+
+            noResultMessage.style.display = found ? "none" : "block";
+        });
+    });
+</script>
+
+{% endblock %}

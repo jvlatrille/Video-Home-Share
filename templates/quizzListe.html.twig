@@ -4,12 +4,23 @@
 <div class="container py-4">
     <!-- Barre de navigation -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-       <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+        <!-- Accueil -->
+        <a href="index.php" class="btn btn-outline-primary d-flex align-items-center">
+            <i class="bi bi-house-door-fill me-2"></i>Accueil
+        </a>
 
-        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-success shadow-sm">
+        <!-- Vos quizz -->
+        <a href="index.php?controleur=quizz&methode=afficherModif" 
+            class="btn btn-success shadow-sm mx-auto" style="border-radius: 8px;">
+            <i class="fas fa-play me-2"></i>Vos quizz
+        </a>
+
+        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-primary ilFautPatienter">
+
             <i class="bi bi-plus-circle me-2"></i>Créer un quizz
         </a>
     </div>
+
 
     <!-- Titre principal -->
     <div class="text-center mb-4">
@@ -44,6 +55,12 @@
             <p class="text-muted text-center">Aucun quiz disponible pour l'instant.</p>
         {% endfor %}
     </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Quiz pagination" class="d-flex justify-content-center">
+        <ul class="pagination" id="pagination">
+        </ul>
+    </nav>
 </div>
 
 <!-- Script pour la recherche en direct -->
@@ -53,25 +70,95 @@
         let quizList = document.getElementById("quizList");
         let quizItems = Array.from(quizList.getElementsByClassName("quiz-item"));
         let noResultMessage = document.getElementById("noResultMessage");
+        let pagination = document.getElementById("pagination");
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
+        function showPage(page, filteredItems) {
+            const items = filteredItems || quizItems;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            
+            quizList.innerHTML = "";
+            
+            items.slice(start, end).forEach(item => {
+                quizList.appendChild(item.cloneNode(true));
+            });
+            
+            updatePagination(items.length);
+        }
+
+        function updatePagination(totalItems) {
+            const pageCount = Math.ceil(totalItems / itemsPerPage);
+            pagination.innerHTML = "";
+            
+            if (pageCount <= 1) {
+                pagination.style.display = "none";
+                return;
+            }
+            
+            pagination.style.display = "flex";
+
+            // Bouton "Précédent"
+            let prevLi = document.createElement("li");
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#">Précédent</a>`;
+            prevLi.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage, filteredQuizItems);
+                }
+            };
+            pagination.appendChild(prevLi);
+
+            // Pages numérotées
+            for (let i = 1; i <= pageCount; i++) {
+                let li = document.createElement("li");
+                li.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.onclick = () => {
+                    currentPage = i;
+                    showPage(currentPage, filteredQuizItems);
+                };
+                pagination.appendChild(li);
+            }
+
+            // Bouton "Suivant"
+            let nextLi = document.createElement("li");
+            nextLi.className = `page-item ${currentPage === pageCount ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#">Suivant</a>`;
+            nextLi.onclick = () => {
+                if (currentPage < pageCount) {
+                    currentPage++;
+                    showPage(currentPage, filteredQuizItems);
+                }
+            };
+            pagination.appendChild(nextLi);
+        }
+
+        let filteredQuizItems = quizItems;
+        
         searchInput.addEventListener("input", function () {
             let filter = this.value.toLowerCase();
-            let found = false;
-
-            quizList.innerHTML = "";
-
-            quizItems.forEach(quiz => {
+            currentPage = 1;
+            
+            filteredQuizItems = quizItems.filter(quiz => {
                 let quizTitle = quiz.querySelector("h4").getAttribute("data-nom");
                 let quizTheme = quiz.querySelector("h4").getAttribute("data-theme");
+                let quizPseudo = quiz.querySelector("small").textContent.toLowerCase().replace("créé par ", "");
                 
-                if (quizTitle.includes(filter) || quizTheme.includes(filter) || filter === "") {
-                    quizList.appendChild(quiz.cloneNode(true));
-                    found = true;
-                }
+                return quizTitle.includes(filter) || 
+                       quizTheme.includes(filter) || 
+                       quizPseudo.includes(filter) || 
+                       filter === "";
             });
 
-            noResultMessage.style.display = found ? "none" : "block";
+            noResultMessage.style.display = filteredQuizItems.length === 0 ? "block" : "none";
+            showPage(currentPage, filteredQuizItems);
         });
+
+        // Initialisation de la première page
+        showPage(currentPage);
     });
 </script>
 {% endblock %}

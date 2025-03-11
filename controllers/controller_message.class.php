@@ -11,8 +11,8 @@ class ControllerMessage extends Controller
     {
         // Vérifie si le paramètre idForum est dans l'URL
         if (!isset($_GET['idForum']) || empty($_GET['idForum'])) {
-            die("Paramètre idForum manquant !");
-        }
+            $this->afficherErreur("Le paramètre idForum est manquant.");
+        }        
 
         // Récupère l'identifiant du forum
         $idForum = (int) $_GET['idForum'];
@@ -24,11 +24,18 @@ class ControllerMessage extends Controller
         $managerMessage = new MessageDAO($this->getPdo());
         $messagesListe = $managerMessage->findAll($idForum);
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des forums', 'url' => 'index.php?controleur=forum&methode=listerForum'],
+            ['title' => $forum->getNom(), 'url' => 'index.php?controleur=message&methode=listerMessage&idForum=' . $idForum]
+        ];
+
         // Génère la vue
         $template = $this->getTwig()->load('forum_detail.html.twig');
         echo $template->render([
             'messageListe' => $messagesListe,
-            'forum' => $forum
+            'forum' => $forum,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
@@ -63,6 +70,55 @@ class ControllerMessage extends Controller
         header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $idForum);
         exit;
     }
+    }
+
+    public function modifierMessage()
+    {
+        // Vérifie si l'utilisateur est connecté
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupération des données
+            $idMessage = $_POST['idMessage'] ?? $_GET['idMessage'] ?? null;
+            $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
+            
+            // Récupère le message via le DAO
+            $managerMessage = new MessageDAO($this->getPdo());
+            $message = $managerMessage->find($idMessage);
+
+            // Modifie le contenu du message
+            $message->setContenu($contenu);
+            $managerMessage->modifierMessageDAO($message);
+
+            // Redirige vers la liste des messages du forum
+            header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $message->getIdForum());
+            exit;
+            
+            
+        } else {
+            echo "Vous devez être connecté pour modifier un message.";
+        }
+    }
+
+    public function supprimerMessage()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupération de l'identifiant du message
+            $idMessage = $_GET['idMessage'] ?? null;
+
+            // Récupère le message via le DAO
+            $managerMessage = new MessageDAO($this->getPdo());
+            $message = $managerMessage->find($idMessage);
+            $managerMessage->supprimerMessageDAO($message);
+
+            // Redirige vers la liste des messages du forum
+            header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $message->getIdForum());
+            exit;
+        }
     }
 
     public function like()
@@ -151,8 +207,20 @@ class ControllerMessage extends Controller
                 'messages' => $messages
             ]);
         } else {
-            echo "Identifiant utilisateur manquant !";
+            $this->afficherErreur("Vous devez être connecté pour ajouter un message.");
         }
+    }
+
+    /**
+     * @author VINET LATRILLE Jules
+     * @brief Affiche une page d'erreur
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        $erreurController = new ErreurController($this->getTwig(), $this->getLoader());
+        $erreurController->renderErreur($message);
+        exit();
     }
 
 }

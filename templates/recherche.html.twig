@@ -1,170 +1,168 @@
 {% extends "base_template.html.twig" %}
 
 {% block content1 %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
-{# Filtrer les œuvres sans posterPath #}
 {% set oasFiltered = [] %}
-{% for oa in oas %}
-    {% if oa.posterPath is not empty %}
-        {% set oasFiltered = oasFiltered|merge([oa]) %}
+{% if oas is defined and oas is not empty %}
+  {% for oa in oas %}
+    {% if oa.posterPath is defined and oa.posterPath is not empty and oa.posterPath != 'https://via.placeholder.com/500x750?text=Image+non+disponible' %}
+      {% set oasFiltered = oasFiltered|merge([oa]) %}
     {% endif %}
-{% endfor %}
+  {% endfor %}
+{% endif %}
 
 <div class="container my-4">
-  <!-- Barre de navigation des onglets -->
   <div class="row mb-4">
-    <div class="col text-center">
-      <button id="btnGeneral" class="btn btn-primary me-2">Général</button>
-      <button id="btnFilms" class="btn btn-primary me-2">Films/Séries</button>
-      <button id="btnForums" class="btn btn-primary me-2">Forums</button>
-      <button id="btnUsers" class="btn btn-primary">Utilisateurs</button>
-    </div>
+  <div class="col-12 d-flex flex-wrap justify-content-center">
+    <button id="btnGeneral" class="btn btn-primary m-1">Général</button>
+    <button id="btnFilms" class="btn btn-primary m-1">Films/Séries</button>
+    <button id="btnForums" class="btn btn-primary m-1">Forums</button>
+    <button id="btnUsers" class="btn btn-primary m-1">Utilisateurs</button>
+  </div>
   </div>
 
-  <!-- SECTION GÉNÉRAL : 4 films/séries, 4 forums, 4 utilisateurs -->
+  <!-- SECTION GÉNÉRAL :-->
   <div id="sectionGeneral">
-    <h3 class="my-3">Films / Séries</h3>
-    <div class="row">
-      {% set filmsGeneral = oasFiltered|slice(0, 4) %}
-      {% if filmsGeneral is not empty %}
-        {% for oa in filmsGeneral %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              {% if oa.type == 'Film' %}
-                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none">
-              {% else %}
-                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none">
-              {% endif %}
-                  <img src="{{ oa.posterPath }}" class="card-img-top" alt="{{ oa.nom }}">
-                  <div class="card-body d-flex flex-column">
-                    <h6 class="card-title text-center text-dark">{{ oa.nom }}</h6>
-                  </div>
-                </a>
-            </div>
+  <h3 class="my-3">Films / Séries</h3>
+  <div class="row">
+    {% set filmsGeneral = oasFiltered|slice(0, 4) %}
+    {% if filmsGeneral is not empty %}
+    {% for oa in filmsGeneral %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        {% if oa.type == 'Film' %}
+        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
+        {% else %}
+        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
+        {% endif %}
+          <img src="{{ oa.posterPath }}" class="card-img-top img-fluid" alt="{{ oa.nom }}">
+          <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ oa.nom }}</h6>
           </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun film ou série trouvé.</p>
-      {% endif %}
-    </div>
-    
-    <h3 class="my-3">Forums</h3>
-    <div class="row">
-      {% set forumsGeneral = forums|slice(0, 4) %}
-      {% if forumsGeneral is not empty %}
-        {% for forum in forumsGeneral %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none">
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
-                  <p class="card-text text-center">{{ forum.getDescription }}</p>
-                </div>
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun forum trouvé.</p>
-      {% endif %}
-    </div>
-    
-    <h3 class="my-3">Utilisateurs</h3>
-    <div class="row">
-      {% set usersGeneral = users|slice(0, 4) %}
-      {% if usersGeneral is not empty %}
-        {% for user in usersGeneral %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none">
-                <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top" alt="{{ user.getPseudo }}">
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
-                </div>
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun utilisateur trouvé.</p>
-      {% endif %}
-    </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun film ou série trouvé.</p>
+    {% endif %}
+  </div>
+  
+  <h3 class="my-3">Forums</h3>
+  <div class="row">
+    {% set forumsGeneral = forums|slice(0, 4) %}
+    {% if forumsGeneral is not empty %}
+    {% for forum in forumsGeneral %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none ilFautPatienter">
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
+          <p class="card-text text-center small">{{ forum.getDescription }}</p>
+        </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun forum trouvé.</p>
+    {% endif %}
+  </div>
+  
+  <h3 class="my-3">Utilisateurs</h3>
+  <div class="row">
+    {% set usersGeneral = users|slice(0, 4) %}
+    {% if usersGeneral is not empty %}
+    {% for user in usersGeneral %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none ilFautPatienter">
+        <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top img-fluid" alt="{{ user.getPseudo }}">
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
+        </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun utilisateur trouvé.</p>
+    {% endif %}
+  </div>
   </div>
 
   <!-- SECTION FILMS/SÉRIES -->
   <div id="sectionFilms" style="display: none;">
-    <h2 class="text-center my-4">Résultats Films/Séries pour : "{{ requete }}"</h2>
-    <div class="row">
-      {% if oasFiltered is not empty %}
-        {% for oa in oasFiltered %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              {% if oa.type == 'Film' %}
-                <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none">
-              {% else %}
-                <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none">
-              {% endif %}
-                  <img src="{{ oa.posterPath }}" class="card-img-top" alt="{{ oa.nom }}">
-                  <div class="card-body d-flex flex-column">
-                    <h6 class="card-title text-center text-dark">{{ oa.nom }}</h6>
-                  </div>
-                </a>
-            </div>
+  <h2 class="text-center my-4 fs-4">Résultats Films/Séries pour : "{{ requete }}"</h2>
+  <div class="row">
+    {% if oasFiltered is not empty %}
+    {% for oa in oasFiltered %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        {% if oa.type == 'Film' %}
+        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
+        {% else %}
+        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idoa }}" class="text-decoration-none ilFautPatienter">
+        {% endif %}
+          <img src="{{ oa.posterPath }}" class="card-img-top img-fluid" alt="{{ oa.nom }}">
+          <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ oa.nom }}</h6>
           </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun film ou série trouvé.</p>
-      {% endif %}
-    </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun film ou série trouvé.</p>
+    {% endif %}
+  </div>
   </div>
 
-  <!-- SECTION FORUMS -->
+  <!-- Rest of sections with similar changes -->
   <div id="sectionForums" style="display: none;">
-    <h2 class="text-center my-4">Résultats Forums pour : "{{ requete }}"</h2>
-    <div class="row">
-      {% if forums is not empty %}
-        {% for forum in forums %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none">
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
-                  <p class="card-text text-center">{{ forum.getDescription }}</p>
-                </div>
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun forum trouvé.</p>
-      {% endif %}
-    </div>
+  <h2 class="text-center my-4 fs-4">Résultats Forums pour : "{{ requete }}"</h2>
+  <div class="row">
+    {% if forums is not empty %}
+    {% for forum in forums %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        <a href="index.php?controleur=message&methode=listerMessage&idForum={{ forum.getIdForum }}" class="text-decoration-none ilFautPatienter">
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ forum.getNom }}</h6>
+          <p class="card-text text-center small">{{ forum.getDescription }}</p>
+        </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun forum trouvé.</p>
+    {% endif %}
+  </div>
   </div>
 
-  <!-- SECTION UTILISATEURS -->
   <div id="sectionUsersSearch" style="display: none;">
-    <h2 class="text-center my-4">Résultats Utilisateurs pour : "{{ requete }}"</h2>
-    <div class="row">
-      {% if users is not empty %}
-        {% for user in users %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 shadow-sm">
-              <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none">
-                <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top" alt="{{ user.getPseudo }}">
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
-                </div>
-              </a>
-            </div>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center">Aucun utilisateur trouvé.</p>
-      {% endif %}
-    </div>
+  <h2 class="text-center my-4 fs-4">Résultats Utilisateurs pour : "{{ requete }}"</h2>
+  <div class="row">
+    {% if users is not empty %}
+    {% for user in users %}
+      <div class="col-6 col-md-4 col-lg-3 mb-3">
+      <div class="card h-100 shadow-sm">
+        <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ user.getPseudo }}" class="text-decoration-none ilFautPatienter">
+        <img src="{{ 'img/profils/' ~ user.getPhotoProfil }}" class="card-img-top img-fluid" alt="{{ user.getPseudo }}">
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title text-center text-dark">{{ user.getPseudo }}</h6>
+        </div>
+        </a>
+      </div>
+      </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center">Aucun utilisateur trouvé.</p>
+    {% endif %}
   </div>
-
+  </div>
 </div>
 {% endblock %}
 
@@ -172,6 +170,7 @@
 {{ parent() }}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  // Script unchanged
   const btnGeneral = document.getElementById('btnGeneral');
   const btnFilms = document.getElementById('btnFilms');
   const btnForums = document.getElementById('btnForums');
@@ -189,28 +188,28 @@ document.addEventListener('DOMContentLoaded', function () {
   sectionUsersSearch.style.display = 'none';
 
   btnGeneral.addEventListener('click', function () {
-    sectionGeneral.style.display = 'block';
-    sectionFilms.style.display = 'none';
-    sectionForums.style.display = 'none';
-    sectionUsersSearch.style.display = 'none';
+  sectionGeneral.style.display = 'block';
+  sectionFilms.style.display = 'none';
+  sectionForums.style.display = 'none';
+  sectionUsersSearch.style.display = 'none';
   });
   btnFilms.addEventListener('click', function () {
-    sectionGeneral.style.display = 'none';
-    sectionFilms.style.display = 'block';
-    sectionForums.style.display = 'none';
-    sectionUsersSearch.style.display = 'none';
+  sectionGeneral.style.display = 'none';
+  sectionFilms.style.display = 'block';
+  sectionForums.style.display = 'none';
+  sectionUsersSearch.style.display = 'none';
   });
   btnForums.addEventListener('click', function () {
-    sectionGeneral.style.display = 'none';
-    sectionFilms.style.display = 'none';
-    sectionForums.style.display = 'block';
-    sectionUsersSearch.style.display = 'none';
+  sectionGeneral.style.display = 'none';
+  sectionFilms.style.display = 'none';
+  sectionForums.style.display = 'block';
+  sectionUsersSearch.style.display = 'none';
   });
   btnUsers.addEventListener('click', function () {
-    sectionGeneral.style.display = 'none';
-    sectionFilms.style.display = 'none';
-    sectionForums.style.display = 'none';
-    sectionUsersSearch.style.display = 'block';
+  sectionGeneral.style.display = 'none';
+  sectionFilms.style.display = 'none';
+  sectionForums.style.display = 'none';
+  sectionUsersSearch.style.display = 'block';
   });
 });
 </script>

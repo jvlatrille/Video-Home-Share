@@ -41,8 +41,7 @@ class CommentaireDAO
             (int)($data['idUtilisateur'] ?? null),
             $data['pseudo'] ?? null,
             $data['photoProfil'] ?? null,
-            $date["type"] ?? null
-
+            $data["typeOA"] ?? null
         );
     }
 
@@ -202,14 +201,14 @@ class CommentaireDAO
 
         foreach ($commentaires as &$commentaire) {
             $tmdbId = $commentaire['idTMDB'];
-            $type = $commentaire['type'];
+            $type = $commentaire['typeOA'];
             
             if ($type === 'TV') {
                 $oeuvre = $oaDao->findSerie($tmdbId);
-                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Série inconnue";
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : null;
             } else { 
                 $oeuvre = $oaDao->find($tmdbId);
-                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Titre inconnu";
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : null;
             }
             
             $commentaire['backdropOeuvre'] = $oeuvre ? $oeuvre->getBackdropPath() : null;

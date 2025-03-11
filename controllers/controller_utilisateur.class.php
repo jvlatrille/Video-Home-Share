@@ -101,9 +101,13 @@ class ControllerUtilisateur extends Controller
             $managerCommentaire = new CommentaireDAO($this->getPdo());
             $commentaires = $managerCommentaire->findCommentairesByIdUtilisateur($autreUtilisateur->getIdUtilisateur());
 
+            $breadcrumb = [
+                ['title' => 'Accueil', 'url' => 'index.php'],
+                ['title' => $autreUtilisateur->getPseudo(), 'url' => 'index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo=' . $pseudoUtilisateur]
+            ];
 
             $template = $this->getTwig()->load('profilAutre.html.twig');
-            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,]);
+            echo $template->render(['utilisateur' => $autreUtilisateur, 'groupedMessages' => $groupedMessages, 'commentaires' => $commentaires,'breadcrumb' => $breadcrumb]);
             return; // Arrête l'exécution de la méthode sinon on a un double affichage
         }
 

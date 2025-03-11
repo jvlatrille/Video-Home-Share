@@ -35,8 +35,7 @@ class OADao
                 $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
-                error_log('Erreur PDO : ' . $e->getMessage());
-                throw $e;
+                $this->afficherErreur("Impossible de se connecter à la base de données.");
             }
         }
 
@@ -120,7 +119,8 @@ class OADao
             }
         }        
         return $decodedResponse;
-    }    
+    }  
+
 
 
     /**
@@ -129,7 +129,7 @@ class OADao
      * @param string $size Taille de l'image
      * @return string URL complète du poster
      */
-    private function getPosterUrl(?string $posterPath, string $size = 'w500'): string
+    private function getPosterUrl(?string $posterPath, string $size = 'original'): string
     {
         $baseUrl = 'https://image.tmdb.org/t/p/';
         $defaultImage = 'https://via.placeholder.com/500x750?text=Image+non+disponible';
@@ -158,7 +158,7 @@ class OADao
         return array_map(fn($img) => [
             'small' => 'https://image.tmdb.org/t/p/w300' . $img['file_path'],
             'full' => 'https://image.tmdb.org/t/p/original' . $img['file_path']
-        ], array_slice($response['backdrops'], 0, 10)); // Limite à 10 images max
+        ], array_slice($response['backdrops'], 0, 21)); // Limite à 10 images max
     }
 
     
@@ -221,7 +221,7 @@ class OADao
     {
         return new OA(
             $data['id'] ?? null,
-            $data['title'] ?? 'Titre inconnu',
+            $data['title'] ?? null,
             $data['vote_average'] ?? 0.0,
             'Film',
             $data['overview'] ?? 'Description non disponible',
@@ -361,14 +361,14 @@ class OADao
             if (isset($data['title'])) {
                 return [
                     'idOa'       => $data['id'] ?? null,
-                    'nom'        => $data['title'] ?? 'Titre inconnu',
+                    'nom'        => $data['title'] ?? null,
                     'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                     'type'       => 'Film'
                 ];
             } elseif (isset($data['name'])) {
                 return [
                     'idOa'       => $data['id'] ?? null,
-                    'nom'        => $data['name'] ?? 'Titre inconnu',
+                    'nom'        => $data['name'] ?? null,
                     'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                     'type'       => 'TV'
                 ];
@@ -395,7 +395,7 @@ class OADao
         return array_map(function ($data) {
             return [
                 'idOa' => $data['id'] ?? null,
-                'nom' => $data['name'] ?? 'Titre inconnu',
+                'nom' => $data['name'] ?? null,
                 'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                 'type' => 'TV',
             ];
@@ -438,7 +438,7 @@ class OADao
     {
         return new OA(
             $data['id'] ?? null,
-            $data['name'] ?? 'Titre inconnu',
+            $data['name'] ?? null,
             $data['vote_average'] ?? 0.0,
             'TV',
             $data['overview'] ?? 'Description non disponible',
@@ -525,8 +525,8 @@ class OADao
     public function ajouterNote(int $idUtilisateur, int $idTMDB, int $note): bool
     {
         if ($note < 1 || $note > 5) {
-            die('La note doit être comprise entre 1 et 5.');
-        }
+            $this->afficherErreur("La note doit être comprise entre 1 et 5.");
+        }        
 
         $pdo = $this->getConnection();
         $query = 'INSERT INTO ' . PREFIXE_TABLE . 'notes (idUtilisateur, idTMDB, note) 
@@ -643,5 +643,17 @@ class OADao
             return [];
         }
         return array_slice($results['results'], 0, 10);
+    }
+
+    /**
+     * @brief Affiche une page d'erreur proprement
+     * @param string $message Message d'erreur à afficher
+     */
+    private function afficherErreur(string $message): void
+    {
+        require_once __DIR__ . '/../controllers/controller_erreur.class.php';
+        $erreurController = new ErreurController();
+        $erreurController->renderErreur($message);
+        exit();
     }
 }

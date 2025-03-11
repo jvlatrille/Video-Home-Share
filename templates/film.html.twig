@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
 <title>{{ oa.nom }}</title>
 
@@ -32,22 +32,6 @@
                 {% else %}
                     <p><em>Affiche non disponible</em></p>
                 {% endif %}
-            </div>
-
-            <div class="modal fade" id="afficheModal" tabindex="-1" aria-labelledby="afficheModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content bg-transparent border-0">
-                        <div class="modal-body d-flex align-items-center p-0 position-relative">
-                            {% if oa.posterPath %}
-                                <img src="{{ oa.posterPath }}" alt="Affiche de {{ oa.nom }}" class="img-fluid mx-auto" style="max-height: 80vh; object-fit: contain;" loading="lazy">
-                            {% else %}
-                                <p><em>Affiche non disponible</em></p>
-                            {% endif %}
-                            <h2 class="position-absolute top-0 start-0 text-white p-3 fs-4 text-shadow" style="font-size: 1.5rem;">{{ oa.nom }}</h2>
-                            <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="col-md-8">
@@ -125,11 +109,10 @@
                                 {% endfor %}
                                 <input type="hidden" name="idOeuvre" value="{{ oa.idOa }}">
                                 <input type="hidden" name="type" value="{{ oa.type }}">
-                                <button type
-											<button type="submit" class="btn btn-primary">Ajouter</button>
+											<button type="submit" class="btn btn-primary ilFautPatienter">Ajouter</button>
 											{% else %}
 												<p>Aucune liste trouvée.</p>
-												<p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist">Créez-en une ici</a>.</p>
+												<p>Vous n'avez pas encore de liste ? <a href="index.php?controleur=watchlist&methode=listerWatchlist" class="ilFautPatienter">Créez-en une ici</a>.</p>
 											{% endif %}
 											
 										</form>
@@ -175,9 +158,9 @@
                                             {% if suggestion is not null %}
                                                 <div class="col-md-2">
                                                     {% if suggestion.type == 'Film' %}
-                                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                        <a href="index.php?controleur=oa&methode=afficherFilm&idOa={{ suggestion.idOa }}" class="text-decoration-none ilFautPatienter">
                                                     {% else %}
-                                                        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none">
+                                                        <a href="index.php?controleur=oa&methode=afficherSerie&idOa={{ suggestion.idOa }}" class="text-decoration-none ilFautPatienter">
                                                     {% endif %}
                                                             <img src="{{ suggestion.posterPath }}" 
                                                                 alt="{{ suggestion.nom }}" 
@@ -231,11 +214,11 @@
 
                     <!-- Contrôles du Carousel -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="prev" style="left: -75px;">
-                        <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle" style="filter: invert(100%);" aria-hidden="true"></span>
                         <span class="visually-hidden">Précédent</span>
                     </button>
                     <button class="carousel-control-next" type="button" data-bs-target="#carouselBackdrops" data-bs-slide="next" style="right: -75px;">
-                        <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                        <span class="carousel-control-next-icon bg-dark rounded-circle" style="filter: invert(100%);" aria-hidden="true"></span>
                         <span class="visually-hidden">Suivant</span>
                     </button>
                 </div>
@@ -247,7 +230,6 @@
                             <div class="modal-body d-flex justify-content-center">
                                 <img src="" id="backdropFullScreen" class="img-fluid rounded shadow-lg" alt="Backdrop en grand" loading="lazy">
                             </div>
-                            <button type="button" class="btn-close position-absolute top-0 end-0 p-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
                     </div>
                 </div>
@@ -274,16 +256,16 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 {% if commentaire.photoProfil %}
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
                                         <img src="{{ 'img/profils/' ~ commentaire.photoProfil }}" alt="Photo de {{ commentaire.pseudo }}" class="rounded-circle me-3" width="50" height="50" loading="lazy">
                                     </a>
                                 {% else %}
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }} class="ilFautPatienter">
                                         <img src="/img/default.png" alt="Photo par défaut" class="rounded-circle me-3" width="50" height="50">
                                     </a>
                                 {% endif %}
                                 <div>
-                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}">
+                                    <a href="index.php?controleur=utilisateur&methode=afficherAutreUtilisateur&pseudo={{ commentaire.pseudo }}" class="ilFautPatienter">
                                         <strong>{{ commentaire.pseudo }}</strong>
                                     </a>
                                     <p>{{ commentaire.contenu }}</p>
@@ -295,7 +277,7 @@
                                         Modifier
                                     </button>
                                     <a href="index.php?controleur=commentaire&methode=supprimerCommentaire&idCommentaire={{ commentaire.getIdCom }}&idOa={{ oa.idOa }}&typeOA={{oa.type}}"
-                                       class="btn btn-danger btn-sm"
+                                       class="btn btn-danger btn-sm ilFautPatienter"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
                                         Supprimer
                                     </a>
@@ -326,7 +308,7 @@
                                     <input type="hidden" name="idCommentaire" value="{{ commentaire.idCom }}">
                                     {# // <script>document.querySelector(".modal.show button[type='submit']").disabled = false;</script> #}
 
-                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                    <button type="submit" class="btn btn-primary ilFautPatienter">Enregistrer</button>
                                 </form>
                             </div>
                         </div>
@@ -343,7 +325,7 @@
                     </div>
                     <input type="hidden" name="film_id" value="{{ oa.idOa }}">
                     <input type="hidden" name="type" value="{{ oa.type }}">
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <button type="submit" class="btn btn-primaryAzbin hotel">Envoyer</button>
                 </form>
             {% else %}
                 <p><a href="index.php?controleur=utilisateur&methode=connexion">Connectez-vous</a> pour ajouter un commentaire.</p>

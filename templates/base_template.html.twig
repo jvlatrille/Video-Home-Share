@@ -45,10 +45,14 @@
 		<script>
 			const TMDB_API_KEY = "{{ constant('TMDB_CLE_KEY') }}";
 		</script>
-
-	 	<script src="js/searchSuggestions.js"></script>
-		<script type="module" src"js/main.js"></script>
+		<script src="js/searchSuggestions.js"></script>
 		<script src="js/patientez.js"></script>
+		<script src="js/animations.js"></script>
+		<script>
+			window.utilisateurConnecte = {% if utilisateurConnecte is not null %}{{ utilisateurConnecte|json_encode|raw }}{% else %}null{% endif %};
+		</script>
+		<script src="js/raccourcis.js"></script>		
+		
 
 
 		<!-- ShareThis -->
@@ -96,91 +100,126 @@
 			  <div class="mt-2 text-center">Merci de patienter</div>
 			</div>
 		</div>
-		<header class="header-bg text-light header-sm container-fluid">
-			<nav class="navbar container-fluid d-flex justify-content-between align-items-center flex-wrap">
-				<!-- Logo et bouton Menu -->
-				<div class="d-flex align-items-center">
-					<a class="navbar-brand d-flex align-items-center" href="index.php">
-						<img src="img/LogoPopCorn.png" alt="Logo" width="90" height="70" class="me-2">
+		<header class="header-bg text-light sticky-top shadow">
+			<nav class="navbar navbar-expand-lg container-fluid py-1">
+			<!-- Logo Section -->
+			<div class="navbar-brand me-1">
+				<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter" title="Alt + Shift + A">
+				<img src="img/LogoPopCorn.png" alt="Logo" width="60" height="50" class="me-1">
+				</a>
+			</div>
+
+			<!-- Main Navigation -->
+			<div class="d-flex flex-grow-1 justify-content-start">
+				{% if utilisateurConnecte %}
+
+				<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
+					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light" title="Alt + Shift + F">
+					<i class="fas fa-comments me-1"></i> Forum
+
 					</a>
-					{# <button class="btn btn-custom ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#menuBar" aria-expanded="false" aria-controls="menuBar">
-						Menu
-					</button> #}
+					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light" title="Alt + Shift + L">
+					<i class="fas fa-list me-1 ilFautPatienter"></i> Mes listes
+					</a>
+					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light" title="Alt + Shift + Q">
+					<i class="fas fa-question-circle me-1 ilFautPatienter"></i> Quiz
+					</a>
+					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light "title="Alt + Shift + J">
+					<i class="fas fa-gamepad me-1 ilFautPatienter"></i> Jeux
+					</a>
 				</div>
-				<div class="py-2 d-flex justify-content-center flex-wrap">
-					{% if utilisateurConnecte %}
-						<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Forum</a>
-						<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Mes listes</a>
-						<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Quiz</a>
-						<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-light-custom mx-2 my-1" style="font-weight: bold">Jeux</a>
-					{% else %}
-						<a href="index.php?controleur=utilisateur&methode=connexion" class="btn btn-custom mx-2 my-1">Merci de vous connecter</a>
+				{% endif %}
+			</div>
+
+			<!-- Right Side Elements -->
+			<div class="d-flex align-items-center gap-2 flex-grow-1 ms-2">
+				<!-- Search Bar -->
+				<div class="position-relative flex-grow-1 me-3" title="Alt + Shift + S">
+				<form class="d-flex" action="index.php" method="GET">
+					<input type="hidden" name="controleur" value="index">
+					<input type="hidden" name="methode" value="rechercher">
+					<div class="input-group">
+					<input class="form-control" type="search" name="requete" id="recherche" 
+						placeholder="Rechercher..." aria-label="Search">
+					<button class="btn btn-outline-light" type="submit">
+						<i class="fas fa-search"></i>
+					</button>
+					</div>
+				</form>
+				<div id="search-results" class="list-group position-absolute w-100 shadow-lg rounded" 
+					style="top: 100%; z-index: 1050;"></div>
+				</div>
+
+				<!-- User Menu -->
+				{% if utilisateurConnecte is null %}
+				<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion"  title="Alt + Shift + C">
+					<i class="fas fa-sign-in-alt me-1"></i> Connexion
+				</a>
+				{% else %}
+				<div class="dropdown me-3">
+					<button class="btn btn-link text-light p-0 border-0 mr-2" type="button" id="userMenuButton" 
+					data-bs-toggle="dropdown" aria-expanded="false"  title="Alt + Shift + P">
+					<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+						alt="Profile" width="40" height="40" 
+						class="rounded-circle border border-2">
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end shadow">
+					<li>
+						<a href="index.php?controleur=profil&methode=afficherAPropos&id={{ utilisateurConnecte.idUtilisateur }}" class="dropdown-item">
+							<div class="d-flex align-items-center">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+									alt="Profile" width="32" height="32" 
+									class="rounded-circle me-2">
+								<div>
+									<strong>{{ utilisateurConnecte.pseudo }}</strong>
+									<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
+								</div>
+							</div>
+						</a>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					{% if utilisateurConnecte.getRole == 'admin' %}
+						<li>
+						<a class="dropdown-item" href="index.php?controleur=admin&methode=render">
+							<i class="fas fa-cog me-2"></i> Administration
+						</a>
+						</li>
 					{% endif %}
+					<li>
+						<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire">
+						<i class="fas fa-user-cog me-2"></i> Paramètres
+						</a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1">
+						<i class="fas fa-bell me-2"></i> Notifications
+						</a>
+					</li>
+					<li><hr class="dropdown-divider"></li>
+					<li>
+						<a class="dropdown-item text-danger" href="index.php?controleur=utilisateur&methode=deconnexion">
+						<i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+						</a>
+					</li>
+					</ul>
 				</div>
-				<div class="my-2"></div> <!-- Espacement ajouté ici -->
-
-				<!-- Barre de recherche -->
-				<div class="d-flex justify-content-center my-2 position-relative">
-					<form class="d-flex flex-grow-1" action="index.php" method="GET" style="max-width: 400px;">
-						<input type="hidden" name="controleur" value="index">
-						<input type="hidden" name="methode" value="rechercherFilm">
-						<input class="form-control" type="text" name="requete" id="recherche" placeholder="Rechercher un film ou une série..." aria-label="Search">
-					</form>
-					
-					<!-- Résultats de la recherche -->
-					<div id="search-results" class="list-group position-absolute shadow-lg rounded" style="top: 100%; left: 0; z-index: 1050;"></div>
-				</div>
-
-
-				<!-- Bouton Connexion/Déconnexion et Admin -->
-				<div class="me-3 mt-2 mt-md-0">
-					{% if utilisateurConnecte is null %}
-						<a class="btn btn-custom" href="index.php?controleur=utilisateur&methode=connexion">Connexion</a>
+				{% endif %}
+			</div>
+			</nav>
+			<nav aria-label="breadcrumb" class="container-fluid bg-light text-dark shadow-sm" style="--bs-breadcrumb-divider: '>';">
+				<ol class="breadcrumb m-0">
+					{% if breadcrumb is defined and breadcrumb is not empty %}
+						{% for item in breadcrumb %}
+							{% if loop.last %}
+								<li class="breadcrumb-item active" aria-current="page">{{ item.title }}</li>
+							{% else %}
+								<li class="breadcrumb-item"><a href="{{ item.url }}" class="ilFautPatienter">{{ item.title }}</a></li>
+							{% endif %}
+						{% endfor %}
 					{% else %}
-						<div class="dropdown">
-							<button class="btn d-flex align-items-center p-0 border-0" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="50" height="50" class="rounded-circle border border-2">
-								<i class="fas fa-caret-down ms-2 text-white"></i>
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuButton">
-								<li class="dropdown-item">
-									<a href="index.php?controleur=profil&methode=afficherApropos&id={{ utilisateurConnecte.idUtilisateur }}" class="d-flex align-items-center text-decoration-none">
-										<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" alt="Photo de profil" width="50" height="50" class="rounded-circle me-2">
-										<div>
-											<strong>{{ utilisateurConnecte.pseudo }}</strong><br>
-											<small class="text-muted">{{ utilisateurConnecte.getRole }}</small>
-										</div>
-										<div class="mt-2">
-											<small>Cliquez pour afficher votre profil</small>
-										</div>
-									</a>
-								</li>
-								<li>
-									<hr class="dropdown-divider">
-								</li>
-								{% if utilisateurConnecte.getRole == 'admin' %}
-									<li>
-										<a class="dropdown-item" href="index.php?controleur=admin&methode=render" style="color: #A2140A;">
-											<strong>Administration</strong>
-										</a>
-									</li>
-								{% endif %}
-								<li>
-									<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire" style="color: #A2140A;">Paramètres</a>
-								</li>
-								<li>
-									<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1" style="color: #A2140A;">Mes notifications</a>
-								</li>
-								<li>
-									<hr class="dropdown-divider">
-								</li>
-								<li>
-									<a class="dropdown-item text-danger fw-bold" href="index.php?controleur=utilisateur&methode=deconnexion">Déconnexion</a>
-								</li>
-							</ul>
-						</div>
+						<li class="breadcrumb-item"><a href="index.php">Accueil</a></li>
 					{% endif %}
-				</div>
+				</ol>
 			</nav>
 		</header>
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
@@ -205,14 +244,16 @@
 			<div class="container">
 				<!-- Liens de Navigation -->
 				<div class="footer-nav mb-3">
-					<a href="index.php" class="footer-link mx-2">Accueil</a>
+					<a href="index.php" class="footer-link mx-2 ilFautPatienter">Accueil</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#aproposModal">À propos</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#contactModal">Contact</a>
 					<a href="index.php?controleur=newsletter&methode=afficher" class="footer-link mx-2">Newletter</a>
 					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#tmdbModal">
-						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">CGU
+						<img src="img/logoTMDB.png" alt="TMDB Logo" width="20" height="20" class="me-1">TMDB
 					</a>
+					<a href="#" class="footer-link mx-2" data-bs-toggle="modal" data-bs-target="#cguModal">CGU</a>
 				</div>
+				
 				<!-- PopUp pour l'accord TMDB -->
 				<div class="modal fade" id="tmdbModal" tabindex="-1" aria-labelledby="tmdbModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -305,6 +346,127 @@
 						</div>
 					</div>
 				</div>
+
+				<!-- Modal CGU -->
+				<div class="modal fade" id="cguModal" tabindex="-1" aria-labelledby="cguModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered modal-lg">
+						<div class="modal-content">
+							<div class="modal-header bg-light">
+								<h5 class="modal-title fw-bold text-dark" id="cguModalLabel">
+									Conditions Générales d’Utilisation
+								</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+							</div>
+							<div class="modal-body text-dark" style="max-height: 70vh; overflow-y: auto;">
+								<h4>1. Objet</h4>
+								<p>
+									Les présentes Conditions Générales d’Utilisation (CGU) ont pour objet de définir les
+									droits et obligations des utilisateurs (ci-après « Utilisateur(s) ») lors de leur
+									accès et de leur utilisation de l’application web <strong>VHS (Video Home Share)</strong>.
+									Toute utilisation de l’application implique l’acceptation pleine et entière des
+									présentes CGU.
+								</p>
+
+								<h4>2. Mentions légales</h4>
+								<p>
+									<strong>Éditeur de l’application :</strong> Groupe 8 (IUT de Bayonne, BUT Informatique)
+									<br>Nom de l’application : Video Home Share
+									<br>Statut : Projet pédagogique non commercial
+									<br>Email : videohomeshare8@gmail.com
+								</p>
+								<p>
+									<strong>Hébergeur :</strong> lakartxela
+									<br>Adresse : lakjarxela.fr
+								</p>
+
+								<h4>3. Accès à l’application</h4>
+								<p>
+									L’accès à l’application est gratuit et se fait en ligne. Tous les
+									frais afférents à l’accès (matériel informatique, logiciels, connexion internet, etc.)
+									sont à la charge de l’Utilisateur. L’éditeur met en œuvre tous les moyens raisonnables
+									pour assurer un accès de qualité mais n’est tenu à aucune obligation de résultat.
+								</p>
+
+								<h4>4. Création de compte</h4>
+								<p>
+									Pour accéder à certaines fonctionnalités (quizz, forums, mini-jeux), l’Utilisateur peut
+									être amené à créer un compte. L’Utilisateur s’engage à fournir des informations exactes
+									et à jour, et à préserver la confidentialité de ses identifiants.
+								</p>
+
+								<h4>5. Responsabilité et contenu</h4>
+								<p>
+									<strong>5.1 Responsabilité de l’éditeur</strong><br>
+									L’éditeur s’efforce de mettre à disposition des informations fiables, mais ne garantit
+									pas l’exactitude ou l’exhaustivité. L’éditeur ne saurait être tenu responsable de tout
+									dommage direct ou indirect résultant de l’utilisation de l’application.
+								</p>
+								<p>
+									<strong>5.2 Responsabilité de l’Utilisateur</strong><br>
+									L’Utilisateur est seul responsable de l’utilisation qu’il fait des informations et
+									contenus présents sur VHS. Il s’engage à respecter la loi et à ne pas publier de
+									contenus illicites, contraires à l’ordre public ou aux bonnes mœurs.
+								</p>
+
+								<h4>6. Droits de propriété intellectuelle</h4>
+								<p>
+									Le contenu de l’application (code, textes, images, base de données) est protégé par
+									le Code de la Propriété Intellectuelle. L’application étant une œuvre de collaboration
+									entre les membres
+									du Groupe 8, toute utilisation commerciale du projet ou diffusion exige l’accord
+									préalable des co-auteurs et/ou de l’IUT, selon les cas. La marque « VHS » n’est pas
+									déposée à l’INPI mais reste la propriété exclusive des co-auteurs pour un usage
+									pédagogique.
+								</p>
+
+								<h4>7. Protection de la base de données</h4>
+								<p>
+									La base de données est produite dans le cadre du projet pédagogique avec le soutien
+									de l’IUT. Conformément au droit « sui generis », l’extraction ou la réutilisation
+									substantielle du contenu de la base est interdite sans autorisation préalable.
+								</p>
+
+								<h4>8. Données personnelles et Newsletter</h4>
+								<p>
+									Les données personnelles collectées via la Newsletter ou
+									lors de la création de compte sont traitées conformément au RGPD. L’Utilisateur
+									est informé qu’il dispose d’un droit d’accès, de rectification et de suppression
+									de ses données. Toute demande relative aux données personnelles doit être adressée
+									à l’éditeur (coordonnées ci-dessus).
+								</p>
+
+								<h4>9. Utilisation de l’API TMDB</h4>
+								<p>
+									VHS récupère certaines données (notamment les affiches et informations sur les œuvres)
+									via l’API de TMDB, sous condition d’en respecter les règles. Cet usage est non
+									commercial, et le logo TMDB est affiché dans l’application.
+								</p>
+
+								<h4>10. Modification des CGU</h4>
+								<p>
+									L’éditeur se réserve le droit de modifier les présentes CGU à tout moment. Toute
+									modification prend effet dès sa mise en ligne. L’Utilisateur est donc invité à
+									consulter régulièrement les CGU pour se tenir informé des évolutions.
+								</p>
+
+								<h4>11. Loi applicable et juridiction compétente</h4>
+								<p>
+									Les présentes CGU sont régies par la loi française. En cas de litige, les tribunaux
+									compétents du ressort de [Lieu du siège social] seront seuls compétents, sous
+									réserve d’une attribution de compétence spécifique découlant d’un texte de loi
+									ou réglementaire particulier.
+								</p>
+
+								<p class="mt-4">
+									<em>Dernière mise à jour : 01/03/2025</em><br>
+									<em>Ces CGU sont fournies à titre indicatif et doivent être validées par un
+									professionnel du droit.</em>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="footer-social mb-2">
 					<div class="sharethis-inline-share-buttons"></div>
 				</div>

@@ -1,7 +1,7 @@
 {% extends 'base_template.html.twig' %}
 
 {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
     {% if erreurs is defined %}
         <div class="alert alert-danger" role="alert">
@@ -71,17 +71,18 @@
                                     </p>
                                     <div class="d-flex justify-content-between mt-3">
                                     {% if oa.type == 'Film' %}
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
+                                        <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=oa&methode=afficherFilm&idOa={{ oa.idOa }}'">Y aller</button>
                                     {% else %}
-                                        <button type="button" class="btn btn-primary" onclick="window.location.href='index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}'">Y aller</button>
+                                        <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=oa&methode=afficherSerie&idOa={{ oa.idOa }}'">Y aller</button>
                                     {% endif %}
                                         {% if utilisateurConnecte.idUtilisateur == watchList.idUtilisateur %}
-                                            <button type="button" class="btn btn-danger" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
+                                        <br>
+                                            <button type="button" class="btn btn-primary ilFautPatienter" onclick="window.location.href='index.php?controleur=watchlist&methode=supprimerOaWatchList&idWatchlist={{ watchList.idWatchList }}&idOeuvre={{ oa.idOa }}'">Supprimer</button>
                                         {% endif %}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +117,7 @@
             {% for oa in watchList.listeOeuvres %}
                 <input type="hidden" name="listeOeuvres[]" value="{{ oa.idOA }}">
             {% endfor %}
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary ilFautPatienter">
                 <i class="bi bi-save"></i>
                 Enregistrer cette Liste
             </button>
@@ -137,7 +138,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -167,25 +168,24 @@
                             </div>
                             <div class="mb-3">
 								<label for="watchlistVisibility" class="form-label">Visibilité :</label>
+								<small class="form-text text-muted">
+									<br><strong>Publique</strong>
+									: visible par tous les utilisateurs.
+								</small>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="visible" id="visibilePublic" value="1" checked>
-									<label class="form-check-label" for="visibilityPublic">
-										Publique
-									</label>
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPublic" value="1" checked>
+									<label class="form-check-label" for="visibilityPublic">Publique</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="visible" id="visibilityPrivate" value="0">
+									<label class="form-check-label" for="visibilityPrivate">Privée</label>
+								</div>
 								<small id="visibleErreur" class="text-danger"></small>
-
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="visible" id="visibilePrive" value="0">
-									<label class="form-check-label" for="visibilityPrivate">
-										Privée
-									</label>
-								</div>
 
 							</div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="submit" class="btn btn-primary ilFautPatienter">Enregistrer les modifications</button>
                             </div>
                         </form>
                     </div>
