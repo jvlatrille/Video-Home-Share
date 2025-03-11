@@ -54,7 +54,11 @@ class NotificationDao{
      */
     //Méthode pour récupérer UNE notification d'un utilisateur
     public function findNotif(?int $idNotif): ?Notification {
-        $sql = "SELECT * FROM ".PREFIXE_TABLE."notification WHERE idNotif = :idNotif; UPDATE ".PREFIXE_TABLE."notification SET vu = 1 WHERE idNotif = :idNotif";
+        $sql = "SELECT n.*, f.nom AS nomForum 
+                FROM ".PREFIXE_TABLE."notification n
+                JOIN ".PREFIXE_TABLE."forum f ON n.idForum = f.idForum
+                WHERE idNotif = :idNotif; 
+                UPDATE ".PREFIXE_TABLE."notification SET vu = 1 WHERE idNotif = :idNotif";
         $pdoStatement = $this->pdo->prepare($sql);
         $pdoStatement->execute(['idNotif' => $idNotif]);
         $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);

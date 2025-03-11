@@ -19,9 +19,9 @@
                             </h5>
                             <div>   
                                 <strong>Date :</strong> {{ contenuNotif.dateNotif }}<br>
-
-                                <strong>Dans le forum :</strong>{{ message.nom }}
-                                {# <strong>Vu :</strong> {{ contenuNotif.vu ? 'Oui' : 'Non' }}<br> #}
+                                <strong>Dans le forum : </strong>
+                                <a href="index.php?controleur=message&methode=listerMessage&idForum={{ contenuNotif.idForum }}">
+                                            {{ contenuNotif.nomForum }} </a>
 
                                 {# Affichage des boutons seulement si le contenu est "Game invite" #}
                                 {% if contenuNotif.contenu == 'Game invite' %}
