@@ -167,6 +167,7 @@ class ControllerProfil extends Controller
             $ancienMail = $utilisateurConnecte->getAdressMail();
             $newMail = isset($_POST['mail']) ? trim($_POST['mail']) : null;
             $donnees = ["mail" => $newMail];
+            $url = $_POST['currentUrl'];
 
             // Vérification des données reçues
             $validator = new Validator($regles);
@@ -205,7 +206,9 @@ class ControllerProfil extends Controller
             $tokenEncoded = urlencode(base64_encode($token));
     
             // Crée le lien de réinitialisation
-            $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
+            $parts = explode('~', $url);
+            $util = explode('/', $parts[1])[0];
+            $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
     
             // Envoie un email avec le lien de réinitialisation
             $sujet = "Changer votre adresse mail";

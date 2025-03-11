@@ -97,6 +97,7 @@
                             <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
                             <button type="submit" class="btn btn-primary w-100">Changer Mail</button>
                         </div>
+                        <input type="hidden" name="currentUrl" value="{{ app.request.uri }}">
                     </form>
                 </div>
             </div>
