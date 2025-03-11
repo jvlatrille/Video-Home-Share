@@ -10,10 +10,12 @@ class Jeux {
      * @var integer|null $idJeux L'identifiant du jeu 
      * @var string|null $regle La règle associée au jeu
      * @var string|null $nom Le nom du  jeu
+     * @var string|null $nom L'image du  jeu
      */
     private ?int $idJeux;
     private ?string $regle;
     private ?string $nom;
+    private ?string $image;
 
     /**
      * Fonction qui permet de construire 
@@ -21,12 +23,14 @@ class Jeux {
      * @param integer|null $idJeux L'identifiant du jeu à construire
      * @param string|null $regle La règle du jeu à construire
      * @param string|null $nom Le nom du jeu à construire
+     * @param string|null $nom L'image du jeu à construire
      */
-    public function __construct(?int $idJeux = null, ?string $regle = null, ?string $nom = null)
+    public function __construct(?int $idJeux = null, ?string $regle = null, ?string $nom = null, ?string $image = null, )
     {
         $this->idJeux = $idJeux;
         $this->regle = $regle;
         $this->nom = $nom;
+        $this->image = $image;
     }
 
     /**
@@ -90,5 +94,26 @@ class Jeux {
     public function setNom(?string $nom): void
     {
         $this->nom = $nom;
+    }
+
+    /**
+     * Fonction qui permet de récupérer l'image' du jeu
+     *
+     * @return string|null
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * Fonction qui permet de modifier l'image du jeu
+     *
+     * @param string|null $image
+     * @return void
+     */
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
     }
 }
