@@ -205,10 +205,10 @@ class CommentaireDAO
             
             if ($type === 'TV') {
                 $oeuvre = $oaDao->findSerie($tmdbId);
-                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Série inconnue";
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : null;
             } else { 
                 $oeuvre = $oaDao->find($tmdbId);
-                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : "Titre inconnu";
+                $commentaire['titreOeuvre'] = $oeuvre ? $oeuvre->getNom() : null;
             }
             
             $commentaire['backdropOeuvre'] = $oeuvre ? $oeuvre->getBackdropPath() : null;
