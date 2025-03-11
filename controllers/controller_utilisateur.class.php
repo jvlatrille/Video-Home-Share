@@ -346,7 +346,7 @@ class ControllerUtilisateur extends Controller
                 // Crée le lien de réinitialisation
                 $parts = explode('~', $url);
                 $util = explode('/', $parts[1])[0];
-                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
+                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/PHP/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
 
                 // Envoie un email avec le lien de réinitialisation
                 $sujet = "Reinitialisation de votre mot de passe";
@@ -644,7 +644,7 @@ class ControllerUtilisateur extends Controller
         $parts = explode('~', $url);
         $util = explode('/', $parts[1])[0];
         
-        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
+        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/PHP/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
 
         // Envoie un email avec le lien de réinitialisation
         $sujet = "Activez votre compte !";
