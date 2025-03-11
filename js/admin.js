@@ -171,7 +171,7 @@ function confirmDeleteQuiz(quizzId) {
 // Confirmation pour supprimer un post
 function confirmDeletePost(postId) {
     if (confirm("Êtes-vous sûr de vouloir supprimer ce post de forum ? Cette action est irréversible !")) {
-        window.location.href = "index.php?controleur=forum&methode=supprimerPost&id=" + postId;
+        window.location.href = "index.php?controleur=message&methode=supprimerMessage&idMessage=" + postId;
     }
 }
 
