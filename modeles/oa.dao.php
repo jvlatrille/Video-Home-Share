@@ -221,7 +221,7 @@ class OADao
     {
         return new OA(
             $data['id'] ?? null,
-            $data['title'] ?? 'Titre inconnu',
+            $data['title'] ?? null,
             $data['vote_average'] ?? 0.0,
             'Film',
             $data['overview'] ?? 'Description non disponible',
@@ -361,14 +361,14 @@ class OADao
             if (isset($data['title'])) {
                 return [
                     'idOa'       => $data['id'] ?? null,
-                    'nom'        => $data['title'] ?? 'Titre inconnu',
+                    'nom'        => $data['title'] ?? null,
                     'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                     'type'       => 'Film'
                 ];
             } elseif (isset($data['name'])) {
                 return [
                     'idOa'       => $data['id'] ?? null,
-                    'nom'        => $data['name'] ?? 'Titre inconnu',
+                    'nom'        => $data['name'] ?? null,
                     'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                     'type'       => 'TV'
                 ];
@@ -395,7 +395,7 @@ class OADao
         return array_map(function ($data) {
             return [
                 'idOa' => $data['id'] ?? null,
-                'nom' => $data['name'] ?? 'Titre inconnu',
+                'nom' => $data['name'] ?? null,
                 'posterPath' => $this->getPosterUrl($data['poster_path'] ?? null),
                 'type' => 'TV',
             ];
@@ -438,7 +438,7 @@ class OADao
     {
         return new OA(
             $data['id'] ?? null,
-            $data['name'] ?? 'Titre inconnu',
+            $data['name'] ?? null,
             $data['vote_average'] ?? 0.0,
             'TV',
             $data['overview'] ?? 'Description non disponible',

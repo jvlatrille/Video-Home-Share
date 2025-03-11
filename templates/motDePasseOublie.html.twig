@@ -24,7 +24,18 @@
             <div class="mt-3">
                 <a href="index.php?controleur=utilisateur&methode=connexion" class="text-decoration-none">Retour à la connexion</a>
             </div>
+
+			<input type="hidden" name="currentUrl" id="currentUrl">
         </div>
     </form>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer l'URL actuelle
+        let currentUrl = window.location.href;
+
+        // Insérer l'URL dans le champ caché
+        document.getElementById('currentUrl').value = currentUrl;
+    });
+</script>
 
 {% endblock %}

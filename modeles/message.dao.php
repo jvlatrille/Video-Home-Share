@@ -33,7 +33,6 @@ class messageDAO
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-
             return null;
         }
         $dataMessage = $this->hydrateAll($resultats);
@@ -161,7 +160,12 @@ class messageDAO
 
 
 
-
+    /**
+     * @author Despré-Hildevert Léa
+     * @brief Charger lka page APropos avec les messages écrits par l'utilisateur
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @return array
+     */    
     public function chargerAPropos(?int $idUtilisateur): ?array
     {
         $sql = "SELECT m.idMessage, m.contenu, m.nbLike, m.nbDislike, f.nom FROM ".PREFIXE_TABLE."message m JOIN ".PREFIXE_TABLE."forum f ON m.idForum = f.idForum WHERE m.idUtilisateur = :idUtilisateur";
@@ -174,9 +178,7 @@ class messageDAO
             if (empty($resultats)) {
                 return null; // Aucun message trouvé
             }
-
             return $resultats;
-
            
         } catch (Exception $e) {
             error_log("Erreur lors de l'affichage des messages de l'utilisateur : " . $e->getMessage());
@@ -184,35 +186,47 @@ class messageDAO
         }
     }
 
+    /**
+     * @author Despré-Hildevert Léa
+     * @brief Créer une notification lorsqu'un message est liké ou disliké
+     * @param int $idUtilisateur Identifiant de l'utilisateur
+     * @param int $idMessage Identifiant du message
+     * @param int $idForum Identifiant du forum
+     * @param string $contenu Contenu de la notification
+     * @return Notification
+     */    
+    public function creerNotif( ?int $idMessage, ?string $contenu): ?Notification
+    {    // Récupérer l'idForum du message
+        $sql1 = "SELECT idForum, idUtilisateur AS auteurMessage FROM vhs_message WHERE idMessage = :idMessage";
+        $stmt = $this->pdo->prepare($sql1);
+        $stmt->execute(['idMessage' => $idMessage]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    public function creerNotif(?int $idUtilisateur, ?int $idMessage): ?Notification
-    {
-        // Créer une nouvelle instance de Notification avec l'idUtilisateur
-        $notification = new Notification();
-        $notification->setIdUtilisateur($idUtilisateur);
+        if ($result) {
+            $idForum = $result['idForum'];
+            $idUtilisateurAuteur = $result['auteurMessage'];
+                
+            // Créer une nouvelle instance de Notification avec l'idUtilisateur
+            $notification = new Notification();
+            $notification->setIdUtilisateur($idUtilisateurAuteur);
 
-        // Insérer la notification
-        $sql = "INSERT INTO ".PREFIXE_TABLE."notification ( dateNotif, destinataire, contenu, vu, idUtilisateur, idMessage)
-                 VALUES ( :dateNotif, :destinataire, :contenu, :vu, :idUtilisateur, :idMessage)";
+            // Insérer la notification
+            $sql = "INSERT INTO ".PREFIXE_TABLE."notification ( dateNotif, destinataire, contenu, vu, idUtilisateur, idMessage, idForum)
+                    VALUES ( :dateNotif, :destinataire, :contenu, :vu, :idUtilisateur, :idMessage, :idForum)";
 
-        $contenu = '';
-        // if ($name === 'like') {
-        //     $contenu = 'Message like';
-        // } elseif ($name === 'dislike') {
-        //     $contenu = 'Message dislike';
-        // }
+            $currentDate = date('Y-m-d H:i:s'); //date et heure actuelle
 
-        $currentDate = date('Y-m-d H:i:s'); //date et heure actuelle
-
-        $pdoStatement = $this->pdo->prepare($sql);
-        $pdoStatement->execute([
-            'dateNotif' => $currentDate,
-            'destinataire' =>NULL,
-            'contenu' => $contenu,
-            'vu' => 0,
-            'idUtilisateur' => $notification->getIdUtilisateur(),
-            'idMessage' => $idMessage
-        ]);
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute([
+                'dateNotif' => $currentDate,
+                'destinataire' =>NULL,
+                'contenu' => $contenu,
+                'vu' => 0,
+                'idUtilisateur' => $idUtilisateurAuteur,
+                'idMessage' => $idMessage,
+                'idForum'=> $idForum
+            ]);
+        }
 
         // Récupérer l'ID de la notification insérée
         $notification->setIdNotif($this->pdo->lastInsertId());
