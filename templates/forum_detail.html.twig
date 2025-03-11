@@ -98,11 +98,11 @@
                                 <button type="button" class="btn btn-primary" value="{{message.idMessage}}" data-bs-toggle="modal" data-bs-target="#modifierMessageModal">
 			                        Modifier le message
 		                        </button>
-                                <button type="button" class="btn btn-primary" value="{{message.idMessage}}">
-                                    <a href="index.php?controleur=message&methode=supprimerMessage&idMessage={{ message.idMessage }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le message ?');">
+
+                                    <a href="index.php?controleur=message&methode=supprimerMessage&idMessage={{ message.idMessage }}" class="btn btn-primary" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le message ?');">
                                     Supprimer le message
                                     </a>
-		                        </button>
+
                             {% endif %}
                         </div>
                     </div>
