@@ -349,13 +349,20 @@ class ControllerQuestion extends Controller
         $managerQuizz = new QuizzDao($this->getPdo());
         $quizz = $managerQuizz->find($idQuizz);
         $nbTotalQuestions = $quizz->getNbQuestion();
+    $breadcrumb = [
+        ['title' => 'Accueil', 'url' => 'index.php'],
+        ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+        ['title' => $quizz->getNom(), 'url' => 'index.php?controleur=Quizz&methode=afficherQuizz&id=' . $idQuizz],
+        ['title' => 'Résultat du quiz', 'url' => 'index.php?controleur=question&methode=afficherScore&idQuizz=' . $idQuizz]
+    ];
 
         // Générer la vue pour afficher le score
         $template = $this->getTwig()->load('quizzResultat.html.twig');
         echo $template->render([
             'score' => $score,
             'nbTotalQuestions' => $nbTotalQuestions, // Passage du nombre total de questions à la vue
-            'idQuizz' => $idQuizz
+            'idQuizz' => $idQuizz,
+            'breadcrumb' => $breadcrumb
         ]);
 
         // Réinitialiser le score pour un futur quizz
