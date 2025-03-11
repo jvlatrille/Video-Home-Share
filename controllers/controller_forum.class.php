@@ -92,6 +92,34 @@ class ControllerForum extends Controller
         }
     }
 
+    public function modifierForum()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupère les données du forum à modifier
+            $idForum = $_POST['idForum'] ?? $_GET['idForum'] ?? null;
+            $nom = $_POST['nom'] ?? $_GET['nom'] ?? null;
+            $description = $_POST['description'] ?? $_GET['description'] ?? null;
+            $theme = $_POST['theme'] ?? $_GET['theme'] ?? null;
+            $idForum = (int) $idForum;
+
+            // Modifie le forum
+            $managerForum = new ForumDao($this->getPdo());
+            $forum = new Forum();
+            $forum->setIdForum($idForum);
+            $forum->setNom($nom);
+            $forum->setDescription($description);
+            $forum->setTheme($theme);
+            $forum->setIdUtilisateur($idUtilisateur);
+            $managerForum->modifierForumDAO($forum);
+
+            // Redirige vers la liste des forums
+            header('Location: index.php?controleur=forum&methode=listerForum');
+        }
+    }
+
     public function supprimerForum()
     {
         if (isset($_SESSION['utilisateur'])) {

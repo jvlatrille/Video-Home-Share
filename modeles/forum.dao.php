@@ -105,6 +105,30 @@ class forumDAO
         }
     }
 
+    public function modifierForumDAO(Forum $forum): ?Forum
+    {
+        $sql = "UPDATE " . PREFIXE_TABLE . "forum 
+                SET nom = :nom, description = :description, theme = :theme, idUtilisateur = :idUtilisateur 
+                WHERE idForum = :idForum";
+
+        try {
+            $pdoStatement = $this->pdo->prepare($sql);
+            $pdoStatement->execute(array(
+                'idForum' => $forum->getIdForum(),
+                'nom' => $forum->getNom(),
+                'description' => $forum->getDescription(),
+                'theme' => $forum->getTheme(),
+                'idUtilisateur' => $forum->getIdUtilisateur(),
+            ));
+            
+            return $forum;
+        } catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la modification du forum : " . $e->getMessage());
+            return null;
+        }
+    }
+
     public function supprimerForumDAO(int $idForum): ?int
     {
         $sql = "DELETE FROM " . PREFIXE_TABLE . "forum WHERE idForum = :idForum";
