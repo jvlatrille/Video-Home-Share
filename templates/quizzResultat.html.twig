@@ -6,11 +6,9 @@
     <div class="container py-5 text-center">
 
         <div class="row justify-content-center">
-            <div class="col-12 col-md-8">
-                <h2 class="mb-4">Résultats du Quizz</h2>
-                
+            <div class="col-12 col-md-8">                
                 <div class="bg-white p-5 shadow rounded">
-                    <h3 class="mb-3 text-primary">Votre Score : <strong id="score-display">{{ score }}</strong> / {{ nbTotalQuestions }}</h3>
+                    <h3 class="mb-3 text-primary">Votre Score : <strong id="score-display">{{ score }}</strong> <strong> / {{ nbTotalQuestions }} </strong> </h3>
                     
                     <p id="feedback-message" class="fw-bold"></p>
                     
@@ -18,8 +16,12 @@
                     <img id="score-image" src="" alt="Résultat du quizz" class="img-fluid mt-3 rounded shadow" style="max-width: 300px; opacity: 0; transition: opacity 0.5s ease-in-out;"/>
                     
                     <div class="mt-4 d-flex justify-content-center gap-3">
-                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-primary px-4 ilFautPatienter">Rejouer</a>
-                        <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-outline-secondary px-4 ilFautPatienter">Accueil</a>
+                        <a href="index.php?controleur=question&methode=afficherQuestion&idQuizz={{ idQuizz }}" class="btn btn-primary px-4 ilFautPatienter">
+                            <i class="fas fa-redo"></i> Rejouer
+                        </a>
+                        <a href="index.php?controleur=quizz&methode=listerQuizz" class="btn btn-secondary px-4 ilFautPatienter">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
                     </div>
                 </div>
             </div>

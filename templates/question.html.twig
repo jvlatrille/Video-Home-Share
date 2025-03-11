@@ -114,6 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function loadNextQuestion() {
+        if (currentQuestion >= nbQuestions) {
+            window.location.href = `index.php?controleur=question&methode=afficherScore&idQuizz=${idQuizz}`;
+            return;
+        }
         fetch(`index.php?controleur=question&methode=afficherQuestionAjax&idQuizz=${idQuizz}&numero=${currentQuestion + 1}`)
             .then(response => response.json())
             .then(data => {
@@ -175,7 +179,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = event.target;
         const isCorrect = button.getAttribute("data-correct") === "true";
 
-        // Disable all buttons and show correct/incorrect answers
         document.querySelectorAll(".response-button").forEach(btn => {
             btn.disabled = true;
             if (btn.getAttribute("data-correct") === "true") {
