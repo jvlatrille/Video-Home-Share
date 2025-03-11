@@ -4,12 +4,23 @@
 <div class="container py-4">
     <!-- Barre de navigation -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-       <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
+        <!-- Accueil -->
+        <a href="index.php" class="btn btn-outline-primary d-flex align-items-center">
+            <i class="bi bi-house-door-fill me-2"></i>Accueil
+        </a>
 
-        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-success shadow-sm ilFautPatienter">
+        <!-- Vos quizz -->
+        <a href="index.php?controleur=quizz&methode=afficherModif" 
+            class="btn btn-success shadow-sm mx-auto" style="border-radius: 8px;">
+            <i class="fas fa-play me-2"></i>Vos quizz
+        </a>
+
+        <a href="index.php?controleur=quizz&methode=ajouterQuizz" class="btn btn-primary ilFautPatienter">
+
             <i class="bi bi-plus-circle me-2"></i>Créer un quizz
         </a>
     </div>
+
 
     <!-- Titre principal -->
     <div class="text-center mb-4">

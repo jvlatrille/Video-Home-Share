@@ -1,0 +1,218 @@
+{% extends 'base_template.html.twig' %}
+
+{% block title %}Gestion des Questions - {{ constant('WEBSITE_TITLE') }}{% endblock %}
+
+{% block content %}
+<div class="mb-3 ms-3 btn btn-primary btn-lg mt-3">
+    <a href="index.php?controleur=quizz&methode=afficherModif" class="text-white text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Gestion des Questions</h1>
+
+    <!-- Affichage du message d'erreur -->
+    {% if message is defined %}
+        <div class="alert alert-danger" role="alert">
+            {{ message|join(', ') }}
+        </div>
+    {% endif %}
+
+    {% if idQuiz is defined %}
+    {% endif %}
+    <!-- Barre de recherche -->
+    <div class="mb-4">
+        <input type="text" id="searchQuestion" class="form-control" placeholder="Rechercher une question...">
+    </div>
+
+    <!-- Message de non-résultat -->
+    <p id="noResultMessage" class="text-muted text-center" style="display: none;">Aucune question trouvée.</p>
+
+    <!-- Table des Questions -->
+    <div class="table-responsive">
+        <table id="questionTable" class="display nowrap table table-hover align-middle shadow-sm" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>Numéro</th>
+                    <th>Contenu</th>
+                    <th>Difficulté</th>
+                    <th>Bonne Réponse</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="questionList">
+                {% for question in questionListe %}
+                    <tr class="question-item" data-contenu="{{ question.contenu|lower }}" data-difficulte="{{ question.nvDifficulte|lower }}">
+                        <td>{{ question.numero }}</td>
+                        <td>{{ question.contenu }}</td>
+                        <td>{{ question.nvDifficulte }}</td>
+                        <td>{{ question.bonneReponse }}</td>
+                        <td class="text-center">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editQuestionModal{{ question.idQuestion }}">
+                                <i class="fas fa-edit"></i> Modifier
+                            </button>
+
+                             <!-- Bouton Supprimer -->
+                            <a href="index.php?controleur=question&methode=supprimerQuestion&id={{ question.idQuestion }}" class="btn btn-danger ms-2" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+                                <i class="fas fa-trash-alt"></i>
+                                Supprimer
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Modal de modification de la question -->
+                    <div class="modal fade" id="editQuestionModal{{ question.idQuestion }}" tabindex="-1" aria-labelledby="editQuestionModalLabel{{ question.idQuestion }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="index.php?controleur=question&methode=modifierQuestion&id={{ question.idQuestion }}" method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Modifier la question : {{ question.contenu }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="{{ question.idQuestion }}">
+
+                                        <div class="mb-3">
+                                            <label for="contenu{{ question.idQuestion }}" class="form-label">Contenu</label>
+                                            <input type="text" class="form-control" id="contenu{{ question.idQuestion }}" name="contenu" value="{{ question.contenu }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="nvDifficulte{{ question.idQuestion }}" class="form-label">Difficulté</label>
+                                            <select class="form-select" id="nvDifficulte{{ question.idQuestion }}" name="nvDifficulte" required>
+                                                <option value="Facile" {% if question.nvDifficulte == 'Facile' %} selected {% endif %}>Facile</option>
+                                                <option value="Moyen" {% if question.nvDifficulte == 'Moyen' %} selected {% endif %}>Moyen</option>
+                                                <option value="Difficile" {% if question.nvDifficulte == 'Difficile' %} selected {% endif %}>Difficile</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="bonneReponse{{ question.idQuestion }}" class="form-label">Bonne Réponse</label>
+                                            <input type="text" class="form-control" id="bonneReponse{{ question.idQuestion }}" name="bonneReponse" value="{{ question.bonneReponse }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="mauvaiseReponse1{{ question.idQuestion }}" class="form-label">Mauvaise Réponse 1</label>
+                                            <input type="text" class="form-control" id="mauvaiseReponse1{{ question.idQuestion }}" name="mauvaiseReponse1" value="{{ question.mauvaiseReponse1 }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="mauvaiseReponse2{{ question.idQuestion }}" class="form-label">Mauvaise Réponse 2</label>
+                                            <input type="text" class="form-control" id="mauvaiseReponse2{{ question.idQuestion }}" name="mauvaiseReponse2" value="{{ question.mauvaiseReponse2 }}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="mauvaiseReponse3{{ question.idQuestion }}" class="form-label">Mauvaise Réponse 3</label>
+                                            <input type="text" class="form-control" id="mauvaiseReponse3{{ question.idQuestion }}" name="mauvaiseReponse3" value="{{ question.mauvaiseReponse3 }}" required>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success">Sauvegarder</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div><div class="text-center mt-4">
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Aucune question disponible pour l'instant.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    <div class="d-flex justify-content-end mt-4">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+            <i class="fas fa-plus"></i> Ajouter une question
+        </button>
+    </div>
+
+    <!-- Modal d'ajout de question -->
+    <div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <form action="index.php?controleur=question&methode=rajoutQuestion&idQuiz={{ idQuiz }}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une nouvelle question</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    <input type="hidden" name="idQuiz" value="{{ idQuiz }}">
+
+                        <div class="mb-3">
+                            <label for="contenu" class="form-label">Contenu</label>
+                            <input type="text" class="form-control" id="contenu" name="contenu" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nvDifficulte" class="form-label">Difficulté</label>
+                            <select class="form-select" id="nvDifficulte" name="nvDifficulte" required>
+                                <option value="Facile">Facile</option>
+                                <option value="Moyen">Moyen</option>
+                                <option value="Difficile">Difficile</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bonneReponse" class="form-label">Bonne Réponse</label>
+                            <input type="text" class="form-control" id="bonneReponse" name="bonneReponse" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse1" class="form-label">Mauvaise Réponse 1</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse1" name="mauvaiseReponse1" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse2" class="form-label">Mauvaise Réponse 2</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse2" name="mauvaiseReponse2" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mauvaiseReponse3" class="form-label">Mauvaise Réponse 3</label>
+                            <input type="text" class="form-control" id="mauvaiseReponse3" name="mauvaiseReponse3" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Ajouter</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let searchInput = document.getElementById("searchQuestion");
+        let questionList = document.getElementById("questionList");
+        let questionItems = Array.from(questionList.getElementsByClassName("question-item"));
+        let noResultMessage = document.getElementById("noResultMessage");
+
+        searchInput.addEventListener("input", function () {
+            let filter = this.value.toLowerCase();
+            let found = false;
+
+            questionList.innerHTML = "";
+
+            questionItems.forEach(question => {
+                let questionText = question.querySelector("td:nth-child(2)").textContent.toLowerCase();
+                
+                if (questionText.includes(filter) || filter === "") {
+                    questionList.appendChild(question.cloneNode(true));
+                    found = true;
+                }
+            });
+
+            noResultMessage.style.display = found ? "none" : "block";
+        });
+    });
+</script>
+
+{% endblock %}

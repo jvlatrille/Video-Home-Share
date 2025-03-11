@@ -3,16 +3,16 @@
 {% block content1 %}
 <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
-{# Filtrer les œuvres sans posterPath #}
 {% set oasFiltered = [] %}
-{% for oa in oas %}
-  {% if oa.posterPath is not empty %}
-    {% set oasFiltered = oasFiltered|merge([oa]) %}
-  {% endif %}
-{% endfor %}
+{% if oas is defined and oas is not empty %}
+  {% for oa in oas %}
+    {% if oa.posterPath is defined and oa.posterPath is not empty and oa.posterPath != 'https://via.placeholder.com/500x750?text=Image+non+disponible' %}
+      {% set oasFiltered = oasFiltered|merge([oa]) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 <div class="container my-4">
-  <!-- Barre de navigation des onglets -->
   <div class="row mb-4">
   <div class="col-12 d-flex flex-wrap justify-content-center">
     <button id="btnGeneral" class="btn btn-primary m-1">Général</button>
@@ -22,7 +22,7 @@
   </div>
   </div>
 
-  <!-- SECTION GÉNÉRAL : 4 films/séries, 4 forums, 4 utilisateurs -->
+  <!-- SECTION GÉNÉRAL :-->
   <div id="sectionGeneral">
   <h3 class="my-3">Films / Séries</h3>
   <div class="row">
