@@ -297,8 +297,12 @@ class ControllerUtilisateur extends Controller
      */
     public function mdpOublie()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Mot de passe oublié', 'url' => 'index.php?controleur=utilisateur&methode=mdpOublie']
+        ];
         $template = $this->getTwig()->load('motDePasseOublie.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
@@ -436,8 +440,12 @@ class ControllerUtilisateur extends Controller
      */
     public function connexion()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Connexion', 'url' => 'index.php?controleur=utilisateur&methode=connexion']
+        ];
         $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
@@ -449,8 +457,12 @@ class ControllerUtilisateur extends Controller
 
     public function inscription()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Inscription', 'url' => 'index.php?controleur=utilisateur&methode=inscription']
+        ];
         $template = $this->getTwig()->load('inscription.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
