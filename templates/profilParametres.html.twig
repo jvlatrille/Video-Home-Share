@@ -97,6 +97,7 @@
                             <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
                             <button type="submit" class="btn btn-primary w-100">Changer Mail</button>
                         </div>
+                        <input type="hidden" name="currentUrl" id="currentUrl">
                     </form>
                 </div>
             </div>
@@ -119,4 +120,13 @@
         {% endif %}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer l'URL actuelle
+        let currentUrl = window.location.href;
+
+        // Insérer l'URL dans le champ caché
+        document.getElementById('currentUrl').value = currentUrl;
+    });
+</script>
 {% endblock %}
