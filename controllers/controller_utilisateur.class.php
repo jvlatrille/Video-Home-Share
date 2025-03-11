@@ -378,7 +378,6 @@ class ControllerUtilisateur extends Controller
 
         $managerUtilisateur = new UtilisateurDao($this->getPDO());
         $tokenCrypt = $managerUtilisateur->getTokenById($id);
-        var_dump($id ,$token ,$tokenCrypt);
 
         if (password_verify($token, $tokenCrypt)) {
             // Transmettre le token au template Twig
