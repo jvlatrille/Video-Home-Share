@@ -333,7 +333,7 @@ class ControllerUtilisateur extends Controller
 
                 // Enregistre le token dans la base de données
                 $managerUtilisateur->enregistrerToken($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
-                $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
+                $idUtilisateur = $utilisateur->getIdUtilisateur();
 
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
                 $idEncoded = urlencode(base64_encode($idUtilisateur));
@@ -374,6 +374,7 @@ class ControllerUtilisateur extends Controller
 
         $managerUtilisateur = new UtilisateurDao($this->getPDO());
         $tokenCrypt = $managerUtilisateur->getTokenById($id);
+        var_dump($id ,$token ,$tokenCrypt);
 
         if (password_verify($token, $tokenCrypt)) {
             // Transmettre le token au template Twig
