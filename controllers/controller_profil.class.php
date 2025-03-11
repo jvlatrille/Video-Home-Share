@@ -446,11 +446,9 @@ class ControllerProfil extends Controller
             $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
             $idMessage = isset($_GET['idMessage']) ? $_GET['idMessage'] : null;
 
-
             //Recupere les notifications
             $managerNotif=New NotificationDao($this->getPdo());
             $notifListe=$managerNotif->findAll($utilisateurConnecte->getIdUtilisateur());
-            // $nomForum=$managerNotif->recupNomForum($idMessage);
 
             $breadcrumb = [
                 ['title' => 'Accueil', 'url' => 'index.php'],
