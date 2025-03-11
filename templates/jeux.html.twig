@@ -2,20 +2,24 @@
     {% block title %}Liste de Jeux - {{ constant('WEBSITE_TITLE')}} {% endblock %}
 
     {% block content %}
-<a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+    <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2">Retour</a>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
 
         {% for jeu in jeux %}
 
-            <div class="column-3">
-                <div class="card" style="width: 18rem;">
-                    <img src="" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{jeu.nom}}</h5>
-                        <p class="card-text">{{jeu.regle}}</p>
-                        <a href="index.php?controleur=jeux&methode=lister&id={{jeu.idJeux}}" class="btn btn-primary">{{jeu.idJeux}}</a>
+                <a href="index.php?controleur=jeux&methode=lister&id={{jeu.idJeux}}" class="col">
+                    <div class="d-flex card mb-3 mt-3 mx-auto align-middle" style="amw-width: 32rem;">
+                        <img src="../img/jeux/{{jeu.image}}" class="mx-auto mt-3 card-img-top img-fluid rounded-start w-75 h-75" alt="Image non chargée">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{jeu.nom}}</h5>
+                            <p class="card-text text-center">{{jeu.regle}}</p>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </a>
 
         {% endfor %}
+
+    </div>
+
     {% endblock %}

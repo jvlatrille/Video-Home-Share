@@ -24,7 +24,11 @@ class ControllerNewsletter extends Controller
 
     public function afficher()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Newsletter', 'url' => 'index.php?controleur=Newsletter&methode=afficher']
+        ];
         $template = $this->getTwig()->load('newsLetter.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 }

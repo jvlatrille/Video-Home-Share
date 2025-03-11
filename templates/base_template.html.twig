@@ -114,6 +114,9 @@
 				{% if utilisateurConnecte %}
 
 				<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
+					<a href="index.php" class="btn btn-outline-light ilFautPatienter" title="Alt + Shift + A">
+					<i class="fas fa-home"></i> Accueil
+
 					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light" title="Alt + Shift + F">
 					<i class="fas fa-comments me-1"></i> Forum
 
@@ -152,9 +155,11 @@
 
 				<!-- User Menu -->
 				{% if utilisateurConnecte is null %}
-				<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion"  title="Alt + Shift + C">
-					<i class="fas fa-sign-in-alt me-1"></i> Connexion
-				</a>
+				<div style="margin-right: 15px;">
+					<a class="btn btn-light " href="index.php?controleur=utilisateur&methode=connexion"  title="Alt + Shift + C">
+						<i class="fas fa-sign-in-alt me-1"></i> Connexion
+					</a>
+				</div>
 				{% else %}
 				<div class="dropdown me-3">
 					<button class="btn btn-link text-light p-0 border-0 mr-2" type="button" id="userMenuButton" 
@@ -206,21 +211,34 @@
 				{% endif %}
 			</div>
 			</nav>
-			<nav aria-label="breadcrumb" class="container-fluid bg-light text-dark shadow-sm" style="--bs-breadcrumb-divider: '>';">
-				<ol class="breadcrumb m-0">
+			<nav aria-label="breadcrumb" class="container-fluid shadow-sm bg-dark" style="--bs-breadcrumb-divider: '>';">
+				<ol class="breadcrumb m-0 py-2">
 					{% if breadcrumb is defined and breadcrumb is not empty %}
 						{% for item in breadcrumb %}
 							{% if loop.last %}
-								<li class="breadcrumb-item active" aria-current="page">{{ item.title }}</li>
+								<li class="breadcrumb-item active text-white" aria-current="page">{{ item.title }}</li>
 							{% else %}
-								<li class="breadcrumb-item"><a href="{{ item.url }}" class="ilFautPatienter">{{ item.title }}</a></li>
+								<li class="breadcrumb-item"><a href="{{ item.url }}" class="text-white text-decoration-none ilFautPatienter hover-effect">{{ item.title }}</a></li>
 							{% endif %}
 						{% endfor %}
 					{% else %}
-						<li class="breadcrumb-item"><a href="index.php">Accueil</a></li>
+						<li class="breadcrumb-item"><a href="index.php" class="text-white hover-effect">Accueil</a></li>
 					{% endif %}
 				</ol>
 			</nav>
+			<style>
+				.hover-effect {
+					transition: color 0.3s ease, text-decoration 0.3s ease;
+				}
+				.hover-effect:hover {
+					color: #D5D0AF !important;
+					text-decoration: underline !important;
+				}
+				.breadcrumb-item a:hover {
+					color: #D5D0AF !important;
+					text-decoration: underline !important;
+				}
+			</style>
 		</header>
 		<!-- Contenu principal avec flex-grow-1 pour prendre tout l'espace disponible -->
 		<main class="flex-grow-1">

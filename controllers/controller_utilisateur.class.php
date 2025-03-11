@@ -297,8 +297,12 @@ class ControllerUtilisateur extends Controller
      */
     public function mdpOublie()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Mot de passe oublié', 'url' => 'index.php?controleur=utilisateur&methode=mdpOublie']
+        ];
         $template = $this->getTwig()->load('motDePasseOublie.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
@@ -318,6 +322,7 @@ class ControllerUtilisateur extends Controller
                 header('Location: index.php?controleur=utilisateur&methode=motDePasseOublie');
                 exit();
             }
+            $url = $_POST['currentUrl'];
 
             // Vérifie si l'email existe dans la base de données
             $managerUtilisateur = new UtilisateurDao($this->getPdo());
@@ -332,14 +337,16 @@ class ControllerUtilisateur extends Controller
 
                 // Enregistre le token dans la base de données
                 $managerUtilisateur->enregistrerToken($utilisateur->getIdUtilisateur(), $tokenCrypt, $expiresAt);
-                $idUtilisateur = $managerUtilisateur->getIdByToken($tokenCrypt);
+                $idUtilisateur = $utilisateur->getIdUtilisateur();
 
                 // Encode l'ID et le token pour les passer de manière sécurisée dans l'URL
                 $idEncoded = urlencode(base64_encode($idUtilisateur));
                 $tokenEncoded = urlencode(base64_encode($token));
 
                 // Crée le lien de réinitialisation
-                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
+                $parts = explode('~', $url);
+                $util = explode('/', $parts[1])[0];
+                $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/PHP/Video-Home-Share/index.php?controleur=utilisateur&methode=pageChangerMDP&id=$idEncoded&token=$tokenEncoded";
 
                 // Envoie un email avec le lien de réinitialisation
                 $sujet = "Reinitialisation de votre mot de passe";
@@ -432,8 +439,12 @@ class ControllerUtilisateur extends Controller
      */
     public function connexion()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Connexion', 'url' => 'index.php?controleur=utilisateur&methode=connexion']
+        ];
         $template = $this->getTwig()->load('connexion.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
@@ -445,8 +456,12 @@ class ControllerUtilisateur extends Controller
 
     public function inscription()
     {
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Inscription', 'url' => 'index.php?controleur=utilisateur&methode=inscription']
+        ];
         $template = $this->getTwig()->load('inscription.html.twig');
-        echo $template->render();
+        echo $template->render(['breadcrumb' => $breadcrumb]);
     }
 
     /**
@@ -519,8 +534,8 @@ class ControllerUtilisateur extends Controller
             'role' => htmlspecialchars($_POST['role'] ?? 'utilisateur', ENT_QUOTES), // Role par défaut
             'bio' => htmlspecialchars($_POST['bio'] ?? ' ', ENT_QUOTES), // Bio par défaut
             'valide' => $_POST['valide'] ?? 0
-            
         ];
+        $url = $_POST['currentUrl'];
         
         // Définition des règles de validation
         $reglesValidation = [
@@ -626,7 +641,10 @@ class ControllerUtilisateur extends Controller
         $tokenEncoded = urlencode(base64_encode($token));
 
         // Crée le lien de réinitialisation
-        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~nleval/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
+        $parts = explode('~', $url);
+        $util = explode('/', $parts[1])[0];
+        
+        $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/PHP/Video-Home-Share/index.php?controleur=utilisateur&methode=verifMail&id=$idEncoded&token=$tokenEncoded";
 
         // Envoie un email avec le lien de réinitialisation
         $sujet = "Activez votre compte !";

@@ -1,7 +1,7 @@
 {% extends "base_template_profil.html.twig" %}
 
 {% block content %}
-<div class="container-fluid p-3" style="background-color: #AA8463;">
+<div class="container-fluid p-3" style="background-color:primary;">
     <div class="container py-4" style="background-color: #D5D0AF; border-radius: 8px;">
         <h4 class="mb-4 text-center">Paramètres utilisateur</h4>
         
@@ -97,6 +97,7 @@
                             <input type="hidden" name="utilisateurId" value="{{ utilisateur.idUtilisateur }}">
                             <button type="submit" class="btn btn-primary w-100">Changer Mail</button>
                         </div>
+                        <input type="hidden" name="currentUrl" id="currentUrl">
                     </form>
                 </div>
             </div>
@@ -119,4 +120,13 @@
         {% endif %}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Récupérer l'URL actuelle
+        let currentUrl = window.location.href;
+
+        // Insérer l'URL dans le champ caché
+        document.getElementById('currentUrl').value = currentUrl;
+    });
+</script>
 {% endblock %}

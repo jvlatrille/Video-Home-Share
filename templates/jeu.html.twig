@@ -2,6 +2,7 @@
     {% block title %}Le jeu : {{jeu.nom}} - {{ constant('WEBSITE_TITLE')}} {% endblock %}
 
     {% block content %}
+
 <a href="javascript:history.back()" class="btn btn-primary mt-2 ms-2 ilFautPatienter">Retour</a>
 
        <div class="container text-center p-5">
@@ -18,16 +19,8 @@
                 <div class="cell" data-index="8"></div>
             </div>
             <p id="message"></p>
-            <button id="restart" class="hidden ilFautPatienter">Recommencer</button>
+            <button id="restart" class="hidden">Recommencer</button>
         </div>
-  
-        {# <div class="card" style="width: 18rem;">
-            <img src="" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">{{jeu.nom}}</h5>
-                <p class="card-text">{{jeu.regle}}</p>
-            </div>
-        </div> #}
 
     {% endblock %}
 
