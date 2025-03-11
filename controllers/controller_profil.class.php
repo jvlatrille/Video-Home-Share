@@ -209,7 +209,7 @@ class ControllerProfil extends Controller
             // Crée le lien de réinitialisation
             $parts = explode('~', $url);
             $util = explode('/', $parts[1])[0];
-            $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/SAE3.01/Temporairement_VHS/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
+            $lienReset = "http://lakartxela.iutbayonne.univ-pau.fr/~" . $util . "/PHP/Video-Home-Share/index.php?controleur=profil&methode=pageChangerMail&id=$idEncoded&token=$tokenEncoded";
     
             // Envoie un email avec le lien de réinitialisation
             $sujet = "Changer votre adresse mail";
