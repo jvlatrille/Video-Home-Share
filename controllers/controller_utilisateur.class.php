@@ -523,7 +523,7 @@ class ControllerUtilisateur extends Controller
             'idUtilisateur' => $_POST['idUtilisateur'] ?? null,
             'pseudo' => htmlspecialchars($_POST['pseudo'] ?? null, ENT_QUOTES),
             'photoProfil' => htmlspecialchars($_POST['photoProfil'] ?? 'default.png', ENT_QUOTES), // Image par défaut
-            'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.jpg", ENT_QUOTES), // Image par défaut
+            'banniereProfil' => htmlspecialchars($_POST['banniereProfil'] ?? "default.png", ENT_QUOTES), // Image par défaut
             'dateNaiss' => htmlspecialchars($_POST['dateNaiss'] ?? null, ENT_QUOTES),
             'mail' => htmlspecialchars($_POST['mail'] ?? null, ENT_QUOTES),
             'mdp' => htmlspecialchars($_POST['mdp'] ?? null, ENT_QUOTES),
