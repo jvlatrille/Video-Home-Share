@@ -194,7 +194,7 @@ class messageDAO
      * @param string $contenu Contenu de la notification
      * @return Notification
      */    
-    public function creerNotif( ?int $idMessage, ?int $idForum ,?string $contenu): ?Notification
+    public function creerNotif( ?int $idMessage, ?string $contenu): ?Notification
     {    // Récupérer l'idForum du message
         $sql1 = "SELECT idForum, idUtilisateur AS auteurMessage FROM vhs_message WHERE idMessage = :idMessage";
         $stmt = $this->pdo->prepare($sql1);
