@@ -34,7 +34,6 @@ class ControllerAdmin extends Controller
         $utilisateurListe = $this->utilisateurDao->findAll();
         $quizzDao = new QuizzDao($this->getPdo());
         $quizzListe = $quizzDao->findAll();
-
         // Récupérer les questions pour chaque quiz
         $questionDao = new QuestionDao($this->getPdo());
         $detailedQuestions = [];
@@ -62,6 +61,10 @@ class ControllerAdmin extends Controller
 
         $backupLogs = $this->adminDao->getBackupLogs();
 
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Administration', 'url' => 'index.php?controleur=admin&methode=render']
+        ];
         // Ajouter à la liste des variables à transmettre au template
         echo $this->getTwig()->render('admin.html.twig', [
             'utilisateurListe'  => $utilisateurListe,
@@ -69,7 +72,8 @@ class ControllerAdmin extends Controller
             'detailedQuestions' => $detailedQuestions,
             'forumListe'        => $allMessages,
             'commentaires'      => $listeCommentaires,
-            'backupLogs'        => $backupLogs
+            'backupLogs'        => $backupLogs,
+            'breadcrumb'        => $breadcrumb
         ]);
     }
 
