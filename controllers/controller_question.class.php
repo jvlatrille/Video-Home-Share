@@ -82,6 +82,14 @@ class ControllerQuestion extends Controller
         $quizz = $managerQuizz->find($idQuizz);
         $nbTotalQuestions = $quizz->getNbQuestion();
         $image = $quizz->getImage();
+
+        $breadcrumb = [
+            ['title' => 'Accueil', 'url' => 'index.php'],
+            ['title' => 'Liste des quiz', 'url' => 'index.php?controleur=Quizz&methode=listerQuizz'],
+            ['title' => $quizz->getNom(), 'url' => 'index.php?controleur=Quizz&methode=afficherQuizz&id=' . $idQuizz],
+            ['title' => 'Question ', 'url' => 'index.php?controleur=question&methode=afficherQuestion&idQuizz=' . $idQuizz . '&numero=' . $numero]
+        ];
+
         // Générer la vue
         $template = $this->getTwig()->load('question.html.twig');
         echo $template->render([
@@ -91,7 +99,8 @@ class ControllerQuestion extends Controller
             'numero' => $numero,
             'score' => $_SESSION['score'],
             'nbTotalQuestions' => $nbTotalQuestions,  // Ajout de cette ligne
-            'image' => $image
+            'image' => $image,
+            'breadcrumb' => $breadcrumb
         ]);
     }
 
