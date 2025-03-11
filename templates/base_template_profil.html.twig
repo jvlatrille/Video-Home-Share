@@ -31,7 +31,7 @@
         </div>
 
 
-      <div class="container mt-3 my-3">
+      <div class="container mt-3 my-3 ">
           <h2>{{ utilisateurConnecte.pseudo }}</h2>
           {% if utilisateurConnecte.bio is not empty %}
             <h6>{{ utilisateurConnecte.bio }}</h6>
@@ -42,10 +42,10 @@
   
 
    
-    <div class="d-flex justify-content-around p-3 bg-light border-bottom">
-        <a href="index.php?controleur=profil&methode=afficherAPropos&id=1" class="btn mx-2" style="background-color: #AA8463; color: black;">A propos</a>
-        <a href="index.php?controleur=profil&methode=afficherFormulaire" class="btn mx-2" style="background-color: #AA8463; color: black;">Paramètres</a>
-         <a href="index.php?controleur=profil&methode=listerNotif&idNotif=1" class="btn mx-2" style="background-color: #AA8463; color: black;">Notifications</a>
+    <div class="d-flex justify-content-around p-3 header-bg border-bottom">
+        <a href="index.php?controleur=profil&methode=afficherAPropos" class="btn btn-light-custom mx-2" style="font-weight: bold" >A propos</a>
+        <a href="index.php?controleur=profil&methode=afficherFormulaire" class="btn btn-light-custom mx-2" style="font-weight: bold">Paramètres</a>
+         <a href="index.php?controleur=profil&methode=listerNotif" class="btn btn-light-custom mx-2" style="font-weight: bold" >Notifications</a>
     </div>
     {% endif %}
 
