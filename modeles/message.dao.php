@@ -33,7 +33,7 @@ class messageDAO
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Pas d'autres messages trouvés");
+
             return null;
         }
         $dataMessage = $this->hydrateAll($resultats);
@@ -54,6 +54,21 @@ class messageDAO
         }
 
         return $this->hydrate($resultat);
+    }
+
+    public function findByIdForum(int $idForum): ?Message
+    {
+        $sql = "SELECT * FROM ".PREFIXE_TABLE."message WHERE idForum = :idForum";
+        $pdoStatement = $this->pdo->prepare($sql);
+        $pdoStatement->execute(['idForum' => $idForum]);
+        $pdoStatement->setFetchMode(PDO::FETCH_ASSOC);
+        $resultats = $pdoStatement->fetchAll();
+
+        if (!$resultats) {
+            return null;
+        }
+
+        return $this->hydrate($resultats);
     }
 
     public function hydrateAll(array $resultats): ?array

@@ -91,4 +91,21 @@ class ControllerForum extends Controller
             header('Location: index.php?controleur=forum&methode=listerForum');
         }
     }
+
+    public function supprimerForum()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+
+            // Récupère l'id du forum à supprimer
+            $idForum = $_GET['idForum'] ?? null;
+
+            //Supprime le forum
+            $managerForum = new ForumDao($this->getPdo());
+            $managerForum->supprimerForumDAO($idForum);
+
+            //Redirige vers la liste des forums
+            header('Location: index.php?controleur=forum&methode=listerForum');
+        }
+    }
 }

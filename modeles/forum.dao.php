@@ -105,6 +105,21 @@ class forumDAO
         }
     }
 
+    public function supprimerForumDAO(int $idForum): ?int
+    {
+        $sql = "DELETE FROM " . PREFIXE_TABLE . "forum WHERE idForum = :idForum";
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->execute(['idForum' => $idForum]);
+            return $idForum;
+        }
+        catch (Exception $e) {
+            // Gérer l'erreur (log, retour d'erreur, etc.)
+            error_log("Erreur lors de la suppression du forum : " . $e->getMessage());
+            return null;
+        }
+    }
+
     /*
     * @brief Recherche un forum par son nom
     * @author VINET LATRILLE Jules
