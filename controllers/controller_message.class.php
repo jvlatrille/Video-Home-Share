@@ -81,7 +81,6 @@ class ControllerMessage extends Controller
 
             // Récupération des données
             $idMessage = $_POST['idMessage'] ?? $_GET['idMessage'] ?? null;
-            $idMessage = (int) $idMessage;
             $contenu = $_POST['contenu'] ?? $_GET['contenu'] ?? null;
             
             // Récupère le message via le DAO
@@ -99,6 +98,26 @@ class ControllerMessage extends Controller
             
         } else {
             echo "Vous devez être connecté pour modifier un message.";
+        }
+    }
+
+    public function supprimerMessage()
+    {
+        if (isset($_SESSION['utilisateur'])) {
+            $utilisateurConnecte = unserialize($_SESSION['utilisateur']);
+            $idUtilisateur = $utilisateurConnecte->getIdUtilisateur();
+
+            // Récupération de l'identifiant du message
+            $idMessage = $_GET['idMessage'] ?? null;
+
+            // Récupère le message via le DAO
+            $managerMessage = new MessageDAO($this->getPdo());
+            $message = $managerMessage->find($idMessage);
+            $managerMessage->supprimerMessageDAO($message);
+
+            // Redirige vers la liste des messages du forum
+            header("Location: index.php?controleur=message&methode=listerMessage&idForum=" . $message->getIdForum());
+            exit;
         }
     }
 
