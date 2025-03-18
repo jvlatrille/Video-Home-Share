@@ -33,7 +33,6 @@ class messageDAO
         $resultats = $pdoStatement->fetchAll(PDO::FETCH_ASSOC);
         if (!$resultats) {
             // Si aucun résultat n'est trouvé
-            var_dump("Pas d'autres messages trouvés");
             return null;
         }
         $dataMessage = $this->hydrateAll($resultats);
@@ -55,6 +54,8 @@ class messageDAO
 
         return $this->hydrate($resultat);
     }
+
+    
 
     public function hydrateAll(array $resultats): ?array
     {

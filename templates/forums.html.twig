@@ -52,6 +52,37 @@
         </div>
     </div>
 
+    <!-- Modal de modification de forum -->
+    <div class="modal fade" id="modifierForumModal" tabindex="-1" aria-labelledby="modifierForumModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <!-- Formulaire de modification de forum -->
+                    <form id="modifierForumForm" method="POST" action="index.php?controleur=forum&methode=modifierForum">
+                        <input type="hidden" id="idForumInput" name="idForum" value="">
+                        <!-- Nom du forum -->
+                        <div class="mb-3">
+                            <label for="modifierForumName" class="form-label">Nom du forum :</label>
+                            <input type="text" class="form-control" id="modifierForumName" name="nom" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="modifierForumTheme" class="form-label">Thème :</label>
+                            <input type="text" class="form-control" id="modifierForumTheme" name="theme" required>
+                        </div>
+                    
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="modifierForumDescription" class="form-label">Description :</label>
+                            <textarea class="form-control" id="modifierForumDescription" name="description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Modifier le forum</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Affichage des forums -->
     {% if forumListe is not defined %}
         <p>Aucun forum</p>
@@ -63,11 +94,17 @@
                         <h5 class="card-title">{{ forumList.nom }}</h5>
                         <h5 class="card-title">Thème : {{ forumList.theme }}</h5>
 						<p class="card-text">{{ forumList.description }}</p>
-
-                        <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary ilFautPatienter">Voir en détail</a>            
+                        <a href="index.php?controleur=message&methode=listerMessage&idForum={{forumList.idForum}}" class="btn btn-primary ilFautPatienter">Voir en détail</a>
+                        <a href="index.php?controleur=forum&methode=supprimerForum&idForum={{forumList.idForum}}" class="btn btn-primary ilFautPatienter">Supprimer</a>        
+                        <button type="button" class="btn btn-primary" value="{{forumList.idForum}}" data-bs-toggle="modal" data-bs-target="#modifierForumModal">
+			                Modifier le forum
+		                </button>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
+{% block scripts %}
+	<script src="js/modifierForum.js"></script>
+{% endblock %}
 {% endblock %}
