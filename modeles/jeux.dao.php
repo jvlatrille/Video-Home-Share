@@ -80,6 +80,7 @@ class JeuxDao {
         $jeux->setIdJeux($tableauAssoc['idJeu']);
         $jeux->setRegle($tableauAssoc['regle']);
         $jeux->setNom($tableauAssoc['nom']);
+        $jeux->setImage($tableauAssoc['image']);
         return $jeux;
     }
 

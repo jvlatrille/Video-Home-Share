@@ -197,7 +197,7 @@ class ControllerQuizz extends Controller {
         }
         if ($managerQuizz->delete($id)) {
             // Redirige vers la liste des quizz
-            header('Location: index.php?controleur=quizz&methode=afficherModif');
+            header('Location: index.php?controleur=quizz&methode=listerQuizz');
             exit;
         } else {
             // Erreur de suppression

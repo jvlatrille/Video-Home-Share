@@ -6,40 +6,35 @@
 		<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 		<script type="text/javascript">
 			tarteaucitron.init({
-				"privacyUrl": "", /* Privacy policy url */
-				"bodyPosition": "bottom", /* or top to bring it as first element for accessibility */
-				"hashtag": "#tarteaucitron", /* Open the panel with this hashtag */
-				"cookieName": "tarteaucitron", /* Cookie name */
-				"orientation": "middle", /* Banner position (top - bottom) */
-				"groupServices": false, /* Group services by category */
-				"showDetailsOnClick": true, /* Click to expand the description */
-				"serviceDefaultState": "wait", /* Default state (true - wait - false) */
-				"showAlertSmall": false, /* Show the small banner on bottom right */
-				"cookieslist": false, /* Show the cookie list */
-				"closePopup": false, /* Show a close X on the banner */
+				"privacyUrl": "",
+				"bodyPosition": "bottom",
+				"hashtag": "#tarteaucitron",
+				"cookieName": "tarteaucitron",
+				"orientation": "middle",
+				"groupServices": false,
+				"showDetailsOnClick": true,
+				"serviceDefaultState": "wait",
+				"showAlertSmall": false,
+				"cookieslist": false,
+				"closePopup": false,
 				"showIcon": true,
-				/* Show cookie icon to manage cookies */
-				"iconSrc": "img/imageCookie.png", /* Optionnal: URL or base64 encoded image */
-				"iconPosition": "BottomLeft", /* BottomRight, BottomLeft, TopRight and TopLeft */
-				"adblocker": false, /* Show a Warning if an adblocker is detected */
-				"DenyAllCta": true, /* Show the deny all button */
-				"AcceptAllCta": true, /* Show the accept all button when highPrivacy on */
-				"highPrivacy": true, /* HIGHLY RECOMMANDED Disable auto consent */
-				"alwaysNeedConsent": false, /* Ask the consent for "Privacy by design" services */
-				"handleBrowserDNTRequest": false, /* If Do Not Track == 1, disallow all */
-				"removeCredit": false, /* Remove credit link */
-				"moreInfoLink": true, /* Show more info link */
-				"useExternalCss": false, /* If false, the tarteaucitron.css file will be loaded */
+				"iconSrc": "img/imageCookie.png",
+				"iconPosition": "BottomLeft",
+				"adblocker": false,
+				"DenyAllCta": true,
+				"AcceptAllCta": true,
+				"highPrivacy": true,
+				"alwaysNeedConsent": false,
+				"handleBrowserDNTRequest": false,
+				"removeCredit": false,
+				"moreInfoLink": true,
+				"useExternalCss": false,
 				"useExternalJs": false,
-				/* If false, the tarteaucitron.js file will be loaded */
-				// "cookieDomain": ".my-multisite-domaine.fr", /* Shared cookie for multisite */
-				"readmoreLink": "", /* Change the default readmore link */
-				"mandatory": true, /* Show a message about mandatory cookies */
+				"readmoreLink": "",
+				"mandatory": true,
 				"mandatoryCta": true,
-				/* Show the disabled accept button when mandatory on */
-				// "customCloserId": "", /* Optional a11y: Custom element ID used to open the panel */
-				"googleConsentMode": true, /* Enable Google Consent Mode v2 for Google ads and GA4 */
-				"partnersList": false /* Show the number of partners on the popup/middle banner */
+				"googleConsentMode": true,
+				"partnersList": false
 			});
 		</script>
 		<script>
@@ -52,8 +47,6 @@
 			window.utilisateurConnecte = {% if utilisateurConnecte is not null %}{{ utilisateurConnecte|json_encode|raw }}{% else %}null{% endif %};
 		</script>
 		<script src="js/raccourcis.js"></script>		
-		
-
 
 		<!-- ShareThis -->
 		<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6761894fc433c60012502e7c&product=inline-share-buttons&source=platform" async="async"></script>
@@ -76,6 +69,36 @@
 			.result-item:hover {
 				background-color: #f0f0f0;
 			}
+			
+			/* Ajustements spécifiques pour l'affichage mobile (мобильный (mobil'nyy) – mobile) */
+			@media (max-width: 768px) {
+				/* Masquer le bouton "Accueil" du header */
+				.header-accueil {
+					display: none;
+				}
+				/* Réduire la taille du logo */
+				.navbar-brand img {
+					width: 50px;
+					height: auto;
+				}
+				/* Ajuster la taille des textes et espacements des boutons de navigation */
+				.nav-buttons a {
+					margin: 0.2rem;
+					font-size: 0.9rem;
+				}
+				/* Ajuster le champ de recherche */
+				#recherche {
+					font-size: 0.9rem;
+				}
+			}
+
+			/* Style pour le menu burger en blanc */
+			.navbar-toggler-icon {
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+			}
+			.navbar-toggler {
+				border-color: rgba(255, 255, 255, 0.5);
+			}
 		</style>
 		{% block css %}{% endblock %}
 		<title>
@@ -87,127 +110,128 @@
 	<body class="d-flex flex-column min-vh-100 bg-custom">
 		<div id="globalLoader" class="d-none">
 			<div class="loader-content d-inline-flex flex-column align-items-center p-3 bg-dark text-white rounded shadow-lg position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
-			  <div class="d-flex align-items-center">
-				<img src="img/LogoPopCorn.png" alt="Logo" style="max-width: 80px;">
-				<div class="popcorn-animation d-flex align-items-center ms-3">
-				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
-				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
-				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
-				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
-				  <img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+				<div class="d-flex align-items-center">
+					<img src="img/LogoPopCorn.png" alt="Logo" style="max-width: 80px;">
+					<div class="popcorn-animation d-flex align-items-center ms-3">
+						<img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+						<img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+						<img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+						<img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+						<img src="img/noteVide.png" class="popcorn mx-1" alt="PopCorn" style="max-width: 20px;">
+					</div>
 				</div>
-			  </div>
-			  <div class="mt-2 text-center">Merci de patienter</div>
+				<div class="mt-2 text-center">Merci de patienter</div>
 			</div>
 		</div>
 		<header class="header-bg text-light sticky-top shadow">
 			<nav class="navbar navbar-expand-lg container-fluid py-1">
-			<!-- Logo Section -->
-			<div class="navbar-brand me-1">
-				<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter" title="Alt + Shift + A">
-				<img src="img/LogoPopCorn.png" alt="Logo" width="60" height="50" class="me-1">
-				</a>
-			</div>
-
-			<!-- Main Navigation -->
-			<div class="d-flex flex-grow-1 justify-content-start">
-				{% if utilisateurConnecte %}
-
-				<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
-					<a href="index.php" class="btn btn-outline-light ilFautPatienter" title="Alt + Shift + A">
-					<i class="fas fa-home"></i> Accueil
-
-					<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light" title="Alt + Shift + F">
-					<i class="fas fa-comments me-1"></i> Forum
-
-					</a>
-					<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light" title="Alt + Shift + L">
-					<i class="fas fa-list me-1 ilFautPatienter"></i> Mes listes
-					</a>
-					<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light" title="Alt + Shift + Q">
-					<i class="fas fa-question-circle me-1 ilFautPatienter"></i> Quiz
-					</a>
-					<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light "title="Alt + Shift + J">
-					<i class="fas fa-gamepad me-1 ilFautPatienter"></i> Jeux
+				<!-- Logo Section -->
+				<div class="navbar-brand me-1">
+					<a href="index.php" class="d-flex align-items-center text-decoration-none ilFautPatienter" title="Alt + Shift + A">
+						<img src="img/LogoPopCorn.png" alt="Logo" width="60" height="50" class="me-1">
 					</a>
 				</div>
-				{% endif %}
-			</div>
-
-			<!-- Right Side Elements -->
-			<div class="d-flex align-items-center gap-2 flex-grow-1 ms-2">
-				<!-- Search Bar -->
-				<div class="position-relative flex-grow-1 me-3" title="Alt + Shift + S">
-				<form class="d-flex" action="index.php" method="GET">
-					<input type="hidden" name="controleur" value="index">
-					<input type="hidden" name="methode" value="rechercher">
-					<div class="input-group">
-					<input class="form-control" type="search" name="requete" id="recherche" 
-						placeholder="Rechercher..." aria-label="Search">
-					<button class="btn btn-outline-light" type="submit">
-						<i class="fas fa-search"></i>
-					</button>
+				<!-- Bouton toggler pour mobile -->
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- Navigation principale regroupée dans une collapse -->
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<div class="d-flex flex-grow-1 justify-content-start">
+						{% if utilisateurConnecte %}
+						<div class="nav-buttons d-flex flex-wrap justify-content-center gap-2">
+							<a href="index.php?controleur=forum&methode=listerForum" class="btn btn-outline-light" title="Alt + Shift + F">
+								<i class="fas fa-comments me-1"></i> Forum
+							</a>
+							<a href="index.php?controleur=watchlist&methode=listerWatchList&id={{ utilisateurConnecte.idUtilisateur }}" class="btn btn-outline-light" title="Alt + Shift + L">
+								<i class="fas fa-list me-1 ilFautPatienter"></i> Mes listes
+							</a>
+							<a href="index.php?controleur=Quizz&methode=listerQuizz" class="btn btn-outline-light" title="Alt + Shift + Q">
+								<i class="fas fa-question-circle me-1 ilFautPatienter"></i> Quiz
+							</a>
+							<a href="index.php?controleur=jeux&methode=listeTableau" class="btn btn-outline-light" title="Alt + Shift + J">
+								<i class="fas fa-gamepad me-1 ilFautPatienter"></i> Jeux
+							</a>
+						</div>
+						{% endif %}
 					</div>
-				</form>
-				<div id="search-results" class="list-group position-absolute w-100 shadow-lg rounded" 
-					style="top: 100%; z-index: 1050;"></div>
-				</div>
-
-				<!-- User Menu -->
-				{% if utilisateurConnecte is null %}
-				<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion"  title="Alt + Shift + C">
-					<i class="fas fa-sign-in-alt me-1"></i> Connexion
-				</a>
-				{% else %}
-				<div class="dropdown me-3">
-					<button class="btn btn-link text-light p-0 border-0 mr-2" type="button" id="userMenuButton" 
-					data-bs-toggle="dropdown" aria-expanded="false"  title="Alt + Shift + P">
-					<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
-						alt="Profile" width="40" height="40" 
-						class="rounded-circle border border-2">
-					</button>
-					<ul class="dropdown-menu dropdown-menu-end shadow">
-					<li>
-						<a href="index.php?controleur=profil&methode=afficherAPropos&id={{ utilisateurConnecte.idUtilisateur }}" class="dropdown-item">
-							<div class="d-flex align-items-center">
-								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
-									alt="Profile" width="32" height="32" 
-									class="rounded-circle me-2">
-								<div>
-									<strong>{{ utilisateurConnecte.pseudo }}</strong>
-									<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
+					<!-- Éléments à droite -->
+					<div class="d-flex align-items-center gap-2 flex-grow-1 ms-2">
+						<!-- Search Bar -->
+						<div class="position-relative flex-grow-1 me-3" title="Alt + Shift + S">
+							<form class="d-flex" action="index.php" method="GET">
+								<input type="hidden" name="controleur" value="index">
+								<input type="hidden" name="methode" value="rechercher">
+								<div class="input-group">
+									<input class="form-control" type="search" name="requete" id="recherche" 
+										placeholder="Ex : Le roi Lion" aria-label="Search">
+									<button class="btn btn-outline-light" type="submit">
+										<i class="fas fa-search"></i>
+									</button>
 								</div>
-							</div>
-						</a>
-					</li>
-					<li><hr class="dropdown-divider"></li>
-					{% if utilisateurConnecte.getRole == 'admin' %}
-						<li>
-						<a class="dropdown-item" href="index.php?controleur=admin&methode=render">
-							<i class="fas fa-cog me-2"></i> Administration
-						</a>
-						</li>
-					{% endif %}
-					<li>
-						<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire">
-						<i class="fas fa-user-cog me-2"></i> Paramètres
-						</a>
-					</li>
-					<li>
-						<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1">
-						<i class="fas fa-bell me-2"></i> Notifications
-						</a>
-					</li>
-					<li><hr class="dropdown-divider"></li>
-					<li>
-						<a class="dropdown-item text-danger" href="index.php?controleur=utilisateur&methode=deconnexion">
-						<i class="fas fa-sign-out-alt me-2"></i> Déconnexion
-						</a>
-					</li>
-					</ul>
+							</form>
+							<div id="search-results" class="list-group position-absolute w-100 shadow-lg rounded" 
+								style="top: 100%; z-index: 1050;"></div>
+						</div>
+						<!-- User Menu -->
+						{% if utilisateurConnecte is null %}
+						<div style="margin-right: 15px;">
+							<a class="btn btn-light" href="index.php?controleur=utilisateur&methode=connexion" title="Alt + Shift + C">
+								<i class="fas fa-sign-in-alt me-1"></i> Connexion
+							</a>
+						</div>
+						{% else %}
+						<div class="dropdown me-3">
+							<button class="btn btn-link text-light p-0 border-0 mr-2" type="button" id="userMenuButton" 
+								data-bs-toggle="dropdown" aria-expanded="false" title="Alt + Shift + P">
+								<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+									alt="Profile" width="40" height="40" 
+									class="rounded-circle border border-2">
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end shadow">
+								<li>
+									<a href="index.php?controleur=profil&methode=afficherAPropos&id={{ utilisateurConnecte.idUtilisateur }}" class="dropdown-item">
+										<div class="d-flex align-items-center">
+											<img src="{{ 'img/profils/' ~ utilisateurConnecte.photoProfil }}" 
+												alt="Profile" width="32" height="32" 
+												class="rounded-circle me-2">
+											<div>
+												<strong>{{ utilisateurConnecte.pseudo }}</strong>
+												<div class="text-muted small">{{ utilisateurConnecte.getRole }}</div>
+											</div>
+										</div>
+									</a>
+								</li>
+								<li><hr class="dropdown-divider"></li>
+								{% if utilisateurConnecte.getRole == 'admin' %}
+									<li>
+										<a class="dropdown-item" href="index.php?controleur=admin&methode=render">
+											<i class="fas fa-cog me-2"></i> Administration
+										</a>
+									</li>
+								{% endif %}
+								<li>
+									<a class="dropdown-item" href="index.php?controleur=profil&methode=afficherFormulaire">
+										<i class="fas fa-user-cog me-2"></i> Paramètres
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="index.php?controleur=profil&methode=listerNotif&idNotif=1">
+										<i class="fas fa-bell me-2"></i> Notifications
+									</a>
+								</li>
+								<li><hr class="dropdown-divider"></li>
+								<li>
+									<a class="dropdown-item text-danger" href="index.php?controleur=utilisateur&methode=deconnexion">
+										<i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+									</a>
+								</li>
+							</ul>
+						</div>
+						{% endif %}
+					</div>
 				</div>
-				{% endif %}
-			</div>
 			</nav>
 			<nav aria-label="breadcrumb" class="container-fluid shadow-sm bg-dark" style="--bs-breadcrumb-divider: '>';">
 				<ol class="breadcrumb m-0 py-2">
@@ -220,7 +244,8 @@
 							{% endif %}
 						{% endfor %}
 					{% else %}
-						<li class="breadcrumb-item"><a href="index.php" class="text-white hover-effect">Accueil</a></li>
+						<!-- Le bouton Accueil est visible sur PC (d-lg-block) et masqué sur mobile -->
+						<li class="breadcrumb-item"><a href="index.php" class="text-white hover-effect d-none d-lg-block">Accueil</a></li>
 					{% endif %}
 				</ol>
 			</nav>
@@ -244,7 +269,6 @@
 			{% block content1 %}{% endblock %}
 			<script type="text/javascript">
 				tarteaucitron.user.gtagUa = 'G-TJGCV8L5XE';
-				// tarteaucitron.user.gtagCrossdomain = ['example.com', 'example2.com'];
 				tarteaucitron.user.gtagMore = function () { /* add here your optionnal gtag() */ };
 				(tarteaucitron.job = tarteaucitron.job || []).push('gtag');
 			</script>
@@ -396,7 +420,14 @@
 								</p>
 
 								<h4>3. Accès à l’application</h4>
+/*************  ✨ Codeium Command 🌟  *************/
 								<p>
+									L’accès à l’application est gratuit et se fait en ligne. Tous les
+									frais afférents à l’accès (matériel informatique, logiciels, connexion internet, etc.)
+									sont à la charge de l’Utilisateur. L’éditeur met en œuvre tous les moyens raisonnables
+									pour assurer un accès de qualité mais n’est tenu à aucune obligation de résultat.
+								</p>
+/******  38b46d2e-6f6b-42a9-b7c4-fb90bc000507  *******/
 									L’accès à l’application est gratuit et se fait en ligne. Tous les
 									frais afférents à l’accès (matériel informatique, logiciels, connexion internet, etc.)
 									sont à la charge de l’Utilisateur. L’éditeur met en œuvre tous les moyens raisonnables
